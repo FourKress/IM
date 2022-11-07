@@ -23,5 +23,6 @@
     "@lanshu/IM": "^0.0.5",
     "@lanshu/plugin": "^0.0.5",
     "@lanshu/sidebar": "^0.0.5"
-  }
+  },
+  "gitHead": "28f381d0f604f7af0130c79c5cc8074f6c6de707"
 }

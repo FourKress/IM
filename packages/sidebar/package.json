@@ -18,5 +18,6 @@
     "lib",
     "src"
   ],
-  "scripts": {}
+  "scripts": {},
+  "gitHead": "28f381d0f604f7af0130c79c5cc8074f6c6de707"
 }
