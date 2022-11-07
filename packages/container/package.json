@@ -15,8 +15,7 @@
     "lib",
     "src"
   ],
-  "scripts": {
-  },
+  "scripts": {},
   "dependencies": {
     "@lanshu/IM": "^0.0.1",
     "@lanshu/plugin": "^0.0.1",

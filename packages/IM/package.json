@@ -15,8 +15,7 @@
     "lib",
     "src"
   ],
-  "scripts": {
-  },
+  "scripts": {},
   "dependencies": {
     "@lanshu/render-process": "^0.0.1"
   }

@@ -15,8 +15,5 @@
     "lib",
     "src"
   ],
-  "scripts": {
-  },
-  "dependencies": {
-  }
+  "scripts": {}
 }

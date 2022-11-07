@@ -15,8 +15,7 @@
     "lib",
     "src"
   ],
-  "scripts": {
-  },
+  "scripts": {},
   "dependencies": {
     "@lanshu/container": "^0.0.1"
   }
