@@ -2,10 +2,6 @@
   "name": "lanshu",
   "version": "0.0.1",
   "private": true,
-  "publishConfig": {
-    "access": "public",
-    "registry": "https://registry.npmjs.org/"
-  },
   "description": "客户端架构包 npm私有库管理",
   "license": "MIT",
   "repository": "https://github.com/FourKress/lanshu.git",
