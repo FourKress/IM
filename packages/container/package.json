@@ -1,6 +1,6 @@
 {
   "name": "@lanshu/container",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "客户端视图容器",
   "keywords": [
     "container"
@@ -20,8 +20,8 @@
   ],
   "scripts": {},
   "dependencies": {
-    "@lanshu/IM": "^0.0.4",
-    "@lanshu/plugin": "^0.0.4",
-    "@lanshu/sidebar": "^0.0.4"
+    "@lanshu/IM": "^0.0.5",
+    "@lanshu/plugin": "^0.0.5",
+    "@lanshu/sidebar": "^0.0.5"
   }
 }
