@@ -6,6 +6,9 @@
     "sidebar"
   ],
   "author": "wudong <511970747@qq.com>",
+  "publishConfig": {
+    "access": "public"
+  },
   "license": "MIT",
   "main": "lib/main.js",
   "directories": {
