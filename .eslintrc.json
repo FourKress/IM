@@ -1,0 +1,68 @@
+{
+  "parserOptions": {
+    "parser": "@babel/eslint-parser",
+    "ecmaVersion": 2017,
+    "ecmaFeatures": {
+      "implied": true
+    },
+    "sourceType": "module"
+  },
+  "env": {
+    "es6": true,
+    "node": true,
+    "browser": true
+  },
+  "extends": ["airbnb-base", "plugin:vue/essential", "prettier"],
+  "globals": {
+    "ELEMENT": "readonly",
+    "vue": "readonly",
+    "vue-router": "readonly"
+  },
+  "plugins": ["@babel", "prettier"],
+  "settings": {
+    "prettier/prettier": "error",
+    "import/resolver": {
+      "alias": {
+        "map": [
+          ["@", "./src"]
+        ],
+        "extensions": [".js", ".json", ".vue"]
+      }
+    }
+  },
+  "rules": {
+    "arrow-body-style": "off",
+    "prefer-arrow-callback": "off",
+    "operator-linebreak": [
+      "error",
+      "after",
+      { "overrides": { "?": "before", ":": "before" } }
+    ],
+    "prefer-destructuring": ["error", { "object": true, "array": false }],
+    "no-param-reassign": "off",
+    "radix": ["error", "as-needed"],
+    "no-plusplus": "warn",
+    "implicit-arrow-linebreak": "off",
+    "no-unused-expressions": "off",
+    "no-underscore-dangle": "warn",
+    "function-paren-newline": "off",
+    "no-new": "off",
+    "func-names": ["error", "never"],
+    "no-unused-vars": ["warn", { "argsIgnorePattern": "h" }],
+    "prefer-promise-reject-errors": "warn",
+    "import/extensions": [
+      "error",
+      "always",
+      {
+        "js": "never",
+        "vue": "never"
+      }
+    ],
+    "import/no-cycle": "off",
+    "import/order": "warn",
+    "import/prefer-default-export": "off",
+    "vue/no-side-effects-in-computed-properties": "warn",
+    "vue/no-mutating-props": "warn",
+    "import/no-extraneous-dependencies": ["error", {"devDependencies": true}]
+  }
+}

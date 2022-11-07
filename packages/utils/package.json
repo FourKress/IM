@@ -1,0 +1,21 @@
+{
+  "name": "@lanshu/utils",
+  "version": "0.0.1",
+  "description": "工具库",
+  "keywords": [
+    "utils"
+  ],
+  "author": "吴东 <511970747@qq.com>",
+  "license": "MIT",
+  "main": "lib/main.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "files": [
+    "lib",
+    "src"
+  ],
+  "scripts": {
+    "test": "node ./__tests__/utils.test.js"
+  }
+}

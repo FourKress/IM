@@ -1,0 +1,22 @@
+{
+  "name": "@lanshu/sidebar",
+  "version": "0.0.1",
+  "description": "客户端侧边栏",
+  "keywords": [
+    "sidebar"
+  ],
+  "author": "wudong <511970747@qq.com>",
+  "license": "MIT",
+  "main": "lib/main.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "files": [
+    "lib",
+    "src"
+  ],
+  "scripts": {
+  },
+  "dependencies": {
+  }
+}

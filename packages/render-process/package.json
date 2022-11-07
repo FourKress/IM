@@ -1,0 +1,20 @@
+{
+  "name": "@lanshu/render-process",
+  "version": "0.0.1",
+  "description": "客户端渲染进程",
+  "keywords": [
+    "render-process"
+  ],
+  "author": "wudong <511970747@qq.com>",
+  "license": "MIT",
+  "main": "lib/main.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "files": [
+    "lib",
+    "src"
+  ],
+  "scripts": {
+  }
+}

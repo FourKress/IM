@@ -1,0 +1,41 @@
+{
+  "name": "lanshu",
+  "version": "0.0.1",
+  "private": true,
+  "description": "客户端架构包 npm私有库管理",
+  "license": "MIT",
+  "author": {
+    "name": "wudong",
+    "email": "511970747@qq.com"
+  },
+  "scripts": {},
+  "pre-commit": [
+    "precommit-msg"
+  ],
+  "dependencies": {
+    "sass": "^1.56.0",
+    "sass-loader": "^13.1.0"
+  },
+  "devDependencies": {
+    "lerna": "^6.0.1",
+    "prettier": "^2.7.1"
+  },
+  "prettier": {
+    "singleQuote": true,
+    "endOfLine": "auto",
+    "semi": true,
+    "stylelintIntegration": true,
+    "eslintIntegration": true,
+    "trailingComma": "all",
+    "htmlWhitespaceSensitivity": "ignore"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ],
+  "workspaces": [
+    "packages/*",
+    "play"
+  ]
+}

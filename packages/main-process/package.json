@@ -1,0 +1,24 @@
+{
+  "name": "@lashu/main-process",
+  "version": "0.0.1",
+  "description": "客户端主进程",
+  "keywords": [
+    "main-process"
+  ],
+  "author": "wudong <511970747@qq.com>",
+  "license": "MIT",
+  "main": "lib/main.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "files": [
+    "lib",
+    "src"
+  ],
+  "scripts": {
+  },
+  "dependencies": {
+    "electron": "^21.2.2",
+    "electron-screenshots": "^0.5.13"
+  }
+}

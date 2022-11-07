@@ -1,0 +1,23 @@
+{
+  "name": "@lanshu/layout",
+  "version": "0.0.1",
+  "description": "客户端主体布局",
+  "keywords": [
+    "layout"
+  ],
+  "author": "吴东 <511970747@qq.com>",
+  "license": "MIT",
+  "main": "lib/main.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "files": [
+    "lib",
+    "src"
+  ],
+  "scripts": {
+  },
+  "dependencies": {
+    "@lanshu/container": "^0.0.1"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "name": "@lanshu/plugin",
+  "version": "0.0.1",
+  "description": "客户端插件",
+  "keywords": [
+    "plugin"
+  ],
+  "author": "wudong <511970747@qq.com>",
+  "license": "MIT",
+  "main": "lib/main.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "files": [
+    "lib",
+    "src"
+  ],
+  "scripts": {
+  },
+  "dependencies": {
+
+  }
+}
