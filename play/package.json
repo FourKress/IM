@@ -1,6 +1,6 @@
 {
   "name": "@lanshu/play",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "author": "wudong <511970747@qq.com>",
   "private": true,
   "license": "MIT",
@@ -19,7 +19,7 @@
     "precommit-msg"
   ],
   "dependencies": {
-    "@lanshu/layout": "^0.0.5",
+    "@lanshu/layout": "^0.0.6",
     "core-js": "^3.8.3",
     "vue": "^2.6.14",
     "vue-router": "3.6.5"

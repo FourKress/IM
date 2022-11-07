@@ -1,6 +1,6 @@
 {
   "name": "@lanshu/container",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "客户端视图容器",
   "keywords": [
     "container"
@@ -20,9 +20,9 @@
   ],
   "scripts": {},
   "dependencies": {
-    "@lanshu/IM": "^0.0.5",
-    "@lanshu/plugin": "^0.0.5",
-    "@lanshu/sidebar": "^0.0.5"
+    "@lanshu/IM": "^0.0.6",
+    "@lanshu/plugin": "^0.0.6",
+    "@lanshu/sidebar": "^0.0.6"
   },
   "gitHead": "28f381d0f604f7af0130c79c5cc8074f6c6de707"
 }
