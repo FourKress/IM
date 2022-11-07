@@ -5,6 +5,7 @@
     "name": "wudong",
     "email": "511970747@qq.com"
   },
+  "private": true,
   "license": "MIT",
   "repository": "",
   "scripts": {
