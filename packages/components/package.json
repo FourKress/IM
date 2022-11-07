@@ -1,9 +1,9 @@
 {
-  "name": "@lanshu/company",
+  "name": "@lanshu/components",
   "version": "0.0.1",
   "description": "组件库",
   "keywords": [
-    "company"
+    "components"
   ],
   "author": "吴东 <511970747@qq.com>",
   "license": "MIT",
@@ -12,9 +12,9 @@
     "lib": "lib"
   },
   "files": [
-    "lib"
+    "lib",
+    "src"
   ],
   "scripts": {
-    "test": "node ./__tests__/company.test.js"
   }
 }
