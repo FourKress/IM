@@ -1,6 +1,6 @@
 {
   "name": "@lanshu/play",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "author": {
     "name": "wudong",
     "email": "511970747@qq.com"
@@ -19,7 +19,7 @@
     "precommit-msg"
   ],
   "dependencies": {
-    "@lanshu/layout": "^0.0.2",
+    "@lanshu/layout": "^0.0.3",
     "core-js": "^3.8.3",
     "vue": "^2.6.14",
     "vue-router": "3.6.5"

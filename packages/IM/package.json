@@ -1,6 +1,6 @@
 {
   "name": "@lanshu/IM",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "客户端IM",
   "keywords": [
     "IM"
@@ -17,6 +17,6 @@
   ],
   "scripts": {},
   "dependencies": {
-    "@lanshu/render-process": "^0.0.2"
+    "@lanshu/render-process": "^0.0.3"
   }
 }
