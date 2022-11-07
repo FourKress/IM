@@ -1,6 +1,6 @@
 {
   "name": "@lanshu/layout",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "客户端主体布局",
   "keywords": [
     "layout"
@@ -17,6 +17,6 @@
   ],
   "scripts": {},
   "dependencies": {
-    "@lanshu/container": "^0.0.1"
+    "@lanshu/container": "^0.0.2"
   }
 }
