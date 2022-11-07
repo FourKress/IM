@@ -9,10 +9,7 @@
   "description": "客户端架构包 npm私有库管理",
   "license": "MIT",
   "repository": "https://github.com/FourKress/lanshu.git",
-  "author": {
-    "name": "wudong",
-    "email": "511970747@qq.com"
-  },
+  "author": "wudong <511970747@qq.com>",
   "scripts": {},
   "pre-commit": [
     "precommit-msg"
