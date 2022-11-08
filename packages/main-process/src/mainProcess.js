@@ -33,11 +33,11 @@ const initIpcMain = (mainWindow) => {
     });
 
     ipcMain.on('startScreenshots', async () => {
-      await screenshots.startCapture();
-
       globalShortcut.register('esc', async () => {
         await screenshots.endCapture();
       });
+
+      await screenshots.startCapture();
     });
   });
 };
