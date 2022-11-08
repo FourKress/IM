@@ -22,7 +22,8 @@
   "dependencies": {
     "@lanshu/im": "^0.0.8",
     "@lanshu/plugin": "^0.0.8",
-    "@lanshu/sidebar": "^0.0.8"
+    "@lanshu/sidebar": "^0.0.8",
+    "vue-router": "^3.6.5"
   },
   "gitHead": "9004cc78755e37d02f5fc53677dedd6b40cc23ab"
 }

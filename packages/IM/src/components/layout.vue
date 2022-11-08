@@ -6,15 +6,22 @@
 
     <div @click="handleScreenshots">截图</div>
     <img v-if="imgB64" :src="imgB64" alt="" />
+
+    <ImView />
   </div>
 </template>
 
 <script>
+require('../sdk/lim-core');
+
 import { renderProcess } from '@lanshu/render-process';
+import ImView from './im-view';
 
 export default {
   name: 'MainIM',
-  components: {},
+  components: {
+    ImView,
+  },
   data() {
     return {
       filePath: '',
