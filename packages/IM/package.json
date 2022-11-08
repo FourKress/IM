@@ -1,5 +1,5 @@
 {
-  "name": "@lanshu/IM",
+  "name": "@lanshu/im",
   "version": "0.0.7",
   "description": "客户端IM",
   "keywords": [
@@ -22,5 +22,5 @@
   "dependencies": {
     "@lanshu/render-process": "^0.0.7"
   },
-  "gitHead": "76f8019ef1dc5ab2a9395efd81ae06b883609707"
+  "gitHead": "9004cc78755e37d02f5fc53677dedd6b40cc23ab"
 }

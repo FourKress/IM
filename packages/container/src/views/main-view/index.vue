@@ -8,7 +8,7 @@
 
 <script>
 import { MainSideBar } from '@lanshu/sidebar';
-import { MainIM } from '@lanshu/IM';
+import { MainIM } from '@lanshu/im';
 import { MainPlugIn } from '@lanshu/plugin';
 
 export default {
