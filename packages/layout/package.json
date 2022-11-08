@@ -1,6 +1,6 @@
 {
   "name": "@lanshu/layout",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "客户端主体布局",
   "author": "wudong <511970747@qq.com>",
   "keywords": [
@@ -20,7 +20,7 @@
   ],
   "scripts": {},
   "dependencies": {
-    "@lanshu/container": "^0.0.7"
+    "@lanshu/container": "^0.0.8"
   },
   "gitHead": "9004cc78755e37d02f5fc53677dedd6b40cc23ab"
 }
