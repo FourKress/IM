@@ -21,10 +21,6 @@ const initIpcMain = (mainWindow) => {
 
     const screenshots = new Screenshots();
 
-    globalShortcut.register('esc', () => {
-      screenshots.endCapture();
-    });
-
     screenshots.on('ok', (e, buffer, bounds) => {
       const b64 = Buffer.from(buffer).toString('base64');
       mainWindow.webContents.send('result-screenshots', b64);
@@ -36,8 +32,12 @@ const initIpcMain = (mainWindow) => {
       const b64 = Buffer.from(buffer).toString('base64');
     });
 
-    ipcMain.on('startScreenshots', () => {
-      screenshots.startCapture();
+    ipcMain.on('startScreenshots', async () => {
+      await screenshots.startCapture();
+
+      globalShortcut.register('esc', async () => {
+        await screenshots.endCapture();
+      });
     });
   });
 };
