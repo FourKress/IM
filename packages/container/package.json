@@ -1,6 +1,6 @@
 {
   "name": "@lanshu/container",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "客户端视图容器",
   "keywords": [
     "container"
