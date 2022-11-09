@@ -5,52 +5,49 @@
   "private": true,
   "license": "MIT",
   "repository": "",
-  "publishConfig": {
-    "access": "public"
-  },
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
-    "precommit-msg": "echo 'Pre-commit checks.........' && exit 0"
+    "electron:build": "yarn generatePreload && vue-cli-service electron:build && yarn removePreload",
+    "electron:serve": "yarn generatePreload && vue-cli-service electron:serve",
+    "generatePreload": "node ./generate-preload.js",
+    "removePreload": "node ./remove-preload.js"
   },
-  "pre-commit": [
-    "precommit-msg"
-  ],
   "dependencies": {
     "@lanshu/layout": "^0.1.0",
+    "@lanshu/main-process": "^0.1.0",
     "core-js": "^3.8.3",
+    "electron-screenshots": "^0.5.13",
     "vue": "^2.6.14",
-    "vue-router": "3.6.5"
+    "vue-router": "^3.6.5"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",
     "@babel/eslint-parser": "^7.12.16",
-    "@babel/eslint-plugin": "^7.19.1",
     "@vue/cli-plugin-babel": "~5.0.0",
     "@vue/cli-plugin-eslint": "~5.0.0",
     "@vue/cli-service": "~5.0.0",
-    "babel-eslint": "^10.1.0",
+    "electron": "^21.0.1",
+    "electron-devtools-installer": "^3.1.0",
     "eslint": "^7.32.0",
-    "eslint-config-airbnb-base": "^15.0.0",
-    "eslint-config-prettier": "^8.5.0",
-    "eslint-import-resolver-alias": "^1.1.2",
-    "eslint-plugin-import": "^2.26.0",
-    "eslint-plugin-jest": "^27.1.3",
-    "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-vue": "^8.0.3",
-    "prettier": "^2.7.1",
+    "vue-cli-plugin-electron-builder": "~2.1.1",
     "vue-template-compiler": "^2.6.14"
   },
-  "prettier": {
-    "singleQuote": true,
-    "endOfLine": "auto",
-    "semi": true,
-    "stylelintIntegration": true,
-    "eslintIntegration": true,
-    "trailingComma": "all",
-    "htmlWhitespaceSensitivity": "ignore"
+  "eslintConfig": {
+    "root": true,
+    "env": {
+      "node": true
+    },
+    "extends": [
+      "plugin:vue/essential",
+      "eslint:recommended"
+    ],
+    "parserOptions": {
+      "parser": "@babel/eslint-parser"
+    },
+    "rules": {}
   },
   "browserslist": [
     "> 1%",
