@@ -1,7 +1,34 @@
 <template>
   <div id="client-header">
-    <span>我是头部</span>
-    <span @click="handleSetTitle">设置title</span>
+    <div class="header_user">
+      <div class="portrait">
+        <img src="" class="img" alt="" />
+        <div class="status"></div>
+      </div>
+      <div class="user-info">
+        <p class="name">好滴好滴</p>
+        <div class="position">
+          <span>线上综窗</span>
+          <span class="down-icon"></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="hearer-search">
+      <div class="search">
+        <div class="query-icon"></div>
+        <div class="input-panel">
+          <input type="text" placeholder="创建事项或搜索关键词" />
+        </div>
+        <div class="add"></div>
+      </div>
+    </div>
+
+    <div class="header_action">
+      <span class="btn small"></span>
+      <span class="btn big"></span>
+      <span class="btn close"></span>
+    </div>
   </div>
 </template>
 
@@ -19,7 +46,151 @@ export default {
 <style scoped lang="scss">
 #client-header {
   width: 100%;
-  height: 50px;
-  background-color: aliceblue;
+  height: 90px;
+  background: linear-gradient(
+    90deg,
+    #dde2ef 0%,
+    #dfe6ea 19%,
+    #f5f2ec 44%,
+    #edecf5 76%,
+    #dde2ef 100%
+  );
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 22px;
+
+  .header_user {
+    margin-left: 12px;
+    display: flex;
+    align-items: center;
+
+    .portrait {
+      width: 46px;
+      height: 46px;
+      background: #d8d8d8;
+      position: relative;
+
+      .img {
+        border-radius: 6px;
+        display: block;
+        width: 100%;
+        height: 100%;
+
+        background-color: #333333;
+      }
+
+      .status {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background-color: #00cba8;
+        position: absolute;
+        right: -3px;
+        bottom: -3px;
+      }
+    }
+
+    .user-info {
+      margin-left: 12px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+
+      .name {
+        font-size: 16px;
+        font-weight: bold;
+        color: #333333;
+        line-height: 22px;
+      }
+
+      .position {
+        font-size: 14px;
+        color: #777777;
+        line-height: 20px;
+        display: flex;
+        align-items: center;
+
+        .down-icon {
+          width: 8px;
+          height: 5px;
+          margin-left: 6px;
+
+          background-color: #333333;
+        }
+      }
+    }
+  }
+
+  .hearer-search {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .search {
+      width: 500px;
+      height: 48px;
+      background: #ffffff;
+      box-shadow: 0px 2px 6px 0px rgba(51, 51, 51, 0.1);
+      border-radius: 10px;
+      padding: 0 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      .query-icon {
+        width: 18px;
+        height: 18px;
+        background-color: #333333;
+      }
+
+      .input-panel {
+        flex: 1;
+        height: 28px;
+        padding: 0 8px;
+        border-right: 1px solid #eaeaea;
+        font-size: 14px;
+
+        input {
+          width: 100%;
+          height: 100%;
+          border: none;
+          outline: none;
+        }
+
+        input::placeholder {
+          color: #999999;
+          font-size: 14px;
+        }
+      }
+
+      .add {
+        width: 18px;
+        height: 18px;
+        cursor: pointer;
+        margin-left: 17px;
+        background-color: #333333;
+      }
+    }
+  }
+
+  .header_action {
+    margin-right: 20px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+
+    .btn {
+      width: 20px;
+      height: 20px;
+      margin-left: 10px;
+      border-radius: 50%;
+      cursor: pointer;
+
+      background-color: blue;
+    }
+  }
 }
 </style>

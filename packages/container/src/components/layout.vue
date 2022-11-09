@@ -21,8 +21,10 @@ export default {
 <style scoped lang="scss">
 #client-container {
   flex: 1;
+  width: calc(100% - 20px);
   background-color: cadetblue;
   display: flex;
+  margin-top: -22px;
 
   .view-container {
     flex: 1;
