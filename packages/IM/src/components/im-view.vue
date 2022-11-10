@@ -1,73 +1,163 @@
 <template>
-  <div class="im-view">12</div>
+  <div class="im-view">
+    <div class="top">
+      <div class="left">
+        <div class="img"></div>
+        <div class="info">
+          <span class="name">阿斯达大</span>
+          <span class="tips">顶顶顶顶</span>
+        </div>
+      </div>
+      <div class="right">
+        <div class="btn close"></div>
+        <div class="btn switch"></div>
+        <div class="btn text-icon-btn">
+          <span class="btn-icon"></span>
+          <span>协同</span>
+        </div>
+      </div>
+    </div>
+    <div class="message-panel"></div>
+    <div class="action-panel">
+      <div class="input-panel"></div>
+    </div>
+  </div>
 </template>
 
 <script>
-
 export default {
   name: 'ImView',
-  created() {
-    console.log(IMSDK);
-    IMSDK.registerEvent(IMSDK.EVENTS.IM_SDK_READY, (event) => {
-      console.log("IM_SDK_READY")
-
-      let user = IMSDK.getSelfUserSync();
-      console.log(user)
-
-
-      let textMsg = IMSDK.createTextMessage({
-        content: '收到你的测试消息', //文本内容
-        toUser: '63477d81660d90392838019c', //消息接收方，为会话列表中的toUser
-        toUserType: 0, //消息接收方类型，为会话列表中的toUserType
-      });
-
-
-      //发送消息，只有在sdk ready状态下才能发送成功，IMSDK.sendMessage返回一个Promise对象
-      setTimeout(() => {
-
-        IMSDK.sendMessage(textMsg).then((e) => {
-          console.log("消息发送成功", e)
-        }).catch((e) => {
-
-          console.log("消息发送失败", e)
-        })
-
-      }, 8000)
-
-    })
-
-    IMSDK.registerEvent(IMSDK.EVENTS.ON_RECEIVED_MESSAGE, (e) => {
-      //事件处理
-      console.log("收到消息：", e.data)
-    })
-
-    IMSDK.registerEvent(IMSDK.EVENTS.ON_EVENT_SYNC_START, () => {
-      console.log("收取中... ")
-    })
-
-    //事件同步完成（取消顶部显示的 "收取中..."、"同步中..."）
-    IMSDK.registerEvent(IMSDK.EVENTS.ON_EVENT_SYNC_FINISH, () => {
-      console.log("收取完成 ")
-
-      let sessionArray = IMSDK.getAllSession();
-      console.log(sessionArray);
-    })
-
-    let promise = IMSDK.login({
-      lt: "eyJhcHBJZCI6IjE2NjI2MDczNzIiLCJhcHBVc2VyIjoiMjM0NSIsImV4cGlyZSI6LTEsInNpZ24iOiI2ZUI4R2ZpbEE0ZGV4eStkUFJQYzRxOVFqeUUvMUJMSHBkS0hBdHdPRm9zPSJ9",
-    });
-
-    promise.then((e) => {
-      if (e.code === 0) {
-        console.log("登录成功")
-      } else {
-        console.log("登录失败")
-      }
-    }).catch((e) => {
-      console.log("登录失败，错误码：", e.code)
-    })
-  },
+  created() {},
 };
 </script>
 
-<style scoped></style>
+<style scoped lang="scss">
+.im-view {
+  height: 100%;
+  background-color: #f6f7fb;
+  box-shadow: 0 4px 10px 0 rgba(51, 51, 51, 0.1);
+  border-radius: 10px 10px 0 0;
+  min-width: 500px;
+  margin-left: 6px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+
+  &:first-child {
+    margin-left: 0;
+    flex: 1;
+    border-radius: 0 10px 0 0;
+  }
+
+  .top {
+    height: 66px;
+    background-color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px;
+
+    .left {
+      flex: 1;
+      display: flex;
+      align-items: center;
+
+      .img {
+        display: block;
+        width: 46px;
+        height: 46px;
+        border-radius: 6px;
+        margin-right: 10px;
+
+        background: #9482ff;
+      }
+
+      .info {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: center;
+
+        .name {
+          font-size: 16px;
+          font-weight: bold;
+          color: #333333;
+          margin-bottom: 5px;
+        }
+
+        .tips {
+          font-size: 12px;
+          color: #999;
+        }
+      }
+    }
+
+    .right {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+
+      .btn {
+        margin-right: 20px;
+        cursor: pointer;
+
+        &:last-child {
+          margin-right: 0;
+        }
+
+        &.close {
+          width: 16px;
+          height: 16px;
+          background-color: #333333;
+        }
+
+        &.switch {
+          width: 16px;
+          height: 16px;
+          background-color: #333333;
+        }
+
+        &.text-icon-btn {
+          width: 60px;
+          height: 28px;
+          background: #e7eaf3;
+          border-radius: 4px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+
+          font-size: 14px;
+          color: #333333;
+
+          .btn-icon {
+            width: 12px;
+            height: 12px;
+            background-color: #333333;
+            margin-right: 2px;
+          }
+        }
+      }
+    }
+  }
+
+  .message-panel {
+    flex: 1;
+  }
+
+  .action-panel {
+    width: 100%;
+    height: 100px;
+    padding: 20px;
+    box-sizing: border-box;
+
+    .input-panel {
+      height: 60px;
+      box-sizing: border-box;
+      background: #ffffff;
+      border-radius: 10px;
+      border: 2px solid rgba(148, 130, 255, 0.5);
+    }
+  }
+}
+</style>

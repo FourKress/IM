@@ -25,9 +25,9 @@
     </div>
 
     <div class="header_action">
-      <span class="btn small"></span>
-      <span class="btn big"></span>
-      <span class="btn close"></span>
+      <span class="btn small" @click='handleWindowChange("min")'></span>
+      <span class="btn big" @click='handleWindowChange("max")'></span>
+      <span class="btn close" @click='handleWindowChange("close")'></span>
     </div>
   </div>
 </template>
@@ -36,9 +36,9 @@
 export default {
   name: 'MainHeader',
   methods: {
-    handleSetTitle() {
-      window?.electronAPI.setTitle('我设置的title');
-    },
+    handleWindowChange(type) {
+      window?.electronAPI.changeWindow(type);
+    }
   },
 };
 </script>
@@ -133,7 +133,7 @@ export default {
       width: 500px;
       height: 48px;
       background: #ffffff;
-      box-shadow: 0px 2px 6px 0px rgba(51, 51, 51, 0.1);
+      box-shadow: 0 2px 6px 0 rgba(51, 51, 51, 0.1);
       border-radius: 10px;
       padding: 0 18px;
       display: flex;

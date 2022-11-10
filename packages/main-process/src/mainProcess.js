@@ -3,10 +3,15 @@ import Screenshots from 'electron-screenshots';
 
 const initIpcMain = (mainWindow) => {
   app.whenReady().then(() => {
-    ipcMain.on('set-title', (event, title) => {
-      const webContents = event.sender;
-      const win = BrowserWindow.fromWebContents(webContents);
-      win.setTitle(title);
+    ipcMain.on('changeWindow', (event, type) => {
+      const actionFnMap = {
+        min: () => window.minimize(),
+        max: () => window.maximize(),
+        unMax: () => window.unmaximize(),
+        close: () => window.close(),
+      };
+      const action = actionFnMap[type];
+      action && action();
     });
 
     async function handleFileOpen() {

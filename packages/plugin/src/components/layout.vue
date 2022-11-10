@@ -1,6 +1,5 @@
 <template>
   <div id="client-plugIn">
-    <div class="view-container">我是业务区</div>
   </div>
 </template>
 
@@ -15,9 +14,11 @@ export default {
 
 <style scoped lang="scss">
 #client-plugIn {
-  width: 300px;
-  height: 100%;
-  background-color: coral;
+  width: 565px;
+  background: #fff;
+  box-shadow: 0 4px 10px 0 rgba(51,51,51,0.1);
+  border-radius: 10px 10px 0 0;
+  margin-left: 6px;
 }
 
 </style>

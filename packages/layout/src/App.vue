@@ -5,12 +5,12 @@
 </template>
 
 <script>
-import MainLayout from './components/layout'
+import MainLayout from './components/layout';
 
 export default {
   name: 'App',
   components: {
-    MainLayout
+    MainLayout,
   },
 };
 </script>
