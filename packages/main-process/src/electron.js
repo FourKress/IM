@@ -12,7 +12,7 @@ async function createWindow() {
   const win = new BrowserWindow({
     width: 1680,
     height: 1050,
-    // fullscreen: true,
+    fullscreen: true,
     frame: false,
     autoHideMenuBar: true,
     webPreferences: {

@@ -1,6 +1,6 @@
 <template>
   <div>
-    新菜单页面
+    新菜单页面222
   </div>
 </template>
 

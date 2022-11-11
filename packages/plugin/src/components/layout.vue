@@ -8,7 +8,7 @@
           <div class="item-container">
             <div class="item-wrap">
               <div class="menu-icon"></div>
-              <span class="text">发放</span>
+              <span class="text">个放</span>
             </div>
           </div>
         </div>

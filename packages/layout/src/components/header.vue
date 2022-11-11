@@ -6,7 +6,7 @@
         <div class="status"></div>
       </div>
       <div class="user-info">
-        <p class="name">好滴好滴</p>
+        <p class="name">发放好滴</p>
         <div class="position">
           <span>线上综窗</span>
           <span class="down-icon"></span>

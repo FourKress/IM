@@ -34,7 +34,7 @@
           <div class="img"></div>
           <div class="info">
             <div class="row">
-              <span class="name">哈哈哈哈哈</span>
+              <span class="name">哈哈发哈哈</span>
               <span class="time">15:33</span>
             </div>
             <span class="message">阿萨斯大所大所大所大多啥所大所多</span>
