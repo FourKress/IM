@@ -22,7 +22,7 @@ export default {
       filePath: '',
       imgB64: '',
 
-      windowList: new Array(4).fill(''),
+      windowList: new Array(2).fill(''),
     };
   },
   created() {
@@ -112,5 +112,6 @@ export default {
   display: flex;
   justify-content: flex-start;
   overflow-x: auto;
+  transform: translate3d(0, 0, 0);
 }
 </style>

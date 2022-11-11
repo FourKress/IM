@@ -52,7 +52,7 @@ export default {
     return {
       tabIndex: 1,
       messageIndex: 0,
-      messageList: new Array(40).fill(''),
+      messageList: new Array(10).fill(''),
     };
   },
   components: {},
@@ -162,6 +162,7 @@ export default {
       align-items: flex-start;
       padding: 0 10px;
       overflow-y: auto;
+      transform: translate3d(0, 0, 0);
 
       .menu-item {
         width: 245px;
@@ -174,8 +175,10 @@ export default {
         align-items: center;
         cursor: pointer;
         transition: all 0.3s;
+        transform: translate3d(0, 0, 0);
 
-        &.active {
+        &.active,
+        &:hover {
           background: #e9f2ff;
         }
 

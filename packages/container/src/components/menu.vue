@@ -21,7 +21,7 @@ export default {
   data() {
     return {
       activeIndex: 0,
-      navList: new Array(20).fill(''),
+      navList: new Array(10).fill(''),
     };
   },
   methods: {
@@ -57,6 +57,7 @@ export default {
     justify-content: flex-start;
     align-items: center;
     overflow-y: auto;
+    transform: translate3d(0, 0, 0);
 
     .menu-item {
       width: 60px;
@@ -66,6 +67,7 @@ export default {
       line-height: 17px;
       color: #6f8ab9;
       cursor: pointer;
+      transform: translate3d(0, 0, 0);
 
       display: flex;
       flex-direction: column;
@@ -82,7 +84,8 @@ export default {
         transition: all 0.3s;
       }
 
-      &.active {
+      &.active,
+      &:hover {
         background: #ffffff;
         box-shadow: 0 2px 10px 0 rgba(51, 51, 51, 0.1);
         border-radius: 8px;

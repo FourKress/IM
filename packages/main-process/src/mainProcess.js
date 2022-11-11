@@ -1,14 +1,17 @@
-import { BrowserWindow, ipcMain, app, dialog, globalShortcut } from 'electron';
+import { ipcMain, app, dialog, globalShortcut } from 'electron';
 import Screenshots from 'electron-screenshots';
 
 const initIpcMain = (mainWindow) => {
   app.whenReady().then(() => {
     ipcMain.on('changeWindow', (event, type) => {
       const actionFnMap = {
-        min: () => window.minimize(),
-        max: () => window.maximize(),
-        unMax: () => window.unmaximize(),
-        close: () => window.close(),
+        min: () => mainWindow.minimize(),
+        max: () =>
+          mainWindow.isMaximized()
+            ? mainWindow.unmaximize()
+            : mainWindow.maximize(),
+        full: () => mainWindow.setFullScreen(!mainWindow.isFullScreen()),
+        close: () => mainWindow.close(),
       };
       const action = actionFnMap[type];
       action && action();

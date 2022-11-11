@@ -27,6 +27,7 @@
     <div class="header_action">
       <span class="btn small" @click='handleWindowChange("min")'></span>
       <span class="btn big" @click='handleWindowChange("max")'></span>
+      <span class="btn big" @click='handleWindowChange("full")'></span>
       <span class="btn close" @click='handleWindowChange("close")'></span>
     </div>
   </div>
@@ -59,6 +60,7 @@ export default {
   justify-content: space-between;
   align-items: center;
   padding-bottom: 22px;
+  box-sizing: border-box;
 
   .header_user {
     margin-left: 12px;

@@ -12,6 +12,9 @@ async function createWindow() {
   const win = new BrowserWindow({
     width: 1680,
     height: 1050,
+    // fullscreen: true,
+    frame: false,
+    autoHideMenuBar: true,
     webPreferences: {
       // Use pluginOptions.nodeIntegration, leave this alone
       // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
@@ -48,9 +51,9 @@ const initElectron = () => {
       app.on('window-all-closed', () => {
         // On macOS it is common for applications and their menu bar
         // to stay active until the user quits explicitly with Cmd + Q
-        if (process.platform !== 'darwin') {
-          app.quit();
-        }
+        // if (process.platform !== 'darwin') {
+        app.quit();
+        // }
       });
 
       app.on('activate', async () => {
