@@ -55,10 +55,10 @@ export default {
     //
     // })
     //
-    // IMSDK.registerEvent(IMSDK.EVENTS.ON_RECEIVED_MESSAGE, (e) => {
-    //   //事件处理
-    //   console.log("收到消息：", e.data)
-    // })
+    IMSDK.registerEvent(IMSDK.EVENTS.ON_RECEIVED_MESSAGE, (e) => {
+      //事件处理
+      console.log("收到消息：", e.data)
+    })
     //
     // IMSDK.registerEvent(IMSDK.EVENTS.ON_EVENT_SYNC_START, () => {
     //   console.log("收取中... ")
