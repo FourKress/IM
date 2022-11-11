@@ -1,6 +1,6 @@
 {
   "name": "@lanshu/container",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "客户端视图容器",
   "keywords": [
     "container"
@@ -20,7 +20,7 @@
   ],
   "scripts": {},
   "dependencies": {
-    "@lanshu/im": "^0.1.3",
+    "@lanshu/im": "^0.1.4",
     "@lanshu/plugin": "^0.1.2",
     "@lanshu/sidebar": "^0.1.2",
     "vue-router": "^3.6.5"
