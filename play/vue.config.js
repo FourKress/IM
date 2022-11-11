@@ -6,8 +6,8 @@ module.exports = defineConfig({
       // 不打包，使用 require 加载
       externals: ['electron-screenshots'],
       preload: './src/preload.js',
-      nodeIntegration: true,
-      nodeModulesPath: '../node_modules',
+      // nodeIntegration: true,
+      // nodeModulesPath: '../node_modules',
     },
   },
 });
