@@ -1,6 +1,6 @@
 {
   "name": "@lanshu/play",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "author": "wudong <511970747@qq.com>",
   "private": true,
   "license": "MIT",
@@ -15,8 +15,8 @@
     "removePreload": "node ./remove-preload.js"
   },
   "dependencies": {
-    "@lanshu/layout": "^0.1.0",
-    "@lanshu/main-process": "^0.1.0",
+    "@lanshu/layout": "^0.1.2",
+    "@lanshu/main-process": "^0.1.2",
     "core-js": "^3.8.3",
     "electron-screenshots": "^0.5.13",
     "vue": "^2.6.14",
