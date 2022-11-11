@@ -1,6 +1,6 @@
 {
   "name": "@lanshu/plugin",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "客户端插件",
   "keywords": [
     "plugin"
