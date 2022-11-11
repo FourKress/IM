@@ -26,7 +26,7 @@ export default {
     };
   },
   created() {
-    // console.log(IMSDK);
+    console.log(IMSDK);
     // IMSDK.registerEvent(IMSDK.EVENTS.IM_SDK_READY, (event) => {
     //   console.log("IM_SDK_READY")
     //
