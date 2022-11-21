@@ -2,7 +2,7 @@
   <div class="main-view">
     <MainSideBar />
     <MainIM />
-    <MainPlugIn />
+    <MainPlugIn v-if='hasPlugin' />
   </div>
 </template>
 
@@ -17,6 +17,14 @@ export default {
     MainSideBar,
     MainPlugIn,
     MainIM
+  },
+  data() {
+    return {
+      hasPlugin: false,
+    }
+  },
+  created() {
+    this.hasPlugin = JSON.parse(localStorage.getItem('hasPlugin') || 'false');
   }
 };
 </script>

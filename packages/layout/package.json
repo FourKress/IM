@@ -22,7 +22,10 @@
   "dependencies": {
     "@lanshu/container": "^0.1.8",
     "sass": "^1.56.0",
-    "sass-loader": "^13.1.0"
+    "sass-loader": "^13.1.0",
+    "vuex": "^3.6.2",
+    "vue": "^2.6.14",
+    "vue-router": "^3.6.5"
   },
   "gitHead": "e327406e43774f51e9f19df903b67d63f0aac8f5"
 }

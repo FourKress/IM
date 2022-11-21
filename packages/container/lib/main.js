@@ -1,4 +1,4 @@
 import ContainerView from '../src/components/layout';
-import router from '../src/router';
+import baseRoutes from '../src/router';
 
-export { ContainerView, router };
+export { ContainerView, baseRoutes };

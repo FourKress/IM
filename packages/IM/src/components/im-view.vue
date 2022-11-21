@@ -2,14 +2,16 @@
   <div class="im-view">
     <div class="top">
       <div class="left">
-        <div class="img"></div>
+        <div class="img">
+          <img :src='session.avatar' alt=''>
+        </div>
         <div class="info">
-          <span class="name">阿斯达大</span>
+          <span class="name">{{session.nickname}}</span>
           <span class="tips">顶顶顶顶</span>
         </div>
       </div>
       <div class="right">
-        <div class="btn close"></div>
+        <div class="btn close" @click='handleCloseSession'></div>
         <div class="btn switch"></div>
         <div class="btn text-icon-btn">
           <span class="btn-icon"></span>
@@ -42,21 +44,62 @@
             <div class="btn"></div>
           </div>
         </div>
-        <div class="send-btn"></div>
+        <div class="send-btn" @click='sendMsg'></div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import { mapGetters, mapActions } from 'vuex';
+
 export default {
   name: 'ImView',
+  props: {
+    isMainSession: {
+      type: Boolean,
+      default: false,
+    },
+    session: {
+      type: Object,
+      default: () => {},
+      require: true
+    }
+  },
   data() {
     return {
       messageList: new Array(30).fill(''),
     };
   },
+  computed: {
+  },
   created() {},
+  methods: {
+    ...mapActions('global', ['removeSessionWindowList']),
+
+    handleCloseSession() {
+      if (this.isMainSession) return
+      this.removeSessionWindowList(this.session)
+    },
+
+    sendMsg() {
+      const textMsg = IMSDK.createTextMessage({
+        content: '发送测试消息', //文本内容
+        toUser: '63477d81660d90392838019c', //消息接收方，为会话列表中的toUser
+        toUserType: 0, //消息接收方类型，为会话列表中的toUserType
+      });
+
+      //发送消息，只有在sdk ready状态下才能发送成功，IMSDK.sendMessage返回一个Promise对象
+      setTimeout(() => {
+        // IMSDK.sendMessage(textMsg).then((e) => {
+        //   console.log("消息发送成功", e)
+        // }).catch((e) => {
+        //
+        //   console.log("消息发送失败", e)
+        // })
+      }, 8000);
+    }
+  }
 };
 </script>
 
@@ -100,8 +143,14 @@ export default {
         height: 46px;
         border-radius: 6px;
         margin-right: 10px;
+        overflow: hidden;
 
-        background: #9482ff;
+        img {
+          display: block;
+          width: 100%;
+          height: 100%;
+        }
+
       }
 
       .info {

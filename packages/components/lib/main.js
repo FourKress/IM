@@ -1,7 +1,4 @@
-'use strict';
+import MsgTextType from '../src/components/msg-text-type';
+import TimesTransform from '../src/components/times-transform';
 
-module.exports = main;
-
-function main() {
-    return "Hello from main";
-}
+export { MsgTextType, TimesTransform };

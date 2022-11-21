@@ -1,7 +1,3 @@
-'use strict';
+import { msgTypeMap, timesTransform } from '../src/main';
 
-module.exports = main;
-
-function main() {
-  return 'Hello from main';
-}
+export { msgTypeMap, timesTransform };

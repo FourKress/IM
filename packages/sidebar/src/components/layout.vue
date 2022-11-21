@@ -27,17 +27,23 @@
       <div class="sidebar-menu">
         <div
           class="menu-item"
-          v-for="(item, index) in messageList"
+          v-for="(item, index) in sessionList"
           :class="messageIndex === index && 'active'"
-          @click="handleMenuClick(index)"
+          @click="handleMenuClick(item, index)"
         >
-          <div class="img"></div>
+          <div class="img">
+            <img :src='item.avatar' alt=''>
+          </div>
           <div class="info">
             <div class="row">
-              <span class="name">哈哈发哈哈</span>
-              <span class="time">15:33</span>
+              <span class="name">{{item.nickname}}</span>
+              <span class="time">
+                <TimesTransform :timestamp='item.lastMsg.timestamp' />
+              </span>
             </div>
-            <span class="message">阿萨斯大所大所大所大多啥所大所多</span>
+            <span class="message">
+              <MsgTextType :lastMsg='item.lastMsg' />
+            </span>
           </div>
         </div>
       </div>
@@ -46,6 +52,9 @@
 </template>
 
 <script>
+import { mapGetters, mapActions } from 'vuex';
+import { MsgTextType, TimesTransform } from '@lanshu/components';
+
 export default {
   name: 'MainSidebar',
   data() {
@@ -55,13 +64,23 @@ export default {
       messageList: new Array(10).fill(''),
     };
   },
-  components: {},
+  components: {
+    MsgTextType,
+    TimesTransform
+  },
+  computed: {
+    ...mapGetters('global', ['sessionList']),
+  },
   methods: {
+    ...mapActions('global', ['setMainSessionWindow']),
+    ...mapActions('global', ['addSessionWindowList']),
     handleClick(index) {
       this.tabIndex = index;
     },
-    handleMenuClick(index) {
+    handleMenuClick(session, index) {
       this.messageIndex = index;
+      this.setMainSessionWindow(session)
+      this.addSessionWindowList(session)
     },
   },
 };
@@ -70,6 +89,7 @@ export default {
 <style scoped lang="scss">
 #client-sidebar {
   width: 265px;
+  min-width: 265px;
   height: 100%;
   background-color: #fff;
   padding-bottom: 10px;
@@ -212,6 +232,12 @@ export default {
             width: 100%;
 
             .name {
+              height: 20px;
+              width: 80px;
+              max-width: 80px;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              white-space: nowrap;
               font-size: 14px;
               font-weight: bold;
               color: #333333;

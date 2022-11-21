@@ -6,10 +6,10 @@
         class="menu-item"
         v-for="(item, index) in navList"
         :class="activeIndex === index && 'active'"
-        @click="handleMenuSwitch('/', index)"
+        @click="handleMenuSwitch(item.path, index)"
       >
         <span class="btn-icon"></span>
-        <span>办事</span>
+        <span>{{ item.label }}</span>
       </div>
     </div>
   </div>
@@ -21,8 +21,18 @@ export default {
   data() {
     return {
       activeIndex: 0,
-      navList: new Array(10).fill(''),
+      navList: [],
     };
+  },
+  created() {
+    const navList = new Array(1).fill({}).map((d , index) => {
+      return {
+        label: '办事',
+        path: index === 0 ? '/' : '/view1',
+      };
+    });
+    const pluginMenu = JSON.parse(localStorage.getItem('menu') || '[]');
+    this.navList = navList.concat(pluginMenu);
   },
   methods: {
     handleMenuSwitch(path, index) {

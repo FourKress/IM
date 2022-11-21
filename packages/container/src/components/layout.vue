@@ -30,8 +30,7 @@ export default {
   .view-container {
     flex: 1;
     display: flex;
-
-    background: #f6f7fb;
+    background: #eeecef;
     box-shadow: 0 4px 10px 0 rgba(51, 51, 51, 0.1);
     border-radius: 10px 10px 0 0;
     overflow: hidden;
