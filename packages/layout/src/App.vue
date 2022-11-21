@@ -16,91 +16,82 @@ export default {
     MainLayout,
   },
   created() {
-    console.log(IMSDK);
-
-    const obj = {
-      id: '6360e989736e7f4f1f50841a', //会话列表id
-      userId: '63477d81660d90392838019c', //IM 自己的userId
-      userType: 0, //IM　自己的用户类型
-      toUser: '634789e1eaa46d56eb9360f7', //IM  对方的userId
-      toUserType: 0, //IM　对方的用户类型
-      sessId: '63477d81660d90392838019c:634789e1eaa46d56eb9360f7', //会话id
-      sessType: 0, //会话类型
-      topState: 0, //置顶状态，0为置顶，1置顶
-      state: 0, //会话状态
-      tags: null, //会话标记，是一个数组
-      extra: null, //自定义数据，二进制，不64字节
-      avatar:
-        'https://pic3.zhimg.com/v2-aec2f270fa1eebd96098001b4f72a7e7_r.jpg', //对方头像
-      appUser: '2345', //该应用下接收方userId
-      nickname: '开天辟地第二人', //对方昵称
-      lastMsg: {
-        //该会话的最后一条消息
-        fromUser: '634789e1eaa46d56eb9360f7', //消息发送方（IM），可能存在会话之外的userId
-        fromUserType: 0, //消息发送方类型（IM）
-        fromUserAvatar:
-          'https://pic3.zhimg.com/v2-aec2f270fa1eebd96098001b4f72a7e7_r.jpg',
-        toUser: '63477d81660d90392838019c', //消息接收方（IM)，可能存在会话之外的userId
-        toUserType: 0, //消息接收方类型
-        sessId: '63477d81660d90392838019c:634789e1eaa46d56eb9360f7', //会话id
-        msgId: '1037318087717683200', //消息全局唯一id，由服务端生成，
-        cliMsgId: '16673529887403', //客户端生成的id
-        msgType: 1, //消息类型，1：文本，2：图片，3:文件,4:视频,5:语音,6:位置
-        version: '1.0.0', //消息发送时的版本
-        timestamp: 1664899200000, //消息时间戳
-        data: {
-          //消息数据
-          content: '士士大夫士大夫士大夫士大夫士大夫士大夫士大夫士大夫大夫', //文本消息内容
-        },
-      },
-      unreadCount: 232,
-    };
-
-    setTimeout(() => {
-      this.getAllSession([obj]);
-
-    }, 1000);
-
     IMSDK.registerEvent(IMSDK.EVENTS.IM_SDK_READY, (event) => {
       console.log('IM_SDK_READY');
-
       const user = IMSDK.getSelfUserSync();
+      this.setUserInfo(user)
       console.log(user);
     });
-
+    IMSDK.registerEvent(IMSDK.EVENTS.IM_SDK_NOT_READY, () => {
+      console.log(" SDK not ready")
+    })
     IMSDK.registerEvent(IMSDK.EVENTS.ON_RECEIVED_MESSAGE, (e) => {
       console.log('收到消息：', e.data);
     });
-
     IMSDK.registerEvent(IMSDK.EVENTS.ON_EVENT_SYNC_START, () => {
       console.log('收取中... ');
     });
+    IMSDK.registerEvent(IMSDK.EVENTS.ON_SESSION_UNREAD_TOTAL_UPDATE, (e) => {
+      console.log("总未读数更新 " + e.data)
+    })
+    IMSDK.registerEvent(IMSDK.EVENTS.ON_SESSION_UPDATE, (e) => {
+      console.log("会话更新")
+      if (e.data.length > 0) {
+        console.log(e.data);
+      }
+    })
+    IMSDK.registerEvent(IMSDK.EVENTS.ON_KICK_OUT_EVENT, (e) => {
+      console.log("登录被踢出...", e.data)
+    })
+    // 网络状态发生变化时回调，e.data=1网络正常，e.data=2网络断开sdk重连中（可在顶部提示 "连接中..."）
+    IMSDK.registerEvent(IMSDK.EVENTS.NET_STATE_CHANGE, (e) => {
+      if (e.data === 2) {
+        // 2网络断开sdk重连中
+        console.log("连接中...")
+      } else {
+        // 网络正常
+        console.log("网络正常")
+      }
+      console.log("网络发生变化 ", e.data)
+    })
+    // 收到服务端的错误事件，e.code 状态码，e.message 描述信息
+    IMSDK.registerEvent(IMSDK.EVENTS.ON_ERROR, (e) => {
+      // 事件处理
+      console.log("收到错误：", e.code + e.message)
+    })
+    // 当有消息被修改时，调用该方法，e.data 为消息对象，直接替换对应的msgId中的data和extraData
+    IMSDK.registerEvent(IMSDK.EVENTS.ON_MESSAGE_MODIFY, (e) => {
+      console.log("消息被修改 ", e.data)
+    })
 
     // 事件同步完成（取消顶部显示的 "收取中..."、"同步中..."）
     IMSDK.registerEvent(IMSDK.EVENTS.ON_EVENT_SYNC_FINISH, () => {
       console.log('收取完成 ');
-
-      let sessionArray = IMSDK.getAllSession();
-      console.log(sessionArray);
-      this.getAllSession(sessionArray);
+      const sessionArray = IMSDK.getAllSession();
+      if (sessionArray?.length) {
+        this.setAllSession(sessionArray);
+        setTimeout(() => {
+          this.setMainSessionWindow(sessionArray[0])
+        }, 0)
+      }
     });
 
-    // IMSDK.login({
-    //   lt: 'eyJhcHBJZCI6IjE2NjI2MDczNzIiLCJhcHBVc2VyIjoiMjM0NSIsImV4cGlyZSI6LTEsInNpZ24iOiI2ZUI4R2ZpbEE0ZGV4eStkUFJQYzRxOVFqeUUvMUJMSHBkS0hBdHdPRm9zPSJ9',
-    // })
-    //   .then((e) => {
-    //     if (e.code === 0) {
-    //       console.log('登录成功');
-    //     } else {
-    //       console.log('登录失败');
-    //     }
-    //   })
-    //   .catch((e) => {
-    //     console.log('登录失败，错误码：', e.code);
-    //   });
+    IMSDK.login({
+      lt: 'eyJhcHBJZCI6IjYzNmNhMzFiZDRjYTM1MmJmMWZmNjQxZSIsImFwcFVzZXIiOiIxMjM0IiwiZXhwaXJlIjotMSwic2lnbiI6ImpVM1dVZE9JejIzaWszam9kRDVRdFAvblBvQS9Ya3N6b2hPMjdCamJpRFU9In0=',
+    })
+      .then((e) => {
+        if (e.code === 0) {
+          console.log('登录成功');
+        } else {
+          console.log('IM 登录失败');
+        }
+      })
+      .catch((e) => {
+        console.log('IM 登录失败，错误码：', e.code);
+      });
   },
   methods: {
-    ...mapActions('global', ['getAllSession']),
+    ...mapActions('global', ['setAllSession', 'setUserInfo', 'setMainSessionWindow']),
   }
 };
 </script>

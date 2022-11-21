@@ -1,4 +1,5 @@
 const state = {
+  userInfo: {},
   // 会话列表
   sessionList: [],
   // 主会话窗口
@@ -8,13 +9,17 @@ const state = {
 };
 
 const getters = {
+  userInfo: (state) => state.userInfo,
   sessionList: (state) => state.sessionList,
   mainSessionWindow: (state) => state.mainSessionWindow,
   sessionWindowList: (state) => state.sessionWindowList,
 };
 
 const mutations = {
-  getAllSession(data, value) {
+  setUserInfo(data, value) {
+    data.userInfo = value;
+  },
+  setAllSession(data, value) {
     data.sessionList = value;
   },
   setMainSessionWindow(data, value) {
@@ -33,8 +38,11 @@ const mutations = {
 };
 
 const actions = {
-  getAllSession({ commit }, value) {
-    commit('getAllSession', value);
+  setUserInfo({ commit }, value) {
+    commit('setUserInfo', value);
+  },
+  setAllSession({ commit }, value) {
+    commit('setAllSession', value);
   },
   setMainSessionWindow({ commit }, value) {
     commit('setMainSessionWindow', value);

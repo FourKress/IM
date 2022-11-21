@@ -2,11 +2,11 @@
   <div id="client-header">
     <div class="header_user">
       <div class="portrait">
-        <img src="" class="img" alt="" />
+        <img :src='userInfo.avatar' class="img" alt=''>
         <div class="status"></div>
       </div>
       <div class="user-info">
-        <p class="name">发放好滴</p>
+        <p class="name">{{userInfo.nickname}}</p>
         <div class="position">
           <span>线上综窗</span>
           <span class="down-icon"></span>
@@ -34,8 +34,13 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
 export default {
   name: 'MainHeader',
+  computed: {
+    ...mapGetters('global', ['userInfo']),
+  },
   methods: {
     handleWindowChange(type) {
       window?.electronAPI.changeWindow(type);

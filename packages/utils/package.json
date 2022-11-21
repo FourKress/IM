@@ -20,7 +20,8 @@
   ],
   "scripts": {},
   "dependencies": {
-    "dayjs": "^1.11.6"
+    "dayjs": "^1.11.6",
+    "lodash": "^4.17.21"
   },
   "gitHead": "e327406e43774f51e9f19df903b67d63f0aac8f5"
 }

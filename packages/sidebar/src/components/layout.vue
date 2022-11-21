@@ -72,8 +72,7 @@ export default {
     ...mapGetters('global', ['sessionList']),
   },
   methods: {
-    ...mapActions('global', ['setMainSessionWindow']),
-    ...mapActions('global', ['addSessionWindowList']),
+    ...mapActions('global', ['setMainSessionWindow', 'addSessionWindowList']),
     handleClick(index) {
       this.tabIndex = index;
     },

@@ -1,15 +1,18 @@
 <template>
   <div id="client-im">
-    <ImView :session='mainSessionWindow' isMainSession />
-    <template v-for="(item, index) in sessionWindowList">
-      <ImView :session='item' />
+    <ImView
+      :key="mainSessionWindow.sessId"
+      :session="mainSessionWindow"
+      isMainSession
+    />
+    <template v-for="item in sessionWindowList">
+      <ImView :key="item.sessId" :session="item" />
     </template>
   </div>
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex';
-import { renderProcess } from '@lanshu/render-process';
+import { mapGetters } from 'vuex';
 import ImView from './im-view';
 
 export default {
@@ -18,31 +21,14 @@ export default {
     ImView,
   },
   data() {
-    return {
-      filePath: '',
-      imgB64: '',
-    };
+    return {};
   },
   computed: {
-    ...mapGetters('global', ['mainSessionWindow']),
-    ...mapGetters('global', ['sessionWindowList']),
+    ...mapGetters('global', ['mainSessionWindow', 'sessionWindowList']),
   },
-  created() {
-
-  },
+  created() {},
   methods: {
-    async handleClick() {
-      const filePath = await renderProcess.openFile();
-      this.filePath = filePath;
-    },
-    handleScreenshots() {
-      renderProcess.startScreenshots();
-      renderProcess.getScreenshots((event, value) => {
-        if (value) {
-          this.imgB64 = `data:image/png;base64,${value}`;
-        }
-      });
-    },
+
   },
 };
 </script>

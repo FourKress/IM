@@ -3,15 +3,15 @@
     <div class="top">
       <div class="left">
         <div class="img">
-          <img :src='session.avatar' alt=''>
+          <img :src="toAvatar" alt="" />
         </div>
         <div class="info">
-          <span class="name">{{session.nickname}}</span>
+          <span class="name">{{ session.nickname }}</span>
           <span class="tips">顶顶顶顶</span>
         </div>
       </div>
       <div class="right">
-        <div class="btn close" @click='handleCloseSession'></div>
+        <div class="btn close" @click="handleCloseSession"></div>
         <div class="btn switch"></div>
         <div class="btn text-icon-btn">
           <span class="btn-icon"></span>
@@ -20,23 +20,29 @@
       </div>
     </div>
 
-    <div class="message-panel">
+    <div class="message-panel" ref="messagePanel" @scroll="handleScroll">
       <div
         class="message-item"
-        :class="index % 2 === 0 ? 'target' : 'self'"
+        :class="item.fromUser !== userInfo.userId ? 'target' : 'self'"
         v-for="(item, index) in messageList"
       >
-        <div class="img"></div>
-        <div class="info">
-          非首发舒舒服服师傅师傅水电费舒服舒服水电费水电费神鼎飞丹砂非首发舒舒服服师傅师傅水电费舒服舒服水电费水电费神鼎飞丹砂非首发舒舒服服师傅师傅水电费舒服舒服水电费水电费神鼎飞丹砂
+        <div class="img">
+          <img :src="index % 2 === 0 ? toAvatar : userInfo.avatar" alt="" />
         </div>
+        <div class="info">{{ item.data.content }} {{ index + 1 }}</div>
       </div>
     </div>
 
     <div class="action-panel">
       <div class="input-panel">
         <div class="input-wrap">
-          <input type="text" placeholder="发送给 休息下..." />
+          <input
+            type="textarea"
+            :rows="5"
+            placeholder="发送给 休息下..."
+            v-model="message"
+          />
+
           <div class="btn-list">
             <div class="btn"></div>
             <div class="btn"></div>
@@ -44,7 +50,7 @@
             <div class="btn"></div>
           </div>
         </div>
-        <div class="send-btn" @click='sendMsg'></div>
+        <div class="send-btn" @click="sendMsg"></div>
       </div>
     </div>
   </div>
@@ -52,6 +58,8 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex';
+import { renderProcess } from '@lanshu/render-process';
+import { _throttle } from '@lanshu/utils/src/lodash';
 
 export default {
   name: 'ImView',
@@ -63,43 +71,102 @@ export default {
     session: {
       type: Object,
       default: () => {},
-      require: true
-    }
+      require: true,
+    },
   },
   data() {
     return {
-      messageList: new Array(30).fill(''),
+      messageList: [],
+      isCompleted: false,
+      nextMsgId: null,
+      throttleGetMessageList: null,
+      message: '',
     };
   },
+  watch: {},
   computed: {
+    ...mapGetters('global', ['userInfo']),
+    toAvatar() {
+      return this.session.avatar;
+    },
   },
-  created() {},
+  created() {
+    this.getMessageList();
+    this.throttleGetMessageList = _throttle(this.getMessageList);
+  },
   methods: {
     ...mapActions('global', ['removeSessionWindowList']),
 
+    getMessageList(isContinue = false) {
+      const sessId = this.session?.sessId;
+      if (!sessId) return;
+      if (this.isCompleted) return;
+      if (!isContinue) {
+        this.nextMsgId = null;
+      }
+      // 拉取SDK缓存消息，每次sdk最多返回20条消息
+      IMSDK.getMessageList({
+        nextMsgId: this.nextMsgId,
+        sessId, // 会话id
+      }).then((e) => {
+        console.log('拉取成功', e.data);
+        const { messageList, nextMsgId, isCompleted } = e.data;
+        this.isCompleted = isCompleted;
+        this.nextMsgId = nextMsgId;
+        if (isContinue && this.messageList?.length) {
+          this.messageList.unshift(...messageList);
+        } else {
+          this.messageList = messageList;
+          this.$nextTick(() => {
+            this.$refs.messagePanel.scrollTop =
+              this.$refs.messagePanel.scrollHeight;
+          });
+        }
+      });
+    },
+
+    handleScroll(event) {
+      const scrollTop = event.target.scrollTop;
+      if (scrollTop <= 50) {
+        this.throttleGetMessageList(true);
+      }
+    },
+
     handleCloseSession() {
-      if (this.isMainSession) return
-      this.removeSessionWindowList(this.session)
+      if (this.isMainSession) return;
+      this.removeSessionWindowList(this.session);
     },
 
     sendMsg() {
       const textMsg = IMSDK.createTextMessage({
-        content: '发送测试消息', //文本内容
-        toUser: '63477d81660d90392838019c', //消息接收方，为会话列表中的toUser
-        toUserType: 0, //消息接收方类型，为会话列表中的toUserType
+        content: this.message, //文本内容
+        toUser: this.session.userId, //消息接收方，为会话列表中的toUser
+        toUserType: this.session.toUserType, //消息接收方类型，为会话列表中的toUserType
       });
 
-      //发送消息，只有在sdk ready状态下才能发送成功，IMSDK.sendMessage返回一个Promise对象
-      setTimeout(() => {
-        // IMSDK.sendMessage(textMsg).then((e) => {
-        //   console.log("消息发送成功", e)
-        // }).catch((e) => {
-        //
-        //   console.log("消息发送失败", e)
-        // })
-      }, 8000);
-    }
-  }
+      IMSDK.sendMessage(textMsg)
+        .then((e) => {
+          console.log('消息发送成功', e);
+          this.getMessageList();
+        })
+        .catch((e) => {
+          console.log('消息发送失败', e);
+        });
+    },
+
+    async handleClick() {
+      const filePath = await renderProcess.openFile();
+      this.filePath = filePath;
+    },
+    handleScreenshots() {
+      renderProcess.startScreenshots();
+      renderProcess.getScreenshots((event, value) => {
+        if (value) {
+          this.imgB64 = `data:image/png;base64,${value}`;
+        }
+      });
+    },
+  },
 };
 </script>
 
@@ -245,6 +312,13 @@ export default {
         height: 50px;
         background: #9482ff;
         border-radius: 6px;
+        overflow: hidden;
+
+        img {
+          display: block;
+          width: 100%;
+          height: 100%;
+        }
       }
 
       .info {
@@ -283,12 +357,12 @@ export default {
 
   .action-panel {
     width: 100%;
-    height: 100px;
+    min-height: 100px;
     padding: 20px;
     box-sizing: border-box;
 
     .input-panel {
-      height: 60px;
+      min-height: 60px;
       box-sizing: border-box;
       background: #ffffff;
       border-radius: 10px;
@@ -300,7 +374,7 @@ export default {
 
       .input-wrap {
         flex: 1;
-        height: 28px;
+        min-height: 28px;
         border-right: 1px solid #eaeaea;
         font-size: 14px;
 
