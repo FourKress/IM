@@ -1,4 +1,6 @@
 import Vue from 'vue';
+import ElementUI from 'element-ui';
+import 'element-ui/lib/theme-chalk/index.css';
 import Vuex from 'vuex';
 import Router from 'vue-router';
 import { baseRoutes } from '@lanshu/container';
@@ -6,6 +8,8 @@ import global from './store';
 import App from './App';
 
 Vue.config.productionTip = false;
+
+Vue.use(ElementUI);
 
 const Layout = (config = {}) => {
   return new Promise((resolve, reject) => {

@@ -1,3 +1,3 @@
-import { msgTypeMap, timesTransform } from '../src/main';
+import { msgTypeMap, timesTransform, _throttle, emojiList } from '../src/main';
 
-export { msgTypeMap, timesTransform };
+export { msgTypeMap, timesTransform, _throttle, emojiList };

@@ -29,28 +29,69 @@
         <div class="img">
           <img :src="index % 2 === 0 ? toAvatar : userInfo.avatar" alt="" />
         </div>
-        <div class="info">{{ item.data.content }} {{ index + 1 }}</div>
+        <div class="info">{{ item.data.content }}</div>
       </div>
     </div>
 
     <div class="action-panel">
       <div class="input-panel">
-        <div class="input-wrap">
-          <input
-            type="textarea"
-            :rows="5"
-            placeholder="发送给 休息下..."
-            v-model="message"
-          />
+        <div class="row">
+          <div
+            v-if="showBigTextarea"
+            :contenteditable="true"
+            class="input-textarea big"
+            ref="msgBigInput"
+            @input="handleBigInput"
+            @blur="handleBlur"
+          ></div>
+        </div>
+        <div class="row">
+          <div class="input-wrap">
+            <div class="input-content-editable">
+              <div
+                v-if="!showBigTextarea"
+                :contenteditable="true"
+                class="input-textarea small"
+                ref="msgInput"
+                :placeholder="`发送给 休息下...`"
+                @input="handleInput"
+                @blur="handleBlur"
+              ></div>
+            </div>
 
-          <div class="btn-list">
-            <div class="btn"></div>
-            <div class="btn"></div>
-            <div class="btn"></div>
-            <div class="btn"></div>
+            <div class="btn-list">
+              <el-popover
+                v-model="emojiVisible"
+                placement="top"
+                width="460"
+                trigger="manual"
+              >
+                <div class="emoji-panel">
+                  <span
+                    class="emoji"
+                    v-for="emoji in emojiList"
+                    :key="emoji"
+                    @click="getEmoji(emoji)"
+                  >
+                    {{ emoji }}
+                  </span>
+                </div>
+                <div
+                  slot="reference"
+                  class="btn emoji-btn"
+                  @click="emojiVisible = !emojiVisible"
+                ></div>
+              </el-popover>
+
+              <div class="btn"></div>
+              <div class="btn"></div>
+              <div class="btn"></div>
+            </div>
+          </div>
+          <div class="right">
+            <div class="send-btn" @click="sendMsg"></div>
           </div>
         </div>
-        <div class="send-btn" @click="sendMsg"></div>
       </div>
     </div>
   </div>
@@ -59,7 +100,7 @@
 <script>
 import { mapGetters, mapActions } from 'vuex';
 import { renderProcess } from '@lanshu/render-process';
-import { _throttle } from '@lanshu/utils/src/lodash';
+import { emojiList, _throttle } from '@lanshu/utils';
 
 export default {
   name: 'ImView',
@@ -81,6 +122,11 @@ export default {
       nextMsgId: null,
       throttleGetMessageList: null,
       message: '',
+      showBigTextarea: false,
+      inputClientWidth: 0,
+      emojiList,
+      emojiVisible: false,
+      windowRange: true,
     };
   },
   watch: {},
@@ -94,9 +140,21 @@ export default {
     this.getMessageList();
     this.throttleGetMessageList = _throttle(this.getMessageList);
   },
+  mounted() {
+    document.addEventListener('click', this.handleGlobalClick);
+  },
   methods: {
     ...mapActions('global', ['removeSessionWindowList']),
 
+    handleGlobalClick(event) {
+      if (!this.emojiVisible) return;
+      const classNames = (event.target.className || '').split(' ');
+      if (
+        !classNames.some((c) => ['input-textarea', 'emoji-btn'].includes(c))
+      ) {
+        this.emojiVisible = false;
+      }
+    },
     getMessageList(isContinue = false) {
       const sessId = this.session?.sessId;
       if (!sessId) return;
@@ -147,11 +205,137 @@ export default {
       IMSDK.sendMessage(textMsg)
         .then((e) => {
           console.log('消息发送成功', e);
+          this.showBigTextarea = false;
+          if (this.showBigTextarea) {
+            this.$refs.msgInput.innerHTML = '';
+          } else {
+            this.$refs.msgBigInput.innerHTML = '';
+          }
+          this.message = '';
           this.getMessageList();
         })
         .catch((e) => {
           console.log('消息发送失败', e);
         });
+    },
+
+    handleInput() {
+      const element = this.$refs.msgInput;
+      const innerHTML = element.innerHTML;
+      this.message = innerHTML;
+      if (!innerHTML) return;
+      const { scrollWidth, clientWidth, scrollHeight, clientHeight } = element;
+      if (scrollWidth > clientWidth || scrollHeight > clientHeight) {
+        const caretOffset = this.getRange(element);
+        this.showBigTextarea = true;
+        this.inputClientWidth = clientWidth;
+        element.innerHTML = '';
+        this.$nextTick(() => {
+          this.$refs.msgBigInput.focus();
+          this.$refs.msgBigInput.innerHTML = this.message;
+          this.setRange(this.$refs.msgBigInput, caretOffset);
+        });
+      } else {
+        this.showBigTextarea = false;
+      }
+    },
+    handleBlur() {
+      this.windowRange = window.getSelection().getRangeAt(0);
+    },
+    handleBigInput() {
+      const element = this.$refs.msgBigInput;
+      const innerHTML = element.innerHTML;
+      if (!innerHTML) {
+        this.showBigTextarea = false;
+        return;
+      }
+      const { clientWidth } = element;
+      if (this.inputClientWidth > clientWidth) {
+        const caretOffset = this.getRange(element);
+        this.showBigTextarea = false;
+        this.message = element.innerHTML;
+        element.innerHTML = '';
+        this.$nextTick(() => {
+          this.$refs.msgInput.focus();
+          this.$refs.msgInput.innerHTML = this.message;
+          this.setRange(this.$refs.msgInput, caretOffset);
+        });
+      } else {
+        this.showBigTextarea = true;
+      }
+    },
+    getRange(element) {
+      const range = window.getSelection().getRangeAt(0);
+      const preCaretRange = range.cloneRange();
+      preCaretRange.selectNodeContents(element);
+      preCaretRange.setEnd(range.endContainer, range.endOffset);
+      return preCaretRange.toString().length;
+    },
+    setRange(element, caretOffset) {
+      // 创建一个选中区域
+      const range = document.createRange();
+      // 选中节点的内容
+      range.selectNodeContents(element);
+      const childNodes = element.childNodes;
+      if (childNodes?.length > 1) {
+        let targetNode;
+        let targetOffset = caretOffset;
+        let count = 0;
+        childNodes.forEach((n) => {
+          const textLength = n.innerHTML?.length || 0;
+          if (targetNode) return;
+          count += textLength;
+          targetOffset -= textLength;
+          if (count >= caretOffset) {
+            targetNode = n.firstChild;
+          }
+        });
+        range.setStart(targetNode, targetOffset + targetNode.length);
+      } else {
+        const childNode = element.childNodes[0];
+        const targetNode = childNode?.firstChild || childNode;
+        range.setStart(targetNode, caretOffset);
+      }
+      // 设置选中区域为一个点
+      range.collapse(true);
+      // 获取当前选中区域
+      const selection = window.getSelection();
+      // 移除所有的选中范围
+      selection.removeAllRanges();
+      // 添加新建的范围
+      selection.addRange(range);
+    },
+
+    getEmoji(emoji) {
+      this.emojiVisible = false;
+      const selection = window.getSelection();
+      const range = this.windowRange;
+      range.collapse(false);
+      let hasR = range.createContextualFragment(emoji);
+      let hasR_lastChild = hasR.lastChild;
+      while (
+        hasR_lastChild &&
+        hasR_lastChild.nodeName.toLowerCase() == 'br' &&
+        hasR_lastChild.previousSibling &&
+        hasR_lastChild.previousSibling.nodeName.toLowerCase() == 'br'
+      ) {
+        let e = hasR_lastChild;
+        hasR_lastChild = hasR_lastChild.previousSibling;
+        hasR.removeChild(e);
+      }
+      range.insertNode(hasR);
+      if (hasR_lastChild) {
+        range.setEndAfter(hasR_lastChild);
+        range.setStartAfter(hasR_lastChild);
+      }
+      selection.removeAllRanges();
+      selection.addRange(range);
+
+      if (this.showBigTextarea) {
+        this.handleBigInput();
+      } else {
+        this.handleInput();
+      }
     },
 
     async handleClick() {
@@ -217,7 +401,6 @@ export default {
           width: 100%;
           height: 100%;
         }
-
       }
 
       .info {
@@ -358,7 +541,7 @@ export default {
   .action-panel {
     width: 100%;
     min-height: 100px;
-    padding: 20px;
+    padding: 16px 20px;
     box-sizing: border-box;
 
     .input-panel {
@@ -367,26 +550,77 @@ export default {
       background: #ffffff;
       border-radius: 10px;
       border: 2px solid rgba(148, 130, 255, 0.5);
-      padding: 0 20px;
+      padding: 16px 20px;
       display: flex;
-      align-items: center;
-      justify-content: space-between;
+      justify-content: flex-end;
+      flex-direction: column;
 
-      .input-wrap {
-        flex: 1;
-        min-height: 28px;
-        border-right: 1px solid #eaeaea;
-        font-size: 14px;
-
+      .row {
         display: flex;
         align-items: center;
         justify-content: space-between;
+        overflow-x: auto;
+      }
+
+      .input-textarea {
+        height: 100%;
+        min-height: 23px;
+        max-height: 23px;
+        line-height: 23px;
+        margin-bottom: 5px;
+        border: none;
+        outline: none;
+        white-space: nowrap;
+        font-size: 14px;
+        overflow-y: auto;
+
+        &.small {
+          &::-webkit-scrollbar {
+            display: none;
+          }
+        }
+
+        &.big {
+          white-space: normal;
+          word-break: break-all;
+          word-break: break-word;
+          margin-bottom: 0;
+          max-height: 340px;
+        }
+
+        &:empty::before {
+          content: attr(placeholder);
+          color: #999999;
+          font-size: 14px;
+        }
+      }
+
+      .input-wrap,
+      .right {
+        display: flex;
+        justify-content: space-between;
+      }
+
+      .right {
+        align-items: center;
+        height: 33px;
+        border-left: 1px solid #eaeaea;
+      }
+
+      .input-wrap {
+        flex: 1;
+        align-items: flex-end;
+        min-height: 33px;
+        box-sizing: border-box;
+        font-size: 14px;
+        overflow-x: hidden;
 
         .btn-list {
           display: flex;
           align-items: center;
           justify-content: flex-end;
-          margin-left: 16px;
+          height: 23px;
+          margin: 0 0 5px 16px;
 
           .btn {
             width: 16px;
@@ -397,16 +631,9 @@ export default {
           }
         }
 
-        input {
+        .input-content-editable {
           width: 100%;
-          height: 100%;
-          border: none;
-          outline: none;
-        }
-
-        input::placeholder {
-          color: #999999;
-          font-size: 14px;
+          overflow-x: hidden;
         }
       }
 
@@ -417,6 +644,23 @@ export default {
         margin-left: 17px;
         background-color: #333333;
       }
+    }
+  }
+}
+</style>
+
+<style lang="scss">
+.emoji-panel {
+  .emoji {
+    display: inline-block;
+    padding: 8px;
+    cursor: pointer;
+
+    &:nth-child(14n) {
+      padding-right: 0;
+    }
+    &:nth-child(14n + 1) {
+      padding-left: 0;
     }
   }
 }

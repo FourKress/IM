@@ -1,3 +1,6 @@
 import msgTypeMap from './msgTypeMap';
 import timesTransform from './times-transform';
-export { msgTypeMap, timesTransform };
+import emojiList from './emoji';
+import { _throttle } from './lodash';
+
+export { msgTypeMap, timesTransform, emojiList, _throttle };
