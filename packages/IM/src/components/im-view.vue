@@ -24,10 +24,15 @@
       <div
         class="message-item"
         :class="item.fromUser !== userInfo.userId ? 'target' : 'self'"
-        v-for="(item, index) in messageList"
+        v-for="item in messageList"
       >
         <div class="img">
-          <img :src="index % 2 === 0 ? toAvatar : userInfo.avatar" alt="" />
+          <img
+            :src="
+              item.fromUser !== userInfo.userId ? toAvatar : userInfo.avatar
+            "
+            alt=""
+          />
         </div>
         <div class="info">{{ item.data.content }}</div>
       </div>
@@ -53,7 +58,7 @@
                 :contenteditable="true"
                 class="input-textarea small"
                 ref="msgInput"
-                :placeholder="`发送给 休息下...`"
+                :placeholder="`发送给 ${session.nickname}...`"
                 @input="handleInput"
                 @blur="handleBlur"
               ></div>
@@ -83,13 +88,17 @@
                 ></div>
               </el-popover>
 
-              <div class="btn"></div>
-              <div class="btn"></div>
-              <div class="btn"></div>
+              <div class="btn" @click="handleScreenshots"></div>
+              <div class="btn" @click="handleStartAudioRecord"></div>
+              <div class="btn" @click="handleStopAudioRecord"></div>
             </div>
           </div>
           <div class="right">
-            <div class="send-btn" @click="sendMsg"></div>
+            <div
+              class="send-btn"
+              :class="!message && 'disabled'"
+              @click="sendMsg"
+            ></div>
           </div>
         </div>
       </div>
@@ -114,6 +123,11 @@ export default {
       default: () => {},
       require: true,
     },
+    recordrtc: {
+      type: Object,
+      default: () => {},
+      require: true,
+    },
   },
   data() {
     return {
@@ -123,29 +137,47 @@ export default {
       throttleGetMessageList: null,
       message: '',
       showBigTextarea: false,
+      refInput: null,
       inputClientWidth: 0,
       emojiList,
       emojiVisible: false,
-      windowRange: true,
+      windowRange: null,
     };
   },
-  watch: {},
+  watch: {
+    session: {
+      immediate: true,
+      deep: true,
+      handler(value) {
+        if (value) {
+          this.initData();
+        }
+      },
+    },
+  },
   computed: {
     ...mapGetters('global', ['userInfo']),
     toAvatar() {
       return this.session.avatar;
     },
   },
-  created() {
-    this.getMessageList();
-    this.throttleGetMessageList = _throttle(this.getMessageList);
-  },
   mounted() {
+    this.initData();
+    this.throttleGetMessageList = _throttle(this.getMessageList);
     document.addEventListener('click', this.handleGlobalClick);
   },
   methods: {
     ...mapActions('global', ['removeSessionWindowList']),
 
+    initData() {
+      this.windowRange = null;
+      this.emojiVisible = false;
+      this.messageList = [];
+      this.nextMsgId = null;
+      this.isCompleted = false;
+      this.clearInput();
+      this.getMessageList();
+    },
     handleGlobalClick(event) {
       if (!this.emojiVisible) return;
       const classNames = (event.target.className || '').split(' ');
@@ -155,6 +187,7 @@ export default {
         this.emojiVisible = false;
       }
     },
+
     getMessageList(isContinue = false) {
       const sessId = this.session?.sessId;
       if (!sessId) return;
@@ -196,22 +229,20 @@ export default {
     },
 
     sendMsg() {
+      if (!this.message) return;
+      console.log(this.message);
+      console.log(this.refInput.innerText);
+      return;
       const textMsg = IMSDK.createTextMessage({
         content: this.message, //文本内容
-        toUser: this.session.userId, //消息接收方，为会话列表中的toUser
+        toUser: '636ca886d4ca352bf1ff641f', //消息接收方，为会话列表中的toUser
         toUserType: this.session.toUserType, //消息接收方类型，为会话列表中的toUserType
       });
 
       IMSDK.sendMessage(textMsg)
         .then((e) => {
           console.log('消息发送成功', e);
-          this.showBigTextarea = false;
-          if (this.showBigTextarea) {
-            this.$refs.msgInput.innerHTML = '';
-          } else {
-            this.$refs.msgBigInput.innerHTML = '';
-          }
-          this.message = '';
+          this.clearInput();
           this.getMessageList();
         })
         .catch((e) => {
@@ -219,50 +250,75 @@ export default {
         });
     },
 
+    clearInput() {
+      this.$nextTick(() => {
+        if (this.refInput) {
+          this.refInput.innerHTML = '';
+        } else {
+          this.refInput = this.$refs.msgInput;
+          this.refInput.focus();
+        }
+        this.showBigTextarea = false;
+        this.message = '';
+      });
+    },
+    handleBlur(event) {
+      this.refInput = event.target;
+      this.windowRange = window.getSelection().getRangeAt(0);
+    },
+    selectHandleInput() {
+      if (this.showBigTextarea) {
+        this.handleBigInput();
+      } else {
+        this.handleInput();
+      }
+    },
     handleInput() {
       const element = this.$refs.msgInput;
       const innerHTML = element.innerHTML;
-      this.message = innerHTML;
       if (!innerHTML) return;
       const { scrollWidth, clientWidth, scrollHeight, clientHeight } = element;
       if (scrollWidth > clientWidth || scrollHeight > clientHeight) {
         const caretOffset = this.getRange(element);
         this.showBigTextarea = true;
         this.inputClientWidth = clientWidth;
+        this.message = innerHTML;
         element.innerHTML = '';
         this.$nextTick(() => {
-          this.$refs.msgBigInput.focus();
-          this.$refs.msgBigInput.innerHTML = this.message;
-          this.setRange(this.$refs.msgBigInput, caretOffset);
+          this.inputCallback(this.$refs.msgBigInput, caretOffset);
         });
       } else {
         this.showBigTextarea = false;
       }
     },
-    handleBlur() {
-      this.windowRange = window.getSelection().getRangeAt(0);
-    },
     handleBigInput() {
       const element = this.$refs.msgBigInput;
       const innerHTML = element.innerHTML;
-      if (!innerHTML) {
+      if (!innerHTML || !innerHTML.replace(/<br>/g, '')) {
         this.showBigTextarea = false;
+        this.$nextTick(() => {
+          this.$refs.msgInput.focus();
+        });
         return;
       }
-      const { clientWidth } = element;
-      if (this.inputClientWidth > clientWidth) {
+      const { clientWidth, scrollHeight } = element;
+      if (this.inputClientWidth > clientWidth && scrollHeight < 21) {
         const caretOffset = this.getRange(element);
         this.showBigTextarea = false;
         this.message = element.innerHTML;
         element.innerHTML = '';
         this.$nextTick(() => {
-          this.$refs.msgInput.focus();
-          this.$refs.msgInput.innerHTML = this.message;
-          this.setRange(this.$refs.msgInput, caretOffset);
+          this.inputCallback(this.$refs.msgInput, caretOffset);
         });
       } else {
         this.showBigTextarea = true;
       }
+    },
+    inputCallback(element, caretOffset) {
+      this.refInput = element;
+      this.refInput.focus();
+      this.refInput.innerHTML = this.message;
+      this.setRange(this.refInput, caretOffset);
     },
     getRange(element) {
       const range = window.getSelection().getRangeAt(0);
@@ -290,7 +346,14 @@ export default {
             targetNode = n.firstChild;
           }
         });
-        range.setStart(targetNode, targetOffset + targetNode.length);
+        if (targetNode) {
+          range.setStart(
+            targetNode,
+            targetNode.length ? targetOffset + (targetNode.length || 0) : 0,
+          );
+        } else {
+          range.setStart(element.lastChild, element.lastChild.length || 0);
+        }
       } else {
         const childNode = element.childNodes[0];
         const targetNode = childNode?.firstChild || childNode;
@@ -305,13 +368,11 @@ export default {
       // 添加新建的范围
       selection.addRange(range);
     },
-
-    getEmoji(emoji) {
-      this.emojiVisible = false;
+    handleTargetInsert(node) {
       const selection = window.getSelection();
       const range = this.windowRange;
       range.collapse(false);
-      let hasR = range.createContextualFragment(emoji);
+      let hasR = range.createContextualFragment(node);
       let hasR_lastChild = hasR.lastChild;
       while (
         hasR_lastChild &&
@@ -331,11 +392,11 @@ export default {
       selection.removeAllRanges();
       selection.addRange(range);
 
-      if (this.showBigTextarea) {
-        this.handleBigInput();
-      } else {
-        this.handleInput();
-      }
+      this.selectHandleInput();
+    },
+    getEmoji(emoji) {
+      this.emojiVisible = false;
+      this.handleTargetInsert(emoji);
     },
 
     async handleClick() {
@@ -346,9 +407,37 @@ export default {
       renderProcess.startScreenshots();
       renderProcess.getScreenshots((event, value) => {
         if (value) {
-          this.imgB64 = `data:image/png;base64,${value}`;
+
+          console.log(11);
+
+          const base64Url = `data:image/png;base64,${value}`;
+          const innerText = this.refInput.innerText;
+          const endOffset = this.windowRange.endOffset;
+          const before = `${innerText ? '<br>' : ''}`;
+          const after = `<br>${
+            !innerText || innerText?.length === endOffset
+              ? '<span><br></span>'
+              : ''
+          }`;
+          const imageNode = `${before}<img src='${base64Url}' alt=''>${after}`;
+
+          this.handleTargetInsert(imageNode);
         }
       });
+    },
+
+    handleStartAudioRecord() {
+      console.log(this.recordrtc);
+      if (!this.recordrtc) {
+        console.error('音视频录制启动失败');
+        return;
+      }
+      if (this.recordrtc.isRecorder) return;
+      this.recordrtc.startAudioRecording();
+    },
+    handleStopAudioRecord() {
+      if (!this.recordrtc.isRecorder) return;
+      this.recordrtc.stopAudioRecording();
     },
   },
 };
@@ -357,7 +446,7 @@ export default {
 <style scoped lang="scss">
 .im-view {
   height: 100%;
-  background-color: #f6f7fb;
+  background-color: $bg-IM-color;
   box-shadow: 0 4px 10px 0 rgba(51, 51, 51, 0.1);
   border-radius: 10px 10px 0 0;
   width: 500px;
@@ -377,7 +466,7 @@ export default {
 
   .top {
     height: 66px;
-    background-color: #fff;
+    background-color: $bg-white-color;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -412,13 +501,13 @@ export default {
         .name {
           font-size: 16px;
           font-weight: bold;
-          color: #333333;
+          color: $main-text-color;
           margin-bottom: 5px;
         }
 
         .tips {
           font-size: 12px;
-          color: #999;
+          color: $tips-text-color;
         }
       }
     }
@@ -493,7 +582,6 @@ export default {
         width: 50px;
         min-width: 50px;
         height: 50px;
-        background: #9482ff;
         border-radius: 6px;
         overflow: hidden;
 
@@ -508,14 +596,14 @@ export default {
         min-height: 50px;
         padding: 15px;
         box-sizing: border-box;
-        background: #e7eaf3;
+        background: $bubble-IM-color;
         border-radius: 6px;
         display: flex;
         align-items: center;
         justify-content: flex-start;
 
         font-size: 14px;
-        color: #333333;
+        color: #fff;
         line-height: 20px;
       }
 
@@ -541,13 +629,13 @@ export default {
   .action-panel {
     width: 100%;
     min-height: 100px;
-    padding: 16px 20px;
+    padding: 20px;
     box-sizing: border-box;
 
     .input-panel {
       min-height: 60px;
       box-sizing: border-box;
-      background: #ffffff;
+      background: $bg-white-color;
       border-radius: 10px;
       border: 2px solid rgba(148, 130, 255, 0.5);
       padding: 16px 20px;
@@ -563,11 +651,11 @@ export default {
       }
 
       .input-textarea {
+        width: 100%;
         height: 100%;
-        min-height: 23px;
-        max-height: 23px;
-        line-height: 23px;
-        margin-bottom: 5px;
+        min-height: 21px;
+        max-height: 21px;
+        line-height: 21px;
         border: none;
         outline: none;
         white-space: nowrap;
@@ -584,13 +672,13 @@ export default {
           white-space: normal;
           word-break: break-all;
           word-break: break-word;
-          margin-bottom: 0;
+          margin-bottom: 16px;
           max-height: 340px;
         }
 
         &:empty::before {
           content: attr(placeholder);
-          color: #999999;
+          color: $tips-text-color;
           font-size: 14px;
         }
       }
@@ -603,14 +691,14 @@ export default {
 
       .right {
         align-items: center;
-        height: 33px;
-        border-left: 1px solid #eaeaea;
+        height: 21px;
+        border-left: 1px solid $split-line-color;
       }
 
       .input-wrap {
         flex: 1;
         align-items: flex-end;
-        min-height: 33px;
+        min-height: 21px;
         box-sizing: border-box;
         font-size: 14px;
         overflow-x: hidden;
@@ -619,8 +707,8 @@ export default {
           display: flex;
           align-items: center;
           justify-content: flex-end;
-          height: 23px;
-          margin: 0 0 5px 16px;
+          height: 21px;
+          margin-left: 16px;
 
           .btn {
             width: 16px;
@@ -643,6 +731,10 @@ export default {
         cursor: pointer;
         margin-left: 17px;
         background-color: #333333;
+
+        &.disabled {
+          cursor: not-allowed;
+        }
       }
     }
   }

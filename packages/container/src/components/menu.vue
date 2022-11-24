@@ -46,7 +46,7 @@ export default {
 <style scoped lang="scss">
 #client-menu {
   width: 72px;
-  background: linear-gradient(180deg, #dde2ef 0%, #e8e8f3 58%, #dde2ef 100%);
+  background: $gradient-sidebar-color;
   padding-bottom: 6px;
   display: flex;
   flex-direction: column;
@@ -58,7 +58,7 @@ export default {
   }
 
   .block {
-    height: 64px;
+    height: 42px;
   }
 
   .menu-panel {
@@ -94,12 +94,11 @@ export default {
         transition: all 0.3s;
       }
 
-      &.active,
-      &:hover {
-        background: #ffffff;
-        box-shadow: 0 2px 10px 0 rgba(51, 51, 51, 0.1);
+      &.active {
+        background-color: $bg-white-color;
+        box-shadow: $bg-select-shadow;
         border-radius: 8px;
-        color: #0066ff;
+        color: $primary-color;
 
         .btn-icon {
           width: 20px;

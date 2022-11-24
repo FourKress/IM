@@ -7,6 +7,8 @@ import { baseRoutes } from '@lanshu/container';
 import global from './store';
 import App from './App';
 
+import './assets/styles/theme.scss';
+
 Vue.config.productionTip = false;
 
 Vue.use(ElementUI);

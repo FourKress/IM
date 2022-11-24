@@ -9,6 +9,7 @@ dayjs.extend(weekday);
 // 5、跨年后，展示为年/月/日，如：2021年12月31日
 
 const timesTransform = (timestamp) => {
+  if (!timestamp) return '';
   const diffDay = dayjs().diff(timestamp, 'day');
   const hoursTime = dayjs(timestamp).format('HH:mm');
 

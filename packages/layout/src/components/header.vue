@@ -1,7 +1,7 @@
 <template>
   <div id="client-header">
     <div class="header_user">
-      <div class="portrait">
+      <div class="avatar">
         <img :src='userInfo.avatar' class="img" alt=''>
         <div class="status"></div>
       </div>
@@ -53,14 +53,7 @@ export default {
 #client-header {
   width: 100%;
   height: 90px;
-  background: linear-gradient(
-    90deg,
-    #dde2ef 0%,
-    #dfe6ea 19%,
-    #f5f2ec 44%,
-    #edecf5 76%,
-    #dde2ef 100%
-  );
+  background: $gradient-header-color;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -72,10 +65,9 @@ export default {
     display: flex;
     align-items: center;
 
-    .portrait {
+    .avatar {
       width: 46px;
       height: 46px;
-      background: #d8d8d8;
       position: relative;
 
       .img {
@@ -83,8 +75,6 @@ export default {
         display: block;
         width: 100%;
         height: 100%;
-
-        background-color: #333333;
       }
 
       .status {
@@ -108,13 +98,13 @@ export default {
       .name {
         font-size: 16px;
         font-weight: bold;
-        color: #333333;
+        color: $main-text-color;
         line-height: 22px;
       }
 
       .position {
         font-size: 14px;
-        color: #777777;
+        color: $minor-text-color;
         line-height: 20px;
         display: flex;
         align-items: center;
@@ -139,8 +129,8 @@ export default {
     .search {
       width: 500px;
       height: 48px;
-      background: #ffffff;
-      box-shadow: 0 2px 6px 0 rgba(51, 51, 51, 0.1);
+      background-color: $bg-white-color;
+      box-shadow: $bg-select-shadow;
       border-radius: 10px;
       padding: 0 18px;
       display: flex;
@@ -157,7 +147,7 @@ export default {
         flex: 1;
         height: 28px;
         padding: 0 8px;
-        border-right: 1px solid #eaeaea;
+        border-right: 1px solid $split-line-color;
         font-size: 14px;
 
         input {
@@ -168,7 +158,7 @@ export default {
         }
 
         input::placeholder {
-          color: #999999;
+          color: $tips-text-color;
           font-size: 14px;
         }
       }

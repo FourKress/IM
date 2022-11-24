@@ -27,7 +27,9 @@ const initIpcMain = (mainWindow) => {
 
     ipcMain.handle('dialog:openFile', handleFileOpen);
 
-    const screenshots = new Screenshots();
+    const screenshots = new Screenshots({
+      singleWindow: true,
+    });
 
     screenshots.on('ok', (e, buffer, bounds) => {
       const b64 = Buffer.from(buffer).toString('base64');
@@ -40,12 +42,21 @@ const initIpcMain = (mainWindow) => {
       const b64 = Buffer.from(buffer).toString('base64');
     });
 
-    ipcMain.on('startScreenshots', async () => {
+    async function handleStartCapture() {
+      if (mainWindow.isFullScreen()) {
+        mainWindow.setFullScreen(false);
+      }
       globalShortcut.register('esc', async () => {
         await screenshots.endCapture();
       });
-
       await screenshots.startCapture();
+    }
+    globalShortcut.register('ctrl+shift+a', async () => {
+      await handleStartCapture();
+    });
+
+    ipcMain.on('startScreenshots', async () => {
+      await handleStartCapture();
     });
   });
 };

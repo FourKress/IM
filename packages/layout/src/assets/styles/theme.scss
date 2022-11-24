@@ -1,0 +1,32 @@
+// 主色
+$primary-color: #0066FF;
+$primary-hover-color: #2B83FA;
+$primary-click-color: #0356E2;
+$primary-disabled-color: #96BFF3;
+// IM气泡
+$bubble-IM-color: #4795FF;
+// 背景色
+$bg-select-color: #ECF3FF;
+$bg-blue-color: #EEF4FD;
+$bg-IM-color: #F6F7FB;
+$bg-grey-color: #FAFAFA;
+$bg-hover-grey-color: #F5F5F5;
+$bg-white-color: #FFFFFF;
+// 文字色
+$main-text-color: #333333;
+$minor-text-color: #777777;
+$tips-text-color: #999999;
+// 分割线
+$split-line-color: #EAEAEA;
+// 辅色
+$minor-color: #00CBA8;
+$minor-red-color: #FF443A;
+$minor-yellow-color: #FFB100;
+// 渐变色
+$gradient-header-color: linear-gradient(90deg, #DDE2EF 0%, #DFE6EA 19%, #F5F2EC 44%, #EDECF5 76%, #DDE2EF 100%);
+$gradient-sidebar-color: linear-gradient(360deg, #DDE2EF 0%, #EDECF5 24%, #F5F2EC 56%, #DFE6EA 81%, #DDE2EF 100%);
+$gradient-line-color: linear-gradient(180deg, #DDE2EF 0%, #DFE6EA 19%, #F5F2EC 44%, #EDECF5 76%, #DDE2EF 100%);
+// 阴影
+$bg-card-shadow: 0px 4px 20px 0px rgba(51,51,51,0.1);
+$bg-pop-shadow: 0px 4px 20px 0px rgba(51,51,51,0.1);
+$bg-select-shadow: 0px 2px 10px 0px rgba(51,51,51,0.1);

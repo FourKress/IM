@@ -1,10 +1,8 @@
 {
   "name": "@lanshu/play",
   "version": "0.1.9",
-  "author": "wudong <511970747@qq.com>",
   "private": true,
-  "license": "MIT",
-  "repository": "",
+  "author": "wudong <511970747@qq.com>",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
@@ -33,6 +31,7 @@
     "electron-devtools-installer": "^3.1.0",
     "eslint": "^7.32.0",
     "eslint-plugin-vue": "^8.0.3",
+    "style-resources-loader": "^1.4.1",
     "vue-cli-plugin-electron-builder": "~2.1.1",
     "vue-template-compiler": "^2.6.14"
   },
@@ -54,5 +53,7 @@
     "> 1%",
     "last 2 versions",
     "not dead"
-  ]
+  ],
+  "license": "MIT",
+  "repository": ""
 }

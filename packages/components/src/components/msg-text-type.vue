@@ -16,6 +16,7 @@ export default {
   computed: {
     messageTextType() {
       const { msgType, data } = this.lastMsg;
+      if (!msgType && !data) return '';
       if (msgType === 1) {
         return data.content;
       }

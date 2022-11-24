@@ -27,22 +27,22 @@
       <div class="sidebar-menu">
         <div
           class="menu-item"
-          v-for="(item, index) in sessionList"
-          :class="messageIndex === index && 'active'"
-          @click="handleMenuClick(item, index)"
+          v-for="item in sessionList"
+          :class="currentSession === item.sessId && 'active'"
+          @click="handleMenuClick(item)"
         >
           <div class="img">
-            <img :src='item.avatar' alt=''>
+            <img :src="item.avatar" alt="" />
           </div>
           <div class="info">
             <div class="row">
-              <span class="name">{{item.nickname}}</span>
+              <span class="name">{{ item.nickname }}</span>
               <span class="time">
-                <TimesTransform :timestamp='item.lastMsg.timestamp' />
+                <TimesTransform :timestamp="item.lastMsg.timestamp" />
               </span>
             </div>
             <span class="message">
-              <MsgTextType :lastMsg='item.lastMsg' />
+              <MsgTextType :lastMsg="item.lastMsg" />
             </span>
           </div>
         </div>
@@ -60,26 +60,31 @@ export default {
   data() {
     return {
       tabIndex: 1,
-      messageIndex: 0,
+      currentSession: '',
       messageList: new Array(10).fill(''),
     };
   },
   components: {
     MsgTextType,
-    TimesTransform
+    TimesTransform,
   },
   computed: {
-    ...mapGetters('global', ['sessionList']),
+    ...mapGetters('global', ['sessionList', 'mainSessionWindow']),
+  },
+  mounted() {
+    if (this.mainSessionWindow?.sessId) {
+      this.currentSession = this.mainSessionWindow.sessId;
+    }
   },
   methods: {
     ...mapActions('global', ['setMainSessionWindow', 'addSessionWindowList']),
     handleClick(index) {
       this.tabIndex = index;
     },
-    handleMenuClick(session, index) {
-      this.messageIndex = index;
-      this.setMainSessionWindow(session)
-      this.addSessionWindowList(session)
+    handleMenuClick(session) {
+      this.currentSession = session.sessId;
+      this.setMainSessionWindow(session);
+      // this.addSessionWindowList(session)
     },
   },
 };
@@ -90,7 +95,7 @@ export default {
   width: 265px;
   min-width: 265px;
   height: 100%;
-  background-color: #fff;
+  background-color: $bg-white-color;
   padding-bottom: 10px;
   box-sizing: border-box;
 
@@ -117,7 +122,7 @@ export default {
 
         font-size: 16px;
         font-weight: bold;
-        color: #777777;
+        color: $minor-text-color;
 
         .btn {
           margin-left: 23px;
@@ -146,10 +151,10 @@ export default {
           }
 
           &.active {
-            color: #0066ff;
+            color: $primary-color;
 
             &::after {
-              background: #0066ff;
+              background: $primary-color;
             }
           }
         }
@@ -196,15 +201,13 @@ export default {
         transition: all 0.3s;
         transform: translate3d(0, 0, 0);
 
-        &.active,
-        &:hover {
+        &.active {
           background: #e9f2ff;
         }
 
         .img {
           width: 46px;
           height: 46px;
-          background: #ffb100;
           border-radius: 6px;
           overflow: hidden;
 
