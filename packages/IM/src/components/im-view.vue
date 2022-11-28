@@ -36,6 +36,24 @@
         </div>
         <div class="info">{{ item.data.content }}</div>
       </div>
+      <video
+        ref="myVideo"
+        id="myVideo"
+        playsinline
+        controls
+        preload="auto"
+        poster
+        width="300"
+        height="300"
+      ></video>
+      <audio
+        ref="myAudio"
+        id="audio"
+        controls
+        preload="auto"
+        width="300"
+        height="100"
+      ></audio>
     </div>
 
     <div class="action-panel">
@@ -209,8 +227,7 @@ export default {
         } else {
           this.messageList = messageList;
           this.$nextTick(() => {
-            this.$refs.messagePanel.scrollTop =
-              this.$refs.messagePanel.scrollHeight;
+            this.$refs.messagePanel.scrollTop = this.$refs.messagePanel.scrollHeight;
           });
         }
       });
@@ -407,7 +424,6 @@ export default {
       renderProcess.startScreenshots();
       renderProcess.getScreenshots((event, value) => {
         if (value) {
-
           console.log(11);
 
           const base64Url = `data:image/png;base64,${value}`;
@@ -427,17 +443,32 @@ export default {
     },
 
     handleStartAudioRecord() {
-      console.log(this.recordrtc);
+      if (!this.recordrtc) {
+        console.error('音频录制启动失败');
+        return;
+      }
+      if (this.recordrtc.isRecorder) return;
+      this.recordrtc.startAudioRecording(this.$refs.myAudio);
+    },
+    async handleStopAudioRecord() {
+      if (!this.recordrtc.isRecorder) return;
+      const blob = await this.recordrtc.stopAudioRecording();
+      console.log(blob);
+      this.$refs.myAudio.src = blob;
+    },
+
+    handleStartVideoRecord() {
       if (!this.recordrtc) {
         console.error('音视频录制启动失败');
         return;
       }
       if (this.recordrtc.isRecorder) return;
-      this.recordrtc.startAudioRecording();
+      this.recordrtc.startVideoRecording(this.$refs.myVideo);
     },
-    handleStopAudioRecord() {
+    async handleStopVideoRecord() {
       if (!this.recordrtc.isRecorder) return;
-      this.recordrtc.stopAudioRecording();
+      const blob = await this.recordrtc.stopVideoRecording(this.$refs.myVideo);
+      console.log(blob);
     },
   },
 };
