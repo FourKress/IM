@@ -156,7 +156,7 @@ export default {
     },
   },
   computed: {
-    ...mapGetters('global', ['userInfo']),
+    ...mapGetters('IMStore', ['userInfo']),
     toAvatar() {
       return this.session.avatar;
     },
@@ -167,7 +167,7 @@ export default {
     document.addEventListener('click', this.handleGlobalClick);
   },
   methods: {
-    ...mapActions('global', ['removeSessionWindowList']),
+    ...mapActions('IMStore', ['removeSessionWindowList']),
 
     initData() {
       this.windowRange = null;

@@ -5,6 +5,7 @@ import Vuex from 'vuex';
 import Router from 'vue-router';
 import { baseRoutes } from '@lanshu/container';
 import global from './store';
+import { IMStore } from '@lanshu/im';
 import App from './App';
 
 import './assets/styles/theme.scss';
@@ -45,6 +46,7 @@ const Layout = (config = {}) => {
         store: new Vuex.Store({
           modules: {
             global,
+            IMStore,
           },
         }),
       }).$mount('#app'),

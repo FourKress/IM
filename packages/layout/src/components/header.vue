@@ -39,7 +39,7 @@ import { mapGetters } from 'vuex'
 export default {
   name: 'MainHeader',
   computed: {
-    ...mapGetters('global', ['userInfo']),
+    ...mapGetters('IMStore', ['userInfo']),
   },
   methods: {
     handleWindowChange(type) {

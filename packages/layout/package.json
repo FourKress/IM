@@ -21,6 +21,7 @@
   "scripts": {},
   "dependencies": {
     "@lanshu/container": "^0.1.9",
+    "@lanshu/im": "^0.1.9",
     "element-ui": "^2.15.12",
     "sass": "^1.56.0",
     "sass-loader": "^13.1.0",

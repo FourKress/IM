@@ -69,7 +69,7 @@ export default {
     TimesTransform,
   },
   computed: {
-    ...mapGetters('global', ['sessionList', 'mainSessionWindow']),
+    ...mapGetters('IMStore', ['sessionList', 'mainSessionWindow']),
   },
   mounted() {
     if (this.mainSessionWindow?.sessId) {
@@ -77,7 +77,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions('global', ['setMainSessionWindow', 'addSessionWindowList']),
+    ...mapActions('IMStore', ['setMainSessionWindow', 'addSessionWindowList']),
     handleClick(index) {
       this.tabIndex = index;
     },

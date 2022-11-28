@@ -28,7 +28,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters('global', ['mainSessionWindow', 'sessionWindowList']),
+    ...mapGetters('IMStore', ['mainSessionWindow', 'sessionWindowList']),
   },
   created() {},
   mounted() {
