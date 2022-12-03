@@ -31,15 +31,8 @@ const initIpcMain = (mainWindow) => {
       singleWindow: true,
     });
 
-    screenshots.on('ok', (e, buffer, bounds) => {
-      const b64 = Buffer.from(buffer).toString('base64');
-      mainWindow.webContents.send('result-screenshots', b64);
-    });
-    screenshots.on('cancel', () => {
-      console.log('capture', 'cancel1');
-    });
-    screenshots.on('save', (e, buffer, bounds) => {
-      const b64 = Buffer.from(buffer).toString('base64');
+    globalShortcut.register('ctrl+shift+a', async () => {
+      await handleStartCapture();
     });
 
     async function handleStartCapture() {
@@ -50,14 +43,24 @@ const initIpcMain = (mainWindow) => {
         await screenshots.endCapture();
       });
       await screenshots.startCapture();
-    }
-    globalShortcut.register('ctrl+shift+a', async () => {
-      await handleStartCapture();
-    });
 
-    ipcMain.on('startScreenshots', async () => {
-      await handleStartCapture();
-    });
+      return new Promise((resolve) => {
+        screenshots.on('ok', (e, buffer, bounds) => {
+          const b64 = Buffer.from(buffer).toString('base64');
+          resolve(b64);
+        });
+        screenshots.on('cancel', () => {
+          console.log('capture', 'cancel1');
+          resolve();
+        });
+        screenshots.on('save', (e, buffer, bounds) => {
+          const b64 = Buffer.from(buffer).toString('base64');
+          resolve(b64);
+        });
+      });
+    }
+
+    ipcMain.handle('startScreenshots', handleStartCapture);
   });
 };
 

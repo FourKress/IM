@@ -3,7 +3,7 @@
     <div class='container'>
       <MainMenu />
       <div class="view-container">
-        <router-view />
+        <router-view class='router-view' />
       </div>
     </div>
   </div>
@@ -39,6 +39,13 @@ export default {
       border-radius: 10px 10px 0 0;
       overflow: hidden;
       margin-top: -22px;
+
+      .router-view {
+        width: 100%;
+        display: flex;
+        background-color: #fff;
+        padding: 16px;
+      }
     }
   }
 }

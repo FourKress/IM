@@ -1,24 +1,10 @@
-import { RecordRTCPromisesHandler, invokeSaveAsDialog } from 'recordrtc';
+import { RecordRTCPromisesHandler } from 'recordrtc';
 
 export default class Recordrtc {
   constructor() {
     this.stream = '';
     this.recorder = null;
     this.isRecorder = false;
-
-    // navigator.mediaDevices
-    //   .getUserMedia({
-    //     video: true,
-    //     audio: true,
-    //   })
-    //   .then((stream) => {
-    //     this.stream = stream;
-    //     this.recorder = null;
-    //     this.isRecorder = false;
-    //   })
-    //   .catch((e) => {
-    //     console.error(e);
-    //   });
   }
 
   async getUserMedia(config) {

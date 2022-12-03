@@ -421,24 +421,21 @@ export default {
       this.filePath = filePath;
     },
     handleScreenshots() {
-      renderProcess.startScreenshots();
-      renderProcess.getScreenshots((event, value) => {
-        if (value) {
-          console.log(11);
+      renderProcess.startScreenshots().then(value => {
+          if (value) {
+            const base64Url = `data:image/png;base64,${value}`;
+            const innerText = this.refInput.innerText;
+            const endOffset = this.windowRange.endOffset;
+            const before = `${innerText ? '<br>' : ''}`;
+            const after = `<br>${
+              !innerText || innerText?.length === endOffset
+                ? '<span><br></span>'
+                : ''
+            }`;
+            const imageNode = `${before}<img src='${base64Url}' alt=''>${after}`;
 
-          const base64Url = `data:image/png;base64,${value}`;
-          const innerText = this.refInput.innerText;
-          const endOffset = this.windowRange.endOffset;
-          const before = `${innerText ? '<br>' : ''}`;
-          const after = `<br>${
-            !innerText || innerText?.length === endOffset
-              ? '<span><br></span>'
-              : ''
-          }`;
-          const imageNode = `${before}<img src='${base64Url}' alt=''>${after}`;
-
-          this.handleTargetInsert(imageNode);
-        }
+            this.handleTargetInsert(imageNode);
+          }
       });
     },
 

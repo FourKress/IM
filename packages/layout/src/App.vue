@@ -15,9 +15,9 @@ export default {
   },
   mixins: [IMMixin],
   created() {
-    this.IM_init(
-      'eyJhcHBJZCI6IjYzNmNhMzFiZDRjYTM1MmJmMWZmNjQxZSIsImFwcFVzZXIiOiIyMzQ1IiwiZXhwaXJlIjotMSwic2lnbiI6IlhmdkZ5VVJUMnU0YjZVaFYzSUU2ZjcvdHBTZ0NTRjlNTzVMaVBxV2x2NVE9In0=',
-    );
+    // this.IM_init(
+    //   'eyJhcHBJZCI6IjYzNmNhMzFiZDRjYTM1MmJmMWZmNjQxZSIsImFwcFVzZXIiOiIyMzQ1IiwiZXhwaXJlIjotMSwic2lnbiI6IlhmdkZ5VVJUMnU0YjZVaFYzSUU2ZjcvdHBTZ0NTRjlNTzVMaVBxV2x2NVE9In0=',
+    // );
   },
   methods: {},
 };

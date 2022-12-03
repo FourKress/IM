@@ -33,5 +33,7 @@ export default {
 .main-view {
   width: 100%;
   display: flex;
+  background-color: transparent !important;
+  padding: 0 !important;
 }
 </style>
