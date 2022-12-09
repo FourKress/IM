@@ -20,8 +20,12 @@
   ],
   "scripts": {},
   "dependencies": {
+    "@lanshu/im": "^0.1.9",
     "dayjs": "^1.11.6",
-    "lodash": "^4.17.21"
+    "js-cookie": "^3.0.1",
+    "lodash": "^4.17.21",
+    "vue-router": "^3.6.5",
+    "vuex": "^3.6.2"
   },
   "gitHead": "e327406e43774f51e9f19df903b67d63f0aac8f5"
 }

@@ -11,11 +11,26 @@
         </div>
       </div>
       <div class="right">
-        <div class="btn close" @click="handleCloseSession"></div>
-        <div class="btn switch"></div>
-        <div class="btn text-icon-btn">
-          <span class="btn-icon"></span>
-          <span>协同</span>
+        <div class="btn" @click="handleCloseSession"></div>
+        <div class="btn"></div>
+        <div class='btn'>
+          <el-dropdown trigger='click'>
+            <span class='more'>···</span>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item>
+                <div class='send-down-row'>
+                  <LsIcon render-svg icon="=pop_cd_cjql"></LsIcon>
+                  <span>创建群聊</span>
+                </div>
+              </el-dropdown-item>
+              <el-dropdown-item>
+                <div class='send-down-row'>
+                  <LsIcon render-svg icon="pop_cd_sz"></LsIcon>
+                  <span>设置</span>
+                </div>
+              </el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
         </div>
       </div>
     </div>
@@ -40,6 +55,7 @@
         ref="myVideo"
         id="myVideo"
         playsinline
+        autoplay
         controls
         preload="auto"
         poster
@@ -68,7 +84,7 @@
             @blur="handleBlur"
           ></div>
         </div>
-        <div class="row">
+        <div class="row small-row">
           <div class="input-wrap">
             <div class="input-content-editable">
               <div
@@ -76,7 +92,7 @@
                 :contenteditable="true"
                 class="input-textarea small"
                 ref="msgInput"
-                :placeholder="`发送给 ${session.nickname}...`"
+                :placeholder="placeholder"
                 @input="handleInput"
                 @blur="handleBlur"
               ></div>
@@ -103,12 +119,46 @@
                   slot="reference"
                   class="btn emoji-btn"
                   @click="emojiVisible = !emojiVisible"
-                ></div>
+                >
+                  <LsIcon render-svg icon="xx_srk_bq"></LsIcon>
+                </div>
               </el-popover>
 
-              <div class="btn" @click="handleScreenshots"></div>
-              <div class="btn" @click="handleStartAudioRecord"></div>
-              <div class="btn" @click="handleStopAudioRecord"></div>
+              <div class="btn" @click="handleScreenshots">
+                <LsIcon render-svg icon="xx_srk_jt"></LsIcon>
+              </div>
+
+              <div class="btn">
+                <el-dropdown placement='top' trigger='click'>
+                  <LsIcon render-svg icon="xx_srk_gd"></LsIcon>
+                  <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item>
+                      <div class='send-down-row'>
+                        <LsIcon render-svg icon="=pop_cd_tp"></LsIcon>
+                        <span>图片/视频</span>
+                      </div>
+                    </el-dropdown-item>
+                    <el-dropdown-item>
+                      <div class='send-down-row'>
+                        <LsIcon render-svg icon="pop_cd_wj"></LsIcon>
+                        <span>文件</span>
+                      </div>
+                    </el-dropdown-item>
+                    <el-dropdown-item>
+                      <div class='send-down-row'>
+                        <LsIcon render-svg icon="pop_cd_sb"></LsIcon>
+                        <span>OCR识别</span>
+                      </div>
+                    </el-dropdown-item>
+                    <el-dropdown-item>
+                      <div class='send-down-row'>
+                        <LsIcon render-svg icon="pop_cd_mp"></LsIcon>
+                        <span>名片</span>
+                      </div>
+                    </el-dropdown-item>
+                  </el-dropdown-menu>
+                </el-dropdown>
+              </div>
             </div>
           </div>
           <div class="right">
@@ -116,7 +166,9 @@
               class="send-btn"
               :class="!message && 'disabled'"
               @click="sendMsg"
-            ></div>
+            >
+              <LsIcon render-svg icon="xx_srk_fs_dis"></LsIcon>
+            </div>
           </div>
         </div>
       </div>
@@ -128,9 +180,13 @@
 import { mapGetters, mapActions } from 'vuex';
 import { renderProcess } from '@lanshu/render-process';
 import { emojiList, _throttle } from '@lanshu/utils';
+import { LsIcon } from '@lanshu/components';
 
 export default {
   name: 'ImView',
+  components: {
+    LsIcon,
+  },
   props: {
     isMainSession: {
       type: Boolean,
@@ -172,11 +228,29 @@ export default {
         }
       },
     },
+    currentMsg: {
+      immediate: true,
+      deep: true,
+      async handler(msg) {
+        if (!this?.session?.sessId) return;
+        if (msg?.sessId === this?.session?.sessId) {
+          this.getMessageList();
+        }
+      },
+    },
   },
   computed: {
-    ...mapGetters('IMStore', ['userInfo']),
+    ...mapGetters('IMStore', [
+      'userInfo',
+      'IM_Status',
+      'SDK_NOT_READ',
+      'currentMsg',
+    ]),
     toAvatar() {
       return this.session.avatar;
+    },
+    placeholder() {
+      return `发送给 ${this.session.nickname || ''}...`;
     },
   },
   mounted() {
@@ -209,10 +283,10 @@ export default {
     getMessageList(isContinue = false) {
       const sessId = this.session?.sessId;
       if (!sessId) return;
-      if (this.isCompleted) return;
       if (!isContinue) {
         this.nextMsgId = null;
       }
+      console.log(sessId, this.nextMsgId);
       // 拉取SDK缓存消息，每次sdk最多返回20条消息
       IMSDK.getMessageList({
         nextMsgId: this.nextMsgId,
@@ -234,6 +308,7 @@ export default {
     },
 
     handleScroll(event) {
+      if (this.isCompleted) return;
       const scrollTop = event.target.scrollTop;
       if (scrollTop <= 50) {
         this.throttleGetMessageList(true);
@@ -246,15 +321,37 @@ export default {
     },
 
     sendMsg() {
+      if (this.IM_Status === this.SDK_NOT_READ) return;
       if (!this.message) return;
       console.log(this.message);
       console.log(this.refInput.innerText);
-      return;
-      const textMsg = IMSDK.createTextMessage({
-        content: this.message, //文本内容
-        toUser: '636ca886d4ca352bf1ff641f', //消息接收方，为会话列表中的toUser
+
+      const dtoQuoteReg = new RegExp(/^<img[\s\S]* alt(="")?>/g, 'g');
+      let hasDtoQuote = this.message.match(dtoQuoteReg);
+      console.log(hasDtoQuote);
+
+      // return;
+      // const textMsg = IMSDK.createTextMessage({
+      //   content: this.message, //文本内容
+      //   toUser: this.session.toUser, //消息接收方，为会话列表中的toUser
+      //   toUserType: this.session.toUserType, //消息接收方类型，为会话列表中的toUserType
+      // });
+      const imgMsg = IMSDK.createImgMessage({
+        data: {
+          name: '图片.jpg',
+          type: 'jpg',
+          size: 1024,
+          time: 43,
+          high: 500,
+          wide: 900,
+          url: 'www.baidu.com',
+          smallUrl: 'www.baidu.com',
+        },
+        toUser: this.session.toUser, //消息接收方，为会话列表中的toUser
         toUserType: this.session.toUserType, //消息接收方类型，为会话列表中的toUserType
       });
+
+      return;
 
       IMSDK.sendMessage(textMsg)
         .then((e) => {
@@ -305,6 +402,7 @@ export default {
           this.inputCallback(this.$refs.msgBigInput, caretOffset);
         });
       } else {
+        this.getInputValue(element);
         this.showBigTextarea = false;
       }
     },
@@ -328,6 +426,7 @@ export default {
           this.inputCallback(this.$refs.msgInput, caretOffset);
         });
       } else {
+        this.getInputValue(element);
         this.showBigTextarea = true;
       }
     },
@@ -336,6 +435,10 @@ export default {
       this.refInput.focus();
       this.refInput.innerHTML = this.message;
       this.setRange(this.refInput, caretOffset);
+    },
+    getInputValue(element) {
+      console.log(element.innerHTML);
+      this.message = element.innerHTML;
     },
     getRange(element) {
       const range = window.getSelection().getRangeAt(0);
@@ -421,21 +524,21 @@ export default {
       this.filePath = filePath;
     },
     handleScreenshots() {
-      renderProcess.startScreenshots().then(value => {
-          if (value) {
-            const base64Url = `data:image/png;base64,${value}`;
-            const innerText = this.refInput.innerText;
-            const endOffset = this.windowRange.endOffset;
-            const before = `${innerText ? '<br>' : ''}`;
-            const after = `<br>${
-              !innerText || innerText?.length === endOffset
-                ? '<span><br></span>'
-                : ''
-            }`;
-            const imageNode = `${before}<img src='${base64Url}' alt=''>${after}`;
+      renderProcess.startScreenshots().then((value) => {
+        if (value) {
+          const base64Url = `data:image/png;base64,${value}`;
+          const innerText = this.refInput.innerText;
+          const endOffset = this.windowRange.endOffset;
+          const before = `${innerText ? '<br>' : ''}`;
+          const after = `<br>${
+            !innerText || innerText?.length === endOffset
+              ? '<span><br></span>'
+              : ''
+          }`;
+          const imageNode = `${before}<img src='${base64Url}' alt=''>${after}`;
 
-            this.handleTargetInsert(imageNode);
-          }
+          this.handleTargetInsert(imageNode);
+        }
       });
     },
 
@@ -549,41 +652,12 @@ export default {
       .btn {
         margin-right: 20px;
         cursor: pointer;
+        width: 16px;
+        height: 16px;
+        background-color: #333333;
 
         &:last-child {
           margin-right: 0;
-        }
-
-        &.close {
-          width: 16px;
-          height: 16px;
-          background-color: #333333;
-        }
-
-        &.switch {
-          width: 16px;
-          height: 16px;
-          background-color: #333333;
-        }
-
-        &.text-icon-btn {
-          width: 60px;
-          height: 28px;
-          background: #e7eaf3;
-          border-radius: 4px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-
-          font-size: 14px;
-          color: #333333;
-
-          .btn-icon {
-            width: 12px;
-            height: 12px;
-            background-color: #333333;
-            margin-right: 2px;
-          }
         }
       }
     }
@@ -676,6 +750,10 @@ export default {
         align-items: center;
         justify-content: space-between;
         overflow-x: auto;
+
+        &.small-row {
+          overflow-y: hidden;
+        }
       }
 
       .input-textarea {
@@ -732,18 +810,18 @@ export default {
         overflow-x: hidden;
 
         .btn-list {
+          width: 122px;
           display: flex;
           align-items: center;
-          justify-content: flex-end;
           height: 21px;
           margin-left: 16px;
+          overflow: hidden;
 
           .btn {
             width: 16px;
             height: 16px;
             cursor: pointer;
             margin-right: 20px;
-            background-color: #333333;
           }
         }
 
@@ -758,7 +836,6 @@ export default {
         height: 18px;
         cursor: pointer;
         margin-left: 17px;
-        background-color: #333333;
 
         &.disabled {
           cursor: not-allowed;
@@ -771,17 +848,32 @@ export default {
 
 <style lang="scss">
 .emoji-panel {
+  display: grid;
+  justify-content: space-between;
+  justify-items: center;
+  align-content: flex-start;
+  align-items: center;
+  grid-row-gap: 16px;
+  grid-column-gap: 12px;
+  grid-template-columns: repeat(12, 20px);
+
   .emoji {
     display: inline-block;
-    padding: 8px;
     cursor: pointer;
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+  }
+}
 
-    &:nth-child(14n) {
-      padding-right: 0;
-    }
-    &:nth-child(14n + 1) {
-      padding-left: 0;
-    }
+.send-down-row {
+  display: flex;
+  align-items: center;
+
+  .ls-icon-wrap {
+    width: 14px;
+    height: 14px;
+    margin-right: 11px;
   }
 }
 </style>

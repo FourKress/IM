@@ -8,7 +8,7 @@ Layout({
   plugin,
   // personal,government
   // platform: 'personal',
-  platform: 'government',
+  platform: 'personal',
 }).catch((error) => {
   console.error(error);
 });

@@ -8,12 +8,10 @@ const isDevelopment = process.env.NODE_ENV !== 'production';
 let _BrowserWindow;
 
 async function createWindow() {
-  // Create the browser window.
   const win = new BrowserWindow({
-    width: 1680,
-    height: 1050,
-    fullscreen: true,
+    transparent: true,
     frame: false,
+    hasShadow: false,
     autoHideMenuBar: true,
     webPreferences: {
       // Use pluginOptions.nodeIntegration, leave this alone

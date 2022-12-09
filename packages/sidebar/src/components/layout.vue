@@ -8,14 +8,14 @@
             :class="tabIndex === 1 && 'active'"
             @click="handleClick(1)"
           >
-            待办
+            全部
           </span>
           <span
             class="btn"
             :class="tabIndex === 2 && 'active'"
             @click="handleClick(2)"
           >
-            完结
+            未读
           </span>
         </div>
         <div class="right">
@@ -38,12 +38,25 @@
             <div class="row">
               <span class="name">{{ item.nickname }}</span>
               <span class="time">
-                <TimesTransform :timestamp="item.lastMsg.timestamp" />
+                <TimesTransform
+                  v-if="item.lastMsg"
+                  :timestamp="item.lastMsg.timestamp"
+                />
               </span>
             </div>
-            <span class="message">
-              <MsgTextType :lastMsg="item.lastMsg" />
-            </span>
+            <div class="msg-row">
+              <span class="message">
+                <MsgTextType v-if="item.lastMsg" :lastMsg="item.lastMsg" />
+              </span>
+
+              <span class="unread-count" v-if="item.unreadCount">
+                <el-badge
+                  :value="item.unreadCount"
+                  :max="99"
+                  class="item"
+                ></el-badge>
+              </span>
+            </div>
           </div>
         </div>
       </div>
@@ -54,6 +67,7 @@
 <script>
 import { mapGetters, mapActions } from 'vuex';
 import { MsgTextType, TimesTransform } from '@lanshu/components';
+import { _clearSessionUnreadCount } from '@lanshu/utils';
 
 export default {
   name: 'MainSidebar',
@@ -71,21 +85,47 @@ export default {
   computed: {
     ...mapGetters('IMStore', ['sessionList', 'mainSessionWindow']),
   },
+  watch: {
+    sessionList: {
+      deep: true,
+      handler(val) {
+        this._setMainSessionWindow(val);
+      },
+    },
+  },
   mounted() {
-    if (this.mainSessionWindow?.sessId) {
-      this.currentSession = this.mainSessionWindow.sessId;
-    }
+    this._setMainSessionWindow(this.sessionList);
   },
   methods: {
-    ...mapActions('IMStore', ['setMainSessionWindow', 'addSessionWindowList']),
+    ...mapActions('IMStore', ['setMainSessionWindow', 'addSessionWindowList', 'setAllSession']),
     handleClick(index) {
       this.tabIndex = index;
     },
+    _setMainSessionWindow(sessionList) {
+      if (!sessionList?.length) return;
+      if (this.mainSessionWindow?.sessId) {
+        this.currentSession = this.mainSessionWindow.sessId;
+      } else {
+        const mainSessionWindow = sessionList[0];
+        const { sessId } = mainSessionWindow;
+        this.handleUnreadCount(sessId, [mainSessionWindow]);
+        this.currentSession = sessId;
+        this.setMainSessionWindow(mainSessionWindow);
+      }
+    },
     handleMenuClick(session) {
-      this.currentSession = session.sessId;
+      const sessId = session.sessId;
+
+      this.handleUnreadCount(sessId, [session]);
+
+      this.currentSession = sessId;
       this.setMainSessionWindow(session);
+
       // this.addSessionWindowList(session)
     },
+    handleUnreadCount(sessId, sessionList) {
+      _clearSessionUnreadCount(sessId, sessionList);
+    }
   },
 };
 </script>
@@ -252,14 +292,29 @@ export default {
             }
           }
 
-          .message {
-            width: 145px;
-            font-size: 12px;
-            color: #999999;
+          .msg-row {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
 
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
+            .message {
+              width: 145px;
+              font-size: 12px;
+              color: #999999;
+
+              overflow: hidden;
+              text-overflow: ellipsis;
+              white-space: nowrap;
+            }
+
+            .unread-count {
+              transform: translateY(-1px);
+              position: absolute;
+              right: 0;
+              top: 0;
+            }
           }
         }
       }

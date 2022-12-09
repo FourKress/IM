@@ -11,16 +11,6 @@ module.exports = defineConfig({
       // nodeIntegration: true,
       // nodeModulesPath: '../node_modules',
     },
-    // 'style-resources-loader': {
-    //   preProcessor: 'sass',
-    //   patterns: [
-    //     // 这个是绝对路径
-    //     path.resolve(
-    //       __dirname,
-    //       './node_modules/@lanshu/layout/src/assets/styles/theme.scss',
-    //     ),
-    //   ],
-    // },
   },
   css: {
     loaderOptions: {
@@ -32,4 +22,11 @@ module.exports = defineConfig({
       },
     },
   },
+  // chainWebpack: (config) => {
+  //   config.plugin('html').tap((args) => {
+  //     args[0].title = '你想要设置的title';
+  //     args[0].online = isPROD; //通过该参数用于判断当前服务是否是本地开发环境
+  //     return args;
+  //   });
+  // },
 });

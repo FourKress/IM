@@ -1,15 +1,32 @@
 require('./sdk/lim-core-h5-1.1.0');
-import { mapActions } from 'vuex';
+import { mapGetters, mapActions } from 'vuex';
+import { _clearSessionUnreadCount } from '@lanshu/utils';
 
 export default {
+  data() {
+    return {
+      isNewMsg: false,
+    };
+  },
   created() {},
+  computed: {
+    ...mapGetters('IMStore', [
+      'SDK_NOT_READ',
+      'sessionWindowList',
+      'mainSessionWindow',
+    ]),
+  },
   methods: {
     ...mapActions('IMStore', [
       'setAllSession',
       'setUserInfo',
       'setMainSessionWindow',
+      'setIMStatus',
+      'setCurrentMsg',
     ]),
     IM_init(token) {
+      IMSDK.setLogLevel(-1);
+
       IMSDK.registerEvent(IMSDK.EVENTS.IM_SDK_READY, (event) => {
         console.log('IM_SDK_READY');
         const user = IMSDK.getSelfUserSync();
@@ -18,20 +35,45 @@ export default {
       });
       IMSDK.registerEvent(IMSDK.EVENTS.IM_SDK_NOT_READY, () => {
         console.log(' SDK not ready');
+        this.$message.error(this.SDK_NOT_READ);
+        this.setIMStatus(this.SDK_NOT_READ);
       });
-      IMSDK.registerEvent(IMSDK.EVENTS.ON_RECEIVED_MESSAGE, (e) => {
+      IMSDK.registerEvent(IMSDK.EVENTS.ON_RECEIVED_MESSAGE, async (e) => {
         console.log('收到消息：', e.data);
+
+        const msg = e.data;
+        if (this.isNewMsg) {
+          this.setCurrentMsg(msg);
+
+          // 拿到所有的聊天界面, 匹配对应消息 做清除未读数
+          await _clearSessionUnreadCount(msg.sessId, [
+            this.mainSessionWindow,
+            ...this.sessionWindowList,
+          ]);
+
+          const NOTIFICATION_TITLE = '客户端通知';
+          const NOTIFICATION_BODY = msg?.data?.content;
+          const CLICK_MESSAGE = msg;
+          new Notification(NOTIFICATION_TITLE, {
+            body: NOTIFICATION_BODY,
+          }).onclick = () => {
+            console.log(CLICK_MESSAGE);
+          };
+        }
       });
       IMSDK.registerEvent(IMSDK.EVENTS.ON_EVENT_SYNC_START, () => {
-        console.log('收取中... ');
+        console.log('同步中... ');
+        this.setIMStatus('同步中...');
       });
       IMSDK.registerEvent(IMSDK.EVENTS.ON_SESSION_UNREAD_TOTAL_UPDATE, (e) => {
         console.log('总未读数更新 ' + e.data);
       });
       IMSDK.registerEvent(IMSDK.EVENTS.ON_SESSION_UPDATE, (e) => {
         console.log('会话更新');
+        console.log(e.data);
         if (e.data.length > 0) {
-          console.log(e.data);
+          const sessionArray = e.data;
+          this.setAllSession(sessionArray);
         }
       });
       IMSDK.registerEvent(IMSDK.EVENTS.ON_KICK_OUT_EVENT, (e) => {
@@ -42,9 +84,11 @@ export default {
         if (e.data === 2) {
           // 2网络断开sdk重连中
           console.log('连接中...');
+          this.setIMStatus('连接中...');
         } else {
           // 网络正常
           console.log('网络正常');
+          this.setIMStatus('');
         }
         console.log('网络发生变化 ', e.data);
       });
@@ -61,14 +105,8 @@ export default {
       // 事件同步完成（取消顶部显示的 "收取中..."、"同步中..."）
       IMSDK.registerEvent(IMSDK.EVENTS.ON_EVENT_SYNC_FINISH, () => {
         console.log('收取完成');
-        const sessionArray = IMSDK.getAllSession();
-        console.log('会话列表', sessionArray);
-        if (sessionArray?.length) {
-          this.setAllSession(sessionArray);
-          setTimeout(() => {
-            this.setMainSessionWindow(sessionArray[0]);
-          }, 0);
-        }
+        this.isNewMsg = true;
+        this.setIMStatus('');
       });
 
       IMSDK.login({
@@ -79,6 +117,7 @@ export default {
             console.log('登录成功');
           } else {
             console.log('IM 登录失败');
+            this.$message.error('IM 登录失败');
           }
         })
         .catch((e) => {

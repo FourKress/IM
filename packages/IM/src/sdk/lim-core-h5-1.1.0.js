@@ -33,6 +33,9 @@
         gateway: "https://im.lanshusoft.com/lim",
         wsUrl: "wss://im.lanshusoft.com/websocket",
 
+        // gateway: "http://localhost:5674",
+        // wsUrl: "ws://localhost:9193/websocket",
+
         isSdkReady: false
     }
 
@@ -699,7 +702,8 @@
             Conversation.totalUnreadCount = isNull(Conversation.totalUnreadCount) ? 0 : Conversation.totalUnreadCount;
             if (msg.fromUser && msg.fromUser !== User.id) {
                 let cliMsgId = Storage.getSessionUnreadMsgId(session.sessId);
-                if (!isNull(cliMsgId) && !isNull(msg.cliMsgId)) {
+                cliMsgId = !isNull(cliMsgId) ? cliMsgId : 0;
+                if ( !isNull(msg.cliMsgId)) {
                     if (msg.cliMsgId > cliMsgId) {
                         //计入会话未读
                         session.unreadCount += 1;
@@ -734,11 +738,14 @@
                             success(e) {
                                 if (!isNull(e.code) && e.code === 0) {
                                     if (!isNull(e.data)) {
-                                        Conversation.sessionList.push(e.data);
-                                        Conversation.sessionListMap.set(e.data.sessId, e.data);
-                                        Conversation.sessionListMap.set(e.data.appUser, e.data);
-                                        //会话更新回调
-                                        Conversation.notifySessionUpdate();
+                                        let session = Conversation.sessionListMap.get(sessId);
+                                        if (isNull(session)){
+                                            Conversation.sessionList.push(e.data);
+                                            Conversation.sessionListMap.set(e.data.sessId, e.data);
+                                            Conversation.sessionAppUserListMap.set(e.data.appUser, e.data);
+                                            //会话更新回调
+                                            Conversation.notifySessionUpdate();
+                                        }
                                         resolve({data: e.data});
                                     }
                                 } else {
@@ -774,7 +781,6 @@
                         message: "appUser 错误"
                     });
                 } else {
-                    debugger
                     let session = Conversation.sessionAppUserListMap.get(appUser);
                     if (!isNull(session)) {
                         resolve({data: session});
@@ -787,11 +793,14 @@
                             success(e) {
                                 if (!isNull(e.code) && e.code === 0) {
                                     if (!isNull(e.data)) {
-                                        Conversation.sessionList.push(e.data);
-                                        Conversation.sessionListMap.set(e.data.sessId, e.data);
-                                        Conversation.sessionListMap.set(e.data.appUser, e.data);
-                                        //会话更新回调
-                                        Conversation.notifySessionUpdate();
+                                        let session = Conversation.sessionListMap.get(e.data.sessId);
+                                        if (isNull(session)) {
+                                            Conversation.sessionList.push(e.data);
+                                            Conversation.sessionListMap.set(e.data.sessId, e.data);
+                                            Conversation.sessionAppUserListMap.set(e.data.appUser, e.data);
+                                            //会话更新回调
+                                            Conversation.notifySessionUpdate();
+                                        }
                                         resolve({data: e.data});
                                     }
                                 } else {
@@ -825,9 +834,12 @@
         , getSessId(fromUser, fromUserType, toUser, toUserType) {
             switch (toUserType) {
                 case 0:
+                case 9:
                     let sessArr = [fromUser, toUser];
                     sessArr.sort();
                     return sessArr[0] + ":" + sessArr[1];
+                case 15:
+                    return toUser;
             }
 
         }
@@ -851,12 +863,12 @@
                         if (!isNull(e.code) && e.code === 0) {
                             if (!isNull(e.data) && e.data.length > 0) {
                                 for (let i = 0; i < e.data.length; i++) {
-                                    let cs = e.data[i];
-                                    let session = Conversation.sessionListMap.get(Conversation.getSessId(cs.id, cs.userType, User.id, User.userType));
+                                    let u = e.data[i];
+                                    let session = Conversation.sessionListMap.get(Conversation.getSessId(User.id, User.userType, u.id, u.userType));
                                     if (!isNull(session)) {
-                                        session.avatar = cs.avatar;
-                                        session.appUser = cs.appUser;
-                                        session.nickname = cs.nickname;
+                                        session.avatar = u.avatar;
+                                        session.appUser = u.appUser;
+                                        session.nickname = u.nickname;
                                         Conversation.sessionAppUserListMap.set(session.appUser, session);
                                     }
                                 }
@@ -870,6 +882,7 @@
 
                     fail(e) {
                     },
+
                     setHeader(request) {
                         request.setRequestHeader("Request-V", Storage.get("lt"))
                         request.setRequestHeader("deviceId", Storage.getDeviceId())
@@ -901,6 +914,7 @@
                         Conversation.totalUnreadCount = Conversation.totalUnreadCount - session.unreadCount;
                         Conversation.totalUnreadCount = Conversation.totalUnreadCount < 0 ? 0 : Conversation.totalUnreadCount;
                         session.unreadCount = 0;
+                        Conversation.notifySessionUpdate();
                         Conversation.notifyTotalUnreadCountHandler();
                         resolve({code: 0});
                     }
@@ -964,7 +978,7 @@
                         let session = Conversation.sessionListMap.get(msg.data.sessId);
                         if (isNull(session)) {
                             Conversation.sessionListMap.set(msg.data.sessId, msg.data);
-                            Conversation.sessionListMap.set(msg.data.appUser, msg.data);
+                            Conversation.sessionAppUserListMap.set(msg.data.appUser, msg.data);
                             Conversation.sessionList.push(msg.data);
                             Conversation.notifySessionUpdate();
                         }
@@ -1472,11 +1486,17 @@
                 return;
             }
 
-            if (msg.toUserType !== 0) {
-                //0是普通用户
-                log.error("当前sdk不支持 发送 toUserType=[" + msg.toUserType + "] 的消息");
-                reject({code: -1, message: "当前sdk不支持 发送 toUserType=[" + msg.toUserType + "] 的消息"});
-                return;
+            switch (msg.toUserType) {
+                case 0:
+                case 9:
+                case 15:
+                    //允许发送的接收方类型
+                    break
+                default:
+                    //0是普通用户
+                    log.error("当前sdk不支持 发送 toUserType=[" + msg.toUserType + "] 的消息");
+                    reject({code: -1, message: "当前sdk不支持 发送 toUserType=[" + msg.toUserType + "] 的消息"});
+                    return;
             }
 
             // 填充会话id
@@ -1823,6 +1843,7 @@
                                 content: {
                                     deviceId: res.data.deviceId,
                                     loginTime: res.data.loginTime,
+                                    userId: User.id,
                                     token: options.lt
                                 },
                                 id: createUUID(),

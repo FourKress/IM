@@ -1,5 +1,5 @@
 {
-  "name": "@lanshu/play",
+  "name": "lanshu-play",
   "version": "0.1.9",
   "private": true,
   "author": "wudong <511970747@qq.com>",
@@ -7,11 +7,14 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "electron:build": "yarn generatePreload && vue-cli-service electron:build && yarn removePreload",
-    "electron:serve": "yarn generatePreload && vue-cli-service electron:serve",
+    "electron:build": "yarn generatePreload && yarn generateIconfont && vue-cli-service electron:build && yarn removePreload && yarn removeIconfont",
+    "electron:serve": "yarn generatePreload && yarn generateIconfont && vue-cli-service electron:serve",
     "generatePreload": "node ./generate-preload.js",
-    "removePreload": "node ./remove-preload.js"
+    "removePreload": "node ./remove-preload.js",
+    "generateIconfont": "node ./generate-iconfont.js",
+    "removeIconfont": "node ./remove-iconfont.js"
   },
+  "main": "background.js",
   "dependencies": {
     "@lanshu/layout": "^0.1.9",
     "@lanshu/main-process": "^0.1.8",

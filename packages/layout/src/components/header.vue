@@ -2,11 +2,11 @@
   <div id="client-header">
     <div class="header_user">
       <div class="avatar">
-        <img :src='userInfo.avatar' class="img" alt=''>
+        <img :src="userInfo.avatar" class="img" alt="" />
         <div class="status"></div>
       </div>
       <div class="user-info">
-        <p class="name">{{userInfo.nickname}}</p>
+        <p class="name">{{ userInfo.nickname }}</p>
         <div class="position">
           <span>线上综窗</span>
           <span class="down-icon"></span>
@@ -16,35 +16,51 @@
 
     <div class="hearer-search">
       <div class="search">
-        <div class="query-icon"></div>
+        <div class="query-icon">
+          <LsIcon icon="navi_ss_icon" render-svg></LsIcon>
+        </div>
         <div class="input-panel">
           <input type="text" placeholder="创建事项或搜索关键词" />
         </div>
-        <div class="add"></div>
+        <div class="add">
+          <LsIcon icon="navi_ss_add" render-svg></LsIcon>
+        </div>
       </div>
     </div>
 
     <div class="header_action">
-      <span class="btn small" @click='handleWindowChange("min")'></span>
-      <span class="btn big" @click='handleWindowChange("max")'></span>
-      <span class="btn big" @click='handleWindowChange("full")'></span>
-      <span class="btn close" @click='handleWindowChange("close")'></span>
+      <span class="btn small" @click="handleWindowChange('min')">
+        <LsIcon icon="navi_zxh_icon" render-svg></LsIcon>
+      </span>
+      <span class="btn big" @click="handleWindowChange('max')">
+        <LsIcon icon="navi_sx_icon" render-svg></LsIcon>
+      </span>
+      <!--      <span class="btn big" @click="handleWindowChange('full')"></span>-->
+      <span class="btn close" @click="handleWindowChange('close')">
+        <LsIcon icon="navi_gb_icon" render-svg></LsIcon>
+      </span>
     </div>
   </div>
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters } from 'vuex';
+import { LsIcon } from '@lanshu/components';
+import { renderProcess } from '@lanshu/render-process';
 
 export default {
   name: 'MainHeader',
+  components: {
+    LsIcon,
+  },
   computed: {
     ...mapGetters('IMStore', ['userInfo']),
+    ...mapGetters('globalStore', ['userError']),
   },
   methods: {
     handleWindowChange(type) {
-      window?.electronAPI.changeWindow(type);
-    }
+      renderProcess.changeWindow(type);
+    },
   },
 };
 </script>
@@ -53,12 +69,15 @@ export default {
 #client-header {
   width: 100%;
   height: 90px;
+  min-height: 90px;
   background: $gradient-header-color;
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding-bottom: 22px;
   box-sizing: border-box;
+
+  -webkit-app-region: drag;
 
   .header_user {
     margin-left: 12px;
@@ -118,6 +137,11 @@ export default {
         }
       }
     }
+
+    .loading {
+      margin-left: 24px;
+      color: $tips-text-color;
+    }
   }
 
   .hearer-search {
@@ -140,7 +164,6 @@ export default {
       .query-icon {
         width: 18px;
         height: 18px;
-        background-color: #333333;
       }
 
       .input-panel {
@@ -168,7 +191,6 @@ export default {
         height: 18px;
         cursor: pointer;
         margin-left: 17px;
-        background-color: #333333;
       }
     }
   }
@@ -185,8 +207,6 @@ export default {
       margin-left: 10px;
       border-radius: 50%;
       cursor: pointer;
-
-      background-color: blue;
     }
   }
 }

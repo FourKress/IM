@@ -23,4 +23,5 @@ pnpm-debug.log*
 *.sw?
 
 play/src/preload.js
+play/public/iconfont.js
 play/dist_electron

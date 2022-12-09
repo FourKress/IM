@@ -1,14 +1,12 @@
 import Vue from 'vue';
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
-import Vuex from 'vuex';
-import Router from 'vue-router';
 import { baseRoutes } from '@lanshu/container';
-import global from './store';
 import { IMStore } from '@lanshu/im';
+import { generateRoute, generateStore } from '@lanshu/utils';
 import App from './App';
 
-import './assets/styles/theme.scss';
+import './assets/styles/index.scss';
 
 Vue.config.productionTip = false;
 
@@ -16,7 +14,7 @@ Vue.use(ElementUI);
 
 const Layout = (config = {}) => {
   return new Promise((resolve, reject) => {
-    const { menu, routes, plugin, platform } = config;
+    const { menu, routes, plugin, platform, store } = config;
     if (!platform) {
       return reject('请设置 platform 值');
     }
@@ -34,21 +32,19 @@ const Layout = (config = {}) => {
       completeRoutes.push(...routes);
     }
 
-    Vue.use(Vuex);
-    Vue.use(Router);
+    let completeStore = { IMStore };
+    if (store) {
+      completeStore = {
+        ...completeStore,
+        ...store,
+      };
+    }
 
     return resolve(
       new Vue({
         render: (h) => h(App),
-        router: new Router({
-          routes: completeRoutes,
-        }),
-        store: new Vuex.Store({
-          modules: {
-            global,
-            IMStore,
-          },
-        }),
+        router: generateRoute(Vue, completeRoutes),
+        store: generateStore(Vue, completeStore),
       }).$mount('#app'),
     );
   });

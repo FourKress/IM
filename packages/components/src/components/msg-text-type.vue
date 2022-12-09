@@ -16,7 +16,7 @@ export default {
   computed: {
     messageTextType() {
       const { msgType, data } = this.lastMsg;
-      if (!msgType && !data) return '';
+      if (!msgType && !data) return '暂无消息';
       if (msgType === 1) {
         return data.content;
       }

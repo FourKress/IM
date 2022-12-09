@@ -1,6 +1,7 @@
 <template>
   <div id="client-im">
     <ImView
+      v-if='mainSessionWindow.sessId'
       :key="mainSessionWindow.sessId"
       :session="mainSessionWindow"
       :recordrtc='recordrtc'

@@ -6,6 +6,9 @@ const state = {
   mainSessionWindow: {},
   // 其余会话窗口
   sessionWindowList: [],
+  IM_Status: '',
+  SDK_NOT_READ: 'SDK_NOT_READ',
+  currentMsg: {},
 };
 
 const getters = {
@@ -13,6 +16,9 @@ const getters = {
   sessionList: (state) => state.sessionList,
   mainSessionWindow: (state) => state.mainSessionWindow,
   sessionWindowList: (state) => state.sessionWindowList,
+  IM_Status: (state) => state.IM_Status,
+  SDK_NOT_READ: (state) => state.SDK_NOT_READ,
+  currentMsg: (state) => state.currentMsg,
 };
 
 const mutations = {
@@ -20,7 +26,15 @@ const mutations = {
     data.userInfo = value;
   },
   setAllSession(data, value) {
-    data.sessionList = value;
+    data.sessionList = value
+      .filter((d) => d.appUser)
+      .map((d) => {
+        const { lastMsg = null } = d;
+        return {
+          ...d,
+          lastMsg: lastMsg || {},
+        };
+      });
   },
   setMainSessionWindow(data, value) {
     data.mainSessionWindow = value;
@@ -34,6 +48,12 @@ const mutations = {
       (d) => d.sessId !== value.sessId,
     );
     data.sessionWindowList = sessionWindowList;
+  },
+  setIMStatus(data, value) {
+    data.IM_Status = value;
+  },
+  setCurrentMsg(data, value) {
+    data.currentMsg = value;
   },
 };
 
@@ -52,6 +72,12 @@ const actions = {
   },
   removeSessionWindowList({ commit }, value) {
     commit('removeSessionWindowList', value);
+  },
+  setIMStatus({ commit }, value) {
+    commit('setIMStatus', value);
+  },
+  setCurrentMsg({ commit }, value) {
+    commit('setCurrentMsg', value);
   },
 };
 

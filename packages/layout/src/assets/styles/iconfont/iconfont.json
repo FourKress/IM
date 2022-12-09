@@ -1,0 +1,149 @@
+{
+  "id": "3760592",
+  "name": "新版蓝数",
+  "font_family": "ls-icon-font",
+  "css_prefix_text": "ls-icon-",
+  "description": "IM、政务通用",
+  "glyphs": [
+    {
+      "icon_id": "33303563",
+      "name": "pop_cd_tp",
+      "font_class": "pop_cd_tp",
+      "unicode": "e613",
+      "unicode_decimal": 58899
+    },
+    {
+      "icon_id": "33303564",
+      "name": "pop_cd_sb",
+      "font_class": "pop_cd_sb",
+      "unicode": "e614",
+      "unicode_decimal": 58900
+    },
+    {
+      "icon_id": "33303565",
+      "name": "pop_cd_wj",
+      "font_class": "pop_cd_wj",
+      "unicode": "e615",
+      "unicode_decimal": 58901
+    },
+    {
+      "icon_id": "33303566",
+      "name": "pop_cd_mp",
+      "font_class": "pop_cd_mp",
+      "unicode": "e616",
+      "unicode_decimal": 58902
+    },
+    {
+      "icon_id": "33303567",
+      "name": "pop_cd_sz",
+      "font_class": "pop_cd_sz",
+      "unicode": "e617",
+      "unicode_decimal": 58903
+    },
+    {
+      "icon_id": "33303568",
+      "name": "pop_cd_cjql",
+      "font_class": "pop_cd_cjql",
+      "unicode": "e618",
+      "unicode_decimal": 58904
+    },
+    {
+      "icon_id": "33301075",
+      "name": "xx_srk_gd",
+      "font_class": "xx_srk_gd",
+      "unicode": "e60e",
+      "unicode_decimal": 58894
+    },
+    {
+      "icon_id": "33301076",
+      "name": "xx_srk_fs_nor",
+      "font_class": "xx_srk_fs_nor",
+      "unicode": "e60f",
+      "unicode_decimal": 58895
+    },
+    {
+      "icon_id": "33301077",
+      "name": "xx_srk_bq",
+      "font_class": "xx_srk_bq",
+      "unicode": "e610",
+      "unicode_decimal": 58896
+    },
+    {
+      "icon_id": "33301078",
+      "name": "xx_srk_jt",
+      "font_class": "xx_srk_jt",
+      "unicode": "e611",
+      "unicode_decimal": 58897
+    },
+    {
+      "icon_id": "33301079",
+      "name": "xx_srk_fs_dis",
+      "font_class": "xx_srk_fs_dis",
+      "unicode": "e612",
+      "unicode_decimal": 58898
+    },
+    {
+      "icon_id": "33236301",
+      "name": "menu_txl_nor",
+      "font_class": "menu_txl_nor",
+      "unicode": "e605",
+      "unicode_decimal": 58885
+    },
+    {
+      "icon_id": "33236302",
+      "name": "navi_gb_icon",
+      "font_class": "navi_gb_icon",
+      "unicode": "e606",
+      "unicode_decimal": 58886
+    },
+    {
+      "icon_id": "33236303",
+      "name": "navi_ss_add",
+      "font_class": "navi_ss_add",
+      "unicode": "e607",
+      "unicode_decimal": 58887
+    },
+    {
+      "icon_id": "33236304",
+      "name": "menu_xx_nor",
+      "font_class": "menu_xx_nor",
+      "unicode": "e608",
+      "unicode_decimal": 58888
+    },
+    {
+      "icon_id": "33236305",
+      "name": "menu_txl_sel",
+      "font_class": "menu_txl_sel",
+      "unicode": "e609",
+      "unicode_decimal": 58889
+    },
+    {
+      "icon_id": "33236306",
+      "name": "navi_zxh_icon",
+      "font_class": "navi_zxh_icon",
+      "unicode": "e60a",
+      "unicode_decimal": 58890
+    },
+    {
+      "icon_id": "33236307",
+      "name": "navi_sx_icon",
+      "font_class": "navi_sx_icon",
+      "unicode": "e60b",
+      "unicode_decimal": 58891
+    },
+    {
+      "icon_id": "33236308",
+      "name": "navi_ss_icon",
+      "font_class": "navi_ss_icon",
+      "unicode": "e60c",
+      "unicode_decimal": 58892
+    },
+    {
+      "icon_id": "33236309",
+      "name": "menu_xx_sel",
+      "font_class": "menu_xx_sel",
+      "unicode": "e60d",
+      "unicode_decimal": 58893
+    }
+  ]
+}
