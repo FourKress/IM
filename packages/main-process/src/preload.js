@@ -6,4 +6,5 @@ contextBridge.exposeInMainWorld('electronAPI', {
   startScreenshots: () => ipcRenderer.invoke('startScreenshots'),
   showMainWindow: () => ipcRenderer.send('showMainWindow'),
   showLoginWindow: (delay) => ipcRenderer.send('showLoginWindow', delay),
+  openUrl: (url) => ipcRenderer.send('openUrl', url),
 });

@@ -20,11 +20,11 @@
   ],
   "scripts": {},
   "dependencies": {
+    "@lanshu/components": "^0.1.9",
     "@lanshu/container": "^0.1.9",
     "@lanshu/im": "^0.1.9",
+    "@lanshu/render-process": "^0.1.8",
     "@lanshu/utils": "^0.1.9",
-    "@lanshu/components": "^0.1.9",
-    "@lanshu/render-process": "^0.1.9",
     "element-ui": "^2.15.12",
     "sass": "^1.56.0",
     "sass-loader": "^13.1.0",

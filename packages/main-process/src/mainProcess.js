@@ -1,4 +1,4 @@
-import { ipcMain, app } from 'electron';
+import { ipcMain, app, shell } from 'electron';
 
 import { handleFileOpen } from './utils';
 import { initScreenshots } from './screenshots';
@@ -21,6 +21,10 @@ const initIpcMain = (mainWindow) => {
 
     ipcMain.on('showLoginWindow', (event, delay) => {
       showLoginWindow(mainWindow, delay);
+    });
+
+    ipcMain.on('openUrl', async (event, url) => {
+      await shell.openExternal(url);
     });
   });
 };

@@ -29,38 +29,27 @@
     </div>
 
     <div class="header_action">
-      <span class="btn small" @click="handleWindowChange('min')">
-        <LsIcon icon="navi_zxh_icon" render-svg></LsIcon>
-      </span>
-      <span class="btn big" @click="handleWindowChange('max')">
-        <LsIcon icon="navi_sx_icon" render-svg></LsIcon>
-      </span>
-      <!--      <span class="btn big" @click="handleWindowChange('full')"></span>-->
-      <span class="btn close" @click="handleWindowChange('close')">
-        <LsIcon icon="navi_gb_icon" render-svg></LsIcon>
-      </span>
+      <WindowOperate />
     </div>
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex';
-import { LsIcon } from '@lanshu/components';
-import { renderProcess } from '@lanshu/render-process';
+import { LsIcon, WindowOperate } from '@lanshu/components';
 
 export default {
   name: 'MainHeader',
   components: {
     LsIcon,
+    WindowOperate,
   },
   computed: {
     ...mapGetters('IMStore', ['userInfo']),
     ...mapGetters('globalStore', ['userError']),
   },
   methods: {
-    handleWindowChange(type) {
-      renderProcess.changeWindow(type);
-    },
+
   },
 };
 </script>
@@ -197,17 +186,6 @@ export default {
 
   .header_action {
     margin-right: 20px;
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-
-    .btn {
-      width: 20px;
-      height: 20px;
-      margin-left: 10px;
-      border-radius: 50%;
-      cursor: pointer;
-    }
   }
 }
 </style>

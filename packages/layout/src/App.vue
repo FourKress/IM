@@ -6,19 +6,13 @@
 
 <script>
 import MainLayout from './components/layout';
-import { IMMixin } from '@lanshu/im';
 
 export default {
   name: 'App',
   components: {
     MainLayout,
   },
-  mixins: [IMMixin],
   created() {
-    // this.IM_init(
-    //   // 'eyJhcHBJZCI6IjYzNmNhMzFiZDRjYTM1MmJmMWZmNjQxZSIsImFwcFVzZXIiOiIxMjM0NTQzMjEiLCJleHBpcmUiOi0xLCJzaWduIjoiZWpzcWNBS1RaV2lNaThCdzZFZlAzcmRMOERYTzFyQytzbzFLQjd5bWxqOD0ifQ==',
-    //   'eyJhcHBJZCI6IjYzNmNhMzFiZDRjYTM1MmJmMWZmNjQxZSIsImFwcFVzZXIiOiI4ODg4ODg4IiwiZXhwaXJlIjotMSwic2lnbiI6IlByTkhyVlRkTjNZL3RqWmkrV1pGejNIYndNLzBhc2VKS1RJMkgrRGlpaE09In0=',
-    // );
   },
   methods: {},
 };

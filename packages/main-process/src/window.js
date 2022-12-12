@@ -1,6 +1,6 @@
 const initLoginWindow = (windowObj) => {
-  windowObj.setSize(1034, 776);
-  windowObj.setMinimumSize(1034, 776);
+  windowObj.setSize(1440, 1080);
+  windowObj.setMinimumSize(1440, 1080);
   windowObj.setResizable(false);
   windowObj.setMaximizable(false);
   windowObj.center();

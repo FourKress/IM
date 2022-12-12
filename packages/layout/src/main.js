@@ -6,6 +6,7 @@ import { IMStore } from '@lanshu/im';
 import { generateRoute, generateStore } from '@lanshu/utils';
 import App from './App';
 
+import 'element-ui/packages/theme-chalk/src/index.scss';
 import './assets/styles/index.scss';
 
 Vue.config.productionTip = false;
