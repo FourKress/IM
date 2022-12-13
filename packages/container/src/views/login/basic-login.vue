@@ -45,11 +45,9 @@
 
         <div class="checkbox-row">
           <el-checkbox v-model="protocolChecked"></el-checkbox>
-          <span class="text">
-            我已阅读并同意
-            <span class="link" @click="openUrl">《用户服务协议》</span>
-            <span class="link" @click="openUrl">《隐私协议》</span>
-          </span>
+          <span class="text">我已阅读并同意</span>
+          <span class="link" @click="openUrl">《用户服务协议》</span>
+          <span class="link" @click="openUrl">《隐私协议》</span>
         </div>
         <div class="checkbox-row">
           <el-checkbox v-model="autoLoginChecked"></el-checkbox>
@@ -73,10 +71,6 @@
     <template v-else>
       <OtherLogin @wechatLogin="handleWechatLogin" />
     </template>
-
-    <div class="footer-btn" v-if="isAccountLogin && !isWechatLogin">
-      <span>手机号已停用？去找回 ></span>
-    </div>
   </div>
 </template>
 
@@ -157,10 +151,13 @@ export default {
         return;
       }
       if (!this.activeBtn) return;
+
+      this.$emit('sendLogin', this.loginForm.phoneNum);
     },
     loopAppLogin() {
       this.appQrcodeTimer = setInterval(() => {
         console.log('APP扫码登录');
+        this.$emit('sendLogin');
       }, 500);
     },
     loopWechatLogin() {
@@ -182,17 +179,13 @@ export default {
 
 .title {
   font-size: 30px;
-  font-family: Alibaba-PuHuiTi-M, Alibaba-PuHuiTi;
-  font-weight: normal;
   color: $main-text-color;
-  line-height: 42px;
+  font-weight: bold;
   margin-top: 20px;
 }
 
 .title-tips {
   font-size: 14px;
-  font-family: Alibaba-PuHuiTi-R, Alibaba-PuHuiTi;
-  font-weight: normal;
   color: $tips-text-color;
   margin-top: 8px;
 }
@@ -297,20 +290,5 @@ export default {
   &.wechat-qrcode {
     margin: 60px auto 90px;
   }
-}
-
-.footer-btn {
-  width: 185px;
-  height: 32px;
-  line-height: 32px;
-  background: $bg-grey-color;
-  border-radius: 100px 0px 20px 0px;
-  font-size: 12px;
-  text-align: center;
-  color: $tips-text-color;
-  cursor: pointer;
-  position: absolute;
-  right: 0;
-  bottom: 0;
 }
 </style>
