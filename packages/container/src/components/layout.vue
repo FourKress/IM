@@ -44,9 +44,7 @@ export default {
 
       .router-view {
         width: 100%;
-        display: flex;
-        background-color: #fff;
-        padding: 16px;
+        background-color: $bg-white-color;
       }
     }
   }

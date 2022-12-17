@@ -18,10 +18,6 @@
             未读
           </span>
         </div>
-        <div class="right">
-          <span class="query"></span>
-          <span class="more"></span>
-        </div>
       </div>
 
       <div class="sidebar-menu">
@@ -197,24 +193,6 @@ export default {
               background: $primary-color;
             }
           }
-        }
-      }
-
-      .right {
-        display: flex;
-        align-items: center;
-
-        .query,
-        .more {
-          width: 18px;
-          height: 18px;
-          cursor: pointer;
-
-          background-color: #333333;
-        }
-
-        .query {
-          margin-right: 17px;
         }
       }
     }

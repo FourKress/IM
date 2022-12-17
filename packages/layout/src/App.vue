@@ -6,13 +6,16 @@
 
 <script>
 import MainLayout from './components/layout';
+import { IMMixin } from '@lanshu/im';
 
 export default {
   name: 'App',
+  mixins: [IMMixin],
   components: {
     MainLayout,
   },
   created() {
+    this.IM_init();
   },
   methods: {},
 };
@@ -23,8 +26,10 @@ export default {
   margin: 0;
   padding: 0;
 }
-html, body {
+html,
+body {
   height: 100%;
+  scroll-behavior:smooth;
 }
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
@@ -43,11 +48,9 @@ html, body {
   //width: 1034px;
   //height: 776px;
   box-sizing: border-box;
-  background: #D8D8D8;
-  box-shadow: 0px 4px 20px 0px rgba(0,0,0,0.1);
+  background: #d8d8d8;
+  box-shadow: 0px 4px 20px 0px rgba(0, 0, 0, 0.1);
   border-radius: 12px;
   //border: 1px solid #FFFFFF;
-
-
 }
 </style>

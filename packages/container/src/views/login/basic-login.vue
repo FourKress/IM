@@ -27,7 +27,7 @@
             <el-form-item label="" prop="phoneNum">
               <el-input
                 type="text"
-                maxlength="11"
+                maxlength="13"
                 placeholder="输入手机号码，登录或注册"
                 v-model="loginForm.phoneNum"
               />
@@ -104,8 +104,8 @@ export default {
           },
           {
             message: '请输入有效的电话号码',
-            max: 11,
-            min: 11,
+            max: 13,
+            min: 13,
             trigger: ['change', 'blur'],
           },
         ],
@@ -131,6 +131,25 @@ export default {
       }
       this.isWechatLogin = false;
     },
+    'loginForm.phoneNum': function (val, oldVal) {
+      if (oldVal?.length > val?.length) return;
+      if (val) {
+        const matches = /^(\d{3})(\d{4})?(\d{4})?$/.exec(
+          this.getRealPhoneNum(val),
+        );
+        if (matches) {
+          let phoneNum = `${matches[1]} `;
+          if (matches[2]) {
+            phoneNum += `${matches[2]} `;
+          }
+          if (matches[3]) {
+            phoneNum += `${matches[3]}`;
+          }
+          console.log(phoneNum);
+          this.loginForm.phoneNum = phoneNum;
+        }
+      }
+    },
   },
   methods: {
     openUrl(url) {
@@ -145,6 +164,9 @@ export default {
         this.loopWechatLogin();
       });
     },
+    getRealPhoneNum(val) {
+      return val.replace(/ /g, '');
+    },
     handleLogin() {
       if (!this.protocolChecked) {
         this.$message.warning('请阅读并勾选《用户服务协议》《隐私协议》');
@@ -152,7 +174,7 @@ export default {
       }
       if (!this.activeBtn) return;
 
-      this.$emit('sendLogin', this.loginForm.phoneNum);
+      this.$emit('sendLogin', this.getRealPhoneNum(this.loginForm.phoneNum));
     },
     loopAppLogin() {
       this.appQrcodeTimer = setInterval(() => {

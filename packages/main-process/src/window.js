@@ -48,7 +48,6 @@ export const changeWindow = (mainWindow, type) => {
     full: () => mainWindow.setFullScreen(!mainWindow.isFullScreen()),
     close: () => mainWindow.close(),
   };
-  console.log(type);
   const action = actionFnMap[type];
   action && action();
 };

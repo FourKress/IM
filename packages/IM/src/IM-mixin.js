@@ -1,4 +1,4 @@
-require('./sdk/lim-core-h5-1.1.0');
+require('./sdk/lim-core-h5-1.1.2');
 import { mapGetters, mapActions } from 'vuex';
 import { _clearSessionUnreadCount } from '@lanshu/utils';
 
@@ -20,13 +20,10 @@ export default {
     ...mapActions('IMStore', [
       'setAllSession',
       'setUserInfo',
-      'setMainSessionWindow',
       'setIMStatus',
       'setCurrentMsg',
     ]),
-    IM_init(token) {
-      IMSDK.setLogLevel(-1);
-
+    IM_init() {
       IMSDK.registerEvent(IMSDK.EVENTS.IM_SDK_READY, (event) => {
         console.log('IM_SDK_READY');
         const user = IMSDK.getSelfUserSync();
@@ -108,21 +105,6 @@ export default {
         this.isNewMsg = true;
         this.setIMStatus('');
       });
-
-      IMSDK.login({
-        lt: token,
-      })
-        .then((e) => {
-          if (e.code === 0) {
-            console.log('登录成功');
-          } else {
-            console.log('IM 登录失败');
-            this.$message.error('IM 登录失败');
-          }
-        })
-        .catch((e) => {
-          console.log('IM 登录失败，错误码：', e.code);
-        });
     },
   },
 };

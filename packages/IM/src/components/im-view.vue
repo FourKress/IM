@@ -597,6 +597,7 @@ export default {
 
   .top {
     height: 66px;
+    box-sizing: border-box;
     background-color: $bg-white-color;
     display: flex;
     align-items: center;

@@ -46,7 +46,6 @@ export default {
 
 <style scoped lang="scss">
 .window-action {
-  margin-right: 20px;
   display: flex;
   justify-content: flex-end;
   align-items: center;

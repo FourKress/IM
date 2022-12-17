@@ -27,7 +27,6 @@ export function setToken(data) {
 // 移除本地token
 export function removeToken(key = authKey) {
   Cookies.remove(key, { domain });
-  localStorage.clear();
 }
 
 /**

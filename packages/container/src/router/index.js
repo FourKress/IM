@@ -12,6 +12,11 @@ const baseRoutes = [
       isLogin: true,
     },
   },
+  {
+    name: 'Settings',
+    path: '/settings',
+    component: () => import('../views/settings/index'),
+  },
 ];
 
 export default baseRoutes;

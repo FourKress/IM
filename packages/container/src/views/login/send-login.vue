@@ -1,10 +1,12 @@
 <template>
   <div class="send-login">
-    <div class="back-icon" @click='backLogin'></div>
+    <div class="back-icon" @click="backLogin"></div>
 
-    <div class="title">{{isAppLogin ? '请在APP上确认登录' : '请输入手机验证码'}}</div>
+    <div class="title">
+      {{ isAppLogin ? '请在APP上确认登录' : '请输入手机验证码' }}
+    </div>
 
-    <template v-if='!isAppLogin'>
+    <template v-if="!isAppLogin">
       <div class="title-tips">
         4位数的验证码已发送至手机 {{ phoneText }}，有效期10分钟
       </div>
@@ -12,12 +14,14 @@
       <div class="input-panel">
         <div class="verification-code">
           <el-input
+            :ref="`codeRef_${index}`"
             v-for="(code, index) in codeList"
             maxLength="1"
             minLength="1"
             :key="index"
             class="code-item"
             type="text"
+            @input="(val) => handleInput(val, index)"
             v-model="codeList[index]"
           />
         </div>
@@ -37,24 +41,22 @@
     </template>
 
     <template v-else>
-      <div class='user-info'>
-        <div class='avatar'></div>
-        <div class='nickname'>李安宁</div>
+      <div class="user-info">
+        <div class="avatar"></div>
+        <div class="nickname">李安宁</div>
       </div>
     </template>
-
   </div>
 </template>
 
 <script>
 import { token } from '@lanshu/utils';
 import { renderProcess } from '@lanshu/render-process';
-import { IMMixin } from '@lanshu/im';
+import { IMEvent } from '@lanshu/im';
 import OtherLogin from './other-login';
 
 export default {
   name: 'Send-login',
-  mixins: [IMMixin],
   components: {
     OtherLogin,
   },
@@ -75,8 +77,8 @@ export default {
       return this.phoneNum.replace(regExp, replaceValue);
     },
     isAppLogin() {
-      return !this.phoneNum
-    }
+      return !this.phoneNum;
+    },
   },
   data() {
     return {
@@ -85,19 +87,29 @@ export default {
   },
   methods: {
     backLogin() {
-      this.$emit('update:isSendLogin')
+      this.$emit('update:isSendLogin');
     },
     handleWechatLogin() {
       this.$emit('changeLoginType');
     },
+    handleInput(val, index) {
+      if (!val) return;
+      if (index !== 3) {
+        this.$refs[`codeRef_${index + 1}`][0].focus();
+      }
+    },
     handleLogin() {
+      if (!this.activeBtn) return;
+
       this.initIM();
       renderProcess.showMainWindow();
-      token.setToken('12312');
+      token.setToken({
+        token: 213123
+      });
       this.$router.push('/');
     },
     initIM() {
-      this.IM_init(
+      IMEvent.IMLogin(
         // 'eyJhcHBJZCI6IjYzNmNhMzFiZDRjYTM1MmJmMWZmNjQxZSIsImFwcFVzZXIiOiIxMjM0NTQzMjEiLCJleHBpcmUiOi0xLCJzaWduIjoiZWpzcWNBS1RaV2lNaThCdzZFZlAzcmRMOERYTzFyQytzbzFLQjd5bWxqOD0ifQ==',
         'eyJhcHBJZCI6IjYzNmNhMzFiZDRjYTM1MmJmMWZmNjQxZSIsImFwcFVzZXIiOiI4ODg4ODg4IiwiZXhwaXJlIjotMSwic2lnbiI6IlByTkhyVlRkTjNZL3RqWmkrV1pGejNIYndNLzBhc2VKS1RJMkgrRGlpaE09In0=',
       );
@@ -192,7 +204,7 @@ export default {
   .avatar {
     width: 140px;
     height: 140px;
-    background: #9482FF;
+    background: #9482ff;
     border-radius: 20px;
   }
 
