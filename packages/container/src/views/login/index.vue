@@ -32,24 +32,26 @@
       <WindowOperate isLogin />
     </div>
 
-    <div class="dialog" v-if='showDialog'>
-      <div class="dialog-panel">
-        <div class="dialog-panel-top">提示</div>
-        <div class="dialog-panel-content">
-          已实名账号, 请使用北象App自助找回账号。
-          如未实名或无法使用移动端, 您也可以通过
-          <span class='link'>账号申诉</span>
-          找回账号。
-        </div>
-        <div class='dialog-panel-footer' @click='showDialog = false'>知道了</div>
+    <LsDialog
+      :visible.sync="showDialog"
+      confirm-btn-text='知道了'
+      :show-cancel-btn='false'
+      @confirm="handleConfirm"
+      @cancel="handleCancel"
+    >
+      <div slot='content'>
+        已实名账号, 请使用北象App自助找回账号。 如未实名或无法使用移动端,
+        您也可以通过
+        <span class="link">账号申诉</span>
+        找回账号。
       </div>
-    </div>
+    </LsDialog>
   </div>
 </template>
 
 <script>
 import { renderProcess } from '@lanshu/render-process';
-import { WindowOperate } from '@lanshu/components';
+import { WindowOperate, LsDialog } from '@lanshu/components';
 import BasicLogin from './basic-login';
 import SendLogin from './send-login';
 
@@ -59,6 +61,7 @@ export default {
     WindowOperate,
     BasicLogin,
     SendLogin,
+    LsDialog,
   },
   data() {
     return {
@@ -94,6 +97,16 @@ export default {
     },
     openDialog() {
       this.showDialog = true;
+    },
+
+    handleConfirm() {
+      console.log(2222);
+    },
+    handleCancel() {
+      console.log(111);
+    },
+    handleClose() {
+      console.log(333);
     },
   },
 };
@@ -163,66 +176,6 @@ export default {
     position: absolute;
     top: 24px;
     right: 20px;
-  }
-
-  .dialog {
-    width: 100%;
-    height: 100%;
-    background: rgba(51,51,51,0.3);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: fixed;
-    left: 0;
-    top: 0;
-    z-index: 9;
-    transition: all .3s;
-
-    &-panel {
-      width: 369px;
-      height: 239px;
-      background: $bg-white-color;
-      box-shadow: 0px 4px 20px 0px rgba(51,51,51,0.1);
-      border-radius: 12px;
-      border: 1px solid $split-line-color;
-      box-sizing: border-box;
-      padding: 0 46px;
-
-      &-top {
-        width: 36px;
-        height: 25px;
-        font-size: 18px;
-        font-weight: bold;
-        color: $main-text-color;
-        line-height: 25px;
-        margin: 30px auto;
-      }
-
-      &-content {
-        height: 60px;
-        font-size: 14px;
-        color: $main-text-color;
-        line-height: 20px;
-
-        .link {
-          color: $primary-hover-color;
-        }
-      }
-
-      &-footer {
-        width: 88px;
-        height: 34px;
-        background-color: $bg-grey-color;
-        border-radius: 6px;
-        text-align: center;
-        line-height: 34px;
-        font-size: 14px;
-        font-weight: bold;
-        color: $primary-color;
-        margin: 30px auto;
-        cursor: pointer;
-      }
-    }
   }
 }
 </style>

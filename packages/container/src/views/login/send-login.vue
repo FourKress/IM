@@ -26,7 +26,9 @@
           />
         </div>
 
-        <div class="send-code">重新获取验证码</div>
+        <div class="send-code" :class="timer && 'disabled'" @click="resetCode">
+          {{ timer ? `倒计时 ${countdown}S` : '重新获取验证码' }}
+        </div>
 
         <div
           class="login-btn"
@@ -54,6 +56,7 @@ import { token } from '@lanshu/utils';
 import { renderProcess } from '@lanshu/render-process';
 import { IMEvent } from '@lanshu/im';
 import OtherLogin from './other-login';
+import { mapGetters, mapActions } from 'vuex';
 
 export default {
   name: 'Send-login',
@@ -79,17 +82,31 @@ export default {
     isAppLogin() {
       return !this.phoneNum;
     },
+    ...mapGetters('globalStore', ['codeCountdown']),
   },
   data() {
     return {
       codeList: ['', '', '', ''],
+      timer: null,
+      countdown: 0,
     };
   },
+  mounted() {
+    this.countdown = this.codeCountdown;
+    if (this.countdown) {
+      this.handleCountdown();
+    }
+  },
   methods: {
+    ...mapActions('globalStore', ['setCodeCountdown']),
     backLogin() {
+      this.clearInterval();
+      this.saveCountdown();
       this.$emit('update:isSendLogin');
     },
     handleWechatLogin() {
+      this.clearInterval();
+      this.saveCountdown();
       this.$emit('changeLoginType');
     },
     handleInput(val, index) {
@@ -98,13 +115,35 @@ export default {
         this.$refs[`codeRef_${index + 1}`][0].focus();
       }
     },
-    handleLogin() {
+    clearInterval() {
+      this.timer && clearInterval(this.timer);
+    },
+    saveCountdown() {
+      this.countdown && this.setCodeCountdown(this.countdown);
+    },
+    handleCountdown() {
+      this.timer = setInterval(() => {
+        this.countdown--;
+        if (this.countdown <= 0) {
+          this.clearInterval();
+          this.timer = null;
+        }
+      }, 1000);
+    },
+    resetCode() {
+      if (this.timer || this.countdown) return;
+      this.codeList = this.codeList.map(() => '');
+      this.countdown = 20;
+      // TODO 请求接口倒计时
+      this.handleCountdown();
+    },
+    async handleLogin() {
       if (!this.activeBtn) return;
-
+      this.clearInterval();
       this.initIM();
       renderProcess.showMainWindow();
       token.setToken({
-        token: 213123
+        token: 213123,
       });
       this.$router.push('/');
     },
@@ -193,6 +232,11 @@ export default {
     font-size: 14px;
     color: $primary-hover-color;
     cursor: pointer;
+
+    &.disabled {
+      color: $tips-text-color;
+      cursor: default;
+    }
   }
 }
 

@@ -1,30 +1,51 @@
-import { ipcMain, app, shell } from 'electron';
+import { ipcMain, app, shell, globalShortcut } from 'electron';
 
-import { handleFileOpen } from './utils';
+import { handleFileOpen, calcFileSize, deleteFile } from './utils';
 import { initScreenshots } from './screenshots';
 import { showLoginWindow, showMainWindow, changeWindow } from './window';
+import { unregisterHotKeyAll, initHotKeys, handleHotKey } from './hotKey';
 
-const initIpcMain = (mainWindow) => {
+const initIpcMain = () => {
   app.whenReady().then(() => {
     ipcMain.on('changeWindow', (event, type) => {
-      changeWindow(mainWindow, type);
+      changeWindow(type);
     });
 
-    ipcMain.handle('dialog:openFile', handleFileOpen);
+    ipcMain.handle('openFile', (event, type) => handleFileOpen(type));
 
-    // 添加截图功能
-    initScreenshots(mainWindow);
-
-    ipcMain.on('showMainWindow', () => {
-      showMainWindow(mainWindow);
+    ipcMain.on('showMainWindow', (event, config) => {
+      initHotKeys();
+      initScreenshots();
+      showMainWindow();
     });
 
     ipcMain.on('showLoginWindow', (event, delay) => {
-      showLoginWindow(mainWindow, delay);
+      unregisterHotKeyAll();
+      showLoginWindow(delay);
     });
 
     ipcMain.on('openUrl', async (event, url) => {
       await shell.openExternal(url);
+    });
+
+    ipcMain.on('cleanFile', async (event, path) => {
+      await deleteFile(path);
+    });
+
+    ipcMain.handle('getFileSize', async (event, dirPath) => {
+      return await calcFileSize(dirPath);
+    });
+
+    ipcMain.on('setHotKey', async (event, params) => {
+      await handleHotKey(params);
+    });
+
+    ipcMain.handle('getStore', async (event, key) => {
+      return await global.store.get(key);
+    });
+
+    ipcMain.on('setStore', async (event, key, data) => {
+      await global.store.set(key, data);
     });
   });
 };

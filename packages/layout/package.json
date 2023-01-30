@@ -26,6 +26,7 @@
     "@lanshu/render-process": "^0.1.8",
     "@lanshu/utils": "^0.1.9",
     "element-ui": "^2.15.12",
+    "localforage": "^1.10.0",
     "sass": "^1.56.0",
     "sass-loader": "^13.1.0",
     "vue": "^2.6.14",

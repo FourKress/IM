@@ -1,39 +1,43 @@
 import { globalShortcut, ipcMain } from 'electron';
 import Screenshots from 'electron-screenshots';
 
-export const initScreenshots = (mainWindow) => {
+export const handleStartCapture = async (screenshots) => {
+  const mainWindow = global.mainWindow;
+
+  if (mainWindow.isFullScreen()) {
+    mainWindow.setFullScreen(false);
+  }
+  globalShortcut.register('esc', async () => {
+    globalShortcut.unregister('esc');
+    await screenshots.endCapture();
+  });
+  await screenshots.startCapture();
+
+  return new Promise((resolve) => {
+    screenshots.on('ok', (e, buffer, bounds) => {
+      globalShortcut.unregister('esc');
+      const b64 = Buffer.from(buffer).toString('base64');
+      resolve(b64);
+    });
+    screenshots.on('cancel', () => {
+      globalShortcut.unregister('esc');
+      console.log('capture', 'cancel1');
+      resolve();
+    });
+    screenshots.on('save', (e, buffer, bounds) => {
+      globalShortcut.unregister('esc');
+      const b64 = Buffer.from(buffer).toString('base64');
+      resolve(b64);
+    });
+  });
+};
+
+export const initScreenshots = () => {
   const screenshots = new Screenshots({
     singleWindow: true,
   });
 
-  globalShortcut.register('ctrl+shift+a', async () => {
-    await handleStartCapture();
-  });
+  global.screenshots = screenshots;
 
-  async function handleStartCapture() {
-    if (mainWindow.isFullScreen()) {
-      mainWindow.setFullScreen(false);
-    }
-    globalShortcut.register('esc', async () => {
-      await screenshots.endCapture();
-    });
-    await screenshots.startCapture();
-
-    return new Promise((resolve) => {
-      screenshots.on('ok', (e, buffer, bounds) => {
-        const b64 = Buffer.from(buffer).toString('base64');
-        resolve(b64);
-      });
-      screenshots.on('cancel', () => {
-        console.log('capture', 'cancel1');
-        resolve();
-      });
-      screenshots.on('save', (e, buffer, bounds) => {
-        const b64 = Buffer.from(buffer).toString('base64');
-        resolve(b64);
-      });
-    });
-  }
-
-  ipcMain.handle('startScreenshots', handleStartCapture);
+  ipcMain.handle('startScreenshots', () => handleStartCapture(screenshots));
 };

@@ -1,4 +1,4 @@
-require('./sdk/lim-core-h5-1.1.2');
+require('./sdk/lim-core-h5');
 import { mapGetters, mapActions } from 'vuex';
 import { _clearSessionUnreadCount } from '@lanshu/utils';
 

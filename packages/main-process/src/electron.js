@@ -3,9 +3,11 @@ import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
 import * as path from 'path';
 
-const isDevelopment = process.env.NODE_ENV !== 'production';
+import store from './datastore';
 
-let _BrowserWindow;
+global.store = store;
+
+const isDevelopment = process.env.NODE_ENV !== 'production';
 
 async function createWindow() {
   const win = new BrowserWindow({
@@ -24,8 +26,6 @@ async function createWindow() {
     },
   });
 
-  _BrowserWindow = win;
-
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode
     await win.loadURL(process.env.WEBPACK_DEV_SERVER_URL);
@@ -35,6 +35,8 @@ async function createWindow() {
     // Load the index.html when not in development
     await win.loadURL('app://./index.html');
   }
+
+  global.mainWindow = win;
 }
 
 const initElectron = () => {
@@ -76,7 +78,7 @@ const initElectron = () => {
 
         resolve({
           App: app,
-          BrowserWindow: _BrowserWindow,
+          BrowserWindow: global.mainWindow,
         });
       });
 

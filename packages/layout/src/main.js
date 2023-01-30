@@ -1,10 +1,12 @@
 import Vue from 'vue';
+import localforage from 'localforage';
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 import { baseRoutes } from '@lanshu/container';
 import { IMStore } from '@lanshu/im';
 import { generateRoute, generateStore } from '@lanshu/utils';
 import App from './App';
+import { LsConfirm } from '@lanshu/components';
 
 import 'element-ui/packages/theme-chalk/src/index.scss';
 import './assets/styles/index.scss';
@@ -12,9 +14,10 @@ import './assets/styles/index.scss';
 Vue.config.productionTip = false;
 
 Vue.use(ElementUI);
+Vue.use(LsConfirm);
 
 const Layout = (config = {}) => {
-  return new Promise((resolve, reject) => {
+  return new Promise(async (resolve, reject) => {
     const { menu, routes, plugin, platform, store } = config;
     if (!platform) {
       return reject('请设置 platform 值');
@@ -40,6 +43,10 @@ const Layout = (config = {}) => {
         ...store,
       };
     }
+
+    window.$lanshuStore = localforage.createInstance({
+      name: 'lanshuStore',
+    });
 
     return resolve(
       new Vue({

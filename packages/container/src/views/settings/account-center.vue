@@ -56,30 +56,36 @@ export default {
           },
         },
         {
+          key: 'phoneNum',
           title: '手机号码',
           label: '已绑定号码',
           value: '18455555553',
           btnText: '更换',
+          fnc: () => this.changePhone()
         },
         {
+          key: 'authentication',
           title: '实名认证',
           label: '已认证用户',
           value: '张三丰 500000000000000000',
           btnText: '',
         },
         {
+          key: 'binding',
           title: '绑定微信',
           label: '已绑定微信',
           value: 'zhangsanfeng',
           btnText: '解绑',
         },
         {
+          key: 'device',
           title: '常用设备',
           label: '',
           value: '管理登录过北象的设备，并可对已登录的设备',
           btnText: '管理',
         },
         {
+          key: 'cancel',
           title: '注销账号',
           label: '',
           value: '永久注销你的北象帐号，注销成功后该帐号将无法使用，帐号下的所有数据将被删除',
@@ -90,10 +96,20 @@ export default {
   },
   methods: {
     handleCallback(info) {
-      console.log(info);
+      if (info?.fnc) {
+        info.fnc()
+      }
     },
     handleChange(val) {
       console.log(val);
+    },
+    changePhone() {
+      this.$Lconfirm({
+        title: '确定要更换手机号码？',
+        render: () => <span>修改成功后，你需要使用新<br/>手机号码登录</span>
+      }).then(() => {
+
+      })
     }
   },
 };

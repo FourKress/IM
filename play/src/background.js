@@ -1,6 +1,6 @@
 import { initElectron, initIpcMain } from '@lanshu/main-process';
 
-initElectron().then(({ BrowserWindow }) => {
+initElectron().then(() => {
   // console.log(App)
-  initIpcMain(BrowserWindow);
+  initIpcMain();
 });

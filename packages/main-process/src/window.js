@@ -1,22 +1,25 @@
-const initLoginWindow = (windowObj) => {
-  windowObj.setSize(1440, 1080);
-  windowObj.setMinimumSize(1440, 1080);
-  windowObj.setResizable(false);
-  windowObj.setMaximizable(false);
-  windowObj.center();
+const initLoginWindow = () => {
+  const mainWindow = global.mainWindow;
+  mainWindow.setSize(1440, 1080);
+  mainWindow.setMinimumSize(1440, 1080);
+  mainWindow.setResizable(false);
+  mainWindow.setMaximizable(false);
+  mainWindow.center();
 };
 
-const initMainWindow = (windowObj) => {
-  windowObj.setSize(1920, 1080);
-  windowObj.setMinimumSize(1366, 768);
-  windowObj.setResizable(true);
-  windowObj.setMaximizable(true);
-  windowObj.center();
+const initMainWindow = () => {
+  const mainWindow = global.mainWindow;
+  mainWindow.setSize(1920, 1080);
+  mainWindow.setMinimumSize(1366, 768);
+  mainWindow.setResizable(true);
+  mainWindow.setMaximizable(true);
+  mainWindow.center();
 };
 
-const delayShowWindow = (mainWindow, initFn, delay) => {
+const delayShowWindow = (initFn, delay) => {
+  const mainWindow = global.mainWindow;
   mainWindow.setOpacity(0);
-  initFn(mainWindow);
+  initFn();
   // 在最小化之后修改size会无效，所以要在最小化之前修改大小
   mainWindow.minimize();
   setTimeout(() => {
@@ -26,19 +29,20 @@ const delayShowWindow = (mainWindow, initFn, delay) => {
   }, delay);
 };
 
-export const showMainWindow = (mainWindow) => {
-  delayShowWindow(mainWindow, initMainWindow, 200);
+export const showMainWindow = () => {
+  delayShowWindow(initMainWindow, 200);
 };
 
-export const showLoginWindow = (mainWindow, delay) => {
+export const showLoginWindow = (delay) => {
   if (delay) {
-    delayShowWindow(mainWindow, initLoginWindow, delay);
+    delayShowWindow(initLoginWindow, delay);
   } else {
-    initLoginWindow(mainWindow);
+    initLoginWindow();
   }
 };
 
-export const changeWindow = (mainWindow, type) => {
+export const changeWindow = (type) => {
+  const mainWindow = global.mainWindow;
   const actionFnMap = {
     min: () => mainWindow.minimize(),
     max: () =>

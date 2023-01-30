@@ -90,9 +90,20 @@ export default {
       showSettingsDialog: false,
     };
   },
+  mounted() {
+    document.addEventListener('click', (event) => {
+      if (!this.showSettingsDialog) return;
+      const notDialogDom = event.path.every(d => d.className !== 'settings-dialog')
+      if(notDialogDom) {
+        this.showSettingsDialog = false;
+      }
+    })
+  },
   methods: {
     openDialog() {
-      this.showSettingsDialog = true;
+      setTimeout(() => {
+        this.showSettingsDialog = true;
+      }, 100)
     },
     goToSettings() {
       this.showSettingsDialog = false;

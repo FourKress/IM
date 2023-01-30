@@ -1,45 +1,25 @@
 <template>
-  <Card id='File-Card' title="文件">
+  <Card id="File-Card" title="文件">
     <div>
-      <InfoBlock :info="{ title: '下载保存位置' }">
-        <div class="file-row">
-          <el-input
-            type="text"
-            placeholder="请选择下载保存位置…"
-            @change="handleChange"
-            v-model="downloadFilePath"
-          />
-          <span class='btn'>更改</span>
-        </div>
-      </InfoBlock>
-
-      <div class="row" v-for="msg in msgList">
-        <el-checkbox :label="msg.label" :key="msg.label" v-model="msg.checked">
-          {{ msg.label }}
-        </el-checkbox>
-      </div>
-
       <InfoBlock :info="{ title: '缓存保存位置' }">
         <div class="file-row">
           <el-input
             type="text"
+            readonly
             placeholder="请选择缓存保存位置…"
-            @change="handleChange"
             v-model="cacheFilePath"
           />
-          <span class='btn'>更改</span>
+          <span class="btn" @click="selectFilePath">更改</span>
         </div>
       </InfoBlock>
 
       <InfoBlock :info="{ title: '空间清理' }">
         <div>
-          <div class='clean-row'>
-            <span>清理历史下载文件</span>
-            <span class='btn'>清理 1.32GB 文件</span>
-          </div>
-          <div class='clean-row'>
+          <div class="clean-row">
             <span>清理软件运行缓存</span>
-            <span class='btn'>清理 201.33MB 缓存</span>
+            <span class="btn" @click="handleClean">
+              清理 {{ fileSize ? fileSize : `${fileSize}KB` }} 缓存
+            </span>
           </div>
         </div>
       </InfoBlock>
@@ -50,6 +30,7 @@
 <script>
 import Card from './card';
 import InfoBlock from './info-block';
+import { renderProcess } from '@lanshu/render-process';
 
 export default {
   name: 'File-Card',
@@ -59,27 +40,25 @@ export default {
   },
   data() {
     return {
-      downloadFilePath: '231312312',
       cacheFilePath: '',
-
-      msgList: [
-        {
-          label: '下载前询问每个文件的保存位置',
-          checked: false,
-        },
-        {
-          label: '自动下载100MB以内文件',
-          checked: false,
-        },
-      ],
+      fileSize: 0,
     };
   },
   methods: {
-    handleCallback(info) {
-      console.log(info);
+    async selectFilePath() {
+      const filePath = await renderProcess.openFile('openDirectory');
+      if (filePath) {
+        this.cacheFilePath = filePath;
+      }
+      const { error, fileSize } = await renderProcess.getFileSize(filePath);
+      if (!error) {
+        this.fileSize = fileSize;
+      }
     },
-    handleChange(val) {
-      console.log(val);
+    async handleClean() {
+      if (!this.fileSize) return;
+      await renderProcess.cleanFile(this.cacheFilePath);
+      this.fileSize = 0;
     },
   },
 };

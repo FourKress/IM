@@ -6,6 +6,11 @@ const startScreenshots = electronAPI?.startScreenshots;
 const showMainWindow = electronAPI?.showMainWindow;
 const showLoginWindow = electronAPI?.showLoginWindow;
 const openUrl = electronAPI?.openUrl;
+const cleanFile = electronAPI?.cleanFile;
+const getFileSize = electronAPI?.getFileSize;
+const setHotKey = electronAPI?.setHotKey;
+const getStore = electronAPI?.getStore;
+const setStore = electronAPI?.setStore;
 
 export {
   changeWindow,
@@ -14,4 +19,9 @@ export {
   showMainWindow,
   showLoginWindow,
   openUrl,
+  cleanFile,
+  getFileSize,
+  setHotKey,
+  getStore,
+  setStore,
 };

@@ -123,6 +123,8 @@ export default {
   },
   watch: {
     isAccountLogin(val) {
+      this.protocolChecked = false;
+      this.autoLoginChecked = false;
       clearInterval(this.wechatQrcodeTimer);
       if (val) {
         clearInterval(this.appQrcodeTimer);
@@ -180,11 +182,13 @@ export default {
       this.appQrcodeTimer = setInterval(() => {
         console.log('APP扫码登录');
         this.$emit('sendLogin');
+        // TODO 清除定时器
       }, 500);
     },
     loopWechatLogin() {
       this.wechatQrcodeTimer = setInterval(() => {
         console.log('微信扫码登录');
+        // TODO 清除定时器
       }, 500);
     },
   },

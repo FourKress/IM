@@ -13,18 +13,18 @@
       <div class="right">
         <div class="btn" @click="handleCloseSession"></div>
         <div class="btn"></div>
-        <div class='btn'>
-          <el-dropdown trigger='click'>
-            <span class='more'>···</span>
+        <div class="btn">
+          <el-dropdown trigger="click">
+            <span class="more">···</span>
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item>
-                <div class='send-down-row'>
+                <div class="send-down-row">
                   <LsIcon render-svg icon="=pop_cd_cjql"></LsIcon>
                   <span>创建群聊</span>
                 </div>
               </el-dropdown-item>
               <el-dropdown-item>
-                <div class='send-down-row'>
+                <div class="send-down-row">
                   <LsIcon render-svg icon="pop_cd_sz"></LsIcon>
                   <span>设置</span>
                 </div>
@@ -79,6 +79,8 @@
             v-if="showBigTextarea"
             :contenteditable="true"
             class="input-textarea big"
+            @keyup.enter.exact="handleEnterSend"
+            @keyup.ctrl.enter.exact="handleCtrlEnterSend"
             ref="msgBigInput"
             @input="handleBigInput"
             @blur="handleBlur"
@@ -91,6 +93,8 @@
                 v-if="!showBigTextarea"
                 :contenteditable="true"
                 class="input-textarea small"
+                @keyup.enter.exact="handleEnterSend"
+                @keyup.ctrl.enter.exact="handleCtrlEnterSend"
                 ref="msgInput"
                 :placeholder="placeholder"
                 @input="handleInput"
@@ -129,29 +133,29 @@
               </div>
 
               <div class="btn">
-                <el-dropdown placement='top' trigger='click'>
+                <el-dropdown placement="top" trigger="click">
                   <LsIcon render-svg icon="xx_srk_gd"></LsIcon>
                   <el-dropdown-menu slot="dropdown">
                     <el-dropdown-item>
-                      <div class='send-down-row'>
+                      <div class="send-down-row">
                         <LsIcon render-svg icon="=pop_cd_tp"></LsIcon>
                         <span>图片/视频</span>
                       </div>
                     </el-dropdown-item>
                     <el-dropdown-item>
-                      <div class='send-down-row'>
+                      <div class="send-down-row">
                         <LsIcon render-svg icon="pop_cd_wj"></LsIcon>
                         <span>文件</span>
                       </div>
                     </el-dropdown-item>
                     <el-dropdown-item>
-                      <div class='send-down-row'>
+                      <div class="send-down-row">
                         <LsIcon render-svg icon="pop_cd_sb"></LsIcon>
                         <span>OCR识别</span>
                       </div>
                     </el-dropdown-item>
                     <el-dropdown-item>
-                      <div class='send-down-row'>
+                      <div class="send-down-row">
                         <LsIcon render-svg icon="pop_cd_mp"></LsIcon>
                         <span>名片</span>
                       </div>
@@ -216,6 +220,7 @@ export default {
       emojiList,
       emojiVisible: false,
       windowRange: null,
+      sendMsgHotKey: null,
     };
   },
   watch: {
@@ -253,10 +258,21 @@ export default {
       return `发送给 ${this.session.nickname || ''}...`;
     },
   },
-  mounted() {
+  async mounted() {
     this.initData();
     this.throttleGetMessageList = _throttle(this.getMessageList);
     document.addEventListener('click', this.handleGlobalClick);
+    this.sendMsgHotKey = (
+      await renderProcess.getStore('hotKeys')
+    ).sendMsg.currentKey;
+
+    if (this.sendMsgHotKey === 'Enter') {
+      document.onkeydown = function (e) {
+        if (e.key === 'Enter') {
+          e.preventDefault(); //禁用回车的默认事件
+        }
+      };
+    }
   },
   methods: {
     ...mapActions('IMStore', ['removeSessionWindowList']),
@@ -320,7 +336,30 @@ export default {
       this.removeSessionWindowList(this.session);
     },
 
-    sendMsg() {
+    handleEnterSend() {
+      if (this.sendMsgHotKey === 'Enter') {
+        this.sendMsg()
+      }
+    },
+    handleCtrlEnterSend() {
+      if (this.sendMsgHotKey === 'CommandOrControl+Enter') {
+        this.sendMsg()
+      } else {
+        this.windowRange = window.getSelection().getRangeAt(0);
+        const innerText = this.refInput.innerText;
+        const endOffset = this.windowRange.endOffset;
+        const before = `${innerText ? '<br>' : ''}`;
+        const after = `<br>${
+          !innerText || innerText?.length === endOffset
+            ? '<br>'
+            : ''
+        }`;
+        const brNode = `${before}${after}`;
+        this.handleTargetInsert(brNode);
+      }
+    },
+
+    async sendMsg() {
       if (this.IM_Status === this.SDK_NOT_READ) return;
       if (!this.message) return;
       console.log(this.message);
@@ -330,7 +369,7 @@ export default {
       let hasDtoQuote = this.message.match(dtoQuoteReg);
       console.log(hasDtoQuote);
 
-      // return;
+      return;
       // const textMsg = IMSDK.createTextMessage({
       //   content: this.message, //文本内容
       //   toUser: this.session.toUser, //消息接收方，为会话列表中的toUser
@@ -571,6 +610,9 @@ export default {
       console.log(blob);
     },
   },
+  destroyed() {
+    document.onkeydown = null;
+  }
 };
 </script>
 
