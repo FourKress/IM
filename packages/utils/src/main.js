@@ -6,6 +6,7 @@ import { _clearSessionUnreadCount } from './im-utils';
 import generateRoute from './router';
 import generateStore from './store';
 import * as token from './token';
+import { phoneEncryption, formatPhoneNum, logOut } from './base';
 
 export {
   msgTypeMap,
@@ -17,4 +18,7 @@ export {
   generateRoute,
   generateStore,
   token,
+  phoneEncryption,
+  formatPhoneNum,
+  logOut,
 };

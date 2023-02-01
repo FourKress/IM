@@ -7,6 +7,9 @@ import { unregisterHotKeyAll, initHotKeys, handleHotKey } from './hotKey';
 
 const initIpcMain = () => {
   app.whenReady().then(() => {
+    // 初始化截图
+    initScreenshots();
+
     ipcMain.on('changeWindow', (event, type) => {
       changeWindow(type);
     });
@@ -15,7 +18,6 @@ const initIpcMain = () => {
 
     ipcMain.on('showMainWindow', (event, config) => {
       initHotKeys();
-      initScreenshots();
       showMainWindow();
     });
 

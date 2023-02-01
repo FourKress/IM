@@ -12,31 +12,7 @@
       </div>
 
       <div class="input-panel">
-        <div class="verification-code">
-          <el-input
-            :ref="`codeRef_${index}`"
-            v-for="(code, index) in codeList"
-            maxLength="1"
-            minLength="1"
-            :key="index"
-            class="code-item"
-            type="text"
-            @input="(val) => handleInput(val, index)"
-            v-model="codeList[index]"
-          />
-        </div>
-
-        <div class="send-code" :class="timer && 'disabled'" @click="resetCode">
-          {{ timer ? `倒计时 ${countdown}S` : '重新获取验证码' }}
-        </div>
-
-        <div
-          class="login-btn"
-          :class="activeBtn && 'active'"
-          @click="handleLogin"
-        >
-          下一步
-        </div>
+        <AuthCode ref="authCode" @inputComplete="handleInputComplete" />
       </div>
 
       <OtherLogin @wechatLogin="handleWechatLogin" />
@@ -52,16 +28,18 @@
 </template>
 
 <script>
-import { token } from '@lanshu/utils';
+import { mapGetters, mapActions } from 'vuex';
+import { token, phoneEncryption } from '@lanshu/utils';
 import { renderProcess } from '@lanshu/render-process';
 import { IMEvent } from '@lanshu/im';
 import OtherLogin from './other-login';
-import { mapGetters, mapActions } from 'vuex';
+import AuthCode from '../../components/authCode';
 
 export default {
   name: 'Send-login',
   components: {
     OtherLogin,
+    AuthCode,
   },
   props: {
     phoneNum: {
@@ -70,14 +48,8 @@ export default {
     },
   },
   computed: {
-    activeBtn() {
-      return this.codeList.every((d) => d);
-    },
     phoneText() {
-      if (!this.phoneNum) return;
-      const regExp = new RegExp(/([\s\S]{3})\d*([\s\S]{4})/);
-      const replaceValue = `$1${new Array(Number(4) + 1).join('*')}$2`;
-      return this.phoneNum.replace(regExp, replaceValue);
+      return phoneEncryption(this.phoneNum);
     },
     isAppLogin() {
       return !this.phoneNum;
@@ -85,66 +57,46 @@ export default {
     ...mapGetters('globalStore', ['codeCountdown']),
   },
   data() {
-    return {
-      codeList: ['', '', '', ''],
-      timer: null,
-      countdown: 0,
-    };
+    return {};
   },
-  mounted() {
-    this.countdown = this.codeCountdown;
-    if (this.countdown) {
-      this.handleCountdown();
-    }
-  },
+  mounted() {},
   methods: {
-    ...mapActions('globalStore', ['setCodeCountdown']),
+    ...mapActions('routerStore', ['clearBreadCrumb']),
     backLogin() {
-      this.clearInterval();
-      this.saveCountdown();
-      this.$emit('update:isSendLogin');
+      this.handleClearInterval();
+      this.handleSaveCountdown();
+      this.$nextTick(() => {
+        this.$emit('update:isSendLogin');
+      });
     },
     handleWechatLogin() {
-      this.clearInterval();
-      this.saveCountdown();
-      this.$emit('changeLoginType');
+      this.handleClearInterval();
+      this.handleSaveCountdown();
+      this.$nextTick(() => {
+        this.$emit('update:isSendLogin');
+      });
     },
-    handleInput(val, index) {
-      if (!val) return;
-      if (index !== 3) {
-        this.$refs[`codeRef_${index + 1}`][0].focus();
+
+    handleInputComplete(flag) {
+      if (flag) {
+        this.handleLogin();
       }
     },
-    clearInterval() {
-      this.timer && clearInterval(this.timer);
+    handleClearInterval() {
+      this.$refs.authCode.handleClearInterval();
     },
-    saveCountdown() {
-      this.countdown && this.setCodeCountdown(this.countdown);
+    handleSaveCountdown() {
+      this.$refs.authCode.handleSaveCountdown();
     },
-    handleCountdown() {
-      this.timer = setInterval(() => {
-        this.countdown--;
-        if (this.countdown <= 0) {
-          this.clearInterval();
-          this.timer = null;
-        }
-      }, 1000);
-    },
-    resetCode() {
-      if (this.timer || this.countdown) return;
-      this.codeList = this.codeList.map(() => '');
-      this.countdown = 20;
-      // TODO 请求接口倒计时
-      this.handleCountdown();
-    },
+
     async handleLogin() {
-      if (!this.activeBtn) return;
-      this.clearInterval();
+      this.handleClearInterval();
       this.initIM();
       renderProcess.showMainWindow();
       token.setToken({
         token: 213123,
       });
+      this.clearBreadCrumb();
       this.$router.push('/');
     },
     initIM() {
@@ -177,67 +129,6 @@ export default {
 }
 .input-panel {
   margin: 60px 0 126px 0;
-
-  .verification-code,
-  .login-btn {
-    width: 100%;
-    height: 60px;
-    line-height: 60px;
-    border-radius: 6px;
-    box-sizing: border-box;
-  }
-
-  .login-btn {
-    text-align: center;
-    color: $bg-white-color;
-    background-color: #87a1cd;
-    cursor: pointer;
-    margin-bottom: 60px;
-
-    &.active {
-      background: $primary-color;
-    }
-  }
-
-  .verification-code {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-
-    .code-item {
-      background-color: $bg-hover-grey-color;
-      width: 80px;
-      height: 60px;
-      border-radius: 6px;
-      margin-right: 14px;
-
-      ::v-deep .el-input__inner {
-        width: 100%;
-        height: 60px;
-        line-height: 24px;
-        font-size: 18px;
-        outline: none;
-        background-color: transparent;
-        border: none;
-        padding: 18px 26px;
-        box-sizing: border-box;
-        color: $main-text-color;
-        text-align: center;
-      }
-    }
-  }
-
-  .send-code {
-    margin: 30px 0;
-    font-size: 14px;
-    color: $primary-hover-color;
-    cursor: pointer;
-
-    &.disabled {
-      color: $tips-text-color;
-      cursor: default;
-    }
-  }
 }
 
 .user-info {

@@ -3,15 +3,14 @@
     <div class="header_user">
       <div class="avatar" @click="openDialog">
         <img :src="userInfo.avatar" class="img" alt="" />
-        <div class="status"></div>
       </div>
-      <div class="user-info">
-        <p class="name">{{ userInfo.nickname }}</p>
-        <div class="position">
-          <span>线上综窗</span>
-          <span class="down-icon"></span>
-        </div>
-      </div>
+<!--      <div class="user-info">-->
+<!--        <p class="name">{{ userInfo.nickname }}</p>-->
+<!--        <div class="position">-->
+<!--          <span>线上综窗</span>-->
+<!--          <span class="down-icon"></span>-->
+<!--        </div>-->
+<!--      </div>-->
 
       <div class="loading">
         {{ IM_Status }}
@@ -36,51 +35,52 @@
       <WindowOperate />
     </div>
 
-    <div class="settings-dialog" v-if="showSettingsDialog">
-      <div class="top"></div>
-      <div class="info">
-        <div class="avatar">
-          <div class="img"></div>
+    <LsCardDialog :visible.sync='showSettingsDialog'>
+      <div class="settings-dialog">
+        <div class="top"></div>
+        <div class="info">
+          <div class="avatar">
+            <div class="img"></div>
+          </div>
+          <div class="nickname">大声道</div>
+          <div class="tag"></div>
         </div>
-        <div class="nickname">大声道</div>
-        <div class="tag"></div>
+        <div class="nav-wrap">
+          <div class="row split">
+            <span class="label">个人信息</span>
+          </div>
+          <div class="row">
+            <span class="label" @click="goToSettings">设置</span>
+          </div>
+          <div class="row">
+            <span class="label">下载手机版</span>
+          </div>
+          <div class="row">
+            <span class="label">帮助与客服</span>
+          </div>
+          <div class="row split">
+            <span class="label">关于北象</span>
+          </div>
+          <div class="row disabled">
+            <span class="label" @click="handleLogOut">退出北象</span>
+          </div>
+        </div>
       </div>
-      <div class="nav-wrap">
-        <div class="row split">
-          <span class="label">个人信息</span>
-        </div>
-        <div class="row">
-          <span class="label" @click="goToSettings">设置</span>
-        </div>
-        <div class="row">
-          <span class="label">下载手机版</span>
-        </div>
-        <div class="row">
-          <span class="label">帮助与客服</span>
-        </div>
-        <div class="row split">
-          <span class="label">关于北象</span>
-        </div>
-        <div class="row disabled">
-          <span class="label" @click="handleLogOut">退出北象</span>
-        </div>
-      </div>
-    </div>
+    </LsCardDialog>
   </div>
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
-import { LsIcon, WindowOperate } from '@lanshu/components';
-import { renderProcess } from '@lanshu/render-process';
-import { removeToken } from '@lanshu/utils/src/token';
-import { IMEvent } from '@lanshu/im';
+import { mapGetters, mapActions } from 'vuex';
+import { LsIcon, WindowOperate, LsCardDialog } from '@lanshu/components';
+import { logOut } from '@lanshu/utils';
 
 export default {
   name: 'MainHeader',
   components: {
     LsIcon,
     WindowOperate,
+    LsCardDialog
   },
   computed: {
     ...mapGetters('IMStore', ['userInfo', 'IM_Status']),
@@ -91,32 +91,29 @@ export default {
     };
   },
   mounted() {
-    document.addEventListener('click', (event) => {
-      if (!this.showSettingsDialog) return;
-      const notDialogDom = event.path.every(d => d.className !== 'settings-dialog')
-      if(notDialogDom) {
-        this.showSettingsDialog = false;
-      }
-    })
   },
   methods: {
+    ...mapActions('routerStore', ['clearBreadCrumb', 'addBreadCrumbs', 'setHistoryMainPath']),
     openDialog() {
-      setTimeout(() => {
-        this.showSettingsDialog = true;
-      }, 100)
+      this.showSettingsDialog = true;
     },
     goToSettings() {
       this.showSettingsDialog = false;
-      if (this.$route.path === '/settings') return;
+      if (this.$route.path.includes('/settings')) return;
+      this.setHistoryMainPath(this.$route.path)
+      this.clearBreadCrumb();
+      this.addBreadCrumbs({
+        title: '设置',
+        path: '/settings/home',
+      })
+
       this.$router.push('/settings');
     },
     async handleLogOut() {
       this.showSettingsDialog = false;
-      await IMEvent.IMLogout();
-      // IMEvent.IMDestroy();
-      removeToken();
-      renderProcess.showLoginWindow(500);
-      await this.$router.push('/login');
+
+      await logOut()
+      await this.$router.push('/login')
     },
   },
 };
@@ -145,7 +142,6 @@ export default {
       width: 46px;
       height: 46px;
       cursor: pointer;
-      position: relative;
 
       .img {
         border-radius: 6px;
@@ -153,48 +149,38 @@ export default {
         width: 100%;
         height: 100%;
       }
-
-      .status {
-        width: 12px;
-        height: 12px;
-        border-radius: 50%;
-        background-color: #00cba8;
-        position: absolute;
-        right: -3px;
-        bottom: -3px;
-      }
     }
 
-    .user-info {
-      margin-left: 12px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: flex-start;
-
-      .name {
-        font-size: 16px;
-        font-weight: bold;
-        color: $main-text-color;
-        line-height: 22px;
-      }
-
-      .position {
-        font-size: 14px;
-        color: $minor-text-color;
-        line-height: 20px;
-        display: flex;
-        align-items: center;
-
-        .down-icon {
-          width: 8px;
-          height: 5px;
-          margin-left: 6px;
-
-          background-color: #333333;
-        }
-      }
-    }
+    //.user-info {
+    //  margin-left: 12px;
+    //  display: flex;
+    //  flex-direction: column;
+    //  justify-content: center;
+    //  align-items: flex-start;
+    //
+    //  .name {
+    //    font-size: 16px;
+    //    font-weight: bold;
+    //    color: $main-text-color;
+    //    line-height: 22px;
+    //  }
+    //
+    //  .position {
+    //    font-size: 14px;
+    //    color: $minor-text-color;
+    //    line-height: 20px;
+    //    display: flex;
+    //    align-items: center;
+    //
+    //    .down-icon {
+    //      width: 8px;
+    //      height: 5px;
+    //      margin-left: 6px;
+    //
+    //      background-color: #333333;
+    //    }
+    //  }
+    //}
 
     .loading {
       margin-left: 24px;
@@ -255,91 +241,95 @@ export default {
 
   .header_action {
     margin-right: 20px;
+
+    position: relative;
+    width: 90px;
+    height: 20px;
+  }
+}
+
+.settings-dialog {
+  width: 372px;
+  height: 517px;
+  background: $bg-white-color;
+  box-shadow: 0px 4px 20px 0px rgba(51, 51, 51, 0.1);
+  border-radius: 12px;
+  border: 1px solid $split-line-color;
+  overflow: hidden;
+  position: fixed;
+  top: 10px;
+  left: 71px;
+  z-index: 9;
+
+  .top {
+    width: 100%;
+    height: 110px;
+    background: url('../assets/images/top-bg.png') no-repeat;
+    background-size: 100% 100%;
   }
 
-  .settings-dialog {
-    width: 372px;
-    height: 517px;
-    background: $bg-white-color;
-    box-shadow: 0px 4px 20px 0px rgba(51, 51, 51, 0.1);
-    border-radius: 12px;
-    border: 1px solid $split-line-color;
-    overflow: hidden;
-    position: fixed;
-    top: 10px;
-    left: 71px;
-    z-index: 9;
+  .info {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    padding: 0 30px 0 24px;
+    margin: -29px 0 34px 0;
 
-    .top {
-      width: 100%;
-      height: 110px;
-      background: url('../assets/images/top-bg.png') no-repeat;
-      background-size: 100% 100%;
-    }
+    .avatar {
+      border-radius: 16px;
+      border: 6px solid #ffffff;
+      margin-right: 14px;
 
-    .info {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-      padding: 0 30px 0 24px;
-      margin: -29px 0 34px 0;
-
-      .avatar {
-        border-radius: 16px;
-        border: 6px solid #ffffff;
-        margin-right: 14px;
-
-        .img {
-          width: 66px;
-          height: 66px;
-          background: #ffb100;
-          border-radius: 8px;
-        }
-      }
-
-      .nickname {
-        flex: 1;
-        font-size: 18px;
-        font-weight: bold;
-        color: $main-text-color;
-        margin-bottom: 6px;
-      }
-
-      .tag {
-        width: 53px;
-        height: 18px;
-        border-radius: 2px;
-        opacity: 0.5;
-        border: 1px solid $minor-color;
-        margin-bottom: 6px;
+      .img {
+        width: 66px;
+        height: 66px;
+        background: #ffb100;
+        border-radius: 8px;
       }
     }
 
-    .nav-wrap {
-      padding: 0 40px;
+    .nickname {
+      flex: 1;
+      font-size: 18px;
+      font-weight: bold;
+      color: $main-text-color;
+      margin-bottom: 6px;
+    }
 
-      .row {
-        margin-top: 20px;
-        box-sizing: border-box;
+    .tag {
+      width: 53px;
+      height: 18px;
+      border-radius: 2px;
+      opacity: 0.5;
+      border: 1px solid $minor-color;
+      margin-bottom: 6px;
+    }
+  }
+
+  .nav-wrap {
+    padding: 0 40px;
+
+    .row {
+      margin-top: 20px;
+      box-sizing: border-box;
+      font-size: 14px;
+      color: $main-text-color;
+
+      .label {
+        cursor: pointer;
+      }
+
+      &.split:after {
+        content: '';
+        display: block;
+        width: 100%;
+        border-bottom: 1px solid $split-line-color;
+        margin: 26px 0;
+      }
+
+      &.disabled {
         font-size: 14px;
-        color: $main-text-color;
-
-        .label {
-          cursor: pointer;
-        }
-
-        &.split:after {
-          content: '';
-          display: block;
-          width: 100%;
-          border-bottom: 1px solid $split-line-color;
-          margin: 26px 0;
-        }
-
-        &.disabled {
-          font-size: 14px;
-          color: $tips-text-color;
-        }
+        color: $tips-text-color;
       }
     }
   }

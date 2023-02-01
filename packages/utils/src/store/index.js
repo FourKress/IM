@@ -1,6 +1,7 @@
 import Vuex from 'vuex';
 
 import globalStore from './modules/global.js';
+import routerStore from './modules/router.js';
 
 let stareInstance = null;
 
@@ -10,6 +11,7 @@ const generateStore = (Vue, stores) => {
   const store = new Vuex.Store({
     modules: {
       globalStore,
+      routerStore,
       ...stores,
     },
   });

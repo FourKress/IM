@@ -50,6 +50,11 @@ export default {
   justify-content: flex-end;
   align-items: center;
 
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 999;
+
   .btn {
     width: 20px;
     height: 20px;

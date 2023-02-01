@@ -16,6 +16,24 @@ const baseRoutes = [
     name: 'Settings',
     path: '/settings',
     component: () => import('../views/settings/index'),
+    redirect: '/settings/home',
+    children: [
+      {
+        name: 'Home',
+        path: 'home',
+        component: () => import('../views/settings/home/index'),
+      },
+      {
+        name: 'ChangePhoneNum',
+        path: 'changePhoneNum',
+        component: () => import('../views/settings/change-phoneNum/index'),
+      },
+      {
+        name: 'Devices',
+        path: 'devices',
+        component: () => import('../views/settings/devices/index'),
+      },
+    ],
   },
 ];
 

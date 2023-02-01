@@ -288,11 +288,14 @@ export default {
     },
     handleGlobalClick(event) {
       if (!this.emojiVisible) return;
-      const classNames = (event.target.className || '').split(' ');
-      if (
-        !classNames.some((c) => ['input-textarea', 'emoji-btn'].includes(c))
-      ) {
-        this.emojiVisible = false;
+      try {
+        const classNames = (event.target.className || '')?.split(' ');
+        if (
+          !classNames.some((c) => ['input-textarea', 'emoji-btn'].includes(c))
+        ) {
+          this.emojiVisible = false;
+        }
+      } catch (e) {
       }
     },
 

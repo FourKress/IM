@@ -1,11 +1,14 @@
 <template>
   <div class="info-block">
-    <div class="title">{{ title }}</div>
+    <div class="title">
+      {{ title }}
+      <slot name="tag"></slot>
+    </div>
     <template v-if="!isSlot">
       <Expand v-if="render" :info="info" :render="render"></Expand>
       <div v-else class="info">
         {{ label ? `${label}：` : '' }}
-        <span class='text' v-if='value'>{{ value }}</span>
+        <span class="text" v-if="value">{{ value }}</span>
         <span class="btn" v-if="btnText" @click="handleClick">
           {{ btnText }}
         </span>

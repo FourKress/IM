@@ -8,6 +8,9 @@ import {
   generateRoute,
   generateStore,
   token,
+  phoneEncryption,
+  formatPhoneNum,
+  logOut,
 } from '../src/main';
 
 export {
@@ -20,4 +23,7 @@ export {
   generateRoute,
   generateStore,
   token,
+  phoneEncryption,
+  formatPhoneNum,
+  logOut,
 };

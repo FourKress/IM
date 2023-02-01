@@ -78,8 +78,8 @@ export default {
 <style lang="scss" scoped>
 
 .ls-icon-wrap {
-  width: 100%;
-  height: 100%;
+  //width: 100%;
+  //height: 100%;
   display: inline-flex;
   align-items: center;
   justify-content: center;

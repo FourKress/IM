@@ -31,29 +31,15 @@
     <div class="action">
       <WindowOperate isLogin />
     </div>
-
-    <LsDialog
-      :visible.sync="showDialog"
-      confirm-btn-text='知道了'
-      :show-cancel-btn='false'
-      @confirm="handleConfirm"
-      @cancel="handleCancel"
-    >
-      <div slot='content'>
-        已实名账号, 请使用北象App自助找回账号。 如未实名或无法使用移动端,
-        您也可以通过
-        <span class="link">账号申诉</span>
-        找回账号。
-      </div>
-    </LsDialog>
   </div>
 </template>
 
 <script>
 import { renderProcess } from '@lanshu/render-process';
-import { WindowOperate, LsDialog } from '@lanshu/components';
+import { WindowOperate } from '@lanshu/components';
 import BasicLogin from './basic-login';
 import SendLogin from './send-login';
+import recoverAccount from '../../mixins/recover-account';
 
 export default {
   name: 'Login',
@@ -61,14 +47,13 @@ export default {
     WindowOperate,
     BasicLogin,
     SendLogin,
-    LsDialog,
   },
+  mixins: [recoverAccount],
   data() {
     return {
       isAccountLogin: true,
       isSendLogin: false,
       phoneNum: '',
-      showDialog: false,
     };
   },
   created() {
@@ -94,19 +79,6 @@ export default {
     handleSendLogin(phoneNum = '') {
       this.phoneNum = phoneNum;
       this.isSendLogin = true;
-    },
-    openDialog() {
-      this.showDialog = true;
-    },
-
-    handleConfirm() {
-      console.log(2222);
-    },
-    handleCancel() {
-      console.log(111);
-    },
-    handleClose() {
-      console.log(333);
     },
   },
 };

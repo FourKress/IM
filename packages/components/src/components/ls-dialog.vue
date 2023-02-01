@@ -83,7 +83,7 @@ export default {
 
   &-panel {
     width: 369px;
-    height: 239px;
+    //height: 239px;
     background: $bg-white-color;
     box-shadow: 0px 4px 20px 0px rgba(51, 51, 51, 0.1);
     border-radius: 12px;
@@ -111,6 +111,7 @@ export default {
 
       .link {
         color: $primary-hover-color;
+        cursor: pointer;
       }
     }
 

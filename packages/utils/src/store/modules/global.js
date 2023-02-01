@@ -26,6 +26,7 @@ const mutations = {
     const timer = setInterval(() => {
       data.codeCountdown--;
       if (data.codeCountdown <= 0) {
+        data.codeCountdown = 0;
         clearInterval(timer);
       }
     }, 1000);

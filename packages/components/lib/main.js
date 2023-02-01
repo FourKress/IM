@@ -4,6 +4,7 @@ import LsIcon from '../src/components/ls-icon';
 import WindowOperate from '../src/components/window-operate';
 import LsDialog from '../src/components/ls-dialog';
 import LsConfirm from '../src/components/ls-confirm';
+import LsCardDialog from '../src/components/ls-card-dialog';
 
 export {
   MsgTextType,
@@ -12,4 +13,5 @@ export {
   WindowOperate,
   LsDialog,
   LsConfirm,
+  LsCardDialog,
 };
