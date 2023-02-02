@@ -1,6 +1,6 @@
 {
   "name": "@lanshu/layout",
-  "version": "0.1.9",
+  "version": "0.1.10",
   "description": "客户端主体布局",
   "author": "wudong <511970747@qq.com>",
   "keywords": [
@@ -20,11 +20,11 @@
   ],
   "scripts": {},
   "dependencies": {
-    "@lanshu/components": "^0.1.9",
-    "@lanshu/container": "^0.1.9",
-    "@lanshu/im": "^0.1.9",
-    "@lanshu/render-process": "^0.1.8",
-    "@lanshu/utils": "^0.1.9",
+    "@lanshu/components": "^0.1.10",
+    "@lanshu/container": "^0.1.10",
+    "@lanshu/im": "^0.1.10",
+    "@lanshu/render-process": "^0.1.10",
+    "@lanshu/utils": "^0.1.10",
     "element-ui": "^2.15.12",
     "localforage": "^1.10.0",
     "sass": "^1.56.0",

@@ -1,6 +1,6 @@
 {
   "name": "@lanshu/utils",
-  "version": "0.1.9",
+  "version": "0.1.10",
   "description": "工具库",
   "keywords": [
     "utils"
@@ -20,7 +20,7 @@
   ],
   "scripts": {},
   "dependencies": {
-    "@lanshu/im": "^0.1.9",
+    "@lanshu/im": "^0.1.10",
     "dayjs": "^1.11.6",
     "js-cookie": "^3.0.1",
     "lodash": "^4.17.21",
