@@ -3,7 +3,9 @@ import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
 import * as path from 'path';
 
+import checkUpdate from './checkUpload';
 import store from './datastore';
+import checkUpload from './checkUpload';
 
 global.store = store;
 
@@ -35,6 +37,12 @@ async function createWindow() {
     // Load the index.html when not in development
     await win.loadURL('app://./index.html');
   }
+
+  win.on('ready-to-show', () => {
+    win.show();
+    // 每次启动程序，就检查更新
+    checkUpload();
+  });
 
   global.mainWindow = win;
 }

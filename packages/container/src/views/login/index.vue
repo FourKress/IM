@@ -146,6 +146,8 @@ export default {
 
   .action {
     position: absolute;
+    width: 90px;
+    height: 20px;
     top: 24px;
     right: 20px;
   }
