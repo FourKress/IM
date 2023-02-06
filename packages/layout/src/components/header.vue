@@ -17,7 +17,7 @@
       </div>
     </div>
 
-    <div class="hearer-search">
+    <div class="hearer-search drag">
       <div class="search">
         <div class="query-icon">
           <LsIcon icon="navi_ss_icon" render-svg></LsIcon>
@@ -128,13 +128,10 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-bottom: 22px;
+  padding: 0 20px 22px 12px;
   box-sizing: border-box;
 
-  -webkit-app-region: drag;
-
   .header_user {
-    margin-left: 12px;
     display: flex;
     align-items: center;
 
@@ -194,6 +191,14 @@ export default {
     justify-content: center;
     align-items: center;
 
+    &.drag {
+      -webkit-app-region: drag !important;
+    }
+
+    &.no-drag {
+      -webkit-app-region: no-drag !important;
+    }
+
     .search {
       width: 500px;
       height: 48px;
@@ -204,6 +209,8 @@ export default {
       display: flex;
       align-items: center;
       justify-content: space-between;
+
+      -webkit-app-region: no-drag;
 
       .query-icon {
         width: 18px;
@@ -240,8 +247,6 @@ export default {
   }
 
   .header_action {
-    margin-right: 20px;
-
     position: relative;
     width: 90px;
     height: 20px;

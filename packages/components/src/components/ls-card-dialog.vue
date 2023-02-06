@@ -17,12 +17,14 @@ export default {
   watch: {
     visible(val) {
       if (val) {
+        this.setClassName('no-drag');
         document.body.appendChild(this.$el);
       }
     },
   },
   methods: {
     handleClose() {
+      this.setClassName('drag');
       this.handleRemoveDom();
       this.$emit('update:visible', false);
     },
@@ -31,9 +33,12 @@ export default {
         this.$el.parentNode.removeChild(this.$el);
       }
     },
-  },
-  destroyed() {
-    this.handleRemoveDom();
+    setClassName(className) {
+      const hearerSearch = document.querySelector('.hearer-search');
+      if (hearerSearch) {
+        hearerSearch.className = `hearer-search ${className}`;
+      }
+    }
   },
 };
 </script>

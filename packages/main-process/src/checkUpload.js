@@ -1,4 +1,3 @@
-import { dialog } from 'electron';
 import { autoUpdater } from 'electron-updater';
 
 const checkUpdate = async () => {
@@ -28,6 +27,9 @@ const checkUpdate = async () => {
 
   // 监听update-downloaded事件，新版本下载完成时触发
   autoUpdater.on('update-downloaded', () => {
+
+
+
     dialog
       .showMessageBox({
         type: 'info',
