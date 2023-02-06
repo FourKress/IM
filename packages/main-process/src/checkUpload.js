@@ -1,4 +1,5 @@
 import { autoUpdater } from 'electron-updater';
+import { ipcMain } from 'electron';
 
 const checkUpdate = async () => {
   autoUpdater.setFeedURL('http://192.168.88.115:7777/');
@@ -27,23 +28,11 @@ const checkUpdate = async () => {
 
   // 监听update-downloaded事件，新版本下载完成时触发
   autoUpdater.on('update-downloaded', () => {
+    global.mainWindow.webContents.send('updateClient', 'updateClient');
+  });
 
-
-
-    dialog
-      .showMessageBox({
-        type: 'info',
-        title: '应用更新',
-        message: '发现新版本，是否更新？',
-        buttons: ['是', '否'],
-      })
-      .then((buttonIndex) => {
-        if (buttonIndex.response === 0) {
-          // 选择是，则退出程序，安装新版本
-          autoUpdater.quitAndInstall();
-        }
-        console.log(buttonIndex);
-      });
+  ipcMain.on('startUpdate', (_event, value) => {
+    autoUpdater.quitAndInstall();
   });
 };
 

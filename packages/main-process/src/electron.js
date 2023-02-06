@@ -15,7 +15,7 @@ async function createWindow() {
   const win = new BrowserWindow({
     transparent: true,
     frame: false,
-    titleBarStyle: 'hidden',
+    // titleBarStyle: 'hidden',
     hasShadow: false,
     autoHideMenuBar: true,
     webPreferences: {
@@ -40,13 +40,13 @@ async function createWindow() {
     await win.loadURL('app://./index.html');
   }
 
+  global.mainWindow = win;
+
   win.on('ready-to-show', () => {
     win.show();
     // 每次启动程序，就检查更新
     checkUpload();
   });
-
-  global.mainWindow = win;
 }
 
 const initElectron = () => {

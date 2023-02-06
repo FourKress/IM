@@ -1,4 +1,4 @@
-import { ipcMain, app, shell, globalShortcut } from 'electron';
+import { ipcMain, app, shell } from 'electron';
 
 import { handleFileOpen, calcFileSize, deleteFile } from './utils';
 import { initScreenshots } from './screenshots';

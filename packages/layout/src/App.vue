@@ -7,6 +7,7 @@
 <script>
 import MainLayout from './components/layout';
 import { IMMixin } from '@lanshu/im';
+import {renderProcess} from '@lanshu/render-process'
 
 export default {
   name: 'App',
@@ -16,6 +17,14 @@ export default {
   },
   created() {
     this.IM_init();
+    renderProcess.updateClient((event, value) => {
+      this.$Lconfirm({
+        title: '应用更新',
+       content: '发现新版本，是否更新？',
+      }).then(() => {
+        event.sender.send('startUpdate', 'startUpdate')
+      });
+    })
   },
   methods: {},
 };

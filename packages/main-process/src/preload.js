@@ -12,4 +12,5 @@ contextBridge.exposeInMainWorld('electronAPI', {
   setHotKey: (params) => ipcRenderer.send('setHotKey', params),
   setStore: (key, data) => ipcRenderer.send('setStore', key, data),
   getStore: (key) => ipcRenderer.invoke('getStore', key),
+  updateClient: (callback) => ipcRenderer.on('updateClient', callback),
 });

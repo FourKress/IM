@@ -20,7 +20,7 @@
         <Privacy></Privacy>
         <HotKey></HotKey>
         <Update></Update>
-        <About></About>
+<!--        <About></About>-->
       </div>
     </div>
   </div>
@@ -86,11 +86,11 @@ export default {
           label: '更新升级',
           icon: '',
         },
-        {
-          key: 'About',
-          label: '关于北象',
-          icon: '',
-        },
+        // {
+        //   key: 'About',
+        //   label: '关于北象',
+        //   icon: '',
+        // },
       ],
       navSelectKey: 'AccountCenter',
       scrollTop: 0,

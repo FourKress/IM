@@ -11,6 +11,7 @@ const getFileSize = electronAPI?.getFileSize;
 const setHotKey = electronAPI?.setHotKey;
 const getStore = electronAPI?.getStore;
 const setStore = electronAPI?.setStore;
+const updateClient = electronAPI?.updateClient;
 
 export {
   changeWindow,
@@ -24,4 +25,5 @@ export {
   setHotKey,
   getStore,
   setStore,
+  updateClient,
 };
