@@ -15,6 +15,7 @@ async function createWindow() {
   const win = new BrowserWindow({
     transparent: true,
     frame: false,
+    titleBarStyle: 'hidden',
     hasShadow: false,
     autoHideMenuBar: true,
     webPreferences: {
@@ -26,6 +27,7 @@ async function createWindow() {
         ? path.join(process.cwd(), './src/preload.js')
         : path.join(__dirname, 'preload.js'),
     },
+    icon: './icons/icon.ico',
   });
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {

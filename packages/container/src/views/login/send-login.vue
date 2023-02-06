@@ -91,13 +91,13 @@ export default {
 
     async handleLogin() {
       this.handleClearInterval();
-      this.initIM();
-      renderProcess.showMainWindow();
       token.setToken({
         token: 213123,
       });
-      this.clearBreadCrumb();
+      this.initIM();
       this.$router.push('/');
+      this.clearBreadCrumb();
+      renderProcess.showMainWindow();
     },
     initIM() {
       IMEvent.IMLogin(

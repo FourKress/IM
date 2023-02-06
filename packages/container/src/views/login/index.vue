@@ -28,8 +28,10 @@
       </div>
     </div>
 
-    <div class="action">
-      <WindowOperate isLogin />
+    <div class="header">
+      <div class="action">
+        <WindowOperate isLogin />
+      </div>
     </div>
   </div>
 </template>
@@ -99,8 +101,6 @@ export default {
   padding: 136px 70px;
   user-select: none;
 
-  -webkit-app-region: drag;
-
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
@@ -144,12 +144,21 @@ export default {
     }
   }
 
-  .action {
-    position: absolute;
-    width: 90px;
-    height: 20px;
-    top: 24px;
-    right: 20px;
+  .header {
+    width: 100%;
+    height: 68px;
+    position: fixed;
+    left: 0;
+    top: 0;
+    -webkit-app-region: drag;
+
+    .action {
+      position: absolute;
+      width: 90px;
+      height: 20px;
+      top: 24px;
+      right: 20px;
+    }
   }
 }
 </style>
