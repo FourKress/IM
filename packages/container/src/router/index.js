@@ -3,6 +3,21 @@ const baseRoutes = [
     name: 'MainView',
     path: '/',
     component: () => import('../views/main-view/index'),
+    meta: {
+      isMenu: true,
+      name: '消息',
+      icon: 'menu_xx_sel',
+    },
+  },
+  {
+    name: 'AddressBook',
+    path: '/addressBook',
+    component: () => import('../views/addressBook/index'),
+    meta: {
+      isMenu: true,
+      name: '通讯录',
+      icon: 'menu_txl_sel',
+    },
   },
   {
     name: 'Login',

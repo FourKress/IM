@@ -8,11 +8,10 @@ dayjs.extend(weekday);
 // 4、一周后：展示为月/日，如：10月25日
 // 5、跨年后，展示为年/月/日，如：2021年12月31日
 
-const timesTransform = (timestamp) => {
+export const timesTransform = (timestamp) => {
   if (!timestamp) return '';
   const diffDay = dayjs().diff(timestamp, 'day');
   const hoursTime = dayjs(timestamp).format('HH:mm');
-
   if (diffDay === 0) {
     return hoursTime;
   }
@@ -24,12 +23,17 @@ const timesTransform = (timestamp) => {
     return `周${week[dayjs(timestamp).weekday()]} ${hoursTime}`;
   }
   if (diffDay > 7) {
-    const diffYears = dayjs().diff(timestamp, 'years');
-    if (diffYears) {
-      return dayjs(timestamp).format('YYYY年MM月DD日');
+    const timerYear = dayjs(timestamp).year();
+    const currentYear = dayjs().year();
+    if (timerYear === currentYear) {
+      return dayjs(timestamp).format('MM月DD日');
     }
-    return dayjs(timestamp).format('MM月DD日');
+    return dayjs(timestamp).format('YYYY年MM月DD日');
   }
 };
 
-export default timesTransform;
+export const checkTimesInterval = (currentTimes, preTimes) => {
+  if (currentTimes === preTimes) return true;
+  const interval = dayjs(Number(currentTimes)).diff(Number(preTimes), 's');
+  return interval >= 300;
+};

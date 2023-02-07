@@ -85,12 +85,12 @@ export default {
     sessionList: {
       deep: true,
       handler(val) {
-        this._setMainSessionWindow(val);
+        // this._setMainSessionWindow(val);
       },
     },
   },
   mounted() {
-    this._setMainSessionWindow(this.sessionList);
+    // this._setMainSessionWindow(this.sessionList);
   },
   methods: {
     ...mapActions('IMStore', ['setMainSessionWindow', 'addSessionWindowList', 'setAllSession']),

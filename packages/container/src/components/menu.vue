@@ -4,11 +4,13 @@
     <div class="menu-panel">
       <div
         class="menu-item"
-        v-for="(item) in navList"
+        v-for="item in navList"
         :class="activePath === item.path && 'active'"
         @click="handleMenuSwitch(item.path)"
       >
-        <span class="btn-icon"></span>
+        <span class="btn-icon">
+          <LsIcon render-svg width="20" height="20" :icon="item.icon"></LsIcon>
+        </span>
         <span>{{ item.label }}</span>
       </div>
     </div>
@@ -16,25 +18,38 @@
 </template>
 
 <script>
+import BaseRoutes from '../router';
+import { LsIcon } from '@lanshu/components';
+
 export default {
   name: 'MainMenu',
+  components: {
+    LsIcon,
+  },
   data() {
     return {
       activePath: 0,
-      navList: [{
-        label: '办事',
-        path: '/',
-      }],
+      navList: [],
     };
   },
   watch: {
     $route(val) {
-      this.activePath = val.path
-    }
+      this.activePath = val.path;
+    },
   },
   created() {
     const pluginMenu = JSON.parse(localStorage.getItem('menu') || '[]');
-    this.navList = this.navList.concat(pluginMenu);
+
+    this.navList = BaseRoutes.filter((r) => r?.meta?.isMenu)
+      .map((r) => {
+        const meta = r?.meta;
+        return {
+          label: meta?.name,
+          path: r.path,
+          icon: meta?.icon,
+        };
+      })
+      .concat(pluginMenu);
   },
   methods: {
     handleMenuSwitch(path) {
@@ -92,7 +107,6 @@ export default {
       .btn-icon {
         width: 20px;
         height: 20px;
-        background-color: #ccc;
         margin-bottom: 4px;
         transition: all 0.3s;
       }
@@ -106,7 +120,6 @@ export default {
         .btn-icon {
           width: 20px;
           height: 20px;
-          background-color: #333;
           margin-bottom: 4px;
         }
       }

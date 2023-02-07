@@ -16,7 +16,7 @@ export default {
   },
   computed: {
     timesText() {
-      return timesTransform(this.timestamp);
+      return timesTransform(Number(this.timestamp));
     },
   },
 };

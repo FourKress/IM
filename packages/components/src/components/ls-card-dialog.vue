@@ -13,19 +13,25 @@ export default {
       default: false,
       required: true,
     },
+    isModalClose: {
+      type: Boolean,
+      default: true,
+    }
   },
   watch: {
     visible(val) {
       if (val) {
         this.setClassName('no-drag');
         document.body.appendChild(this.$el);
+      } else {
+        this.setClassName('drag');
+        this.handleRemoveDom();
       }
     },
   },
   methods: {
     handleClose() {
-      this.setClassName('drag');
-      this.handleRemoveDom();
+      if (!this.isModalClose) return;
       this.$emit('update:visible', false);
     },
     handleRemoveDom() {

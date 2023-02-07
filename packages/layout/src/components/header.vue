@@ -23,7 +23,7 @@
           <LsIcon icon="navi_ss_icon" render-svg></LsIcon>
         </div>
         <div class="input-panel">
-          <input type="text" placeholder="创建事项或搜索关键词" />
+          <el-input v-model='keywords' type="text" placeholder="创建事项或搜索关键词" />
         </div>
         <div class="add">
           <LsIcon icon="navi_ss_add" render-svg></LsIcon>
@@ -88,6 +88,7 @@ export default {
   data() {
     return {
       showSettingsDialog: false,
+      keywords: ''
     };
   },
   mounted() {
@@ -224,16 +225,21 @@ export default {
         border-right: 1px solid $split-line-color;
         font-size: 14px;
 
-        input {
-          width: 100%;
-          height: 100%;
+        ::v-deep .el-input {
           border: none;
-          outline: none;
-        }
+          height: 28px;
 
-        input::placeholder {
-          color: $tips-text-color;
-          font-size: 14px;
+          .el-input__inner {
+            width: 100%;
+            height: 100%;
+            border: none;
+            outline: none;
+            padding: 0;
+          }
+          input::placeholder {
+            color: $tips-text-color;
+            font-size: 14px;
+          }
         }
       }
 

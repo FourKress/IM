@@ -68,6 +68,8 @@ export default {
   flex-direction: column;
   overflow: hidden;
 
+  user-select: none;
+
   .top {
     width: 100%;
     height: 60px;

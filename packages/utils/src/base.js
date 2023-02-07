@@ -33,5 +33,6 @@ export const logOut = async () => {
   await IMEvent.IMLogout();
   // IMEvent.IMDestroy();
   removeToken();
+  window.location.reload();
   renderProcess.showLoginWindow(500);
 };

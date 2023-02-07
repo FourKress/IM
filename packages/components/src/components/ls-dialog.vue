@@ -81,6 +81,8 @@ export default {
   z-index: 9;
   transition: all 0.3s;
 
+  user-select: none;
+
   &-panel {
     width: 369px;
     //height: 239px;

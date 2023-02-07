@@ -1,6 +1,7 @@
 import {
   msgTypeMap,
   timesTransform,
+  checkTimesInterval,
   lodash,
   _throttle,
   emojiList,
@@ -16,6 +17,7 @@ import {
 export {
   msgTypeMap,
   timesTransform,
+  checkTimesInterval,
   lodash,
   _throttle,
   emojiList,

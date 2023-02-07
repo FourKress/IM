@@ -18,13 +18,13 @@
             <span class="more">···</span>
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item>
-                <div class="send-down-row">
-                  <LsIcon render-svg icon="=pop_cd_cjql"></LsIcon>
+                <div class="send-down-row" @click='createGroup'>
+                  <LsIcon render-svg icon="pop_cd_cjql"></LsIcon>
                   <span>创建群聊</span>
                 </div>
               </el-dropdown-item>
               <el-dropdown-item>
-                <div class="send-down-row">
+                <div class="send-down-row" @click='openSettings'>
                   <LsIcon render-svg icon="pop_cd_sz"></LsIcon>
                   <span>设置</span>
                 </div>
@@ -36,20 +36,28 @@
     </div>
 
     <div class="message-panel" ref="messagePanel" @scroll="handleScroll">
-      <div
-        class="message-item"
-        :class="item.fromUser !== userInfo.userId ? 'target' : 'self'"
-        v-for="item in messageList"
-      >
-        <div class="img">
-          <img
-            :src="
-              item.fromUser !== userInfo.userId ? toAvatar : userInfo.avatar
-            "
-            alt=""
+      <div class="message-item" v-for="(item, index) in messageList">
+        <div class="tips-row">
+          <TimesTransform
+            v-if="checkTimesInterval(item.timestamp, messageList[Math.max(index - 1, 0)].timestamp)"
+            :timestamp="item.timestamp"
           />
+<!--          <span> 你邀请李安林、于时放加入了群聊</span>-->
         </div>
-        <div class="info">{{ item.data.content }}</div>
+        <div
+          class="msg-row"
+          :class="item.fromUser !== userInfo.userId ? 'target' : 'self'"
+        >
+          <div class="img">
+            <img
+              :src="
+                item.fromUser !== userInfo.userId ? toAvatar : userInfo.avatar
+              "
+              alt=""
+            />
+          </div>
+          <div class="info">{{ item.data.content }}</div>
+        </div>
       </div>
       <video
         ref="myVideo"
@@ -138,7 +146,7 @@
                   <el-dropdown-menu slot="dropdown">
                     <el-dropdown-item>
                       <div class="send-down-row">
-                        <LsIcon render-svg icon="=pop_cd_tp"></LsIcon>
+                        <LsIcon render-svg icon="pop_cd_tp"></LsIcon>
                         <span>图片/视频</span>
                       </div>
                     </el-dropdown-item>
@@ -183,13 +191,14 @@
 <script>
 import { mapGetters, mapActions } from 'vuex';
 import { renderProcess } from '@lanshu/render-process';
-import { emojiList, _throttle } from '@lanshu/utils';
-import { LsIcon } from '@lanshu/components';
+import { emojiList, _throttle, checkTimesInterval } from '@lanshu/utils';
+import { LsIcon, TimesTransform } from '@lanshu/components';
 
 export default {
   name: 'ImView',
   components: {
     LsIcon,
+    TimesTransform,
   },
   props: {
     isMainSession: {
@@ -221,6 +230,7 @@ export default {
       emojiVisible: false,
       windowRange: null,
       sendMsgHotKey: null,
+      scrollTop: 0,
     };
   },
   watch: {
@@ -276,7 +286,7 @@ export default {
   },
   methods: {
     ...mapActions('IMStore', ['removeSessionWindowList']),
-
+    checkTimesInterval,
     initData() {
       this.windowRange = null;
       this.emojiVisible = false;
@@ -295,8 +305,7 @@ export default {
         ) {
           this.emojiVisible = false;
         }
-      } catch (e) {
-      }
+      } catch (e) {}
     },
 
     getMessageList(isContinue = false) {
@@ -317,6 +326,7 @@ export default {
         this.nextMsgId = nextMsgId;
         if (isContinue && this.messageList?.length) {
           this.messageList.unshift(...messageList);
+          this.$refs.messagePanel.scrollTop = 100;
         } else {
           this.messageList = messageList;
           this.$nextTick(() => {
@@ -329,7 +339,8 @@ export default {
     handleScroll(event) {
       if (this.isCompleted) return;
       const scrollTop = event.target.scrollTop;
-      if (scrollTop <= 50) {
+      if (scrollTop <= 200 && (scrollTop <= this.scrollTop || this.scrollTop === 0)) {
+        this.scrollTop = scrollTop;
         this.throttleGetMessageList(true);
       }
     },
@@ -341,21 +352,19 @@ export default {
 
     handleEnterSend() {
       if (this.sendMsgHotKey === 'Enter') {
-        this.sendMsg()
+        this.sendMsg();
       }
     },
     handleCtrlEnterSend() {
       if (this.sendMsgHotKey === 'CommandOrControl+Enter') {
-        this.sendMsg()
+        this.sendMsg();
       } else {
         this.windowRange = window.getSelection().getRangeAt(0);
         const innerText = this.refInput.innerText;
         const endOffset = this.windowRange.endOffset;
         const before = `${innerText ? '<br>' : ''}`;
         const after = `<br>${
-          !innerText || innerText?.length === endOffset
-            ? '<br>'
-            : ''
+          !innerText || innerText?.length === endOffset ? '<br>' : ''
         }`;
         const brNode = `${before}${after}`;
         this.handleTargetInsert(brNode);
@@ -372,28 +381,28 @@ export default {
       let hasDtoQuote = this.message.match(dtoQuoteReg);
       console.log(hasDtoQuote);
 
-      return;
-      // const textMsg = IMSDK.createTextMessage({
-      //   content: this.message, //文本内容
-      //   toUser: this.session.toUser, //消息接收方，为会话列表中的toUser
-      //   toUserType: this.session.toUserType, //消息接收方类型，为会话列表中的toUserType
-      // });
-      const imgMsg = IMSDK.createImgMessage({
-        data: {
-          name: '图片.jpg',
-          type: 'jpg',
-          size: 1024,
-          time: 43,
-          high: 500,
-          wide: 900,
-          url: 'www.baidu.com',
-          smallUrl: 'www.baidu.com',
-        },
+      // return;
+      const textMsg = IMSDK.createTextMessage({
+        content: this.message, //文本内容
         toUser: this.session.toUser, //消息接收方，为会话列表中的toUser
         toUserType: this.session.toUserType, //消息接收方类型，为会话列表中的toUserType
       });
-
-      return;
+      // const imgMsg = IMSDK.createImgMessage({
+      //   data: {
+      //     name: '图片.jpg',
+      //     type: 'jpg',
+      //     size: 1024,
+      //     time: 43,
+      //     high: 500,
+      //     wide: 900,
+      //     url: 'www.baidu.com',
+      //     smallUrl: 'www.baidu.com',
+      //   },
+      //   toUser: this.session.toUser, //消息接收方，为会话列表中的toUser
+      //   toUserType: this.session.toUserType, //消息接收方类型，为会话列表中的toUserType
+      // });
+      //
+      // return;
 
       IMSDK.sendMessage(textMsg)
         .then((e) => {
@@ -612,10 +621,17 @@ export default {
       const blob = await this.recordrtc.stopVideoRecording(this.$refs.myVideo);
       console.log(blob);
     },
+
+    openSettings() {
+      this.$emit('openSettings');
+    },
+    createGroup() {
+      this.$emit('createGroup');
+    }
   },
   destroyed() {
     document.onkeydown = null;
-  }
+  },
 };
 </script>
 
@@ -624,7 +640,7 @@ export default {
   height: 100%;
   background-color: $bg-IM-color;
   box-shadow: 0 4px 10px 0 rgba(51, 51, 51, 0.1);
-  border-radius: 10px 10px 0 0;
+  //border-radius: 10px 10px 0 0;
   width: 500px;
   min-width: 500px;
   margin-left: 6px;
@@ -636,7 +652,7 @@ export default {
   &:first-child {
     margin-left: 0;
     flex: 1;
-    border-radius: 0 10px 0 0;
+    //border-radius: 0 10px 0 0;
     width: auto;
   }
 
@@ -695,6 +711,18 @@ export default {
       align-items: center;
       justify-content: flex-end;
 
+      ::v-deep .el-dropdown {
+        width: 16px;
+        height: 16px;
+        transform: translateY(-2px);
+
+        .more {
+          display: block;
+          width: 16px;
+          height: 16px;
+        }
+      }
+
       .btn {
         margin-right: 20px;
         cursor: pointer;
@@ -711,65 +739,83 @@ export default {
 
   .message-panel {
     flex: 1;
-    padding: 20px 20px 0 20px;
+    padding: 0px 20px;
     overflow-y: auto;
     transform: translate3d(0, 0, 0);
 
     .message-item {
-      display: flex;
-      align-items: flex-start;
-      justify-content: flex-start;
-      margin-bottom: 16px;
-      transform: translate3d(0, 0, 0);
+      .tips-row {
+        min-height: 26px;
+        width: 100%;
+        font-size: 12px;
+        text-align: center;
+        color: $tips-text-color;
+        line-height: 26px;
+        display: flex;
+        flex-direction: column;
+
+        background-color: transparent;
+      }
+
+      &:first-child {
+        margin-top: 20px;
+      }
+
+      .msg-row {
+        display: flex;
+        align-items: flex-start;
+        justify-content: flex-start;
+        transform: translate3d(0, 0, 0);
+
+        &.self {
+          padding-left: 60px;
+          flex-flow: row-reverse;
+
+          .img {
+            margin-left: 10px;
+          }
+        }
+
+        &.target {
+          padding-right: 60px;
+
+          .img {
+            margin-right: 10px;
+          }
+        }
+
+        .img {
+          width: 50px;
+          min-width: 50px;
+          height: 50px;
+          border-radius: 6px;
+          overflow: hidden;
+
+          img {
+            display: block;
+            width: 100%;
+            height: 100%;
+          }
+        }
+
+        .info {
+          min-height: 50px;
+          padding: 15px;
+          box-sizing: border-box;
+          background: $bubble-IM-color;
+          border-radius: 6px;
+          display: flex;
+          align-items: center;
+          justify-content: flex-start;
+
+          font-size: 14px;
+          color: #fff;
+          line-height: 20px;
+        }
+      }
 
       &:last-child {
         margin-bottom: 0;
-      }
-
-      .img {
-        width: 50px;
-        min-width: 50px;
-        height: 50px;
-        border-radius: 6px;
-        overflow: hidden;
-
-        img {
-          display: block;
-          width: 100%;
-          height: 100%;
-        }
-      }
-
-      .info {
-        min-height: 50px;
-        padding: 15px;
-        box-sizing: border-box;
-        background: $bubble-IM-color;
-        border-radius: 6px;
-        display: flex;
-        align-items: center;
-        justify-content: flex-start;
-
-        font-size: 14px;
-        color: #fff;
-        line-height: 20px;
-      }
-
-      &.self {
-        padding-left: 60px;
-        flex-flow: row-reverse;
-
-        .img {
-          margin-left: 10px;
-        }
-      }
-
-      &.target {
-        padding-right: 60px;
-
-        .img {
-          margin-right: 10px;
-        }
       }
     }
   }

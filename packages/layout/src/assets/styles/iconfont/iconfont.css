@@ -1,9 +1,9 @@
 @font-face {
   font-family: "ls-icon-font"; /* Project id 3760592 */
-  src: url('iconfont.woff2?t=1670487237173') format('woff2'),
-       url('iconfont.woff?t=1670487237173') format('woff'),
-       url('iconfont.ttf?t=1670487237173') format('truetype'),
-       url('iconfont.svg?t=1670487237173#ls-icon-font') format('svg');
+  src: url('iconfont.woff2?t=1675731434102') format('woff2'),
+       url('iconfont.woff?t=1675731434102') format('woff'),
+       url('iconfont.ttf?t=1675731434102') format('truetype'),
+       url('iconfont.svg?t=1675731434102#ls-icon-font') format('svg');
 }
 
 .ls-icon-font {
@@ -12,6 +12,34 @@
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.ls-icon-sz_gx:before {
+  content: "\e619";
+}
+
+.ls-icon-sz_ys:before {
+  content: "\e61a";
+}
+
+.ls-icon-sz_ty:before {
+  content: "\e61b";
+}
+
+.ls-icon-sz_wj:before {
+  content: "\e61c";
+}
+
+.ls-icon-sz_gy:before {
+  content: "\e61d";
+}
+
+.ls-icon-sz_tz:before {
+  content: "\e61e";
+}
+
+.ls-icon-sz_zhzx:before {
+  content: "\e61f";
 }
 
 .ls-icon-pop_cd_tp:before {

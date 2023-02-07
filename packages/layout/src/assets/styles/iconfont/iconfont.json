@@ -6,6 +6,55 @@
   "description": "IM、政务通用",
   "glyphs": [
     {
+      "icon_id": "33441353",
+      "name": "sz_gx",
+      "font_class": "sz_gx",
+      "unicode": "e619",
+      "unicode_decimal": 58905
+    },
+    {
+      "icon_id": "33441354",
+      "name": "sz_ys",
+      "font_class": "sz_ys",
+      "unicode": "e61a",
+      "unicode_decimal": 58906
+    },
+    {
+      "icon_id": "33441355",
+      "name": "sz_ty",
+      "font_class": "sz_ty",
+      "unicode": "e61b",
+      "unicode_decimal": 58907
+    },
+    {
+      "icon_id": "33441356",
+      "name": "sz_wj",
+      "font_class": "sz_wj",
+      "unicode": "e61c",
+      "unicode_decimal": 58908
+    },
+    {
+      "icon_id": "33441357",
+      "name": "sz_gy",
+      "font_class": "sz_gy",
+      "unicode": "e61d",
+      "unicode_decimal": 58909
+    },
+    {
+      "icon_id": "33441358",
+      "name": "sz_tz",
+      "font_class": "sz_tz",
+      "unicode": "e61e",
+      "unicode_decimal": 58910
+    },
+    {
+      "icon_id": "33441362",
+      "name": "sz_zhzx",
+      "font_class": "sz_zhzx",
+      "unicode": "e61f",
+      "unicode_decimal": 58911
+    },
+    {
       "icon_id": "33303563",
       "name": "pop_cd_tp",
       "font_class": "pop_cd_tp",
