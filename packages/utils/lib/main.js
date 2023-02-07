@@ -12,6 +12,7 @@ import {
   phoneEncryption,
   formatPhoneNum,
   logOut,
+  IMEvent,
 } from '../src/main';
 
 export {
@@ -28,4 +29,5 @@ export {
   phoneEncryption,
   formatPhoneNum,
   logOut,
+  IMEvent,
 };

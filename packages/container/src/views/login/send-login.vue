@@ -29,9 +29,8 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex';
-import { token, phoneEncryption } from '@lanshu/utils';
+import { token, phoneEncryption, IMEvent } from '@lanshu/utils';
 import { renderProcess } from '@lanshu/render-process';
-import { IMEvent } from '@lanshu/im';
 import OtherLogin from './other-login';
 import AuthCode from '../../components/authCode';
 

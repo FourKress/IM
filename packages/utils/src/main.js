@@ -7,6 +7,7 @@ import generateRoute from './router';
 import generateStore from './store';
 import * as token from './token';
 import { phoneEncryption, formatPhoneNum, logOut } from './base';
+import * as IMEvent from '../src/IM-event';
 
 export {
   msgTypeMap,
@@ -22,4 +23,5 @@ export {
   phoneEncryption,
   formatPhoneNum,
   logOut,
+  IMEvent,
 };

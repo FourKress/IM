@@ -21,7 +21,6 @@
   "scripts": {},
   "dependencies": {
     "@lanshu/components": "^0.1.10",
-    "@lanshu/im": "^0.1.10",
     "@lanshu/plugin": "^0.1.10",
     "@lanshu/render-process": "^0.1.10",
     "@lanshu/sidebar": "^0.1.10",

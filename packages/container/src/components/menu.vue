@@ -28,7 +28,7 @@ export default {
   },
   data() {
     return {
-      activePath: 0,
+      activePath: '/',
       navList: [],
     };
   },

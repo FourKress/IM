@@ -1,7 +1,6 @@
-import { IMEvent } from '@lanshu/im';
 import { removeToken } from './token';
 import { renderProcess } from '@lanshu/render-process';
-import router from './router';
+import { IMDestroy } from './IM-event';
 
 export const phoneEncryption = (phoneNum) => {
   if (!phoneNum) return;
@@ -30,8 +29,7 @@ export const formatPhoneNum = (newPhoneNum, oldPhoneNum) => {
 };
 
 export const logOut = async () => {
-  await IMEvent.IMLogout();
-  // IMEvent.IMDestroy();
+  IMDestroy();
   removeToken();
   window.location.reload();
   renderProcess.showLoginWindow(500);
