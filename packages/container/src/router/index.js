@@ -6,7 +6,8 @@ const baseRoutes = [
     meta: {
       isMenu: true,
       name: '消息',
-      icon: 'menu_xx_sel',
+      disableIcon: 'menu_xx_nor',
+      activeIcon: 'menu_xx_sel',
     },
   },
   {
@@ -16,7 +17,8 @@ const baseRoutes = [
     meta: {
       isMenu: true,
       name: '通讯录',
-      icon: 'menu_txl_sel',
+      disableIcon: 'menu_txl_nor',
+      activeIcon: 'menu_txl_sel',
     },
   },
   {

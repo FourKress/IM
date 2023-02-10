@@ -1,6 +1,9 @@
 import { globalShortcut } from 'electron';
 import { handleStartCapture } from './screenshots';
 
+const Enter = 'Enter';
+const ctrlEnter = 'CommandOrControl';
+
 export const unregisterHotKeyAll = () => {
   globalShortcut.unregisterAll();
 };
@@ -9,20 +12,20 @@ export const initHotKeys = () => {
   let hotKeys = global.store.get('hotKeys');
   const defaultKeys = {
     sendMsg: {
-      defaultKey: 'Enter',
-      currentKey: 'Enter',
+      defaultKey: Enter,
+      currentKey: Enter,
     },
     screenshot: {
-      defaultKey: 'CommandOrControl+Shift+A',
-      currentKey: 'CommandOrControl+Shift+A',
+      defaultKey: `${ctrlEnter}+Shift+A`,
+      currentKey: `${ctrlEnter}+Shift+A`,
     },
     search: {
-      defaultKey: 'CommandOrControl+F',
-      currentKey: 'CommandOrControl+F',
+      defaultKey: `${ctrlEnter}+F`,
+      currentKey: `${ctrlEnter}+F`,
     },
     window: {
-      defaultKey: 'CommandOrControl+M',
-      currentKey: 'CommandOrControl+M',
+      defaultKey: `${ctrlEnter}+M`,
+      currentKey: `${ctrlEnter}+M`,
     },
   };
   if (!hotKeys) {

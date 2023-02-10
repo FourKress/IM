@@ -10,6 +10,8 @@ const getters = {
 
 const mutations = {
   addBreadCrumb(data, value) {
+    const flag = data.breadCrumbs.some((d) => d.path === value.path);
+    if (flag) return;
     data.breadCrumbs.push(value);
   },
   deleteBreadCrumb(data, value) {

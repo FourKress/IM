@@ -20,15 +20,15 @@
           <div class="action">
             <span
               class="btn"
-              :class="tabType === 'session' && 'active'"
-              @click="handleClick('session')"
+              :class="tabType === !isAddress && 'active'"
+              @click="handleClick(!isAddress)"
             >
               最近联系
             </span>
             <span
               class="btn"
-              :class="tabType === 'address' && 'active'"
-              @click="handleClick('address')"
+              :class="tabType === isAddress && 'active'"
+              @click="handleClick(isAddress)"
             >
               通讯录
             </span>
@@ -110,6 +110,8 @@ import { LsIcon } from '@lanshu/components';
 import { mapGetters } from 'vuex';
 import _ from 'lodash';
 
+const isAddress = false;
+
 export default {
   name: 'Create-group-chat',
   props: {},
@@ -118,7 +120,8 @@ export default {
   },
   data() {
     return {
-      tabType: 'session',
+      isAddress,
+      tabType: !isAddress,
       addressBookList: [],
       selfSessionList: [],
       selectList: [],
@@ -137,14 +140,9 @@ export default {
       return staffList;
     },
     currentTarget() {
-      if (this.tabType === 'session') return 'selfSessionList';
+      if (this.tabType !== this.isAddress) return 'selfSessionList';
       return 'addressBookList';
     },
-  },
-  watch: {
-    tabType(val) {
-
-    }
   },
   mounted() {
     this.selfSessionList = _.cloneDeep(this.sessionList).map(d => {
@@ -389,7 +387,7 @@ export default {
                 width: 34px;
                 height: 34px;
                 margin-right: 10px;
-                border-radius: 5px;
+                border-radius: 6px;
                 overflow: hidden;
                 background-color: #333333;
 
@@ -450,7 +448,7 @@ export default {
               width: 34px;
               height: 34px;
               margin-right: 10px;
-              border-radius: 5px;
+              border-radius: 6px;
               overflow: hidden;
               background-color: #333333;
 

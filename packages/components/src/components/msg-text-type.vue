@@ -20,7 +20,7 @@ export default {
       if (msgType === 1) {
         return data.content;
       }
-      return `[${msgTypeMap[msgType]}]`;
+      return `[${msgTypeMap[msgType]?.label}]`;
     },
   },
 };

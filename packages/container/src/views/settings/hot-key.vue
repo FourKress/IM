@@ -73,8 +73,7 @@
 import Card from './card';
 import InfoBlock from './info-block';
 import { renderProcess } from '@lanshu/render-process';
-
-const defaultMsgHotKey = 'Enter';
+import {keyCode} from '@lanshu/utils';
 
 export default {
   name: 'HotKey-Card',
@@ -85,15 +84,15 @@ export default {
   data() {
     return {
       msgHotKey: '',
-      defaultMsgHotKey,
+      keyCode,
       options: [
         {
-          value: defaultMsgHotKey,
-          label: defaultMsgHotKey,
+          value: keyCode.isEnter,
+          label: keyCode.isEnter,
         },
         {
-          value: 'CommandOrControl+Enter',
-          label: '⌘+Enter',
+          value: keyCode.isCtrlEnter,
+          label: `${keyCode.viewCharacter} + ${keyCode.isEnter}`,
         },
       ],
       hotKeyInfo: {
@@ -147,14 +146,14 @@ export default {
         const { currentKey, defaultKey } = hotKeyDB[k];
         if (currentKey) {
           this.hotKeyInfo[k].currentKey = currentKey.replace(
-            'CommandOrControl',
-            '⌘',
+            this.keyCode.realCharacter,
+            this.keyCode.viewCharacter,
           );
           this.hotKeyInfo[k].oldKey = currentKey;
         } else {
           this.hotKeyInfo[k].currentKey = defaultKey.replace(
-            'CommandOrControl',
-            '⌘',
+            this.keyCode.realCharacter,
+            this.keyCode.viewCharacter,
           );
         }
 
@@ -165,8 +164,8 @@ export default {
     async inputBlur(key) {
       this.hotKeyInfo[key].placeholder = '点击设置快捷键';
       const formatKey = this.hotKeyInfo[key].currentKey.replace(
-        '⌘',
-        'CommandOrControl',
+        this.keyCode.viewCharacter,
+        this.keyCode.realCharacter,
       );
       const keyArr = formatKey.split('+');
       const oldKey = this.hotKeyInfo[key].oldKey;
@@ -199,8 +198,8 @@ export default {
 
     async handleSendMsgChange(val) {
       const msgHotKey = val.replace(
-        '⌘',
-        'CommandOrControl',
+        this.keyCode.viewCharacter,
+        this.keyCode.realCharacter,
       );
       const hotKeyDB = (await renderProcess.getStore('hotKeys')) || {};
       await renderProcess.setStore('hotKeys', {
@@ -253,7 +252,7 @@ export default {
     },
 
     async handleReset() {
-      this.msgHotKey = this.defaultMsgHotKey;
+      this.msgHotKey = this.keyCode.isEnter;
 
       const hotKeyDB = await renderProcess.getStore('hotKeys');
       Object.keys(this.hotKeyInfo).map(async (k) => {
@@ -263,15 +262,15 @@ export default {
         renderProcess.setHotKey({
           newKey: defaultKey,
           oldKey: this.hotKeyInfo[k].currentKey.replace(
-            '⌘',
-            'CommandOrControl',
+            this.keyCode.viewCharacter,
+            this.keyCode.realCharacter,
           ),
           type: k,
         });
 
         this.hotKeyInfo[k].currentKey = defaultKey.replace(
-          'CommandOrControl',
-          '⌘',
+          this.keyCode.realCharacter,
+          this.keyCode.viewCharacter,
         );
         this.hotKeyInfo[k].oldKey = defaultKey;
         this.hotKeyInfo[k].placeholder = '点击设置快捷键';
@@ -280,8 +279,8 @@ export default {
       await renderProcess.setStore('hotKeys', {
         ...hotKeyDB,
         sendMsg: {
-          defaultKey: this.defaultMsgHotKey,
-          currentKey: this.defaultMsgHotKey,
+          defaultKey: this.keyCode.isEnter,
+          currentKey: this.keyCode.isEnter,
         },
       });
     },

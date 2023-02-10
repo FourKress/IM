@@ -1,8 +1,8 @@
 <template>
   <Card id='Update-Card' title="更新升级">
-    <InfoBlock :info='{}'>
-      <el-checkbox class='item' v-model="autoUpdate">自动检查和安装更新</el-checkbox>
-    </InfoBlock>
+<!--    <InfoBlock :info='{}'>-->
+<!--      <el-checkbox class='item' v-model="autoUpdate">自动检查和安装更新</el-checkbox>-->
+<!--    </InfoBlock>-->
 
     <InfoBlock :info='{}'>
       <el-checkbox class='item' v-model="updateTips">更新提醒</el-checkbox>

@@ -10,7 +10,9 @@ dayjs.extend(weekday);
 
 export const timesTransform = (timestamp) => {
   if (!timestamp) return '';
-  const diffDay = dayjs().diff(timestamp, 'day');
+  const diffDay = dayjs()
+    .startOf('day')
+    .diff(dayjs(timestamp).startOf('day'), 'day');
   const hoursTime = dayjs(timestamp).format('HH:mm');
   if (diffDay === 0) {
     return hoursTime;

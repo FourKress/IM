@@ -15,7 +15,10 @@
 
           <div class="recover-account" v-if="step === 0">
             <span>手机号已停用？</span>
-            <span class="link" @click="openDialog">去找回 ></span>
+            <span class="link" @click="openDialog">
+              <span>去找回</span>
+              <i class="el-icon-arrow-right"></i>
+            </span>
           </div>
         </template>
 
@@ -159,8 +162,8 @@ export default {
             if (this.countdown <= 0) {
               clearInterval(this.timer);
               this.countdown = 0;
-              await logOut()
-              await this.$router.push('/login')
+              await logOut();
+              await this.$router.push('/login');
             }
           }, 1000);
         }
@@ -175,7 +178,7 @@ export default {
     },
   },
   beforeDestroy() {
-    if ([0, 2].includes(this.step) ) {
+    if ([0, 2].includes(this.step)) {
       this.$refs.authCode.handleClearInterval();
       this.$refs.authCode.handleSaveCountdown();
     }

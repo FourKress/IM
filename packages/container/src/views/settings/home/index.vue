@@ -7,7 +7,9 @@
         v-for="nav in navList"
         @click="handleSelectNav(nav)"
       >
-        <span class="nav-icon"></span>
+        <span class="nav-icon">
+          <LsIcon render-svg :icon="nav.icon"></LsIcon>
+        </span>
         <span class="text">{{ nav.label }}</span>
       </div>
     </div>
@@ -27,6 +29,7 @@
 </template>
 
 <script>
+import { LsIcon } from '@lanshu/components';
 import AccountCenter from '../account-center';
 import Notify from '../notify';
 import File from '../file';
@@ -39,6 +42,7 @@ import About from '../about';
 export default {
   name: 'Settings-home',
   components: {
+    LsIcon,
     AccountCenter,
     Notify,
     File,
@@ -54,42 +58,42 @@ export default {
         {
           key: 'AccountCenter',
           label: '账号中心',
-          icon: '',
+          icon: 'sz_zhzx',
         },
         {
           key: 'Notify',
           label: '通知',
-          icon: '',
+          icon: 'sz_tz',
         },
         {
           key: 'File',
           label: '文件',
-          icon: '',
+          icon: 'sz_wj',
         },
         {
           key: 'Basic',
           label: '通用',
-          icon: '',
+          icon: 'sz_ty',
         },
         {
           key: 'Privacy',
           label: '隐私',
-          icon: '',
+          icon: 'sz_ys',
         },
         {
           key: 'HotKey',
           label: '快捷键',
-          icon: '',
+          icon: 'a-icon_kuaijiejian2x',
         },
         {
           key: 'Update',
           label: '更新升级',
-          icon: '',
+          icon: 'sz_gx',
         },
         // {
         //   key: 'About',
         //   label: '关于北象',
-        //   icon: '',
+        //   icon: 'sz_gy',
         // },
       ],
       navSelectKey: 'AccountCenter',
@@ -174,7 +178,6 @@ export default {
         width: 18px;
         height: 18px;
         margin-right: 10px;
-        background-color: #333;
       }
 
       .text {

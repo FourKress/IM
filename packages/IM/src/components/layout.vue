@@ -14,6 +14,7 @@
     </template>
 
     <Settings :visible.sync='visibleSettings' @createGroup='handleCreateGroup' />
+    <GroupSettings :visible.sync='visibleGroupSettings' @createGroup='handleCreateGroup'></GroupSettings>
 
     <LsCardDialog :visible.sync='visibleCreate' :isModalClose='false'>
       <CreateGroupChat @close='handleGroupClose' @confirm='handleCroupConfirm'></CreateGroupChat>
@@ -27,6 +28,7 @@ import Recordrtc from '../recordrtc';
 
 import ImView from './im-view';
 import Settings from './settings';
+import GroupSettings from './group-settings';
 import CreateGroupChat from './create-group-chat';
 import { LsCardDialog } from '@lanshu/components';
 
@@ -35,6 +37,7 @@ export default {
   components: {
     ImView,
     Settings,
+    GroupSettings,
     CreateGroupChat,
     LsCardDialog
   },
@@ -43,6 +46,7 @@ export default {
       recordrtc: null,
       visibleSettings: false,
       visibleCreate: false,
+      visibleGroupSettings: false,
     };
   },
   computed: {

@@ -9,7 +9,14 @@
       >
         <span class="card-icon"></span>
         <span class="label" @click="handleJump(item)">{{ item.title }}</span>
-        <span class="close-icon" @click="handleRouterClose(item, index)"></span>
+        <LsIcon
+          class="close-icon"
+          render-svg
+          width="12"
+          height="12"
+          icon="a-icon_close2x"
+          @click="handleRouterClose(item, index)"
+        ></LsIcon>
         <span class="before-mask"></span>
         <span class="before-bg"></span>
         <span class="after-mask"></span>
@@ -22,9 +29,13 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex';
+import { LsIcon } from '@lanshu/components';
 
 export default {
   name: 'Settings',
+  components: {
+    LsIcon,
+  },
   computed: {
     ...mapGetters('routerStore', ['breadCrumbs', 'historyMainPath']),
   },
@@ -179,7 +190,6 @@ export default {
         width: 12px;
         height: 12px;
         cursor: pointer;
-        background-color: #333;
       }
     }
   }

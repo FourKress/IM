@@ -45,6 +45,10 @@ export default {
       type: [String, Number],
       default: '',
     },
+    isSendLogin: {
+      type: Boolean,
+      default: true,
+    },
   },
   computed: {
     phoneText() {

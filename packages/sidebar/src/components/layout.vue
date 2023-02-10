@@ -5,17 +5,17 @@
         <div class="left">
           <span
             class="btn"
-            :class="tabIndex === 1 && 'active'"
-            @click="handleClick(1)"
+            :class="tabType === isAll && 'active'"
+            @click="handleChooseTab(isAll)"
           >
-            全部
+            <el-badge is-dot :hidden='!allUnreadCount'>全部</el-badge>
           </span>
           <span
             class="btn"
-            :class="tabIndex === 2 && 'active'"
-            @click="handleClick(2)"
+            :class="tabType === !isAll && 'active'"
+            @click="handleChooseTab(!isAll)"
           >
-            未读
+            <el-badge is-dot :hidden='!allUnreadCount'>未读</el-badge>
           </span>
         </div>
       </div>
@@ -23,7 +23,7 @@
       <div class="sidebar-menu">
         <div
           class="menu-item"
-          v-for="item in sessionList"
+          v-for="item in selfSessionList"
           :class="currentSession === item.sessId && 'active'"
           @click="handleMenuClick(item)"
         >
@@ -65,13 +65,16 @@ import { mapGetters, mapActions } from 'vuex';
 import { MsgTextType, TimesTransform } from '@lanshu/components';
 import { _clearSessionUnreadCount } from '@lanshu/utils';
 
+const isAll = true;
+
 export default {
   name: 'MainSidebar',
   data() {
     return {
-      tabIndex: 1,
+      isAll,
+      tabType: isAll,
       currentSession: '',
-      messageList: new Array(10).fill(''),
+      selfSessionList: [],
     };
   },
   components: {
@@ -80,22 +83,36 @@ export default {
   },
   computed: {
     ...mapGetters('IMStore', ['sessionList', 'mainSessionWindow']),
+    allUnreadCount() {
+      return this.sessionList.reduce((sum, curr) => sum + (curr?.unreadCount || 0), 0);
+    },
   },
   watch: {
     sessionList: {
       deep: true,
       handler(val) {
+        this.selfSessionList = val;
         // this._setMainSessionWindow(val);
       },
     },
   },
   mounted() {
+    this.selfSessionList = this.sessionList;
     // this._setMainSessionWindow(this.sessionList);
   },
   methods: {
-    ...mapActions('IMStore', ['setMainSessionWindow', 'addSessionWindowList', 'setAllSession']),
-    handleClick(index) {
-      this.tabIndex = index;
+    ...mapActions('IMStore', [
+      'setMainSessionWindow',
+      'addSessionWindowList',
+      'setAllSession',
+    ]),
+    handleChooseTab(isAll) {
+      this.tabType = isAll;
+      if (isAll === this.isAll) {
+        this.selfSessionList = this.sessionList;
+      } else {
+        this.selfSessionList = this.sessionList.filter(d => d?.unreadCount);
+      }
     },
     _setMainSessionWindow(sessionList) {
       if (!sessionList?.length) return;
@@ -121,7 +138,7 @@ export default {
     },
     handleUnreadCount(sessId, sessionList) {
       _clearSessionUnreadCount(sessId, sessionList);
-    }
+    },
   },
 };
 </script>

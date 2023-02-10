@@ -1,5 +1,7 @@
 import {
   msgTypeMap,
+  checkMsgType,
+  keyCode,
   timesTransform,
   checkTimesInterval,
   lodash,
@@ -13,10 +15,15 @@ import {
   formatPhoneNum,
   logOut,
   IMEvent,
+  getFileSize,
+  getObjectURL,
+  downloadFile,
 } from '../src/main';
 
 export {
   msgTypeMap,
+  checkMsgType,
+  keyCode,
   timesTransform,
   checkTimesInterval,
   lodash,
@@ -30,4 +37,7 @@ export {
   formatPhoneNum,
   logOut,
   IMEvent,
+  getFileSize,
+  getObjectURL,
+  downloadFile,
 };

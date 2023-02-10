@@ -9,7 +9,14 @@
         @click="handleMenuSwitch(item.path)"
       >
         <span class="btn-icon">
-          <LsIcon render-svg width="20" height="20" :icon="item.icon"></LsIcon>
+          <LsIcon
+            render-svg
+            width="20"
+            height="20"
+            :icon="
+              activePath === item.path ? item.activeIcon : item.disableIcon
+            "
+          ></LsIcon>
         </span>
         <span>{{ item.label }}</span>
       </div>
@@ -46,7 +53,8 @@ export default {
         return {
           label: meta?.name,
           path: r.path,
-          icon: meta?.icon,
+          disableIcon: meta?.disableIcon,
+          activeIcon: meta?.activeIcon,
         };
       })
       .concat(pluginMenu);

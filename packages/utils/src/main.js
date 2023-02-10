@@ -1,4 +1,4 @@
-import msgTypeMap from './msgTypeMap';
+import { msgTypeMap, checkMsgType, keyCode } from './constant';
 import { timesTransform, checkTimesInterval } from './times-transform';
 import emojiList from './emoji';
 import lodash, { _throttle } from './lodash';
@@ -6,11 +6,20 @@ import { _clearSessionUnreadCount } from './im-utils';
 import generateRoute from './router';
 import generateStore from './store';
 import * as token from './token';
-import { phoneEncryption, formatPhoneNum, logOut } from './base';
+import {
+  phoneEncryption,
+  formatPhoneNum,
+  logOut,
+  getFileSize,
+  getObjectURL,
+  downloadFile,
+} from './base';
 import * as IMEvent from '../src/IM-event';
 
 export {
   msgTypeMap,
+  checkMsgType,
+  keyCode,
   timesTransform,
   checkTimesInterval,
   emojiList,
@@ -24,4 +33,7 @@ export {
   formatPhoneNum,
   logOut,
   IMEvent,
+  getFileSize,
+  getObjectURL,
+  downloadFile,
 };

@@ -34,3 +34,39 @@ export const logOut = async () => {
   window.location.reload();
   renderProcess.showLoginWindow(500);
 };
+
+// 求次幂
+const pow1024 = (num) => {
+  return Math.pow(1024, num);
+};
+
+// 文件大小 字节转换单位
+export const getFileSize = (fileSize) => {
+  if (!fileSize) return '';
+  if (fileSize < pow1024(1)) return fileSize + ' B';
+  if (fileSize < pow1024(2)) return (fileSize / pow1024(1)).toFixed(2) + ' KB';
+  if (fileSize < pow1024(3)) return (fileSize / pow1024(2)).toFixed(2) + ' MB';
+  if (fileSize < pow1024(4)) return (fileSize / pow1024(3)).toFixed(2) + ' GB';
+  return (fileSize / pow1024(4)).toFixed(2) + ' TB';
+};
+
+export const getObjectURL = (file) => {
+  return window.webkitURL.createObjectURL(file);
+};
+
+export const downloadFile = (url, name) => {
+  const x = new window.XMLHttpRequest();
+  x.open('GET', url, true);
+  x.responseType = 'blob';
+  x.onload = () => {
+    const url = URL.createObjectURL(x.response);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = name;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+  x.send();
+};

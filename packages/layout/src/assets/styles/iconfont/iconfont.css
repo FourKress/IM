@@ -1,9 +1,9 @@
 @font-face {
   font-family: "ls-icon-font"; /* Project id 3760592 */
-  src: url('iconfont.woff2?t=1675731434102') format('woff2'),
-       url('iconfont.woff?t=1675731434102') format('woff'),
-       url('iconfont.ttf?t=1675731434102') format('truetype'),
-       url('iconfont.svg?t=1675731434102#ls-icon-font') format('svg');
+  src: url('iconfont.woff2?t=1676018348879') format('woff2'),
+       url('iconfont.woff?t=1676018348879') format('woff'),
+       url('iconfont.ttf?t=1676018348879') format('truetype'),
+       url('iconfont.svg?t=1676018348879#ls-icon-font') format('svg');
 }
 
 .ls-icon-font {
@@ -12,6 +12,106 @@
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.ls-icon-a-sm_icon2x:before {
+  content: "\e6bc";
+}
+
+.ls-icon-a-da_nor2x:before {
+  content: "\e6bd";
+}
+
+.ls-icon-a-zz_nor2x:before {
+  content: "\e6be";
+}
+
+.ls-icon-a-icon_sbk2x:before {
+  content: "\e6bf";
+}
+
+.ls-icon-a-sqb_nor2x:before {
+  content: "\e6c1";
+}
+
+.ls-icon-a-yw_icon2x:before {
+  content: "\e6c2";
+}
+
+.ls-icon-a-icon_close2x:before {
+  content: "\e6c3";
+}
+
+.ls-icon-a-icon_default_sq2x:before {
+  content: "\e6c5";
+}
+
+.ls-icon-a-icon_more2x:before {
+  content: "\e6c6";
+}
+
+.ls-icon-a-sf_nor2x:before {
+  content: "\e6c7";
+}
+
+.ls-icon-a-icon_default_lx2x:before {
+  content: "\e6c8";
+}
+
+.ls-icon-a-icon_default_tz2x:before {
+  content: "\e6c9";
+}
+
+.ls-icon-a-bianzu23beifen42x:before {
+  content: "\e6ca";
+}
+
+.ls-icon-a-icon_qh2x:before {
+  content: "\e6cb";
+}
+
+.ls-icon-a-icon_ss_12x:before {
+  content: "\e6cc";
+}
+
+.ls-icon-a-icon_yy2x:before {
+  content: "\e6cd";
+}
+
+.ls-icon-a-star_fill2x:before {
+  content: "\e6ce";
+}
+
+.ls-icon-a-icon_default_gl2x:before {
+  content: "\e6d1";
+}
+
+.ls-icon-a-icon_sp2x:before {
+  content: "\e6d4";
+}
+
+.ls-icon-a-icon_selectedbs_bs2x:before {
+  content: "\e6d6";
+}
+
+.ls-icon-a-icon_yzcg2x:before {
+  content: "\e6d7";
+}
+
+.ls-icon-a-icon_sctp2x:before {
+  content: "\e6d8";
+}
+
+.ls-icon-a-icon_default_sz2x:before {
+  content: "\e6d9";
+}
+
+.ls-icon-a-icon_kuaijiejian2x:before {
+  content: "\e6bb";
+}
+
+.ls-icon-icon_wenjian:before {
+  content: "\e6ba";
 }
 
 .ls-icon-sz_gx:before {

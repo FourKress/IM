@@ -3,7 +3,7 @@
     <div>
       <div class="user-info">
         <div class="avatar">
-          <img src="" class="img" alt="" />
+          <img :src="userInfo.avatar" class="img" alt="" />
           <div class="tag"></div>
         </div>
         <div class="nickname">
@@ -11,15 +11,21 @@
         </div>
       </div>
 
-      <template v-for="(info) in infos">
+      <template v-for="info in infos">
         <InfoBlock
           :key="info.key"
           :info="info"
           @callback="handleCallback(info)"
         >
-          <template slot='tag' v-if='info.key=== "authentication"'>
-            <span class='auth-tag'>
-              <LsIcon render-svg icon="xx_srk_bq" height='12' width='12'></LsIcon>
+          <template slot="tag" v-if="info.key === 'authentication'">
+            <span class="auth-tag">
+              <LsIcon
+                render-svg
+                class='tag-icon'
+                icon="a-icon_yzcg2x"
+                height="12"
+                width="12"
+              ></LsIcon>
               <span>已实名</span>
             </span>
           </template>
@@ -33,8 +39,7 @@
         <div class="auth-dialog-panel-tips">
           请使用北象移动端扫码下方二维码，进行实名认证
         </div>
-        <div class="auth-dialog-panel-content">
-        </div>
+        <div class="auth-dialog-panel-content"></div>
         <div class="auth-dialog-panel-footer">
           <div class="confirm btn" @click="showAuthenticate = false">
             知道了
@@ -46,15 +51,10 @@
     <LsCardDialog :visible.sync="showUnbind">
       <div class="auth-dialog-panel">
         <div class="auth-dialog-panel-top">请使用需要绑定的微信扫描二维码</div>
-        <div class="auth-dialog-panel-tips">
-          绑定后可以使用微信扫描码登录
-        </div>
-        <div class="auth-dialog-panel-content">
-        </div>
+        <div class="auth-dialog-panel-tips">绑定后可以使用微信扫描码登录</div>
+        <div class="auth-dialog-panel-content"></div>
         <div class="auth-dialog-panel-footer">
-          <div class="confirm btn" @click="showUnbind = false">
-            知道了
-          </div>
+          <div class="confirm btn" @click="showUnbind = false">知道了</div>
         </div>
       </div>
     </LsCardDialog>
@@ -62,7 +62,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex';
+import { mapGetters, mapActions } from 'vuex';
 import { LsCardDialog, LsIcon } from '@lanshu/components';
 import Card from './card';
 import InfoBlock from './info-block';
@@ -73,31 +73,36 @@ export default {
     Card,
     InfoBlock,
     LsCardDialog,
-    LsIcon
+    LsIcon,
+  },
+  computed: {
+    ...mapGetters('IMStore', ['userInfo']),
   },
   data() {
     return {
-      nickname: '打啊但是',
+      nickname: '',
+      avatar: '',
+
       infos: [
-        {
-          key: 'sign',
-          title: '个性签名',
-          label: '',
-          value: '这是个性签名',
-          btnText: '',
-          render: (h, row) => {
-            const target = this.infos.find((d) => d.key === row.key);
-            return (
-              <el-input
-                style="width: 300px;"
-                type="text"
-                placeholder="编辑个性签名…"
-                onChange={(val) => this.handleChange(val)}
-                v-model={target.value}
-              />
-            );
-          },
-        },
+        // {
+        //   key: 'sign',
+        //   title: '个性签名',
+        //   label: '',
+        //   value: '这是个性签名',
+        //   btnText: '',
+        //   render: (h, row) => {
+        //     const target = this.infos.find((d) => d.key === row.key);
+        //     return (
+        //       <el-input
+        //         style="width: 300px;"
+        //         type="text"
+        //         placeholder="编辑个性签名…"
+        //         onChange={(val) => this.handleChange(val)}
+        //         v-model={target.value}
+        //       />
+        //     );
+        //   },
+        // },
         {
           key: 'phoneNum',
           title: '手机号码',
@@ -143,6 +148,11 @@ export default {
       showUnbind: false,
     };
   },
+  mounted() {
+    const { nickname, avatar } = this.userInfo;
+    this.nickname = nickname;
+    this.avatar = avatar;
+  },
   methods: {
     ...mapActions('routerStore', ['addBreadCrumbs']),
     handleCallback(info) {
@@ -170,7 +180,7 @@ export default {
           path,
         });
         this.$router.push(path);
-      });
+      }).catch(e => {});
     },
     authenticate() {
       this.showAuthenticate = true;
@@ -180,10 +190,10 @@ export default {
       if (info.value) {
         this.$Lconfirm({
           title: '确定要解绑微信吗？',
-          content: '解绑后将不能使用微信登录'
+          content: '解绑后将不能使用微信登录',
         }).then(() => {
           console.log('312123231123');
-        });
+        }).catch(e => {});
       } else {
         this.showUnbind = true;
       }
@@ -195,7 +205,7 @@ export default {
         path,
       });
       this.$router.push(path);
-    }
+    },
   },
 };
 </script>
@@ -260,14 +270,14 @@ export default {
   justify-content: center;
   width: 53px;
   height: 18px;
-  border-radius: 2px;
+  border-radius: 4px;
   border: 1px solid $minor-color;
   text-align: center;
   font-size: 11px;
   color: $minor-color;
   line-height: 18px;
 
-  &.tag-icon {
+  .tag-icon {
     margin-right: 2px;
   }
 }

@@ -15,7 +15,6 @@
         v-else
         :phoneNum="phoneNum"
         :isSendLogin.sync="isSendLogin"
-        :is
         @changeLoginType="changeLoginType"
       ></SendLogin>
 
@@ -24,7 +23,10 @@
         v-if="isAccountLogin || phoneNum"
         @click="openDialog"
       >
-        <span>手机号已停用？去找回 ></span>
+        <span>
+          <span>手机号已停用？去找回</span>
+          <i class="el-icon-arrow-right"></i>
+        </span>
       </div>
     </div>
 

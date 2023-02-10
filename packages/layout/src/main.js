@@ -24,11 +24,15 @@ const Layout = (config = {}) => {
     }
     if (menu) {
       localStorage.setItem('menu', JSON.stringify(menu));
+    } else {
+      localStorage.removeItem('menu');
     }
 
     if (plugin && platform !== 'personal') {
       localStorage.setItem('hasPlugin', 'true');
       Vue.component('plugin', plugin);
+    } else {
+      localStorage.removeItem('hasPlugin');
     }
 
     const completeRoutes = [...baseRoutes];

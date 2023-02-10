@@ -1,4 +1,4 @@
-import { RecordRTCPromisesHandler } from 'recordrtc';
+import { RecordRTCPromisesHandler, invokeSaveAsDialog } from 'recordrtc';
 
 export default class Recordrtc {
   constructor() {
@@ -48,7 +48,7 @@ export default class Recordrtc {
 
     this.destroy();
 
-    // invokeSaveAsDialog(blob, '录音.mp3');
+    invokeSaveAsDialog(blob, '录音.mp3');
     return URL.createObjectURL(blob);
   }
 
@@ -88,8 +88,7 @@ export default class Recordrtc {
     this.recorder.camera.stop();
     this.destroy();
 
-    //视频下载 invokeSaveAsDialog（参数1为视频流blob,参数2为视频类型）
-    // invokeSaveAsDialog(blob, 'video.mp4');
+    invokeSaveAsDialog(blob, '视频.mp4');
     return URL.createObjectURL(blob);
   }
 }
