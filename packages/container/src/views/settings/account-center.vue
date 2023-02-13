@@ -220,7 +220,6 @@ export default {
   .avatar {
     width: 50px;
     height: 50px;
-    background: #d8d8d8;
     border-radius: 6px;
     position: relative;
     margin-right: 24px;

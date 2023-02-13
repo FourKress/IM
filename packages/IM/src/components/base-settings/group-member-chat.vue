@@ -1,5 +1,5 @@
 <template>
-  <div class="create-group-chat">
+  <div class="group-member-chat">
     <div class="title">创建群聊</div>
     <div class="main">
       <div class="left">
@@ -16,7 +16,7 @@
             <el-input type="text" v-model='staffName' placeholder="查找联系人" />
           </div>
         </div>
-        <div class="active-row">
+        <div class="active-row" v-if='panelType !== IMGroupMemberPanelType.isDel'>
           <div class="action">
             <span
               class="btn"
@@ -58,7 +58,7 @@
         </div>
       </div>
       <div class="right">
-        <div class="input-row">
+        <div class="input-row" v-if='panelType === IMGroupMemberPanelType.isCreate'>
           <div class="query-icon">
             <LsIcon
               icon="navi_ss_icon"
@@ -84,14 +84,14 @@
                 <div class="name">
                   <span>{{ item.nickname }}</span>
                 </div>
-                <div class="close-icon" @click="handleUnSelect(item, index)">
-                  <LsIcon
-                    icon="navi_ss_add"
-                    width="14"
-                    height="14"
-                    render-svg
-                  ></LsIcon>
-                </div>
+              </div>
+              <div class="close-icon" @click="handleUnSelect(item, index)">
+                <LsIcon
+                  icon="a-icon_close2x"
+                  width="14"
+                  height="14"
+                  render-svg
+                ></LsIcon>
               </div>
             </div>
           </div>
@@ -109,17 +109,25 @@
 import { LsIcon } from '@lanshu/components';
 import { mapGetters } from 'vuex';
 import _ from 'lodash';
+import { IMGroupMemberPanelType } from '@lanshu/utils';
 
 const isAddress = false;
 
 export default {
-  name: 'Create-group-chat',
-  props: {},
+  name: 'Group-member-chat',
+  props: {
+    panelType: {
+      required: true,
+      type: String,
+      default: IMGroupMemberPanelType.isCreate
+    }
+  },
   components: {
     LsIcon,
   },
   data() {
     return {
+      IMGroupMemberPanelType,
       isAddress,
       tabType: !isAddress,
       addressBookList: [],
@@ -194,7 +202,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.create-group-chat {
+.group-member-chat {
   width: 564px;
   height: 508px;
   display: flex;
@@ -248,6 +256,7 @@ export default {
         background-color: $bg-white-color;
         border-radius: 6px;
         padding: 0 14px;
+        margin-bottom: 10px;
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -284,7 +293,9 @@ export default {
 
       .active-row {
         width: 100%;
-        margin: 10px 0 20px;
+        height: 28px;
+        line-height: 20px;
+        margin-bottom: 20px;
 
         .action {
           flex: 1;
@@ -311,7 +322,7 @@ export default {
               content: '';
               width: 20px;
               height: 2px;
-              background: #fff;
+              background: #f9fafc;
               border-radius: 1px;
               margin-top: 4px;
               transition: all 0.3s;

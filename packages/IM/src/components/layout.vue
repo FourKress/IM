@@ -1,23 +1,34 @@
 <template>
   <div id="client-im">
     <ImView
-      v-if='mainSessionWindow.sessId'
+      v-if="mainSessionWindow.sessId"
       :key="mainSessionWindow.sessId"
       :session="mainSessionWindow"
-      :recordrtc='recordrtc'
+      :recordrtc="recordrtc"
       isMainSession
-      @openSettings='handleOpenSettings'
-      @createGroup='handleCreateGroup'
+      @moreCallback="handleMoreCallback"
     />
+    <!--  协同  -->
     <template v-for="item in sessionWindowList">
-      <ImView :key="item.sessId" :session="item" :recordrtc='recordrtc' />
+      <ImView :key="item.sessId" :session="item" :recordrtc="recordrtc" />
     </template>
 
-    <Settings :visible.sync='visibleSettings' @createGroup='handleCreateGroup' />
-    <GroupSettings :visible.sync='visibleGroupSettings' @createGroup='handleCreateGroup'></GroupSettings>
+    <Settings
+      :visible.sync="visibleSettings"
+      @createGroup="handleCreateGroup"
+    />
+    <GroupPanel
+      :visible.sync="visibleGroupSettings"
+      :isMember="isMember"
+      @changeGroupMember='handleChangeGroupMember'
+    ></GroupPanel>
 
-    <LsCardDialog :visible.sync='visibleCreate' :isModalClose='false'>
-      <CreateGroupChat @close='handleGroupClose' @confirm='handleCroupConfirm'></CreateGroupChat>
+    <LsCardDialog :visible.sync="visibleGroupMember" :isModalClose="false">
+      <GroupMemberChat
+        :panelType='groupMemberPanelType'
+        @close="handleGroupClose"
+        @confirm="handleCroupConfirm"
+      ></GroupMemberChat>
     </LsCardDialog>
   </div>
 </template>
@@ -27,26 +38,31 @@ import { mapGetters } from 'vuex';
 import Recordrtc from '../recordrtc';
 
 import ImView from './im-view';
-import Settings from './settings';
-import GroupSettings from './group-settings';
-import CreateGroupChat from './create-group-chat';
+import Settings from './base-settings/settings';
+import GroupMemberChat from './base-settings/group-member-chat';
+import GroupPanel from './group-panel/index';
 import { LsCardDialog } from '@lanshu/components';
+import { IMHeaderMoreBtnKey, IMGroupMemberPanelType } from '@lanshu/utils';
 
 export default {
   name: 'MainIM',
   components: {
     ImView,
     Settings,
-    GroupSettings,
-    CreateGroupChat,
-    LsCardDialog
+    GroupPanel,
+    GroupMemberChat,
+    LsCardDialog,
   },
   data() {
     return {
       recordrtc: null,
+      IMHeaderMoreBtnKey,
+      IMGroupMemberPanelType,
+      isMember: false,
       visibleSettings: false,
-      visibleCreate: false,
+      visibleGroupMember: false,
       visibleGroupSettings: false,
+      groupMemberPanelType: IMGroupMemberPanelType.isCreate,
     };
   },
   computed: {
@@ -57,18 +73,44 @@ export default {
     this.recordrtc = new Recordrtc();
   },
   methods: {
-    handleOpenSettings() {
-      this.visibleSettings = true;
+    handleMoreCallback(type) {
+      switch (type) {
+        case this.IMHeaderMoreBtnKey.isOpenSet:
+          this.visibleSettings = true;
+          break;
+        case this.IMHeaderMoreBtnKey.isCreateGroup:
+          this.handleCreateGroup();
+          break;
+        case this.IMHeaderMoreBtnKey.isOpenGroupMember:
+          this.handleOpenGroupSet(true);
+          break;
+        case this.IMHeaderMoreBtnKey.isOpenGroupSet:
+          this.handleOpenGroupSet(false);
+          break;
+        default: break;
+      }
     },
+
+    handleChangeGroupMember(type) {
+      console.log(type);
+      this.groupMemberPanelType = type;
+      this.visibleGroupMember = true;
+    },
+
     handleCreateGroup() {
-      this.visibleCreate = true;
+      this.groupMemberPanelType = this.IMGroupMemberPanelType.isCreate;
+      this.visibleGroupMember = true;
+    },
+    handleOpenGroupSet(isMember) {
+      this.visibleGroupSettings = true;
+      this.isMember = isMember;
     },
 
     handleGroupClose() {
-      this.visibleCreate = false;
+      this.visibleGroupMember = false;
     },
     handleCroupConfirm() {
-      this.visibleCreate = false;
+      this.visibleGroupMember = false;
     },
   },
 };

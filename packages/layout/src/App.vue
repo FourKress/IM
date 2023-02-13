@@ -39,6 +39,7 @@ html,
 body {
   height: 100%;
   scroll-behavior:smooth;
+  user-select: none;
 }
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;

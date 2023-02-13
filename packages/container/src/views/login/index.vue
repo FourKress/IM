@@ -2,7 +2,14 @@
   <div id="login">
     <div class="image"></div>
     <div class="operate-panel">
-      <div class="login-type" @click="switchLoginType"></div>
+      <div class="login-type" @click="switchLoginType">
+        <LsIcon
+          render-svg
+          width="117"
+          height="115"
+          :icon="isAccountLogin ? 'a-icon_erweima2x' : 'a-icon_shouji2x'"
+        ></LsIcon>
+      </div>
 
       <BasicLogin
         ref="basicLogin"
@@ -40,7 +47,7 @@
 
 <script>
 import { renderProcess } from '@lanshu/render-process';
-import { WindowOperate } from '@lanshu/components';
+import { WindowOperate, LsIcon } from '@lanshu/components';
 import BasicLogin from './basic-login';
 import SendLogin from './send-login';
 import recoverAccount from '../../mixins/recover-account';
@@ -51,6 +58,7 @@ export default {
     WindowOperate,
     BasicLogin,
     SendLogin,
+    LsIcon,
   },
   mixins: [recoverAccount],
   data() {
@@ -117,17 +125,26 @@ export default {
     box-sizing: border-box;
     padding: 88px 80px 74px;
     position: relative;
+    overflow: hidden;
 
     .login-type {
       position: absolute;
       top: 0;
       right: 0;
-      width: 100px;
-      height: 100px;
+      width: 117px;
+      height: 115px;
       cursor: pointer;
+      padding: 22px 22px 0 0;
 
-      background-color: #333333;
-      color: #fff;
+      &::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        border-width: 0 138px 137px 0;
+        border-style: solid;
+        border-color: transparent transparent $bg-white-color;
+      }
     }
 
     .footer-btn {

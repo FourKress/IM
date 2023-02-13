@@ -5,13 +5,20 @@
       <span class="text">更多登录</span>
       <span class="right-line"></span>
     </div>
-    <div class="wechat" @click="handleWechatLogin"></div>
+    <div class="wechat" @click="handleWechatLogin">
+      <LsIcon render-svg width='50' height='50' icon='a-icon_weixin2x'></LsIcon>
+    </div>
   </div>
 </template>
 
 <script>
+import { LsIcon } from '@lanshu/components';
+
 export default {
   name: 'Other-login',
+  components: {
+    LsIcon,
+  },
   methods: {
     handleWechatLogin() {
       this.$emit('wechatLogin');
@@ -20,7 +27,7 @@ export default {
 };
 </script>
 
-<style scoped lang='scss'>
+<style scoped lang="scss">
 .other-login {
   display: flex;
   flex-direction: column;
@@ -65,8 +72,6 @@ export default {
     border-radius: 50%;
     overflow: hidden;
     cursor: pointer;
-
-    background: #333;
   }
 }
 </style>

@@ -58,7 +58,7 @@
             </div>
             <div class="close-icon" @click="handleUnSelect(index)">
               <LsIcon
-                icon="navi_ss_add"
+                icon="a-icon_close2x"
                 width="14"
                 height="14"
                 render-svg
@@ -117,6 +117,7 @@ export default {
   },
   methods: {
     handleClose() {
+
       this.$emit('close');
     },
     async handleConfirm() {
@@ -157,6 +158,9 @@ export default {
     },
     handleUnSelect(index) {
       this.fileList.splice(index, 1);
+      if (!this.fileList?.length) {
+        this.handleClose()
+      }
     },
     // 计算音频的时长
     async countAudioTime(audio) {

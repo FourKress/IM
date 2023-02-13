@@ -1,6 +1,8 @@
 <template>
   <div class="send-login">
-    <div class="back-icon" @click="backLogin"></div>
+    <div class="back-icon" @click="backLogin">
+      <LsIcon render-svg width='40' height='30' icon='a-icon_zuobian2x'></LsIcon>
+    </div>
 
     <div class="title">
       {{ isAppLogin ? '请在APP上确认登录' : '请输入手机验证码' }}
@@ -33,12 +35,14 @@ import { token, phoneEncryption, IMEvent } from '@lanshu/utils';
 import { renderProcess } from '@lanshu/render-process';
 import OtherLogin from './other-login';
 import AuthCode from '../../components/authCode';
+import { LsIcon } from '@lanshu/components';
 
 export default {
   name: 'Send-login',
   components: {
     OtherLogin,
     AuthCode,
+    LsIcon
   },
   props: {
     phoneNum: {
@@ -86,10 +90,10 @@ export default {
       }
     },
     handleClearInterval() {
-      this.$refs.authCode.handleClearInterval();
+      this.$refs?.authCode?.handleClearInterval();
     },
     handleSaveCountdown() {
-      this.$refs.authCode.handleSaveCountdown();
+      this.$refs?.authCode?.handleSaveCountdown();
     },
 
     async handleLogin() {
@@ -114,9 +118,8 @@ export default {
 
 <style scoped lang="scss">
 .back-icon {
-  width: 14px;
-  height: 6px;
-  background-color: #333;
+  width: 40px;
+  height: 30px;
   margin: 24px 0 44px 0;
   cursor: pointer;
 }

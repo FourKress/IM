@@ -1,7 +1,7 @@
 <template>
   <div class="msg-card">
     <div
-      class="card"
+      class="card text"
       :class="classObject"
       v-if="msgType === checkMsgType.isText"
     >
@@ -155,6 +155,10 @@ export default {
 
     &.target {
       background-color: $bg-white-color;
+    }
+
+    &.text {
+      user-select: text;
     }
   }
 

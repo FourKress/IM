@@ -1,4 +1,10 @@
-import { msgTypeMap, checkMsgType, keyCode } from './constant';
+import {
+  msgTypeMap,
+  checkMsgType,
+  keyCode,
+  IMHeaderMoreBtnKey,
+  IMGroupMemberPanelType,
+} from './constant';
 import { timesTransform, checkTimesInterval } from './times-transform';
 import emojiList from './emoji';
 import lodash, { _throttle } from './lodash';
@@ -20,6 +26,8 @@ export {
   msgTypeMap,
   checkMsgType,
   keyCode,
+  IMHeaderMoreBtnKey,
+  IMGroupMemberPanelType,
   timesTransform,
   checkTimesInterval,
   emojiList,

@@ -4,13 +4,13 @@
       <div class="avatar" @click="openDialog">
         <img :src="userInfo.avatar" class="img" alt="" />
       </div>
-<!--      <div class="user-info">-->
-<!--        <p class="name">{{ userInfo.nickname }}</p>-->
-<!--        <div class="position">-->
-<!--          <span>线上综窗</span>-->
-<!--          <span class="down-icon"></span>-->
-<!--        </div>-->
-<!--      </div>-->
+      <!--      <div class="user-info">-->
+      <!--        <p class="name">{{ userInfo.nickname }}</p>-->
+      <!--        <div class="position">-->
+      <!--          <span>线上综窗</span>-->
+      <!--          <span class="down-icon"></span>-->
+      <!--        </div>-->
+      <!--      </div>-->
 
       <div class="loading">
         {{ IM_Status }}
@@ -23,7 +23,11 @@
           <LsIcon icon="navi_ss_icon" render-svg></LsIcon>
         </div>
         <div class="input-panel">
-          <el-input v-model='keywords' type="text" placeholder="创建事项或搜索关键词" />
+          <el-input
+            v-model="keywords"
+            type="text"
+            placeholder="创建事项或搜索关键词"
+          />
         </div>
         <div class="add">
           <LsIcon icon="navi_ss_add" render-svg></LsIcon>
@@ -35,14 +39,14 @@
       <WindowOperate />
     </div>
 
-    <LsCardDialog :visible.sync='showSettingsDialog'>
+    <LsCardDialog :visible.sync="showSettingsDialog">
       <div class="settings-dialog">
         <div class="top"></div>
         <div class="info">
           <div class="avatar">
-            <div class="img"></div>
+            <img :src="userInfo.avatar" class="img" />
           </div>
-          <div class="nickname">大声道</div>
+          <div class="nickname">{{ userInfo.nickname }}</div>
           <div class="tag"></div>
         </div>
         <div class="nav-wrap">
@@ -80,7 +84,7 @@ export default {
   components: {
     LsIcon,
     WindowOperate,
-    LsCardDialog
+    LsCardDialog,
   },
   computed: {
     ...mapGetters('IMStore', ['userInfo', 'IM_Status']),
@@ -88,33 +92,36 @@ export default {
   data() {
     return {
       showSettingsDialog: false,
-      keywords: ''
+      keywords: '',
     };
   },
-  mounted() {
-  },
+  mounted() {},
   methods: {
-    ...mapActions('routerStore', ['clearBreadCrumb', 'addBreadCrumbs', 'setHistoryMainPath']),
+    ...mapActions('routerStore', [
+      'clearBreadCrumb',
+      'addBreadCrumbs',
+      'setHistoryMainPath',
+    ]),
     openDialog() {
       this.showSettingsDialog = true;
     },
     goToSettings() {
       this.showSettingsDialog = false;
       if (this.$route.path.includes('/settings')) return;
-      this.setHistoryMainPath(this.$route.path)
+      this.setHistoryMainPath(this.$route.path);
       this.clearBreadCrumb();
       this.addBreadCrumbs({
         title: '设置',
         path: '/settings/home',
-      })
+      });
 
       this.$router.push('/settings');
     },
     async handleLogOut() {
       this.showSettingsDialog = false;
 
-      await logOut()
-      await this.$router.push('/login')
+      await logOut();
+      await this.$router.push('/login');
     },
   },
 };
@@ -296,6 +303,7 @@ export default {
         height: 66px;
         background: #ffb100;
         border-radius: 8px;
+        display: block;
       }
     }
 

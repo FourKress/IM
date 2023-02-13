@@ -103,7 +103,7 @@
 import { emojiList, keyCode, checkMsgType } from '@lanshu/utils';
 import { renderProcess } from '@lanshu/render-process';
 import { LsIcon } from '@lanshu/components';
-import ActionCard from './action-card';
+import ActionCard from '../action-view/action-card';
 import { mapGetters } from 'vuex';
 
 export default {

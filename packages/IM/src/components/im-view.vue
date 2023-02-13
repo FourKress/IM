@@ -43,9 +43,9 @@
 import { mapGetters } from 'vuex';
 import { _throttle, checkTimesInterval } from '@lanshu/utils';
 import { TimesTransform } from '@lanshu/components';
-import MsgCard from './msg-card';
-import MsgHeader from './msg-header';
-import MsgInputAction from './msg-input-action';
+import MsgCard from './msg-view/msg-card';
+import MsgHeader from './msg-view/msg-header';
+import MsgInputAction from './msg-view/msg-input-action';
 
 export default {
   name: 'ImView',

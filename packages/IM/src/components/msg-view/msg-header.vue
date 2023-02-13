@@ -20,17 +20,31 @@
         <LsIcon render-svg icon="a-icon_yy2x"></LsIcon>
       </div>
       <div class="btn">
-        <el-dropdown trigger="click">
+        <el-dropdown trigger="click" @command="handleCommand">
           <LsIcon render-svg icon="a-icon_more2x"></LsIcon>
-          <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item>
-              <div class="send-down-row" @click="createGroup">
+          <el-dropdown-menu slot="dropdown" v-if='!isGroup'>
+            <el-dropdown-item :command='IMHeaderMoreBtnKey.isOpenGroupMember'>
+              <div class="send-down-row">
+                <LsIcon render-svg icon="pop_cd_cjql"></LsIcon>
+                <span>群成员</span>
+              </div>
+            </el-dropdown-item>
+            <el-dropdown-item :command='IMHeaderMoreBtnKey.isOpenGroupSet'>
+              <div class="send-down-row">
+                <LsIcon render-svg icon="pop_cd_sz"></LsIcon>
+                <span>群设置</span>
+              </div>
+            </el-dropdown-item>
+          </el-dropdown-menu>
+          <el-dropdown-menu slot="dropdown" v-else>
+            <el-dropdown-item :command='IMHeaderMoreBtnKey.isCreateGroup'>
+              <div class="send-down-row">
                 <LsIcon render-svg icon="pop_cd_cjql"></LsIcon>
                 <span>创建群聊</span>
               </div>
             </el-dropdown-item>
-            <el-dropdown-item>
-              <div class="send-down-row" @click="openSettings">
+            <el-dropdown-item :command='IMHeaderMoreBtnKey.isOpenSet'>
+              <div class="send-down-row">
                 <LsIcon render-svg icon="pop_cd_sz"></LsIcon>
                 <span>设置</span>
               </div>
@@ -45,11 +59,17 @@
 <script>
 import { mapActions } from 'vuex';
 import { LsIcon } from '@lanshu/components';
+import { IMHeaderMoreBtnKey } from '@lanshu/utils';
 
 export default {
   name: 'Msg-header',
   components: {
     LsIcon
+  },
+  data() {
+    return {
+      IMHeaderMoreBtnKey
+    }
   },
   computed: {
     session() {
@@ -58,20 +78,20 @@ export default {
     toAvatar() {
       return this.session.avatar;
     },
+    isGroup() {
+      return this.session?.toUserType === 15;
+    }
   },
   methods: {
     ...mapActions('IMStore', ['removeSessionWindowList']),
 
+    handleCommand(command) {
+      this.$emit('moreCallback', command);
+    },
+
     handleCloseSession() {
       if (this.isMainSession) return;
       this.removeSessionWindowList(this.session);
-    },
-
-    openSettings() {
-      this.$emit('openSettings');
-    },
-    createGroup() {
-      this.$emit('createGroup');
     },
   }
 };

@@ -46,4 +46,23 @@ const keyCode = {
   realCharacter: ctrlCharacter,
 };
 
-export { msgTypeMap, checkMsgType, keyCode };
+const IMHeaderMoreBtnKey = {
+  isOpenSet: 'OpenSettings',
+  isCreateGroup: 'CreateGroup',
+  isOpenGroupSet: 'OpenGroupSet',
+  isOpenGroupMember: 'OpenGroupMember',
+};
+
+const IMGroupMemberPanelType = {
+  isCreate: 'Create',
+  isAdd: 'Add',
+  isDel: 'Del',
+};
+
+export {
+  msgTypeMap,
+  checkMsgType,
+  keyCode,
+  IMHeaderMoreBtnKey,
+  IMGroupMemberPanelType,
+};

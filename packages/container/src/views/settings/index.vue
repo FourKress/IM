@@ -7,7 +7,14 @@
         v-for="(item, index) in breadCrumbs"
         :key="item.path"
       >
-        <span class="card-icon"></span>
+        <span class="card-icon" v-if='index === 0'>
+          <LsIcon
+            render-svg
+            width="20"
+            height="18"
+            icon="a-icon_shezhi22x"
+          ></LsIcon>
+        </span>
         <span class="label" @click="handleJump(item)">{{ item.title }}</span>
         <LsIcon
           class="close-icon"
@@ -182,8 +189,6 @@ export default {
         width: 20px;
         height: 18px;
         cursor: pointer;
-
-        background-color: #333;
       }
 
       .close-icon {
