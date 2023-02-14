@@ -21,12 +21,12 @@
 
     <div class='list'>
       <div class="scroll-view">
-        <div class="item" v-for="(item, index) in selectList">
+        <div class="item" v-for="(item, index) in selectList" v-if="item.nickname && item.nickname.includes(memberName)">
           <div class="img">
             <img :src="item.avatar" alt="" />
           </div>
           <div class="name">
-            <span>{{ item.nickname }} 阿诗丹顿的点点滴滴滴滴答答大大大</span>
+            <span>{{ item.nickname }}</span>
           </div>
           <div class="tag">
             <span>群组是</span>
@@ -58,6 +58,14 @@ export default {
     changeMember(type) {
       this.$emit('changeGroupMember', type);
     }
+  },
+  mounted() {
+    this.selectList = this.selectList.map(d => {
+      return {
+        ...d,
+        nickname: Math.random().toString()
+      }
+    })
   }
 };
 </script>

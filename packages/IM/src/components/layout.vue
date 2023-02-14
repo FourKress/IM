@@ -68,6 +68,16 @@ export default {
   computed: {
     ...mapGetters('IMStore', ['mainSessionWindow', 'sessionWindowList']),
   },
+  watch: {
+    mainSessionWindow: {
+      deep: true,
+      handler() {
+        console.log(213);
+        this.visibleSettings = false;
+        this.visibleGroupSettings = false;
+      }
+    }
+  },
   created() {},
   mounted() {
     this.recordrtc = new Recordrtc();

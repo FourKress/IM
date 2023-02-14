@@ -13,10 +13,17 @@
             ></LsIcon>
           </div>
           <div class="input-panel">
-            <el-input type="text" v-model='staffName' placeholder="查找联系人" />
+            <el-input
+              type="text"
+              v-model="staffName"
+              placeholder="查找联系人"
+            />
           </div>
         </div>
-        <div class="active-row" v-if='panelType !== IMGroupMemberPanelType.isDel'>
+        <div
+          class="active-row"
+          v-if="panelType !== IMGroupMemberPanelType.isDel"
+        >
           <div class="action">
             <span
               class="btn"
@@ -40,7 +47,7 @@
               class="item"
               :class="selectIndex === index && 'active'"
               v-for="(item, index) in staffList"
-              v-if='item.nickname && item.nickname.includes(staffName)'
+              v-if="item.nickname && item.nickname.includes(staffName)"
               @click="handleSelect(index)"
             >
               <el-checkbox v-model="item.checked">
@@ -58,7 +65,10 @@
         </div>
       </div>
       <div class="right">
-        <div class="input-row" v-if='panelType === IMGroupMemberPanelType.isCreate'>
+        <div
+          class="input-row"
+          v-if="panelType === IMGroupMemberPanelType.isCreate"
+        >
           <div class="query-icon">
             <LsIcon
               icon="navi_ss_icon"
@@ -68,11 +78,18 @@
             ></LsIcon>
           </div>
           <div class="input-panel">
-            <el-input type="text" v-model='groupName' placeholder="编辑群名称" />
+            <el-input
+              type="text"
+              v-model="groupName"
+              placeholder="编辑群名称"
+            />
           </div>
         </div>
-        <div class="active-row">
-          <span class="tips">已选联系人：{{ selectList.length }}/500</span>
+        <div class="active-row" :style="{ marginTop: panelType !== IMGroupMemberPanelType.isCreate ? '10px' : '0' }">
+          <span class="tips">
+            <span>已选联系人：{{ selectList.length }}</span>
+            <span v-if="panelType !== IMGroupMemberPanelType.isDel">/500</span>
+          </span>
         </div>
         <div class="list">
           <div class="scroll-view" v-if="selectList.length">
@@ -98,7 +115,7 @@
         </div>
         <div class="btn-list">
           <span class="btn cancel" @click="handleClose">取消</span>
-          <span class="btn confirm" @click="handleConfirm">确定</span>
+          <span class="btn confirm" @click="handleConfirm">{{panelType !== IMGroupMemberPanelType.isDel ? '确定' : '删除'}} </span>
         </div>
       </div>
     </div>
@@ -119,8 +136,8 @@ export default {
     panelType: {
       required: true,
       type: String,
-      default: IMGroupMemberPanelType.isCreate
-    }
+      default: IMGroupMemberPanelType.isCreate,
+    },
   },
   components: {
     LsIcon,
@@ -135,15 +152,19 @@ export default {
       selectList: [],
       selectIndex: 0,
       staffName: '',
-      groupName: ''
+      groupName: '',
     };
   },
   computed: {
     ...mapGetters('IMStore', ['sessionList']),
     staffList() {
       const staffList = this[this.currentTarget] || [];
-      const sessionSelectList = this.selfSessionList ? this.selfSessionList?.filter((d) => d.checked) : [];
-      const addressBookSelectList = this.addressBookList.filter((d) => d.checked);
+      const sessionSelectList = this.selfSessionList
+        ? this.selfSessionList?.filter((d) => d.checked)
+        : [];
+      const addressBookSelectList = this.addressBookList.filter(
+        (d) => d.checked,
+      );
       this.selectList = sessionSelectList.concat(addressBookSelectList);
       return staffList;
     },
@@ -153,11 +174,11 @@ export default {
     },
   },
   mounted() {
-    this.selfSessionList = _.cloneDeep(this.sessionList).map(d => {
+    this.selfSessionList = _.cloneDeep(this.sessionList).map((d) => {
       return {
         ...d,
-        checked: false
-      }
+        checked: false,
+      };
     });
     this.addressBookList = new Array(20).fill('').map(() => {
       return {
@@ -179,7 +200,7 @@ export default {
     handleConfirm() {
       if (this.selectList?.length < 2) {
         this.$message.error('创建群聊至少选择2个联系人');
-        return
+        return;
       }
       this.$emit('confirm');
     },
