@@ -15,6 +15,7 @@
           <div class="input-panel">
             <el-input
               type="text"
+              clearable
               v-model="staffName"
               placeholder="查找联系人"
             />
@@ -22,7 +23,7 @@
         </div>
         <div
           class="active-row"
-          v-if="panelType !== IMGroupMemberPanelType.isDel"
+          v-if="panelType !== IMGroupMemberPanelType.isDel && !(tabType === isAddress && staffName)"
         >
           <div class="action">
             <span
@@ -41,7 +42,7 @@
             </span>
           </div>
         </div>
-        <div class="py-nav">
+        <div class="py-nav" v-if="!staffName">
           <span
             v-if="tabType === isAddress"
             v-for="item in pyList"
@@ -90,12 +91,13 @@
               :key="key"
               v-for="(group, key) in addressBookPYObj"
             >
-              <span class="group-name">{{ key === 'special' ? '#' : key }}</span>
+              <span class="group-name" v-if="!staffName">{{ key === 'special' ? '#' : key }}</span>
 
               <div
                 class="item"
                 :class="selectName === item.nickname && 'active'"
                 v-for="item in group"
+                v-if="item.nickname && item.nickname.includes(staffName)"
                 :key="item.nickname"
               >
                 <el-checkbox
@@ -123,7 +125,7 @@
         >
           <div class="query-icon">
             <LsIcon
-              icon="navi_ss_icon"
+              icon="a-icon_bianjiqunmingcheng2x"
               width="14"
               height="14"
               render-svg
@@ -133,6 +135,7 @@
             <el-input
               type="text"
               v-model="groupName"
+              clearable
               placeholder="编辑群名称"
             />
           </div>
@@ -292,6 +295,7 @@ export default {
       this.$emit('confirm');
     },
     handleClick(type) {
+      this.staffName = '';
       this.tabType = type;
       if (type === this.isAddress && !this.scrollView) {
         this.$nextTick(() => {
@@ -437,33 +441,33 @@ export default {
         box-sizing: border-box;
         background-color: $bg-white-color;
         border-radius: 6px;
-        padding: 0 14px;
+        padding-left: 14px;
         margin-bottom: 10px;
         display: flex;
         align-items: center;
         justify-content: space-between;
+        overflow: hidden;
 
         .query-icon {
           width: 14px;
           height: 14px;
-          transform: translateY(-2px);
+          transform: translateY(-3px);
         }
 
         .input-panel {
           flex: 1;
-          height: 20px;
-          padding: 0 8px;
+          height: 40px;
           font-size: 14px;
 
           ::v-deep .el-input {
             border: none;
+            height: 40px;
 
             .el-input__inner {
-              width: 100%;
-              height: 100%;
+              height: 40px;
               border: none;
               outline: none;
-              padding: 0;
+              padding: 0 30px 0 8px;
             }
             input::placeholder {
               color: $tips-text-color;
@@ -546,7 +550,7 @@ export default {
 
       .py-nav {
         width: 10px;
-        right: 0;
+        right: 10px;
         top: 50%;
         transform: translateY(-50%);
         font-size: 12px;

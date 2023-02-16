@@ -25,6 +25,7 @@
         <div class="input-panel">
           <el-input
             v-model="keywords"
+            clearable
             type="text"
             placeholder="创建事项或搜索关键词"
           />
@@ -214,6 +215,7 @@ export default {
       box-shadow: $bg-select-shadow;
       border-radius: 10px;
       padding: 0 18px;
+      overflow: hidden;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -227,22 +229,23 @@ export default {
 
       .input-panel {
         flex: 1;
-        height: 28px;
+        height: 40px;
         padding: 0 8px;
         border-right: 1px solid $split-line-color;
         font-size: 14px;
 
         ::v-deep .el-input {
           border: none;
-          height: 28px;
+          height: 40px;
 
           .el-input__inner {
             width: 100%;
             height: 100%;
             border: none;
             outline: none;
-            padding: 0;
+            padding: 0 30px 0 0;
           }
+
           input::placeholder {
             color: $tips-text-color;
             font-size: 14px;
