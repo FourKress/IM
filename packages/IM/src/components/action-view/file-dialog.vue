@@ -4,7 +4,7 @@
     <div class="main">
       <div class="list">
         <div class="scroll-view">
-          <div class="item" v-for="(item, index) in fileList">
+          <div class="item" v-for="(item, index) in fileList" :key='index'>
             <div class="view">
               <img
                 :ref="item.name"

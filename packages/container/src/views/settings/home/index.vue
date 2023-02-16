@@ -5,6 +5,7 @@
         class="nav-item"
         :class="navSelectKey === nav.key && 'active'"
         v-for="nav in navList"
+        :key='nav.label'
         @click="handleSelectNav(nav)"
       >
         <span class="nav-icon">

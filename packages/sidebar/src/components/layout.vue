@@ -24,6 +24,7 @@
         <div
           class="menu-item"
           v-for="item in selfSessionList"
+          :key='item.nickname'
           :class="currentSession === item.sessId && 'active'"
           @click="handleMenuClick(item)"
         >
@@ -277,13 +278,13 @@ export default {
               white-space: nowrap;
               font-size: 14px;
               font-weight: bold;
-              color: #333333;
+              color: $main-text-color;
             }
 
             .time {
               font-size: 12px;
               font-weight: normal;
-              color: #999999;
+              color: $tips-text-color;
             }
           }
 
@@ -297,7 +298,7 @@ export default {
             .message {
               width: 145px;
               font-size: 12px;
-              color: #999999;
+              color: $tips-text-color;
 
               overflow: hidden;
               text-overflow: ellipsis;

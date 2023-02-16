@@ -41,16 +41,33 @@
             </span>
           </div>
         </div>
-        <div class="list">
-          <div class="scroll-view" v-if="staffList.length">
+        <div class="py-nav">
+          <span
+            v-if="tabType === isAddress"
+            v-for="item in pyList"
+            :key="item"
+            :class="pinyinKey === item && 'active'"
+            @click="filterAddress(item)"
+          >
+            {{ item }}
+          </span>
+        </div>
+        <div class="list selected-scroll-view">
+          <div
+            class="scroll-view"
+            v-if="tabType !== isAddress && selfSessionList.length"
+          >
             <div
               class="item"
-              :class="selectIndex === index && 'active'"
-              v-for="(item, index) in staffList"
+              :class="selectName === item.nickname && 'active'"
+              v-for="item in selfSessionList"
+              :key="item.nickname"
               v-if="item.nickname && item.nickname.includes(staffName)"
-              @click="handleSelect(index)"
             >
-              <el-checkbox v-model="item.checked">
+              <el-checkbox
+                v-model="item.checked"
+                @change="(val) => handleSelect(val, item)"
+              >
                 <div class="info">
                   <div class="img">
                     <img :src="item.avatar" alt="" />
@@ -60,6 +77,41 @@
                   </div>
                 </div>
               </el-checkbox>
+            </div>
+          </div>
+
+          <div
+            class="scroll-view"
+            v-if="tabType === isAddress && addressBookList.length"
+          >
+            <div
+              class="group-panel"
+              :id="`group-${key}`"
+              :key="key"
+              v-for="(group, key) in addressBookPYObj"
+            >
+              <span class="group-name">{{ key === 'special' ? '#' : key }}</span>
+
+              <div
+                class="item"
+                :class="selectName === item.nickname && 'active'"
+                v-for="item in group"
+                :key="item.nickname"
+              >
+                <el-checkbox
+                  v-model="item.checked"
+                  @change="(val) => handleSelect(val, item)"
+                >
+                  <div class="info">
+                    <div class="img">
+                      <img :src="item.avatar" alt="" />
+                    </div>
+                    <div class="name">
+                      <span>{{ item.nickname }}</span>
+                    </div>
+                  </div>
+                </el-checkbox>
+              </div>
             </div>
           </div>
         </div>
@@ -85,7 +137,13 @@
             />
           </div>
         </div>
-        <div class="active-row" :style="{ marginTop: panelType !== IMGroupMemberPanelType.isCreate ? '10px' : '0' }">
+        <div
+          class="active-row"
+          :style="{
+            marginTop:
+              panelType !== IMGroupMemberPanelType.isCreate ? '10px' : '0',
+          }"
+        >
           <span class="tips">
             <span>已选联系人：{{ selectList.length }}</span>
             <span v-if="panelType !== IMGroupMemberPanelType.isDel">/500</span>
@@ -93,7 +151,7 @@
         </div>
         <div class="list">
           <div class="scroll-view" v-if="selectList.length">
-            <div class="item" v-for="(item, index) in selectList">
+            <div class="item" v-for="(item, index) in selectList" :key="index">
               <div class="info">
                 <div class="img">
                   <img :src="item.avatar" alt="" />
@@ -115,7 +173,9 @@
         </div>
         <div class="btn-list">
           <span class="btn cancel" @click="handleClose">取消</span>
-          <span class="btn confirm" @click="handleConfirm">{{panelType !== IMGroupMemberPanelType.isDel ? '确定' : '删除'}} </span>
+          <span class="btn confirm" @click="handleConfirm">
+            {{ panelType !== IMGroupMemberPanelType.isDel ? '确定' : '删除' }}
+          </span>
         </div>
       </div>
     </div>
@@ -126,7 +186,7 @@
 import { LsIcon } from '@lanshu/components';
 import { mapGetters } from 'vuex';
 import _ from 'lodash';
-import { IMGroupMemberPanelType } from '@lanshu/utils';
+import { IMGroupMemberPanelType, sortedPY, groupedPy } from '@lanshu/utils';
 
 const isAddress = false;
 
@@ -147,30 +207,58 @@ export default {
       IMGroupMemberPanelType,
       isAddress,
       tabType: !isAddress,
-      addressBookList: [],
+      addressBookList: [
+        { nickname: '张三' },
+        { nickname: '李四' },
+        { nickname: '王五' },
+        { nickname: '2' },
+        { nickname: '3' },
+        { nickname: '4' },
+        { nickname: 'a' },
+        { nickname: 'b' },
+        { nickname: 'c' },
+        { nickname: '!' },
+        { nickname: '@' },
+        { nickname: '#' },
+        { nickname: '赵六' },
+        { nickname: '钱七' },
+        { nickname: '钱1' },
+        { nickname: '钱2' },
+        { nickname: '钱3' },
+        { nickname: '钱4' },
+        { nickname: '钱5' },
+        { nickname: '钱6' },
+        { nickname: '东7' },
+        { nickname: '东1' },
+        { nickname: '东2' },
+        { nickname: '东3' },
+        { nickname: '东4' },
+        { nickname: '东5' },
+        { nickname: '东6' },
+      ],
+      addressBookPYObj: [],
       selfSessionList: [],
       selectList: [],
-      selectIndex: 0,
+      selectName: null,
       staffName: '',
       groupName: '',
+      pinyinKey: 'A',
+      scrollView: null,
+      scrollTop: 0,
     };
   },
   computed: {
     ...mapGetters('IMStore', ['sessionList']),
-    staffList() {
-      const staffList = this[this.currentTarget] || [];
-      const sessionSelectList = this.selfSessionList
-        ? this.selfSessionList?.filter((d) => d.checked)
-        : [];
-      const addressBookSelectList = this.addressBookList.filter(
-        (d) => d.checked,
-      );
-      this.selectList = sessionSelectList.concat(addressBookSelectList);
-      return staffList;
-    },
-    currentTarget() {
-      if (this.tabType !== this.isAddress) return 'selfSessionList';
-      return 'addressBookList';
+    pyList() {
+      const wordArr = [];
+      const keys = Object.keys(this.addressBookPYObj);
+      for (let i = 65; i <= 90; i++) {
+        const code = String.fromCharCode(i);
+        if (keys.includes(code)) {
+          wordArr.push(code);
+        }
+      }
+      return wordArr?.length ? [...wordArr, '#'] : wordArr;
     },
   },
   mounted() {
@@ -180,20 +268,19 @@ export default {
         checked: false,
       };
     });
-    this.addressBookList = new Array(20).fill('').map(() => {
+    const addressBookList = this.addressBookList.map((d) => {
       return {
+        ...d,
         checked: false,
         avatar: '',
-        nickname: String(Math.random()),
       };
     });
+    this.addressBookList = addressBookList;
+    const addressBookPYObj = groupedPy(sortedPY(addressBookList));
+    this.pinyinKey = Object.keys(addressBookPYObj)[0];
+    this.addressBookPYObj = addressBookPYObj;
   },
   methods: {
-    handleClean() {
-      this.staffName = '';
-      this.selectList = [];
-      this.groupName = '';
-    },
     handleClose() {
       this.$emit('close');
     },
@@ -206,18 +293,92 @@ export default {
     },
     handleClick(type) {
       this.tabType = type;
+      if (type === this.isAddress && !this.scrollView) {
+        this.$nextTick(() => {
+          this.scrollView = document.querySelector('.selected-scroll-view');
+          this.scrollView.addEventListener('scroll', this.scrollHandle, true);
+        });
+      }
     },
 
-    handleSelect(index) {
-      this.selectIndex = index;
+    handleSelect(value, item) {
+      this.selectName = item?.nickname;
+      if (value) {
+        this.selectList.push(item);
+      } else {
+        this.selectList = this.selectList.filter(
+          (d) => d.nickname !== item.nickname,
+        );
+      }
     },
     handleUnSelect(item, index) {
       this.selectList.splice(index, 1);
-      const targetIndex = this.staffList.findIndex(
-        (d) => d.nickname === item.nickname,
-      );
-      this[this.currentTarget][targetIndex].checked = false;
+      if (this.tabType === isAddress) {
+        Object.keys(this.addressBookPYObj).forEach((key) => {
+          this.addressBookPYObj[key] = this.handleUnCheck(
+            this.addressBookPYObj[key],
+            item.nickname,
+          );
+        });
+      } else {
+        this.selfSessionList = this.handleUnCheck(
+          this.selfSessionList,
+          item.nickname,
+        );
+      }
     },
+    handleUnCheck(arr, nickname) {
+      return arr.map((d) => {
+        return {
+          ...d,
+          checked: d.nickname === nickname ? false : d.checked,
+        };
+      });
+    },
+
+    filterAddress(key) {
+      setTimeout(() => {
+        this.pinyinKey = key;
+      }, 100)
+      document.querySelector(`#group-${key === '#' ? 'special' : key}`).scrollIntoView();
+    },
+
+    scrollHandle() {
+      const scrollView = document.querySelector('.selected-scroll-view');
+      const { scrollTop } = scrollView;
+      const isDown = this.scrollTop <= scrollTop;
+      this.scrollTop = scrollTop;
+      Object.keys(this.addressBookPYObj).forEach((key) => {
+        const pinyinKey = key === 'special' ? '#' : key;
+        const offset = document
+          .querySelector(`#group-${key}`)
+          .getBoundingClientRect();
+
+        const { top, height } = offset;
+
+        if (isDown && top <= 235) {
+          this.$nextTick(() => {
+            this.pinyinKey = pinyinKey;
+          });
+          return;
+        }
+
+        if (
+          !isDown &&
+          ((top < 0 && top * -1 <= (height - 235) / 3) ||
+            (top >= 170 && top <= 235))
+        ) {
+          this.$nextTick(() => {
+            this.pinyinKey = pinyinKey;
+          });
+        }
+      });
+    },
+  },
+  destroyed() {
+    if (this.scrollView) {
+      this.scrollView.removeEventListener('scroll', this.scrollHandle, true);
+    }
   },
 };
 </script>
@@ -377,17 +538,53 @@ export default {
     .left {
       background: #f9fafc;
       padding-bottom: 20px;
+      position: relative;
 
       ::-webkit-scrollbar {
         display: none;
+      }
+
+      .py-nav {
+        width: 10px;
+        right: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 12px;
+        position: absolute;
+        color: $minor-text-color;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        span {
+          cursor: pointer;
+          line-height: 13px;
+
+          &.active {
+            color: $primary-color;
+            font-weight: bold;
+          }
+        }
       }
 
       .list {
         overflow-y: auto;
         overflow-x: hidden;
         transform: translate3d(0, 0, 0);
+        scroll-behavior: smooth;
 
         .scroll-view {
+          .group-panel {
+            display: flex;
+            flex-direction: column;
+
+            .group-name {
+              font-size: 12px;
+              color: $tips-text-color;
+              margin: 10px 0 0 10px;
+            }
+          }
+
           .item {
             width: 242px;
             height: 54px;
@@ -407,6 +604,11 @@ export default {
               margin-left: 10px;
               display: flex;
               align-items: center;
+              width: 100%;
+
+              .el-checkbox__label {
+                width: 100%;
+              }
             }
 
             .info {

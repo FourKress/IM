@@ -4,23 +4,24 @@ import {
   keyCode,
   IMHeaderMoreBtnKey,
   IMGroupMemberPanelType,
-  timesTransform,
-  checkTimesInterval,
-  lodash,
-  _throttle,
-  emojiList,
-  _clearSessionUnreadCount,
-  generateRoute,
-  generateStore,
-  token,
+} from '../src/constant';
+import { timesTransform, checkTimesInterval } from '../src/times-transform';
+import emojiList from '../src/emoji';
+import lodash, { _throttle } from '../src/lodash';
+import { _clearSessionUnreadCount } from '../src/im-utils';
+import generateRoute from '../src/router';
+import generateStore from '../src/store';
+import * as token from '../src/token';
+import {
   phoneEncryption,
   formatPhoneNum,
   logOut,
-  IMEvent,
   getFileSize,
   getObjectURL,
   downloadFile,
-} from '../src/main';
+} from '../src/base';
+import * as IMEvent from '../src/IM-event';
+import { sortedPY, groupedPy } from '../src/pinyin';
 
 export {
   msgTypeMap,
@@ -30,9 +31,9 @@ export {
   IMGroupMemberPanelType,
   timesTransform,
   checkTimesInterval,
+  emojiList,
   lodash,
   _throttle,
-  emojiList,
   _clearSessionUnreadCount,
   generateRoute,
   generateStore,
@@ -44,4 +45,6 @@ export {
   getFileSize,
   getObjectURL,
   downloadFile,
+  sortedPY,
+  groupedPy,
 };

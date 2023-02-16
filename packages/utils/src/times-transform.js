@@ -21,8 +21,10 @@ export const timesTransform = (timestamp) => {
     return `${diffDay === 1 ? '昨天' : '前天'} ${hoursTime}`;
   }
   if (diffDay <= 7) {
+    const weekStartTime = dayjs().startOf('week').add(1, 'day').valueOf();
+    const weekStr = weekStartTime > timestamp ? '上周' : '周';
     const week = ['日', '一', '二', '三', '四', '五', '六'];
-    return `周${week[dayjs(timestamp).weekday()]} ${hoursTime}`;
+    return `${weekStr}${week[dayjs(timestamp).weekday()]} ${hoursTime}`;
   }
   if (diffDay > 7) {
     const timerYear = dayjs(timestamp).year();

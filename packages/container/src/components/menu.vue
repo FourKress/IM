@@ -5,6 +5,7 @@
       <div
         class="menu-item"
         v-for="item in navList"
+        :key='item.path'
         :class="activePath === item.path && 'active'"
         @click="handleMenuSwitch(item.path)"
       >

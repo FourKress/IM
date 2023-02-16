@@ -22,7 +22,7 @@
       <div class="btn">
         <el-dropdown trigger="click" @command="handleCommand">
           <LsIcon render-svg icon="a-icon_more2x"></LsIcon>
-          <el-dropdown-menu slot="dropdown" v-if='!isGroup'>
+          <el-dropdown-menu slot="dropdown" v-if='isGroup'>
             <el-dropdown-item :command='IMHeaderMoreBtnKey.isOpenGroupMember'>
               <div class="send-down-row">
                 <LsIcon render-svg icon="pop_cd_cjql"></LsIcon>

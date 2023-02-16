@@ -3,7 +3,7 @@
     <MsgHeader v-bind="$props" v-on="$listeners" />
 
     <div class="message-panel" ref="messagePanel" @scroll="handleScroll">
-      <div class="message-item" v-for="(item, index) in messageList">
+      <div class="message-item" v-for="(item, index) in messageList" :key='item.timestamp'>
         <div class="tips-row">
           <TimesTransform
             v-if="
@@ -36,6 +36,14 @@
     </div>
 
     <MsgInputAction v-bind="$props" @refreshMsg="handleRefreshMsg" />
+
+    <div class='notify'>
+      <LsIcon render-svg width='16' height='16' icon='a-icon_qungonggao2x'></LsIcon>
+      <span class='label'>群公告:</span>
+      <span class='content'>
+        <span>啊实打实大师大大撒上的啊实打实大师大大撒上的啊实打实大师大大撒上的啊</span>
+      </span>
+    </div>
   </div>
 </template>
 
@@ -46,6 +54,7 @@ import { TimesTransform } from '@lanshu/components';
 import MsgCard from './msg-view/msg-card';
 import MsgHeader from './msg-view/msg-header';
 import MsgInputAction from './msg-view/msg-input-action';
+import { LsIcon } from '@lanshu/components';
 
 export default {
   name: 'ImView',
@@ -54,6 +63,7 @@ export default {
     MsgCard,
     MsgHeader,
     MsgInputAction,
+    LsIcon,
   },
   props: {
     isMainSession: {
@@ -188,6 +198,7 @@ export default {
   flex-direction: column;
   overflow: hidden;
   transform: translate3d(0, 0, 0);
+  position: relative;
 
   &:first-child {
     margin-left: 0;
@@ -276,6 +287,50 @@ export default {
         margin-bottom: 0;
       }
     }
+  }
+
+  .notify {
+    position: absolute;
+    left: 0;
+    top: 66px;
+    width: 100%;
+    height: 50px;
+    box-sizing: border-box;
+    padding: 0 20px;
+    background-color: $bg-grey-color;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    font-size: 14px;
+    color: $main-text-color;
+
+    .label {
+      font-weight: bold;
+      padding: 0 6px;
+    }
+
+    .content {
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+
+      span {
+        display: inline-block;
+        animation: 10s wordsLoop linear infinite normal;
+      }
+
+      @keyframes wordsLoop {
+        0%, 20% {
+          transform: translateX(0px);
+        }
+        100% {
+          transform: translateX(-100%);
+        }
+      }
+    }
+
+
   }
 }
 </style>

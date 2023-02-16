@@ -1,5 +1,5 @@
 <template>
-  <div class='member'>
+  <div class="member">
     <div class="input-row">
       <div class="query-icon">
         <LsIcon icon="navi_ss_icon" width="14" height="14" render-svg></LsIcon>
@@ -8,20 +8,30 @@
         <el-input type="text" v-model="memberName" placeholder="搜索群成员" />
       </div>
     </div>
-    <div class='tips'>共40位成员</div>
+    <div class="tips">共40位成员</div>
 
-    <div class='action'>
-      <span class='add btn' @click='changeMember(IMGroupMemberPanelType.isAdd)'>
-        <LsIcon render-svg width='14' height='14' icon='navi_ss_add'></LsIcon>
+    <div class="action">
+      <span class="add btn" @click="changeMember(IMGroupMemberPanelType.isAdd)">
+        <LsIcon render-svg width="14" height="14" icon="navi_ss_add"></LsIcon>
       </span>
-      <span class='del btn' @click='changeMember(IMGroupMemberPanelType.isDel)'>
-         <LsIcon render-svg width='14' height='14' icon='a-icon_jianhao2x'></LsIcon>
+      <span class="del btn" @click="changeMember(IMGroupMemberPanelType.isDel)">
+        <LsIcon
+          render-svg
+          width="14"
+          height="14"
+          icon="a-icon_jianhao2x"
+        ></LsIcon>
       </span>
     </div>
 
-    <div class='list'>
+    <div class="list">
       <div class="scroll-view">
-        <div class="item" v-for="(item, index) in selectList" v-if="item.nickname && item.nickname.includes(memberName)">
+        <div
+          class="item"
+          v-for="(item, index) in selectList"
+          :key='index'
+          v-if="item.nickname && item.nickname.includes(memberName)"
+        >
           <div class="img">
             <img :src="item.avatar" alt="" />
           </div>
@@ -39,7 +49,7 @@
 
 <script>
 import { LsIcon } from '@lanshu/components';
-import {IMGroupMemberPanelType} from '@lanshu/utils';
+import { IMGroupMemberPanelType } from '@lanshu/utils';
 
 export default {
   name: 'Member',
@@ -51,26 +61,43 @@ export default {
       IMGroupMemberPanelType,
       memberName: '',
       isAdd: false,
-      selectList: [{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}],
-    }
+      selectList: [
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+      ],
+    };
   },
   methods: {
     changeMember(type) {
       this.$emit('changeGroupMember', type);
-    }
+    },
   },
   mounted() {
-    this.selectList = this.selectList.map(d => {
+    this.selectList = this.selectList.map((d) => {
       return {
         ...d,
-        nickname: Math.random().toString()
-      }
-    })
-  }
+        nickname: Math.random().toString(),
+      };
+    });
+  },
 };
 </script>
 
-<style scoped lang='scss'>
+<style scoped lang="scss">
 .member {
   width: 100%;
   height: calc(100% - 62px);
@@ -207,10 +234,10 @@ export default {
         height: 20px;
         text-align: center;
         line-height: 20px;
-        background: #FFF3D7;
+        background: #fff3d7;
         border-radius: 3px;
         font-size: 12px;
-        color: #2B83FA;
+        color: #2b83fa;
       }
     }
   }
