@@ -1,6 +1,9 @@
 require('./sdk/lim-core-h5');
 import { mapGetters, mapActions } from 'vuex';
 import { _clearSessionUnreadCount } from '@lanshu/utils';
+import LIMSDK from 'lim-sdk-electron';
+
+console.log(LIMSDK);
 
 export default {
   data() {
