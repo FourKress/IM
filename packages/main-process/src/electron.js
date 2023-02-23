@@ -3,7 +3,6 @@ import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
 import * as path from 'path';
 
-import checkUpdate from './checkUpload';
 import store from './datastore';
 import checkUpload from './checkUpload';
 

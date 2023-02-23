@@ -5,7 +5,7 @@ module.exports = defineConfig({
   pluginOptions: {
     electronBuilder: {
       // 不打包，使用 require 加载
-      externals: ['electron-screenshots'],
+      externals: ['electron-screenshots', 'lim-sdk-electron'],
       preload: './src/preload.js',
       // nodeIntegration: true,
       // nodeModulesPath: '../node_modules',
