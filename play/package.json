@@ -16,8 +16,8 @@
   },
   "main": "background.js",
   "dependencies": {
-    "@lanshu/layout": "^0.1.10",
-    "@lanshu/main-process": "^0.1.10",
+    "@lanshu/layout": "^0.1.11",
+    "@lanshu/main-process": "^0.1.11",
     "core-js": "^3.8.3",
     "electron-screenshots": "^0.5.13",
     "vue": "^2.6.14",
