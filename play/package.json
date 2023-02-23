@@ -19,7 +19,8 @@
     "@lanshu/layout": "^0.1.11",
     "@lanshu/main-process": "^0.1.11",
     "core-js": "^3.8.3",
-    "electron-screenshots": "^0.5.13",
+    "electron-screenshots": "0.5.15",
+    "lim-sdk-electron": "^1.0.4",
     "vue": "^2.6.14",
     "vue-router": "^3.6.5",
     "vuex": "^3.6.2"

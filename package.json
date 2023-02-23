@@ -1,6 +1,6 @@
 {
   "name": "lanshu",
-  "version": "0.0.1",
+  "version": "0.1.11",
   "private": true,
   "author": "wudong <511970747@qq.com>",
   "description": "客户端架构包 npm私有库管理",
@@ -35,28 +35,16 @@
       "play"
     ],
     "nohoist": [
-      "**/@babel/core",
-      "**/@babel/eslint-parser",
-      "**/@vue/cli-plugin-babel",
-      "**/@vue/cli-plugin-eslint",
-      "**/@vue/cli-service",
-      "**/vue-template-compiler",
-      "**/vue-cli-plugin-electron-builder",
-      "**/eslint-plugin-vue",
-      "**/eslint",
-      "**/electron-devtools-installer",
-      "**/electron",
-      "**/vue-router",
+      "**/core-js",
       "**/vue",
       "**/vuex",
+      "**/vue-router",
       "**/electron-screenshots",
-      "**/core-js",
+      "**/react-screenshots",
+      "**/lim-sdk-electron",
       "**/@lanshu/main-process",
       "**/@lanshu/layout",
-      "**/@lanshu/render-process",
-      "**/style-resources-loader",
-      "**/vue-cli-plugin-style-resources-loader",
-      "**/@mapbox"
+      "**/@lanshu/render-process"
     ]
   }
 }
