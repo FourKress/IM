@@ -4,29 +4,22 @@
  * 删除本地Token
  */
 
-import Cookies from 'js-cookie';
-
-const { authKey, domain } = {
-  authKey: 'authKey',
-  domain: location.hostname,
-};
+const authKey = 'authKey';
 
 // 获取本地token
 export function getToken() {
-  return Cookies.get(authKey, { domain });
+  return sessionStorage.getItem(authKey);
 }
 
 // 设置/更新本地token
 export function setToken(data) {
   const { token } = data;
-  return Cookies.set(authKey, token, {
-    domain,
-  });
+  return sessionStorage.set(authKey, token);
 }
 
 // 移除本地token
 export function removeToken(key = authKey) {
-  Cookies.remove(key, { domain });
+  sessionStorage.removeItem(authKey);
 }
 
 /**

@@ -21,7 +21,6 @@
   "scripts": {},
   "dependencies": {
     "dayjs": "^1.11.6",
-    "js-cookie": "^3.0.1",
     "lodash": "^4.17.21",
     "pinyin": "^3.0.0-alpha.5",
     "vue-router": "^3.6.5",
