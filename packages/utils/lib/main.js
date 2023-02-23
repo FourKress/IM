@@ -11,7 +11,7 @@ import lodash, { _throttle } from '../src/lodash';
 import { _clearSessionUnreadCount } from '../src/im-utils';
 import generateRoute from '../src/router';
 import generateStore from '../src/store';
-import * as token from '../src/token';
+import * as tokenUtils from '../src/token';
 import {
   phoneEncryption,
   formatPhoneNum,
@@ -37,7 +37,7 @@ export {
   _clearSessionUnreadCount,
   generateRoute,
   generateStore,
-  token,
+  tokenUtils,
   phoneEncryption,
   formatPhoneNum,
   logOut,

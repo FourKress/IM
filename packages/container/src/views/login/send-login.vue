@@ -31,7 +31,7 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex';
-import { token, phoneEncryption, IMEvent } from '@lanshu/utils';
+import { tokenUtils, phoneEncryption, IMEvent } from '@lanshu/utils';
 import { renderProcess } from '@lanshu/render-process';
 import OtherLogin from './other-login';
 import AuthCode from '../../components/authCode';
@@ -98,7 +98,7 @@ export default {
 
     async handleLogin() {
       this.handleClearInterval();
-      token.setToken({
+      tokenUtils.setToken({
         token: 213123,
       });
       this.initIM();
