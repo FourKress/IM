@@ -14,7 +14,7 @@ export function getToken() {
 // 设置/更新本地token
 export function setToken(data) {
   const { token } = data;
-  return sessionStorage.set(authKey, token);
+  return sessionStorage.setItem(authKey, token);
 }
 
 // 移除本地token
