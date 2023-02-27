@@ -13,7 +13,7 @@
       <!--      </div>-->
 
       <div class="loading">
-        {{ IM_Status }}
+        {{ IM_Network_Status }}
       </div>
     </div>
 
@@ -78,7 +78,7 @@
 <script>
 import { mapGetters, mapActions } from 'vuex';
 import { LsIcon, WindowOperate, LsCardDialog } from '@lanshu/components';
-import { ClientLogOut } from '@lanshu/utils';
+import { ClientLogOut } from '@lanshu/im';
 
 export default {
   name: 'MainHeader',
@@ -88,7 +88,7 @@ export default {
     LsCardDialog,
   },
   computed: {
-    ...mapGetters('IMStore', ['userInfo', 'IM_Status']),
+    ...mapGetters('IMStore', ['userInfo', 'IM_Network_Status']),
   },
   data() {
     return {

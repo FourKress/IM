@@ -36,12 +36,8 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex';
-import {
-  tokenUtils,
-  phoneEncryption,
-  IMSDKMainProvide,
-  IMSDKUserProvider,
-} from '@lanshu/utils';
+import { tokenUtils, phoneEncryption } from '@lanshu/utils';
+import { IMSDK_Init } from '@lanshu/im';
 import { renderProcess } from '@lanshu/render-process';
 import OtherLogin from './other-login';
 import AuthCode from '../../components/authCode';
@@ -78,7 +74,7 @@ export default {
   },
   mounted() {},
   methods: {
-    ...mapActions('IMStore', ['setUserInfo']),
+    ...mapActions('IMStore', ['setUserInfo', 'setAllSession']),
     ...mapActions('routerStore', ['clearBreadCrumb']),
     backLogin() {
       this.handleClearInterval();
@@ -110,53 +106,17 @@ export default {
     async handleLogin() {
       this.handleClearInterval();
       const token =
-        // 'eyJhcHBJZCI6IjYzYjU0MWRkYjI1OTU3MTJmZDU5ZjY0MiIsImFwcFVzZXIiOiI5OTk5OTk5IiwiZXhwaXJlIjotMSwic2lnbiI6ImlrOXFhTUROWkRpNEQyMFVaSHBIRndLU1Z2THNQQXZxSE1IL2F0MTI4eEU9In0=';
-        'eyJhcHBJZCI6IjYzNmNhMzFiZDRjYTM1MmJmMWZmNjQxZSIsImFwcFVzZXIiOiI4ODg4ODg4IiwiZXhwaXJlIjotMSwic2lnbiI6IlByTkhyVlRkTjNZL3RqWmkrV1pGejNIYndNLzBhc2VKS1RJMkgrRGlpaE09In0=';
+        'eyJhcHBJZCI6IjYzYjU0MWRkYjI1OTU3MTJmZDU5ZjY0MiIsImFwcFVzZXIiOiI5OTk5OTk5IiwiZXhwaXJlIjotMSwic2lnbiI6ImlrOXFhTUROWkRpNEQyMFVaSHBIRndLU1Z2THNQQXZxSE1IL2F0MTI4eEU9In0=';
       tokenUtils.setToken({
         token,
       });
-      await this.IMLogin({
-        // token,
-        // userId: 'userId',
-        token:"eyJhcHBJZCI6IjYzYjU0MWRkYjI1OTU3MTJmZDU5ZjY0MiIsImFwcFVzZXIiOiI5OTk5OTk5IiwiZXhwaXJlIjotMSwic2lnbiI6ImlrOXFhTUROWkRpNEQyMFVaSHBIRndLU1Z2THNQQXZxSE1IL2F0MTI4eEU9In0=",
-        userId:"userId"
+      await IMSDK_Init({
+        token,
+        userId: '9999999',
       });
-      await this.getIMUserInfo('9999999');
       this.$router.push('/');
       this.clearBreadCrumb();
       renderProcess.showMainWindow();
-    },
-    IMLogin(params) {
-      return renderProcess
-        .IMSDKIPC(
-          IMSDKMainProvide.provider,
-          IMSDKMainProvide.events.login,
-          params,
-        )
-        .then((res) => {
-          console.log('IM_Login Success', res);
-        })
-        .catch((err) => {
-          console.log('IM_Login Error', err);
-        });
-      // IMEvent.IMLogin(
-      // 'eyJhcHBJZCI6IjYzNmNhMzFiZDRjYTM1MmJmMWZmNjQxZSIsImFwcFVzZXIiOiIxMjM0NTQzMjEiLCJleHBpcmUiOi0xLCJzaWduIjoiZWpzcWNBS1RaV2lNaThCdzZFZlAzcmRMOERYTzFyQytzbzFLQjd5bWxqOD0ifQ==',
-      // );
-    },
-    getIMUserInfo(userId) {
-      return renderProcess
-        .IMSDKIPC(
-          IMSDKUserProvider.provider,
-          IMSDKUserProvider.events.getUserAttribute,
-          userId,
-        )
-        .then((res) => {
-          console.log('IM_User Success', res);
-          this.setUserInfo(res);
-        })
-        .catch((err) => {
-          console.log('IM_User Error', err);
-        });
     },
   },
 };

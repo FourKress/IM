@@ -4,14 +4,17 @@ import { handleFileOpen, calcFileSize, deleteFile } from './utils';
 import { initScreenshots } from './screenshots';
 import { showLoginWindow, showMainWindow, changeWindow } from './window';
 import { unregisterHotKeyAll, initHotKeys, handleHotKey } from './hotKey';
-import { IMSDKEvent } from './IM-SDK';
+import { IMSDKEvent, IMSDK_Destroy } from './IM-SDK';
 
 const initIpcMain = () => {
   app.whenReady().then(() => {
     // 初始化截图
     initScreenshots();
 
-    ipcMain.on('changeWindow', (_event, type) => {
+    ipcMain.on('changeWindow', async (_event, type) => {
+      if (type === 'close') {
+        await IMSDK_Destroy();
+      }
       changeWindow(type);
     });
 

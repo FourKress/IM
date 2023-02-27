@@ -8,14 +8,14 @@
             :class="tabType === isAll && 'active'"
             @click="handleChooseTab(isAll)"
           >
-            <el-badge is-dot :hidden='!allUnreadCount'>全部</el-badge>
+            <el-badge is-dot :hidden="!allUnreadCount">全部</el-badge>
           </span>
           <span
             class="btn"
             :class="tabType === !isAll && 'active'"
             @click="handleChooseTab(!isAll)"
           >
-            <el-badge is-dot :hidden='!allUnreadCount'>未读</el-badge>
+            <el-badge is-dot :hidden="!allUnreadCount">未读</el-badge>
           </span>
         </div>
       </div>
@@ -24,7 +24,7 @@
         <div
           class="menu-item"
           v-for="item in selfSessionList"
-          :key='item.nickname'
+          :key="item.nickname"
           :class="currentSession === item.sessId && 'active'"
           @click="handleMenuClick(item)"
         >
@@ -64,7 +64,7 @@
 <script>
 import { mapGetters, mapActions } from 'vuex';
 import { MsgTextType, TimesTransform } from '@lanshu/components';
-import { _clearSessionUnreadCount } from '@lanshu/utils';
+import { IMClearUnreadCount } from '@lanshu/im';
 
 const isAll = true;
 
@@ -83,10 +83,12 @@ export default {
     TimesTransform,
   },
   computed: {
-    ...mapGetters('IMStore', ['sessionList', 'mainSessionWindow']),
-    allUnreadCount() {
-      return this.sessionList.reduce((sum, curr) => sum + (curr?.unreadCount || 0), 0);
-    },
+    ...mapGetters('IMStore', [
+      'sessionList',
+      'mainSessionWindow',
+      'sessionWindowList',
+      'allUnreadCount',
+    ]),
   },
   watch: {
     sessionList: {
@@ -112,8 +114,15 @@ export default {
       if (isAll === this.isAll) {
         this.selfSessionList = this.sessionList;
       } else {
-        this.selfSessionList = this.sessionList.filter(d => d?.unreadCount);
+        this.selfSessionList = this.sessionList.filter((d) => d?.unreadCount);
       }
+    },
+    handleSetSessionWindow(sessId, mainSessionWindow) {
+      const sessionWindowList = [this.mainSessionWindow, ...this.sessionWindowList];
+      if (sessionWindowList.some(d => d.sessId === sessId)) return;
+      this.currentSession = sessId;
+      this.setMainSessionWindow(mainSessionWindow);
+      IMClearUnreadCount(sessId);
     },
     _setMainSessionWindow(sessionList) {
       if (!sessionList?.length) return;
@@ -122,23 +131,13 @@ export default {
       } else {
         const mainSessionWindow = sessionList[0];
         const { sessId } = mainSessionWindow;
-        this.handleUnreadCount(sessId, [mainSessionWindow]);
-        this.currentSession = sessId;
-        this.setMainSessionWindow(mainSessionWindow);
+        this.handleSetSessionWindow(sessId, mainSessionWindow)
       }
     },
     handleMenuClick(session) {
       const sessId = session.sessId;
-
-      this.handleUnreadCount(sessId, [session]);
-
-      this.currentSession = sessId;
-      this.setMainSessionWindow(session);
-
+      this.handleSetSessionWindow(sessId, session)
       // this.addSessionWindowList(session)
-    },
-    handleUnreadCount(sessId, sessionList) {
-      _clearSessionUnreadCount(sessId, sessionList);
     },
   },
 };

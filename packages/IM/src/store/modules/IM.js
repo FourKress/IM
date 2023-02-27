@@ -6,9 +6,11 @@ const state = {
   mainSessionWindow: {},
   // 其余会话窗口
   sessionWindowList: [],
-  IM_Status: '',
-  SDK_NOT_READ: 'SDK_NOT_READ',
+  IM_Network_Status: '',
+  IM_DataSync_Status: '',
+  SDK_READ: 1,
   currentMsg: {},
+  allUnreadCount: 0,
 };
 
 const getters = {
@@ -16,9 +18,11 @@ const getters = {
   sessionList: (state) => state.sessionList,
   mainSessionWindow: (state) => state.mainSessionWindow,
   sessionWindowList: (state) => state.sessionWindowList,
-  IM_Status: (state) => state.IM_Status,
+  IM_Network_Status: (state) => state.IM_Network_Status,
+  IM_DataSync_Status: (state) => state.IM_DataSync_Status,
   SDK_NOT_READ: (state) => state.SDK_NOT_READ,
   currentMsg: (state) => state.currentMsg,
+  allUnreadCount: (state) => state.allUnreadCount,
 };
 
 const mutations = {
@@ -26,15 +30,14 @@ const mutations = {
     data.userInfo = value;
   },
   setAllSession(data, value) {
-    data.sessionList = value
-      .filter((d) => d.appUser)
-      .map((d) => {
-        const { lastMsg = null } = d;
-        return {
-          ...d,
-          lastMsg: lastMsg || {},
-        };
-      });
+    console.log('!!!', value);
+    data.sessionList = value.map((d) => {
+      const { lastMsg = null } = d;
+      return {
+        ...d,
+        lastMsg: lastMsg || {},
+      };
+    });
   },
   setMainSessionWindow(data, value) {
     data.mainSessionWindow = value;
@@ -49,11 +52,17 @@ const mutations = {
     );
     data.sessionWindowList = sessionWindowList;
   },
-  setIMStatus(data, value) {
-    data.IM_Status = value;
+  setIMNetworkStatus(data, value) {
+    data.IM_Network_Status = value;
+  },
+  setIMDataSyncStatus(data, value) {
+    data.IM_DataSync_Status = value;
   },
   setCurrentMsg(data, value) {
     data.currentMsg = value;
+  },
+  setAllUnreadCount(data, value) {
+    data.allUnreadCount = value;
   },
 };
 
@@ -73,11 +82,17 @@ const actions = {
   removeSessionWindowList({ commit }, value) {
     commit('removeSessionWindowList', value);
   },
-  setIMStatus({ commit }, value) {
-    commit('setIMStatus', value);
+  setIMNetworkStatus({ commit }, value) {
+    commit('setIMNetworkStatus', value);
+  },
+  setIMDataSyncStatus({ commit }, value) {
+    commit('setIMDataSyncStatus', value);
   },
   setCurrentMsg({ commit }, value) {
     commit('setCurrentMsg', value);
+  },
+  setAllUnreadCount({ commit }, value) {
+    commit('setAllUnreadCount', value);
   },
 };
 

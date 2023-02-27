@@ -3,7 +3,7 @@
     <MsgHeader v-bind="$props" v-on="$listeners" />
 
     <div class="message-panel" ref="messagePanel" @scroll="handleScroll">
-      <div class="message-item" v-for="(item, index) in messageList" :key='item.timestamp'>
+      <div class="message-item" v-for="(item, index) in messageList" :key='item.msgId'>
         <div class="tips-row">
           <TimesTransform
             v-if="
@@ -55,6 +55,7 @@ import MsgCard from './msg-view/msg-card';
 import MsgHeader from './msg-view/msg-header';
 import MsgInputAction from './msg-view/msg-input-action';
 import { LsIcon } from '@lanshu/components';
+import { IMGetMessageList } from '../IM-event';
 
 export default {
   name: 'ImView',
@@ -84,8 +85,8 @@ export default {
   data() {
     return {
       messageList: [],
-      isCompleted: false,
-      nextMsgId: null,
+      hasNext: true,
+      nextSeq: 0,
       throttleGetMessageList: null,
 
       scrollTop: 0,
@@ -123,15 +124,16 @@ export default {
     },
   },
   async mounted() {
-    this.initData();
+    // this.initData();
     this.throttleGetMessageList = _throttle(this.getMessageList);
   },
   methods: {
     checkTimesInterval,
     initData() {
       this.messageList = [];
-      this.nextMsgId = null;
-      this.isCompleted = false;
+      this.nextSeq = 0;
+      this.hasNext = true;
+      console.log('123123');
       this.getMessageList();
     },
     checkSelf(item) {
@@ -142,32 +144,29 @@ export default {
       const sessId = this.session?.sessId;
       if (!sessId) return;
       if (!isContinue) {
-        this.nextMsgId = null;
+        this.nextSeq = 0;
       }
-      console.log(sessId, this.nextMsgId);
+      console.log(sessId, this.nextSeq);
       // 拉取SDK缓存消息，每次sdk最多返回20条消息
-      IMSDK.getMessageList({
-        nextMsgId: this.nextMsgId,
-        sessId, // 会话id
-      }).then((e) => {
-        console.log('拉取成功', e.data);
-        const { messageList, nextMsgId, isCompleted } = e.data;
-        this.isCompleted = isCompleted;
-        this.nextMsgId = nextMsgId;
+      IMGetMessageList(sessId, this.nextSeq).then((res) => {
+        console.log('拉取成功', res.data);
+        const { msgs, nextSeq, hasNext } = res.data;
+        this.hasNext = hasNext;
+        this.nextSeq = nextSeq;
         if (isContinue && this.messageList?.length) {
-          this.messageList.unshift(...messageList);
+          this.messageList.unshift(...msgs);
           this.$refs.messagePanel.scrollTop = 100;
         } else {
-          this.messageList = messageList;
+          this.messageList = msgs;
           this.$nextTick(() => {
             this.$refs.messagePanel.scrollTop = this.$refs.messagePanel.scrollHeight;
           });
         }
-      });
+      })
     },
 
     handleScroll(event) {
-      if (this.isCompleted) return;
+      if (!this.hasNext) return;
       const scrollTop = event.target.scrollTop;
       if (
         scrollTop <= 200 &&

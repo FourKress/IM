@@ -68,7 +68,8 @@
 <script>
 import recoverAccount from '../../../mixins/recover-account';
 import AuthCode from '../../../components/authCode';
-import { phoneEncryption, formatPhoneNum, ClientLogOut } from '@lanshu/utils';
+import { phoneEncryption, formatPhoneNum } from '@lanshu/utils';
+import { ClientLogOut } from '@lanshu/im';
 import { LsIcon } from '@lanshu/components';
 
 export default {

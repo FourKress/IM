@@ -8,9 +8,8 @@ import {
 import { timesTransform, checkTimesInterval } from '../src/times-transform';
 import emojiList from '../src/emoji';
 import lodash, { _throttle } from '../src/lodash';
-import { _clearSessionUnreadCount } from '../src/im-utils';
 import generateRoute from '../src/router';
-import generateStore from '../src/store';
+import generateStore, { stareInstance } from '../src/store';
 import * as tokenUtils from '../src/token';
 import {
   phoneEncryption,
@@ -19,15 +18,6 @@ import {
   getObjectURL,
   downloadFile,
 } from '../src/base';
-import {
-  IMSDKGroupProvider,
-  IMSDKUserProvider,
-  IMSDKMessageProvider,
-  IMSDKConvProvider,
-  IMSDKMainProvide,
-  IMLogout,
-  ClientLogOut,
-} from '../src/IM-event';
 import { sortedPY, groupedPy } from '../src/pinyin';
 
 export {
@@ -41,19 +31,12 @@ export {
   emojiList,
   lodash,
   _throttle,
-  _clearSessionUnreadCount,
   generateRoute,
   generateStore,
+  stareInstance,
   tokenUtils,
   phoneEncryption,
   formatPhoneNum,
-  IMSDKGroupProvider,
-  IMSDKUserProvider,
-  IMSDKMessageProvider,
-  IMSDKConvProvider,
-  IMSDKMainProvide,
-  IMLogout,
-  ClientLogOut,
   getFileSize,
   getObjectURL,
   downloadFile,

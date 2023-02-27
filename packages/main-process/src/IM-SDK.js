@@ -15,7 +15,7 @@ export const IMSDKInit = (appId) => {
     console.log('Network', state);
     global.mainWindow.webContents.send('IMSDKListener', {
       type: 'Network',
-      state,
+      value: state,
     });
   });
 
@@ -24,11 +24,63 @@ export const IMSDKInit = (appId) => {
     console.log('DataSync', state);
     global.mainWindow.webContents.send('IMSDKListener', {
       type: 'DataSync',
-      state,
+      value: state,
+    });
+  });
+
+  IMSDK.getMainProvider().setConvEventCallBack((convList) => {
+    console.log('UpdateConvList', convList);
+    global.mainWindow.webContents.send('IMSDKListener', {
+      type: 'UpdateConvList',
+      value: convList,
+    });
+  });
+
+  IMSDK.getMainProvider().setConvTotalUnreadMessageCountChangeCallBack(
+    (totalUnredMessageCount) => {
+      console.log('ConvTotalUnreadMessageCount', totalUnredMessageCount);
+      global.mainWindow.webContents.send('IMSDKListener', {
+        type: 'ConvTotalUnreadMessageCount',
+        value: totalUnredMessageCount,
+      });
+    },
+  );
+
+  IMSDK.getMainProvider().setKickOutedOfflineCallBack((info) => {
+    console.log('KickOutedOffline', info);
+    global.mainWindow.webContents.send('IMSDKListener', {
+      type: 'KickOutedOffline',
+      value: info,
+    });
+  });
+
+  IMSDK.getMainProvider().setLogOutCallBack((level, str) => {
+    console.log('LogOutCallBack', { level, str });
+    global.mainWindow.webContents.send('IMSDKListener', {
+      type: 'LogOutCallBack',
+      value: {
+        level,
+        str,
+      },
+    });
+  });
+
+  IMSDK.getMainProvider().AddReceiveNewMessageCallBack((message, silence) => {
+    console.log('AddReceiveNewMessage', { message, silence });
+    global.mainWindow.webContents.send('IMSDKListener', {
+      type: 'AddReceiveNewMessage',
+      value: {
+        message,
+        silence,
+      },
     });
   });
 };
 
 export const IMSDKEvent = (provider, event, data) => {
   return global.IMSDK[provider]()[event](...data);
+};
+
+export const IMSDK_Destroy = async () => {
+  await IMSDK.getMainProvider().destroy();
 };

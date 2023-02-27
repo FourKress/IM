@@ -6,29 +6,28 @@
 
 <script>
 import MainLayout from './components/layout';
-import { IMMixin } from '@lanshu/im';
-import {renderProcess} from '@lanshu/render-process'
-
+import { IMSDKCallBackEvents } from '@lanshu/im';
+import { renderProcess } from '@lanshu/render-process';
 
 export default {
   name: 'App',
-  mixins: [IMMixin],
   components: {
     MainLayout,
   },
   created() {
-    this.IM_init();
     renderProcess.updateClient((event, value) => {
       this.$Lconfirm({
         title: '应用更新',
-       content: '发现新版本，是否更新？',
+        content: '发现新版本，是否更新？',
       }).then(() => {
-        event.sender.send('startUpdate', 'startUpdate')
+        event.sender.send('startUpdate', 'startUpdate');
       });
-    })
-    renderProcess.IMSDKListener((event, value) => {
-
-    })
+    });
+    renderProcess.IMSDKListener((event, data) => {
+      const { type, value } = data;
+      console.log(type, value);
+      IMSDKCallBackEvents[type](value)
+    });
   },
   methods: {},
 };
@@ -42,7 +41,7 @@ export default {
 html,
 body {
   height: 100%;
-  scroll-behavior:smooth;
+  scroll-behavior: smooth;
   user-select: none;
 }
 #app {
