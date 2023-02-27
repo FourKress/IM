@@ -15,12 +15,19 @@ import * as tokenUtils from '../src/token';
 import {
   phoneEncryption,
   formatPhoneNum,
-  logOut,
   getFileSize,
   getObjectURL,
   downloadFile,
 } from '../src/base';
-import * as IMEvent from '../src/IM-event';
+import {
+  IMSDKGroupProvider,
+  IMSDKUserProvider,
+  IMSDKMessageProvider,
+  IMSDKConvProvider,
+  IMSDKMainProvide,
+  IMLogout,
+  ClientLogOut,
+} from '../src/IM-event';
 import { sortedPY, groupedPy } from '../src/pinyin';
 
 export {
@@ -40,8 +47,13 @@ export {
   tokenUtils,
   phoneEncryption,
   formatPhoneNum,
-  logOut,
-  IMEvent,
+  IMSDKGroupProvider,
+  IMSDKUserProvider,
+  IMSDKMessageProvider,
+  IMSDKConvProvider,
+  IMSDKMainProvide,
+  IMLogout,
+  ClientLogOut,
   getFileSize,
   getObjectURL,
   downloadFile,

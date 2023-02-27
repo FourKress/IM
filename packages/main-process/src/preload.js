@@ -13,4 +13,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   setStore: (key, data) => ipcRenderer.send('setStore', key, data),
   getStore: (key) => ipcRenderer.invoke('getStore', key),
   updateClient: (callback) => ipcRenderer.on('updateClient', callback),
+  IMSDKIPC: (provider, event, ...data) =>
+    ipcRenderer.invoke('IMSDKIPC', provider, event, data),
+  IMSDKListener: (callback) => ipcRenderer.on('IMSDKListener', callback),
 });

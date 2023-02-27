@@ -1,7 +1,3 @@
-import { removeToken } from './token';
-import { renderProcess } from '@lanshu/render-process';
-import { IMDestroy } from './IM-event';
-
 export const phoneEncryption = (phoneNum) => {
   if (!phoneNum) return;
   const regExp = new RegExp(/([\s\S]{3})\d*([\s\S]{4})/);
@@ -26,13 +22,6 @@ export const formatPhoneNum = (newPhoneNum, oldPhoneNum) => {
       return phoneNum;
     }
   }
-};
-
-export const logOut = async () => {
-  IMDestroy();
-  removeToken();
-  window.location.reload();
-  renderProcess.showLoginWindow(500);
 };
 
 // 求次幂

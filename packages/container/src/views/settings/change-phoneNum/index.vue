@@ -68,7 +68,7 @@
 <script>
 import recoverAccount from '../../../mixins/recover-account';
 import AuthCode from '../../../components/authCode';
-import { phoneEncryption, formatPhoneNum, logOut } from '@lanshu/utils';
+import { phoneEncryption, formatPhoneNum, ClientLogOut } from '@lanshu/utils';
 import { LsIcon } from '@lanshu/components';
 
 export default {
@@ -162,7 +162,7 @@ export default {
             if (this.countdown <= 0) {
               clearInterval(this.timer);
               this.countdown = 0;
-              await logOut();
+              await ClientLogOut();
               await this.$router.push('/login');
             }
           }, 1000);

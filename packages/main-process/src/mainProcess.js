@@ -4,49 +4,54 @@ import { handleFileOpen, calcFileSize, deleteFile } from './utils';
 import { initScreenshots } from './screenshots';
 import { showLoginWindow, showMainWindow, changeWindow } from './window';
 import { unregisterHotKeyAll, initHotKeys, handleHotKey } from './hotKey';
+import { IMSDKEvent } from './IM-SDK';
 
 const initIpcMain = () => {
   app.whenReady().then(() => {
     // 初始化截图
     initScreenshots();
 
-    ipcMain.on('changeWindow', (event, type) => {
+    ipcMain.on('changeWindow', (_event, type) => {
       changeWindow(type);
     });
 
-    ipcMain.handle('openFile', (event, type) => handleFileOpen(type));
+    ipcMain.handle('openFile', (_event, type) => handleFileOpen(type));
 
-    ipcMain.on('showMainWindow', (event, config) => {
+    ipcMain.handle('IMSDKIPC', (_event, provider, event, data) =>
+      IMSDKEvent(provider, event, data),
+    );
+
+    ipcMain.on('showMainWindow', (_event, config) => {
       initHotKeys();
       showMainWindow();
     });
 
-    ipcMain.on('showLoginWindow', (event, delay) => {
+    ipcMain.on('showLoginWindow', (_event, delay) => {
       unregisterHotKeyAll();
       showLoginWindow(delay);
     });
 
-    ipcMain.on('openUrl', async (event, url) => {
+    ipcMain.on('openUrl', async (_event, url) => {
       await shell.openExternal(url);
     });
 
-    ipcMain.on('cleanFile', async (event, path) => {
+    ipcMain.on('cleanFile', async (_event, path) => {
       await deleteFile(path);
     });
 
-    ipcMain.handle('getFileSize', async (event, dirPath) => {
+    ipcMain.handle('getFileSize', async (_event, dirPath) => {
       return await calcFileSize(dirPath);
     });
 
-    ipcMain.on('setHotKey', async (event, params) => {
+    ipcMain.on('setHotKey', async (_event, params) => {
       await handleHotKey(params);
     });
 
-    ipcMain.handle('getStore', async (event, key) => {
+    ipcMain.handle('getStore', async (_event, key) => {
       return await global.store.get(key);
     });
 
-    ipcMain.on('setStore', async (event, key, data) => {
+    ipcMain.on('setStore', async (_event, key, data) => {
       await global.store.set(key, data);
     });
   });

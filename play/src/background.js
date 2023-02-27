@@ -1,6 +1,6 @@
 import { initElectron, initIpcMain } from '@lanshu/main-process';
 
-initElectron().then(() => {
+initElectron('ssssssssssssss').then(() => {
   // console.log(App)
   initIpcMain();
 });

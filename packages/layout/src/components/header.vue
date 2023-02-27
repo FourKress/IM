@@ -78,7 +78,7 @@
 <script>
 import { mapGetters, mapActions } from 'vuex';
 import { LsIcon, WindowOperate, LsCardDialog } from '@lanshu/components';
-import { logOut } from '@lanshu/utils';
+import { ClientLogOut } from '@lanshu/utils';
 
 export default {
   name: 'MainHeader',
@@ -121,7 +121,7 @@ export default {
     async handleLogOut() {
       this.showSettingsDialog = false;
 
-      await logOut();
+      await ClientLogOut();
       await this.$router.push('/login');
     },
   },

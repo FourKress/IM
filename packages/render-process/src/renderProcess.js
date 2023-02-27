@@ -12,6 +12,8 @@ const setHotKey = electronAPI?.setHotKey;
 const getStore = electronAPI?.getStore;
 const setStore = electronAPI?.setStore;
 const updateClient = electronAPI?.updateClient;
+const IMSDKIPC = electronAPI?.IMSDKIPC;
+const IMSDKListener = electronAPI?.IMSDKListener;
 
 export {
   changeWindow,
@@ -26,4 +28,6 @@ export {
   getStore,
   setStore,
   updateClient,
+  IMSDKIPC,
+  IMSDKListener,
 };

@@ -9,6 +9,7 @@ import MainLayout from './components/layout';
 import { IMMixin } from '@lanshu/im';
 import {renderProcess} from '@lanshu/render-process'
 
+
 export default {
   name: 'App',
   mixins: [IMMixin],
@@ -24,6 +25,9 @@ export default {
       }).then(() => {
         event.sender.send('startUpdate', 'startUpdate')
       });
+    })
+    renderProcess.IMSDKListener((event, value) => {
+
     })
   },
   methods: {},

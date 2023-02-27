@@ -5,6 +5,7 @@ import * as path from 'path';
 
 import store from './datastore';
 import checkUpload from './checkUpload';
+import { IMSDKInit } from './IM-SDK';
 
 global.store = store;
 
@@ -48,7 +49,7 @@ async function createWindow() {
   });
 }
 
-const initElectron = () => {
+const initElectron = (appId) => {
   return new Promise((resolve, reject) => {
     try {
       // Scheme must be registered before the app is ready
@@ -84,6 +85,8 @@ const initElectron = () => {
           }
         }
         await createWindow();
+
+        IMSDKInit(appId);
 
         resolve({
           App: app,

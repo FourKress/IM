@@ -1,28 +1,59 @@
-const IMLogin = (token) => {
-  console.log(token);
-  IMSDK.login({
-    lt: token,
-  })
-    .then((e) => {
-      if (e.code === 0) {
-        this.$message.error('IM 登录成功');
-        console.log('登录成功');
-      } else {
-        console.log('IM 登录失败');
-        this.$message.error('IM 登录失败');
-      }
-    })
-    .catch((e) => {
-      console.log('IM 登录失败，错误码：', e.code);
-    });
+import { renderProcess } from '@lanshu/render-process';
+import { removeToken } from './token';
+
+export const IMSDKMainProvide = {
+  provider: 'getMainProvider',
+  events: {
+    login: 'login',
+    logout: 'logout',
+  },
 };
 
-const IMLogout = async () => {
-  await IMSDK.logout();
+export const IMSDKUserProvider = {
+  provider: 'getUserProvider',
+  events: {
+    getUserAttribute: 'getUserAttrbute',
+  },
 };
 
-const IMDestroy = () => {
-  IMSDK.destroy();
+export const IMSDKConvProvider = {
+  provider: 'getConvProvider',
+  events: {
+    login: 'login',
+    setLogLevel: 'setLogLevel',
+  },
 };
 
-export { IMLogin, IMLogout, IMDestroy };
+export const IMSDKMessageProvider = {
+  provider: 'getMessageProvider',
+  events: {
+    login: 'login',
+    setLogLevel: 'setLogLevel',
+  },
+};
+
+export const IMSDKGroupProvider = {
+  provider: 'getGroupProvider',
+  events: {
+    login: 'login',
+    setLogLevel: 'setLogLevel',
+  },
+};
+
+export const IMSDKCallBackEvents = {
+  // ''
+};
+
+export const IMLogout = async () => {
+  await renderProcess.IMSDKIPC(
+    IMSDKMainProvide.provider,
+    IMSDKMainProvide.events.logout,
+  );
+};
+
+export const ClientLogOut = async () => {
+  await IMLogout();
+  removeToken();
+  window.location.reload();
+  renderProcess.showLoginWindow(500);
+};

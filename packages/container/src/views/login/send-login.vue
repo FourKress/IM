@@ -1,7 +1,12 @@
 <template>
   <div class="send-login">
     <div class="back-icon" @click="backLogin">
-      <LsIcon render-svg width='40' height='30' icon='a-icon_zuobian2x'></LsIcon>
+      <LsIcon
+        render-svg
+        width="40"
+        height="30"
+        icon="a-icon_zuobian2x"
+      ></LsIcon>
     </div>
 
     <div class="title">
@@ -31,7 +36,12 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex';
-import { tokenUtils, phoneEncryption, IMEvent } from '@lanshu/utils';
+import {
+  tokenUtils,
+  phoneEncryption,
+  IMSDKMainProvide,
+  IMSDKUserProvider,
+} from '@lanshu/utils';
 import { renderProcess } from '@lanshu/render-process';
 import OtherLogin from './other-login';
 import AuthCode from '../../components/authCode';
@@ -42,7 +52,7 @@ export default {
   components: {
     OtherLogin,
     AuthCode,
-    LsIcon
+    LsIcon,
   },
   props: {
     phoneNum: {
@@ -68,6 +78,7 @@ export default {
   },
   mounted() {},
   methods: {
+    ...mapActions('IMStore', ['setUserInfo']),
     ...mapActions('routerStore', ['clearBreadCrumb']),
     backLogin() {
       this.handleClearInterval();
@@ -98,19 +109,54 @@ export default {
 
     async handleLogin() {
       this.handleClearInterval();
+      const token =
+        // 'eyJhcHBJZCI6IjYzYjU0MWRkYjI1OTU3MTJmZDU5ZjY0MiIsImFwcFVzZXIiOiI5OTk5OTk5IiwiZXhwaXJlIjotMSwic2lnbiI6ImlrOXFhTUROWkRpNEQyMFVaSHBIRndLU1Z2THNQQXZxSE1IL2F0MTI4eEU9In0=';
+        'eyJhcHBJZCI6IjYzNmNhMzFiZDRjYTM1MmJmMWZmNjQxZSIsImFwcFVzZXIiOiI4ODg4ODg4IiwiZXhwaXJlIjotMSwic2lnbiI6IlByTkhyVlRkTjNZL3RqWmkrV1pGejNIYndNLzBhc2VKS1RJMkgrRGlpaE09In0=';
       tokenUtils.setToken({
-        token: 213123,
+        token,
       });
-      this.initIM();
+      await this.IMLogin({
+        // token,
+        // userId: 'userId',
+        token:"eyJhcHBJZCI6IjYzYjU0MWRkYjI1OTU3MTJmZDU5ZjY0MiIsImFwcFVzZXIiOiI5OTk5OTk5IiwiZXhwaXJlIjotMSwic2lnbiI6ImlrOXFhTUROWkRpNEQyMFVaSHBIRndLU1Z2THNQQXZxSE1IL2F0MTI4eEU9In0=",
+        userId:"userId"
+      });
+      await this.getIMUserInfo('9999999');
       this.$router.push('/');
       this.clearBreadCrumb();
       renderProcess.showMainWindow();
     },
-    initIM() {
-      IMEvent.IMLogin(
-        // 'eyJhcHBJZCI6IjYzNmNhMzFiZDRjYTM1MmJmMWZmNjQxZSIsImFwcFVzZXIiOiIxMjM0NTQzMjEiLCJleHBpcmUiOi0xLCJzaWduIjoiZWpzcWNBS1RaV2lNaThCdzZFZlAzcmRMOERYTzFyQytzbzFLQjd5bWxqOD0ifQ==',
-        'eyJhcHBJZCI6IjYzNmNhMzFiZDRjYTM1MmJmMWZmNjQxZSIsImFwcFVzZXIiOiI4ODg4ODg4IiwiZXhwaXJlIjotMSwic2lnbiI6IlByTkhyVlRkTjNZL3RqWmkrV1pGejNIYndNLzBhc2VKS1RJMkgrRGlpaE09In0=',
-      );
+    IMLogin(params) {
+      return renderProcess
+        .IMSDKIPC(
+          IMSDKMainProvide.provider,
+          IMSDKMainProvide.events.login,
+          params,
+        )
+        .then((res) => {
+          console.log('IM_Login Success', res);
+        })
+        .catch((err) => {
+          console.log('IM_Login Error', err);
+        });
+      // IMEvent.IMLogin(
+      // 'eyJhcHBJZCI6IjYzNmNhMzFiZDRjYTM1MmJmMWZmNjQxZSIsImFwcFVzZXIiOiIxMjM0NTQzMjEiLCJleHBpcmUiOi0xLCJzaWduIjoiZWpzcWNBS1RaV2lNaThCdzZFZlAzcmRMOERYTzFyQytzbzFLQjd5bWxqOD0ifQ==',
+      // );
+    },
+    getIMUserInfo(userId) {
+      return renderProcess
+        .IMSDKIPC(
+          IMSDKUserProvider.provider,
+          IMSDKUserProvider.events.getUserAttribute,
+          userId,
+        )
+        .then((res) => {
+          console.log('IM_User Success', res);
+          this.setUserInfo(res);
+        })
+        .catch((err) => {
+          console.log('IM_User Error', err);
+        });
     },
   },
 };
