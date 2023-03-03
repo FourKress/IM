@@ -1,3 +1,5 @@
+import electronLog from './log';
+
 const { LimMain, LogLevel } = require('lim-sdk-electron');
 
 export const IMSDKInit = (appId) => {
@@ -6,9 +8,10 @@ export const IMSDKInit = (appId) => {
 
   global.IMSDK = IMSDK;
 
-  IMSDK.getMainProvider().setLogLevel(
-    process.env.WEBPACK_DEV_SERVER_URL ? LogLevel.INFO : LogLevel.ERROR,
-  );
+  // IMSDK.getMainProvider().setLogLevel(
+  //   process.env.WEBPACK_DEV_SERVER_URL ? LogLevel.INFO : LogLevel.ERROR,
+  // );
+  IMSDK.getMainProvider().setLogLevel(LogLevel.DEBUG);
 
   IMSDK.getMainProvider().setNetworkChangeCallBack((state) => {
     // state 网络状态 0：正在连接、-1：连接断开、1：连接成功
@@ -77,8 +80,37 @@ export const IMSDKInit = (appId) => {
   });
 };
 
-export const IMSDKEvent = (provider, event, data) => {
-  return global.IMSDK[provider]()[event](...data);
+export const IMSDKEvent = async (provider, event, data) => {
+  electronLog.info(
+    `global.IMSDK[${provider}]()[${event}](${JSON.stringify(data)})`,
+  );
+  electronLog.info(global.IMSDK[provider]()[event]);
+  // const result = await global.IMSDK[provider]()[event](...data);
+  // electronLog.info(result);
+  // return result;
+  let result;
+  try {
+    const res = await global.IMSDK[provider]()[event](...data);
+    electronLog.info(JSON.stringify(res));
+    result = res;
+  } catch (e) {
+    electronLog.info(JSON.stringify(e));
+    result = e;
+  }
+  return result;
+
+  // return new Promise((resolve, reject) => {
+  //   global.IMSDK[provider]()
+  //     [event](...data)
+  //     .then((res) => {
+  //       electronLog.info(res);
+  //       resolve(res);
+  //     })
+  //     .catch((err) => {
+  //       electronLog.info(err);
+  //       reject(err);
+  //     });
+  // });
 };
 
 export const IMSDK_Destroy = async () => {

@@ -70,7 +70,10 @@
             :class="!message && 'disabled'"
             @click="sendMsg"
           >
-            <LsIcon render-svg :icon="message ? 'xx_srk_fs_nor' : 'xx_srk_fs_dis'"></LsIcon>
+            <LsIcon
+              render-svg
+              :icon="message ? 'xx_srk_fs_nor' : 'xx_srk_fs_dis'"
+            ></LsIcon>
           </div>
         </div>
       </div>
@@ -95,7 +98,6 @@
     <!--        width="300"-->
     <!--        height="100"-->
     <!--      ></audio>-->
-
   </div>
 </template>
 
@@ -105,6 +107,7 @@ import { renderProcess } from '@lanshu/render-process';
 import { LsIcon } from '@lanshu/components';
 import ActionCard from '../action-view/action-card';
 import { mapGetters } from 'vuex';
+import { IMSDKMessageProvider, IMSDKFileProvider } from '../../IM-event';
 
 export default {
   name: 'Msg-input-action',
@@ -226,7 +229,7 @@ export default {
       if (!innerHTML) {
         this.message = '';
         return;
-      };
+      }
       const { scrollWidth, clientWidth, scrollHeight, clientHeight } = element;
       if (scrollWidth > clientWidth || scrollHeight > clientHeight) {
         const caretOffset = this.getRange(element);
@@ -436,7 +439,12 @@ export default {
     },
 
     async handleIMSendMsg(msg, cb) {
-      await IMSDK.sendMessage(msg)
+      await renderProcess
+        .IMSDKIPC(
+          IMSDKMessageProvider.provider,
+          IMSDKMessageProvider.events.sendMessage,
+          msg,
+        )
         .then((e) => {
           console.log('消息发送成功', e);
           this.$emit('refreshMsg');
@@ -458,6 +466,7 @@ export default {
     },
 
     async sendMsg() {
+      console.log(222, this.IM_Network_Status, this.SDK_READ);
       if (this.IM_Network_Status !== this.SDK_READ) return;
       if (!this.message) return;
       console.log(this.message);
@@ -480,6 +489,7 @@ export default {
             const { name, size, type } = file;
 
             const url = await this.handleFileUpload(file);
+            if(!url) return;
 
             const { width, height } = await this.getImageSize(url);
             msg = this.handleCreateMsg(
@@ -501,7 +511,7 @@ export default {
           }
 
           return msg;
-        }),
+        }).filter(msg => msg),
       );
 
       sendMsgArr.forEach((d) => {
@@ -510,11 +520,11 @@ export default {
     },
 
     handleCreateMsg(params, url = '') {
-      let msg = null;
-      const baseData = {
-        toUser: this.session.toUser, //消息接收方，为会话列表中的toUser
-        toUserType: this.session.toUserType, //消息接收方类型，为会话列表中的toUserType
-      };
+      let msgEvent = null;
+      let msgData = [
+        this.session.toUser, //消息接收方，为会话列表中的toUser
+        this.session.toUserType, //消息接收方类型，为会话列表中的toUserType];
+      ];
       const {
         size = 0,
         name = '',
@@ -527,70 +537,71 @@ export default {
       } = params;
       switch (type) {
         case this.checkMsgType.isText:
-          msg = IMSDK.createTextMessage({
-            content: message, //文本内容
-            ...baseData,
-          });
+          msgEvent = IMSDKMessageProvider.events.createTextMessage;
+          msgData.push(message);
           break;
         case this.checkMsgType.isImage:
-          msg = IMSDK.createImgMessage({
-            data: {
-              name,
-              type: rawType,
-              size,
-              high: height,
-              wide: width,
-              url,
-              smallUrl: url,
-            },
-            ...baseData,
+          msgEvent = IMSDKMessageProvider.events.createImgMessage;
+          msgData.push({
+            name,
+            type: rawType,
+            size,
+            md5: '',
+            smallUrl: url,
+            url,
+            high: height,
+            wide: width,
           });
           break;
         case this.checkMsgType.isVideo:
-          msg = IMSDK.createVideoMessage({
-            data: {
-              type: rawType,
-              size,
-              time,
-              videoUrl: url,
-              snapshotUrl: url,
-            },
-            ...baseData,
+          msgEvent = IMSDKMessageProvider.events.createVideoMessage;
+          msgData.push({
+            type: rawType,
+            size,
+            time,
+            videoUrl: url,
+            snapshotUrl: url,
           });
+          break;
         case this.checkMsgType.isAudio:
-          msg = IMSDK.createVoiceMessage({
-            data: {
-              type: rawType,
-              size,
-              time,
-              url,
-            },
-            ...baseData,
+          msgEvent = IMSDKMessageProvider.events.createVoiceMessage;
+          msgData.push({
+            md5: '',
+            type: rawType,
+            size,
+            time,
+            url,
           });
-
+          break;
         case this.checkMsgType.isFile:
-          msg = IMSDK.createFileMessage({
-            data: {
-              name,
-              type: rawType,
-              size,
-              url,
-            },
-            ...baseData,
-          })
-        default: break;
+          msgEvent = IMSDKMessageProvider.events.createFileMessage;
+          msgData.push({
+            md5: '',
+            name,
+            type: rawType,
+            size,
+            url,
+          });
+          break;
+        default:
+          break;
       }
 
-      return msg;
+      return renderProcess.IMSDKIPC(
+        IMSDKMessageProvider.provider,
+        IMSDKMessageProvider.events[msgEvent],
+        ...msgData,
+      );
     },
 
     async handleFileUpload(file) {
       return new Promise(async (resolve) => {
-        await IMSDK.FileApi.uploadFile(file, (event) => {
-          if (event.lengthComputable) {
-            console.log(event);
-          }
-        })
+        await renderProcess
+          .IMSDKIPC(
+            IMSDKFileProvider.provider,
+            IMSDKFileProvider.events.uploadFile,
+            file,
+          )
           .then((res) => {
             resolve(res.data.url);
           })

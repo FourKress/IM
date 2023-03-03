@@ -24,6 +24,7 @@ export const IMSDKConvProvider = {
     getConvList: 'getConvList',
     getTotalUnreadMessageCount: 'getTotalUnreadMessageCount',
     clearUnreadCount: 'clearUnreadCount',
+    getByUserId: 'getByUserId',
     getBySessId: 'getBySessId',
   },
 };
@@ -32,14 +33,25 @@ export const IMSDKMessageProvider = {
   provider: 'getMessageProvider',
   events: {
     getMessageList: 'getMessageList',
+    sendMessage: 'sendMessage',
+    createTextMessage: 'createTextMessage',
+    createImgMessage: 'createImgMessage',
+    createVideoMessage: 'createVideoMessage',
+    createVoiceMessage: 'createVoiceMessage',
+    createFileMessage: 'createFileMessage',
+    createCustomMessage: 'createCustomMessage',
   },
 };
 
 export const IMSDKGroupProvider = {
   provider: 'getGroupProvider',
+  events: {},
+};
+
+export const IMSDKFileProvider = {
+  provider: 'getFileProvider',
   events: {
-    login: 'login',
-    setLogLevel: 'setLogLevel',
+    uploadFile: 'uploadFile',
   },
 };
 
@@ -62,8 +74,6 @@ export const IMSDKCallBackEvents = {
   },
   AddReceiveNewMessage(msgInfo) {
     const { message, silence } = msgInfo;
-
-    IMClearUnreadCount(message.sessId, true);
 
     const NOTIFICATION_TITLE = '客户端通知';
     const NOTIFICATION_BODY = message?.data?.content;
@@ -154,8 +164,7 @@ export const IMGetMessageList = (sessId, nextMsgId) => {
   );
 };
 
-export const IMClearUnreadCount = async (sessId, isWindowClear = false) => {
-  console.log(sessId);
+export const IMClearUnreadCount = async (sessId) => {
   await renderProcess
     .IMSDKIPC(
       IMSDKConvProvider.provider,
@@ -165,27 +174,12 @@ export const IMClearUnreadCount = async (sessId, isWindowClear = false) => {
     .then((res) => {
       console.log('IM_ClearUnreadCount Success', res);
       const sessionList = stareInstance.getters['IMStore/sessionList'];
-      const mainSessionWindow =
-        stareInstance.getters['IMStore/mainSessionWindow'];
-      const sessionWindowList =
-        stareInstance.getters['IMStore/sessionWindowList'];
       stareInstance.commit(
         'IMStore/setAllSession',
         sessionList.map((d) => {
-          let unreadCount;
-          if (isWindowClear) {
-            unreadCount = [mainSessionWindow, ...sessionWindowList].some(
-              (s) => s.sessId === sessId,
-            )
-              ? 0
-              : d.unreadCount;
-          } else {
-            unreadCount = d.sessId === sessId ? 0 : d.unreadCount;
-          }
-
           return {
             ...d,
-            unreadCount,
+            unreadCount: d.sessId === sessId ? 0 : d.unreadCount,
           };
         }),
       );

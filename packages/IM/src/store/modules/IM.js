@@ -20,7 +20,7 @@ const getters = {
   sessionWindowList: (state) => state.sessionWindowList,
   IM_Network_Status: (state) => state.IM_Network_Status,
   IM_DataSync_Status: (state) => state.IM_DataSync_Status,
-  SDK_NOT_READ: (state) => state.SDK_NOT_READ,
+  SDK_READ: (state) => state.SDK_READ,
   currentMsg: (state) => state.currentMsg,
   allUnreadCount: (state) => state.allUnreadCount,
 };
@@ -30,7 +30,6 @@ const mutations = {
     data.userInfo = value;
   },
   setAllSession(data, value) {
-    console.log('!!!', value);
     data.sessionList = value.map((d) => {
       const { lastMsg = null } = d;
       return {
