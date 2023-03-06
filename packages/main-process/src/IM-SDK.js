@@ -1,10 +1,13 @@
+import { app } from 'electron';
 import electronLog from './log';
 
 const { LimMain, LogLevel } = require('lim-sdk-electron');
 
 export const IMSDKInit = (appId) => {
   const limMain = new LimMain({ appId });
-  const IMSDK = limMain.init();
+  const IMSDK = limMain.init({
+    filePath: app.getPath('userData'),
+  });
 
   global.IMSDK = IMSDK;
 
