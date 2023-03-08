@@ -88,9 +88,6 @@ export const IMSDKEvent = async (provider, event, data) => {
   electronLog.info(
     `global.IMSDK[${provider}]()[${event}](${JSON.stringify(data)})`,
   );
-  // const result = await global.IMSDK[provider]()[event](...data);
-  // electronLog.info(result);
-  // return result;
   try {
     const res = await global.IMSDK[provider]()[event](...data);
     electronLog.info(JSON.stringify(res));

@@ -51,8 +51,7 @@
 import { LsIcon } from '@lanshu/components';
 import { mapGetters } from 'vuex';
 import { IMGroupMemberPanelType } from '@lanshu/utils';
-import { renderProcess } from '@lanshu/render-process';
-import { IMSDKGroupProvider } from '../../IM-SDK/provide';
+import { IMGetGroupMemberList } from '../../IM-SDK';
 
 export default {
   name: 'Member',
@@ -93,19 +92,12 @@ export default {
   },
   methods: {
     getGroupMemberList(nextSeq) {
-      renderProcess
-        .IMSDKIPC(
-          IMSDKGroupProvider.provider,
-          IMSDKGroupProvider.events.getGroupMemberList,
-          this.groupId,
-          nextSeq,
-        )
-        .then((res) => {
-          console.log(res, 'getGroupMemberList');
-          const { nextSeq, members = [] } = res.data;
-          this.nextSeq = nextSeq;
-          this.selectList = members;
-        });
+      IMGetGroupMemberList(this.groupId, nextSeq).then((res) => {
+        console.log(res, 'getGroupMemberList');
+        const { nextSeq, members = [] } = res.data;
+        this.nextSeq = nextSeq;
+        this.selectList = members;
+      });
     },
     changeMember(type) {
       this.$emit('changeGroupMember', type);

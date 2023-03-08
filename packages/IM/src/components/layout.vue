@@ -35,9 +35,8 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex';
-import { renderProcess } from '@lanshu/render-process';
 import Recordrtc from '../recordrtc';
-import { IMSDKGroupProvider } from '../IM-SDK/provide';
+import { IMCreateGroup } from '../IM-SDK';
 import ImView from './im-view';
 import Settings from './base-settings/settings';
 import GroupMemberChat from './base-settings/group-member-chat';
@@ -67,10 +66,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters('IMStore', [
-      'mainSessionWindow',
-      'sessionWindowList',
-    ]),
+    ...mapGetters('IMStore', ['mainSessionWindow', 'sessionWindowList']),
   },
   watch: {
     mainSessionWindow: {
@@ -134,19 +130,10 @@ export default {
         'https://diy.jiuwa.net/make/ps?sktype=&fontsize=380&skwidth=3&fillcolor=022b6f&shadowtype=2&filltype=1&text=%E9%A9%AC&skcolor=999999&skopacity=1&distort=9&fontype=21';
       const groupAddType = 2;
       const members = selectList.map((d) => d.toUser);
-      renderProcess
-        .IMSDKIPC(
-          IMSDKGroupProvider.provider,
-          IMSDKGroupProvider.events.createGroup,
-          groupName,
-          avatar,
-          groupAddType,
-          members,
-        )
-        .then(() => {
-          this.$message.success('群聊创建成功');
-          this.visibleGroupMember = false;
-        });
+      IMCreateGroup(groupName, avatar, groupAddType, members).then(() => {
+        this.$message.success('群聊创建成功');
+        this.visibleGroupMember = false;
+      });
     },
   },
 };

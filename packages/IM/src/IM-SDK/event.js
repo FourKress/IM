@@ -2,6 +2,8 @@ import { renderProcess } from '@lanshu/render-process';
 import { stareInstance, removeToken } from '@lanshu/utils';
 import {
   IMSDKConvProvider,
+  IMSDKFileProvider,
+  IMSDKGroupProvider,
   IMSDKMainProvide,
   IMSDKMessageProvider,
   IMSDKUserProvider,
@@ -22,6 +24,13 @@ const handleIMSDKIPCResult = async (res) => {
   return Promise.resolve(res);
 };
 
+const eventHOCFnc = async (...params) => {
+  await handlePromiseResult(async () => {
+    const res = renderProcess.IMSDKIPC(params);
+    await handleIMSDKIPCResult(res);
+  });
+};
+
 export const IMSDK_Init = async (loginParams) => {
   const { userId } = loginParams;
   await handlePromiseResult(async () => {
@@ -32,62 +41,59 @@ export const IMSDK_Init = async (loginParams) => {
   });
 };
 
-export const IMLogin = async (loginParams) => {
-  const res = await renderProcess.IMSDKIPC(
+export const IMLogin = async (loginParams) =>
+  await eventHOCFnc(
     IMSDKMainProvide.provider,
     IMSDKMainProvide.events.login,
     loginParams,
   );
-  console.log('IM_Login Result', res);
-  await handleIMSDKIPCResult(res);
-};
+
 export const IMGetUserAttribute = async (userId) => {
-  const res = await renderProcess.IMSDKIPC(
+  const res = await eventHOCFnc(
     IMSDKUserProvider.provider,
     IMSDKUserProvider.events.getUserAttribute,
     userId,
   );
-  await handleIMSDKIPCResult(res);
   stareInstance.commit('IMStore/setUserInfo', res.data);
+  return res;
 };
 export const IMGetConvList = async (userId) => {
-  const res = await renderProcess.IMSDKIPC(
+  const res = await eventHOCFnc(
     IMSDKConvProvider.provider,
     IMSDKConvProvider.events.getConvList,
     userId,
   );
-  await handleIMSDKIPCResult(res);
   if (res.data.length > 0) {
     stareInstance.commit('IMStore/setAllSession', res.data);
   }
+  return res;
 };
 export const IMGetTotalUnreadMessageCount = async () => {
-  const res = await renderProcess.IMSDKIPC(
+  const res = await eventHOCFnc(
     IMSDKConvProvider.provider,
     IMSDKConvProvider.events.getTotalUnreadMessageCount,
   );
-  await handleIMSDKIPCResult(res);
   stareInstance.commit('IMStore/setAllUnreadCount', res.data);
+  return res;
 };
 
-export const IMGetMessageList = async (sessId, nextMsgId) => {
-  const res = await renderProcess.IMSDKIPC(
-    IMSDKMessageProvider.provider,
-    IMSDKMessageProvider.events.getMessageList,
-    sessId,
-    nextMsgId,
-  );
-  await handleIMSDKIPCResult(res);
-};
+export const IMLogout = async () =>
+  await eventHOCFnc(IMSDKMainProvide.provider, IMSDKMainProvide.events.logout);
 
+export const ClientLogOut = async () => {
+  await handlePromiseResult(async () => {
+    await IMLogout();
+    removeToken();
+    renderProcess.showLoginWindow(500);
+    window.location.reload();
+  });
+};
 export const IMClearUnreadCount = async (sessId, sessionWindowList) => {
-  const res = await renderProcess.IMSDKIPC(
+  const res = await eventHOCFnc(
     IMSDKConvProvider.provider,
     IMSDKConvProvider.events.clearUnreadCount,
     sessId,
   );
-  await handleIMSDKIPCResult(res);
-  console.log('IM_ClearUnreadCount Success', res);
   const sessionList = stareInstance.getters['IMStore/sessionList'];
   stareInstance.commit(
     'IMStore/setAllSession',
@@ -107,31 +113,60 @@ export const IMClearUnreadCount = async (sessId, sessionWindowList) => {
       };
     }),
   );
+  return res;
 };
-
-export const IMSetTopStatus = async (sessId, top) => {
-  const res = await renderProcess.IMSDKIPC(
+export const IMGetMessageList = async (sessId, nextMsgId) =>
+  await eventHOCFnc(
+    IMSDKMessageProvider.provider,
+    IMSDKMessageProvider.events.getMessageList,
+    sessId,
+    nextMsgId,
+  );
+export const IMSetTopStatus = async (sessId, top) =>
+  await eventHOCFnc(
     IMSDKConvProvider.provider,
     IMSDKConvProvider.events.setTopBySessId,
     sessId,
     top,
   );
-  await handleIMSDKIPCResult(res);
-};
-
-export const IMLogout = async () => {
-  const res = await renderProcess.IMSDKIPC(
-    IMSDKMainProvide.provider,
-    IMSDKMainProvide.events.logout,
+export const IMClearMessage = async (sessId) =>
+  await eventHOCFnc(
+    IMSDKMessageProvider.provider,
+    IMSDKMessageProvider.events.clearMessage,
+    sessId,
   );
-  await handleIMSDKIPCResult(res);
-};
+export const IMGetGroupMemberList = async (groupId, nextSeq) =>
+  await eventHOCFnc(
+    IMSDKGroupProvider.provider,
+    IMSDKGroupProvider.events.getGroupMemberList,
+    groupId,
+    nextSeq,
+  );
+export const IMCreateGroup = async (groupName, avatar, groupAddType, members) =>
+  await eventHOCFnc(
+    IMSDKGroupProvider.provider,
+    IMSDKGroupProvider.events.createGroup,
+    groupName,
+    avatar,
+    groupAddType,
+    members,
+  );
 
-export const ClientLogOut = async () => {
-  await handlePromiseResult(async () => {
-    await IMLogout();
-    removeToken();
-    renderProcess.showLoginWindow(500);
-    window.location.reload();
-  });
-};
+export const IMCreateMsg = async (msgEvent, msgData) =>
+  await eventHOCFnc(
+    IMSDKMessageProvider.provider,
+    IMSDKMessageProvider.events[msgEvent],
+    ...msgData,
+  );
+export const IMSendMessage = async (msg) =>
+  await eventHOCFnc(
+    IMSDKMessageProvider.provider,
+    IMSDKMessageProvider.events.sendMessage,
+    msg,
+  );
+export const IMUploadFile = async (file) =>
+  await eventHOCFnc(
+    IMSDKFileProvider.provider,
+    IMSDKFileProvider.events.uploadFile,
+    file,
+  );

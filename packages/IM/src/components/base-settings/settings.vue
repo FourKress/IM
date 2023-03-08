@@ -35,8 +35,7 @@
 <script>
 import { mapActions, mapGetters } from 'vuex';
 import { LsIcon } from '@lanshu/components';
-import { renderProcess } from '@lanshu/render-process';
-import { IMSDKMessageProvider } from '../../IM-SDK/provide';
+import { IMClearMessage } from '../../IM-SDK';
 import MsgTopAndSilence from './msgTopAndSilence';
 
 export default {
@@ -59,7 +58,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters('IMStore', ['actionWindow'])
+    ...mapGetters('IMStore', ['actionWindow']),
   },
   methods: {
     ...mapActions('IMStore', ['setRefreshMsg']),
@@ -75,17 +74,11 @@ export default {
         title: '确定清空聊天记录？',
         content: '聊天记录将在你的所有设备同步清空，不会影响其他群成员',
       }).then(() => {
-        renderProcess
-          .IMSDKIPC(
-            IMSDKMessageProvider.provider,
-            IMSDKMessageProvider.events.clearMessage,
-            this.actionWindow?.sessId,
-          )
-          .then(() => {
-            this.setRefreshMsg(true);
-            this.$message.success('清空聊天记录成功');
-            console.log('clearMessage Success');
-          });
+        IMClearMessage(this.actionWindow.sessId).then(() => {
+          this.setRefreshMsg(true);
+          this.$message.success('清空聊天记录成功');
+          console.log('clearMessage Success');
+        });
       });
     },
   },

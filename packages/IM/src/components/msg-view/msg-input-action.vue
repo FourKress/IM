@@ -107,7 +107,12 @@ import { renderProcess } from '@lanshu/render-process';
 import { LsIcon } from '@lanshu/components';
 import ActionCard from '../action-view/action-card';
 import { mapGetters } from 'vuex';
-import { IMSDKMessageProvider, IMSDKFileProvider } from '../../IM-SDK/provide';
+import {
+  IMSDKMessageProvider,
+  IMCreateMsg,
+  IMSendMessage,
+  IMUploadFile,
+} from '../../IM-SDK';
 
 export default {
   name: 'Msg-input-action',
@@ -439,13 +444,8 @@ export default {
     },
 
     async handleIMSendMsg(msg, cb) {
-      await renderProcess
-        .IMSDKIPC(
-          IMSDKMessageProvider.provider,
-          IMSDKMessageProvider.events.sendMessage,
-          msg,
-        )
-        .then((e) => {
+      await IMSendMessage(msg)
+        .then((res) => {
           console.log('消息发送成功', e);
           this.$emit('refreshMsg');
           cb && cb();
@@ -481,37 +481,39 @@ export default {
         .filter((d) => d !== 'br');
 
       const sendMsgArr = await Promise.all(
-        msgArr.map(async (d) => {
-          let msg = null;
-          if (d.includes('<img')) {
-            const b64 = d.replace(/(<img src=")(\S+)(" \S*)/, '$2');
-            const file = this.dataURLtoFile(b64);
-            const { name, size, type } = file;
+        msgArr
+          .map(async (d) => {
+            let msg = null;
+            if (d.includes('<img')) {
+              const b64 = d.replace(/(<img src=")(\S+)(" \S*)/, '$2');
+              const file = this.dataURLtoFile(b64);
+              const { name, size, type } = file;
 
-            const url = await this.handleFileUpload(file);
-            if(!url) return;
+              const url = await this.handleFileUpload(file);
+              if (!url) return;
 
-            const { width, height } = await this.getImageSize(url);
-            msg = this.handleCreateMsg(
-              {
-                name,
-                type: type.replace(/\/[a-z]+/g, ''),
-                rawType: type,
-                size,
-                height,
-                width,
-              },
-              url,
-            );
-          } else {
-            msg = this.handleCreateMsg({
-              type: this.checkMsgType.isText,
-              message: d,
-            });
-          }
+              const { width, height } = await this.getImageSize(url);
+              msg = this.handleCreateMsg(
+                {
+                  name,
+                  type: type.replace(/\/[a-z]+/g, ''),
+                  rawType: type,
+                  size,
+                  height,
+                  width,
+                },
+                url,
+              );
+            } else {
+              msg = this.handleCreateMsg({
+                type: this.checkMsgType.isText,
+                message: d,
+              });
+            }
 
-          return msg;
-        }).filter(msg => msg),
+            return msg;
+          })
+          .filter((msg) => msg),
       );
 
       sendMsgArr.forEach((d) => {
@@ -587,21 +589,12 @@ export default {
           break;
       }
 
-      return renderProcess.IMSDKIPC(
-        IMSDKMessageProvider.provider,
-        IMSDKMessageProvider.events[msgEvent],
-        ...msgData,
-      );
+      return IMCreateMsg(msgEvent, msgData);
     },
 
     async handleFileUpload(file) {
       return new Promise(async (resolve) => {
-        await renderProcess
-          .IMSDKIPC(
-            IMSDKFileProvider.provider,
-            IMSDKFileProvider.events.uploadFile,
-            file,
-          )
+        await IMUploadFile(file)
           .then((res) => {
             resolve(res.data.url);
           })
