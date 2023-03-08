@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import localforage from 'localforage';
-import ElementUI from 'element-ui';
+import ElementUI, { Message } from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 import { baseRoutes } from '@lanshu/container';
 import { IMStore } from '@lanshu/im';
@@ -16,6 +16,7 @@ Vue.config.unwrapInjectedRef = true;
 
 Vue.use(ElementUI);
 Vue.use(LsConfirm);
+window.ClientMessage = Message;
 
 const Layout = (config = {}) => {
   return new Promise(async (resolve, reject) => {

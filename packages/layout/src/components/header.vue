@@ -120,9 +120,10 @@ export default {
     },
     async handleLogOut() {
       this.showSettingsDialog = false;
-
-      await ClientLogOut();
-      await this.$router.push('/login');
+      try {
+        await ClientLogOut();
+        await this.$router.push('/login');
+      } catch (e) {}
     },
   },
 };

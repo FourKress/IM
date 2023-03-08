@@ -169,6 +169,7 @@ export default {
     position: fixed;
     left: 0;
     top: 0;
+    z-index: 998;
     -webkit-app-region: drag;
 
     .action {
@@ -177,6 +178,7 @@ export default {
       height: 20px;
       top: 24px;
       right: 20px;
+      -webkit-app-region: no-drag !important;
     }
   }
 }

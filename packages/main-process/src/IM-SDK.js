@@ -91,16 +91,14 @@ export const IMSDKEvent = async (provider, event, data) => {
   // const result = await global.IMSDK[provider]()[event](...data);
   // electronLog.info(result);
   // return result;
-  let result;
   try {
     const res = await global.IMSDK[provider]()[event](...data);
     electronLog.info(JSON.stringify(res));
-    result = res;
+    return res;
   } catch (e) {
     electronLog.info(JSON.stringify(e));
-    result = e;
+    return e;
   }
-  return result;
 };
 
 export const IMSDK_Destroy = async () => {

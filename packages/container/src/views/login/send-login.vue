@@ -112,14 +112,17 @@ export default {
       tokenUtils.setToken({
         token,
       });
-      await IMSDK_Init({
-        token,
-        // userId: '9999999',
-        userId: '123454321',
-      });
-      this.$router.push('/');
-      this.clearBreadCrumb();
-      renderProcess.showMainWindow();
+      try {
+        await IMSDK_Init({
+          token,
+          // userId: '9999999',
+          userId: '123454321',
+        });
+
+        this.$router.push('/');
+        this.clearBreadCrumb();
+        renderProcess.showMainWindow();
+      } catch (e) {}
     },
   },
 };
