@@ -1,33 +1,16 @@
 const electronAPI = window?.electronAPI ?? {};
 
-const changeWindow = electronAPI?.changeWindow;
-const openFile = electronAPI?.openFile;
-const startScreenshots = electronAPI?.startScreenshots;
-const showMainWindow = electronAPI?.showMainWindow;
-const showLoginWindow = electronAPI?.showLoginWindow;
-const openUrl = electronAPI?.openUrl;
-const cleanFile = electronAPI?.cleanFile;
-const getFileSize = electronAPI?.getFileSize;
-const setHotKey = electronAPI?.setHotKey;
-const getStore = electronAPI?.getStore;
-const setStore = electronAPI?.setStore;
-const updateClient = electronAPI?.updateClient;
-const IMSDKIPC = electronAPI?.IMSDKIPC;
-const IMSDKListener = electronAPI?.IMSDKListener;
-
-export {
-  changeWindow,
-  openFile,
-  startScreenshots,
-  showMainWindow,
-  showLoginWindow,
-  openUrl,
-  cleanFile,
-  getFileSize,
-  setHotKey,
-  getStore,
-  setStore,
-  updateClient,
-  IMSDKIPC,
-  IMSDKListener,
-};
+export const changeWindow = electronAPI?.changeWindow;
+export const openFile = electronAPI?.openFile;
+export const startScreenshots = electronAPI?.startScreenshots;
+export const showMainWindow = electronAPI?.showMainWindow;
+export const showLoginWindow = electronAPI?.showLoginWindow;
+export const openUrl = electronAPI?.openUrl;
+export const cleanFile = electronAPI?.cleanFile;
+export const getFileSize = electronAPI?.getFileSize;
+export const setHotKey = electronAPI?.setHotKey;
+export const getStore = electronAPI?.getStore;
+export const setStore = electronAPI?.setStore;
+export const updateClient = electronAPI?.updateClient;
+export const IMSDKIPC = electronAPI?.IMSDKIPC;
+export const IMSDKListener = electronAPI?.IMSDKListener;

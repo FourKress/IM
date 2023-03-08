@@ -55,7 +55,7 @@ import MsgCard from './msg-view/msg-card';
 import MsgHeader from './msg-view/msg-header';
 import MsgInputAction from './msg-view/msg-input-action';
 import { LsIcon } from '@lanshu/components';
-import { IMGetMessageList } from '../IM-event';
+import { IMGetMessageList } from '../IM-SDK/event';
 
 export default {
   name: 'ImView',

@@ -1,118 +1,11 @@
 import { renderProcess } from '@lanshu/render-process';
-import { tokenUtils } from '@lanshu/utils';
-
-import { stareInstance } from '@lanshu/utils';
-
-export const IMSDKMainProvide = {
-  provider: 'getMainProvider',
-  events: {
-    login: 'login',
-    logout: 'logout',
-  },
-};
-
-export const IMSDKUserProvider = {
-  provider: 'getUserProvider',
-  events: {
-    getUserAttribute: 'getUserAttrbute',
-  },
-};
-
-export const IMSDKConvProvider = {
-  provider: 'getConvProvider',
-  events: {
-    getConvList: 'getConvList',
-    getTotalUnreadMessageCount: 'getTotalUnreadMessageCount',
-    clearUnreadCount: 'clearUnreadCount',
-    getByUserId: 'getByUserId',
-    getBySessId: 'getBySessId',
-    setTopBySessId: 'setTopBySessId',
-  },
-};
-
-export const IMSDKMessageProvider = {
-  provider: 'getMessageProvider',
-  events: {
-    getMessageList: 'getMessageList',
-    sendMessage: 'sendMessage',
-    createTextMessage: 'createTextMessage',
-    createImgMessage: 'createImgMessage',
-    createVideoMessage: 'createVideoMessage',
-    createVoiceMessage: 'createVoiceMessage',
-    createFileMessage: 'createFileMessage',
-    createCustomMessage: 'createCustomMessage',
-    clearMessage: 'clearMessage',
-  },
-};
-
-export const IMSDKGroupProvider = {
-  provider: 'getGroupProvider',
-  events: {
-    createGroup: 'createGroup',
-    getGroupMemberList: 'getGroupMemberList',
-  },
-};
-
-export const IMSDKFileProvider = {
-  provider: 'getFileProvider',
-  events: {
-    uploadFile: 'uploadFile',
-  },
-};
-
-export const IMSDKCallBackEvents = {
-  Network: (state) => {
-    console.log('@@@@@ Network');
-    stareInstance.commit('IMStore/setIMNetworkStatus', state);
-  },
-  DataSync: (state) => {
-    console.log('@@@@@ DataSync');
-    stareInstance.commit('IMStore/setIMDataSyncStatus', state);
-  },
-  UpdateConvList: (convList) => {
-    console.log('@@@@@ UpdateConvList');
-    stareInstance.commit('IMStore/setAllSession', convList);
-  },
-  ConvTotalUnreadMessageCount: (AllUnreadCount) => {
-    console.log('@@@@@ ConvTotalUnreadMessageCount');
-    stareInstance.commit('IMStore/setAllUnreadCount', AllUnreadCount);
-  },
-  AddReceiveNewMessage: async (msgInfo) => {
-    const { message, silence } = msgInfo;
-
-    const NOTIFICATION_TITLE = '客户端通知';
-    const NOTIFICATION_BODY = message?.data?.content;
-    const CLICK_MESSAGE = message;
-    new Notification(NOTIFICATION_TITLE, {
-      body: NOTIFICATION_BODY,
-    }).onclick = () => {
-      console.log(CLICK_MESSAGE);
-    };
-
-    console.log('@@@@@ AddReceiveNewMessage');
-    stareInstance.commit('IMStore/setCurrentMsg', message);
-
-    const mainSessionWindow =
-      stareInstance.getters['IMStore/mainSessionWindow'];
-    const sessionWindowList =
-      stareInstance.getters['IMStore/sessionWindowList'];
-
-    if (!mainSessionWindow?.sessId && !sessionWindowList?.length) return;
-
-    await IMClearUnreadCount(message.sessId, [
-      mainSessionWindow,
-      ...sessionWindowList,
-    ]);
-  },
-  KickOutedOffline() {
-    console.log('@@@@@ KickOutedOffline');
-    // TODO
-    stareInstance.commit('IMStore/setAllSession');
-  },
-  LogOutCallBack(info) {
-    console.info('日志', info);
-  },
-};
+import { stareInstance, removeToken } from '@lanshu/utils';
+import {
+  IMSDKConvProvider,
+  IMSDKMainProvide,
+  IMSDKMessageProvider,
+  IMSDKUserProvider,
+} from './provide';
 
 const handlePromiseResult = async (fnc) => {
   try {
@@ -237,7 +130,7 @@ export const IMLogout = async () => {
 export const ClientLogOut = async () => {
   await handlePromiseResult(async () => {
     await IMLogout();
-    tokenUtils.removeToken();
+    removeToken();
     renderProcess.showLoginWindow(500);
     window.location.reload();
   });

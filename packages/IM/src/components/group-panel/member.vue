@@ -52,7 +52,7 @@ import { LsIcon } from '@lanshu/components';
 import { mapGetters } from 'vuex';
 import { IMGroupMemberPanelType } from '@lanshu/utils';
 import { renderProcess } from '@lanshu/render-process';
-import { IMSDKGroupProvider } from '../../IM-event';
+import { IMSDKGroupProvider } from '../../IM-SDK/provide';
 
 export default {
   name: 'Member',

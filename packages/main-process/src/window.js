@@ -18,12 +18,12 @@ const initMainWindow = () => {
 
 const delayShowWindow = (initFn, delay) => {
   const mainWindow = global.mainWindow;
-  mainWindow.setOpacity(0);
+  // mainWindow.setOpacity(0);
   initFn();
   // 在最小化之后修改size会无效，所以要在最小化之前修改大小
   mainWindow.minimize();
   setTimeout(() => {
-    mainWindow.setOpacity(1);
+    // mainWindow.setOpacity(1);
     mainWindow.show();
     mainWindow.focus();
   }, delay);

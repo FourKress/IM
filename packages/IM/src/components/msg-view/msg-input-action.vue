@@ -107,7 +107,7 @@ import { renderProcess } from '@lanshu/render-process';
 import { LsIcon } from '@lanshu/components';
 import ActionCard from '../action-view/action-card';
 import { mapGetters } from 'vuex';
-import { IMSDKMessageProvider, IMSDKFileProvider } from '../../IM-event';
+import { IMSDKMessageProvider, IMSDKFileProvider } from '../../IM-SDK/provide';
 
 export default {
   name: 'Msg-input-action',

@@ -37,7 +37,7 @@
 import { mapGetters, mapActions } from 'vuex';
 import { renderProcess } from '@lanshu/render-process';
 import Recordrtc from '../recordrtc';
-import { IMSDKGroupProvider } from '../IM-event';
+import { IMSDKGroupProvider } from '../IM-SDK/provide';
 import ImView from './im-view';
 import Settings from './base-settings/settings';
 import GroupMemberChat from './base-settings/group-member-chat';

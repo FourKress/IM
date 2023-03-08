@@ -25,7 +25,7 @@
 
 <script>
 import RowChat from '../group-panel/row-chat';
-import { IMSetTopStatus } from '../../IM-event';
+import { IMSetTopStatus } from '../../IM-SDK/event';
 import { mapGetters } from 'vuex';
 
 export default {

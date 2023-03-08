@@ -36,7 +36,7 @@
 import { mapActions, mapGetters } from 'vuex';
 import { LsIcon } from '@lanshu/components';
 import { renderProcess } from '@lanshu/render-process';
-import { IMSDKMessageProvider } from '../../IM-event';
+import { IMSDKMessageProvider } from '../../IM-SDK/provide';
 import MsgTopAndSilence from './msgTopAndSilence';
 
 export default {

@@ -36,7 +36,7 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex';
-import { tokenUtils, phoneEncryption } from '@lanshu/utils';
+import { setToken, phoneEncryption } from '@lanshu/utils';
 import { IMSDK_Init } from '@lanshu/im';
 import { renderProcess } from '@lanshu/render-process';
 import OtherLogin from './other-login';
@@ -109,7 +109,7 @@ export default {
       //   'eyJhcHBJZCI6IjYzYjU0MWRkYjI1OTU3MTJmZDU5ZjY0MiIsImFwcFVzZXIiOiI5OTk5OTk5IiwiZXhwaXJlIjotMSwic2lnbiI6ImlrOXFhTUROWkRpNEQyMFVaSHBIRndLU1Z2THNQQXZxSE1IL2F0MTI4eEU9In0=';
       const token =
         'eyJhcHBJZCI6IjYzYjU0MWRkYjI1OTU3MTJmZDU5ZjY0MiIsImFwcFVzZXIiOiIxMjM0NTQzMjEiLCJleHBpcmUiOi0xLCJzaWduIjoicmhaRVZ0SmtCdU42cHNGWXNRMzZGTHRBN1lvZmZDdW52RnZWelNPcTc4bz0ifQ==';
-      tokenUtils.setToken({
+      setToken({
         token,
       });
       try {

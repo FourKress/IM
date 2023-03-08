@@ -2,7 +2,7 @@ import { globalShortcut } from 'electron';
 import { handleStartCapture } from './screenshots';
 
 const Enter = 'Enter';
-const ctrlEnter = 'CommandOrControl';
+const ctrlEnter = 'Ctrl';
 
 export const unregisterHotKeyAll = () => {
   globalShortcut.unregisterAll();

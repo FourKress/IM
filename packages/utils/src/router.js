@@ -34,7 +34,7 @@ const routerIntercept = () => {
   };
 };
 
-const generateRoute = (Vue, routes) => {
+export const generateRoute = (Vue, routes) => {
   Vue.use(Router);
 
   const router = new Router({
@@ -45,5 +45,3 @@ const generateRoute = (Vue, routes) => {
 
   return router;
 };
-
-export default generateRoute;

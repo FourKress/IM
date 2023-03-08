@@ -1,4 +1,4 @@
-const checkMsgType = {
+export const checkMsgType = {
   isText: 'text',
   isImage: 'image',
   isVideo: 'video',
@@ -10,7 +10,7 @@ const checkMsgType = {
   isSendBusinessCard: 'BusinessCard',
 };
 
-const msgTypeMap = {
+export const msgTypeMap = {
   1: {
     label: '文本',
     type: checkMsgType.isText,
@@ -37,32 +37,24 @@ const msgTypeMap = {
   },
 };
 
-const ctrlCharacter = 'CommandOrControl';
+const ctrlCharacter = 'Ctrl';
 
-const keyCode = {
+export const keyCode = {
   isEnter: 'Enter',
   isCtrlEnter: `${ctrlCharacter}+Enter`,
   viewCharacter: '⌘',
   realCharacter: ctrlCharacter,
 };
 
-const IMHeaderMoreBtnKey = {
+export const IMHeaderMoreBtnKey = {
   isOpenSet: 'OpenSettings',
   isCreateGroup: 'CreateGroup',
   isOpenGroupSet: 'OpenGroupSet',
   isOpenGroupMember: 'OpenGroupMember',
 };
 
-const IMGroupMemberPanelType = {
+export const IMGroupMemberPanelType = {
   isCreate: 'Create',
   isAdd: 'Add',
   isDel: 'Del',
-};
-
-export {
-  msgTypeMap,
-  checkMsgType,
-  keyCode,
-  IMHeaderMoreBtnKey,
-  IMGroupMemberPanelType,
 };
