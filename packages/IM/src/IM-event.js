@@ -26,6 +26,7 @@ export const IMSDKConvProvider = {
     clearUnreadCount: 'clearUnreadCount',
     getByUserId: 'getByUserId',
     getBySessId: 'getBySessId',
+    setTopBySessId: 'setTopBySessId',
   },
 };
 
@@ -40,12 +41,16 @@ export const IMSDKMessageProvider = {
     createVoiceMessage: 'createVoiceMessage',
     createFileMessage: 'createFileMessage',
     createCustomMessage: 'createCustomMessage',
+    clearMessage: 'clearMessage',
   },
 };
 
 export const IMSDKGroupProvider = {
   provider: 'getGroupProvider',
-  events: {},
+  events: {
+    createGroup: 'createGroup',
+    getGroupMemberList: 'getGroupMemberList',
+  },
 };
 
 export const IMSDKFileProvider = {
@@ -72,7 +77,7 @@ export const IMSDKCallBackEvents = {
     console.log('@@@@@ ConvTotalUnreadMessageCount');
     stareInstance.commit('IMStore/setAllUnreadCount', AllUnreadCount);
   },
-  AddReceiveNewMessage(msgInfo) {
+  AddReceiveNewMessage: async (msgInfo) => {
     const { message, silence } = msgInfo;
 
     const NOTIFICATION_TITLE = '客户端通知';
@@ -86,6 +91,18 @@ export const IMSDKCallBackEvents = {
 
     console.log('@@@@@ AddReceiveNewMessage');
     stareInstance.commit('IMStore/setCurrentMsg', message);
+
+    const mainSessionWindow =
+      stareInstance.getters['IMStore/mainSessionWindow'];
+    const sessionWindowList =
+      stareInstance.getters['IMStore/sessionWindowList'];
+
+    if (!mainSessionWindow?.sessId && !sessionWindowList?.length) return;
+
+    await IMClearUnreadCount(message.sessId, [
+      mainSessionWindow,
+      ...sessionWindowList,
+    ]);
   },
   KickOutedOffline() {
     console.log('@@@@@ KickOutedOffline');
@@ -164,7 +181,7 @@ export const IMGetMessageList = (sessId, nextMsgId) => {
   );
 };
 
-export const IMClearUnreadCount = async (sessId) => {
+export const IMClearUnreadCount = async (sessId, sessionWindowList) => {
   await renderProcess
     .IMSDKIPC(
       IMSDKConvProvider.provider,
@@ -177,9 +194,18 @@ export const IMClearUnreadCount = async (sessId) => {
       stareInstance.commit(
         'IMStore/setAllSession',
         sessionList.map((d) => {
+          let unreadCount;
+          if (sessionWindowList?.length) {
+            unreadCount = sessionWindowList.some((s) => s.sessId === sessId)
+              ? 0
+              : d.unreadCount;
+          } else {
+            unreadCount = d.sessId === sessId ? 0 : d.unreadCount;
+          }
+
           return {
             ...d,
-            unreadCount: d.sessId === sessId ? 0 : d.unreadCount,
+            unreadCount,
           };
         }),
       );
@@ -187,6 +213,16 @@ export const IMClearUnreadCount = async (sessId) => {
     .catch((err) => {
       console.log('IM_ClearUnreadCount Error', err);
     });
+};
+
+export const IMSetTopStatus = (sessId, top) => {
+  console.log(123123);
+  return renderProcess.IMSDKIPC(
+    IMSDKConvProvider.provider,
+    IMSDKConvProvider.events.setTopBySessId,
+    sessId,
+    top,
+  );
 };
 
 export const IMLogout = async () => {
@@ -199,6 +235,6 @@ export const IMLogout = async () => {
 export const ClientLogOut = async () => {
   await IMLogout();
   tokenUtils.removeToken();
-  window.location.reload();
   renderProcess.showLoginWindow(500);
+  window.location.reload();
 };

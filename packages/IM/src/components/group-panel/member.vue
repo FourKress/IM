@@ -29,7 +29,7 @@
         <div
           class="item"
           v-for="(item, index) in selectList"
-          :key='index'
+          :key="index"
           v-if="item.nickname && item.nickname.includes(memberName)"
         >
           <div class="img">
@@ -49,7 +49,10 @@
 
 <script>
 import { LsIcon } from '@lanshu/components';
+import { mapGetters } from 'vuex';
 import { IMGroupMemberPanelType } from '@lanshu/utils';
+import { renderProcess } from '@lanshu/render-process';
+import { IMSDKGroupProvider } from '../../IM-event';
 
 export default {
   name: 'Member',
@@ -61,6 +64,7 @@ export default {
       IMGroupMemberPanelType,
       memberName: '',
       isAdd: false,
+      nextSeq: 0,
       selectList: [
         {},
         {},
@@ -81,18 +85,34 @@ export default {
       ],
     };
   },
+  computed: {
+    ...mapGetters('IMStore', ['actionWindow']),
+    groupId() {
+      return this.actionWindow.toUser;
+    },
+  },
   methods: {
+    getGroupMemberList(nextSeq) {
+      renderProcess
+        .IMSDKIPC(
+          IMSDKGroupProvider.provider,
+          IMSDKGroupProvider.events.getGroupMemberList,
+          this.groupId,
+          nextSeq,
+        )
+        .then((res) => {
+          console.log(res, 'getGroupMemberList');
+          const { nextSeq, members = [] } = res.data;
+          this.nextSeq = nextSeq;
+          this.selectList = members;
+        });
+    },
     changeMember(type) {
       this.$emit('changeGroupMember', type);
     },
   },
   mounted() {
-    this.selectList = this.selectList.map((d) => {
-      return {
-        ...d,
-        nickname: Math.random().toString(),
-      };
-    });
+    this.getGroupMemberList(this.nextSeq);
   },
 };
 </script>

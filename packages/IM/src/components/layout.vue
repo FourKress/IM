@@ -20,12 +20,12 @@
     <GroupPanel
       :visible.sync="visibleGroupSettings"
       :isMember="isMember"
-      @changeGroupMember='handleChangeGroupMember'
+      @changeGroupMember="handleChangeGroupMember"
     ></GroupPanel>
 
     <LsCardDialog :visible.sync="visibleGroupMember" :isModalClose="false">
       <GroupMemberChat
-        :panelType='groupMemberPanelType'
+        :panelType="groupMemberPanelType"
         @close="handleGroupClose"
         @confirm="handleCroupConfirm"
       ></GroupMemberChat>
@@ -34,9 +34,10 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapGetters, mapActions } from 'vuex';
+import { renderProcess } from '@lanshu/render-process';
 import Recordrtc from '../recordrtc';
-
+import { IMSDKGroupProvider } from '../IM-event';
 import ImView from './im-view';
 import Settings from './base-settings/settings';
 import GroupMemberChat from './base-settings/group-member-chat';
@@ -66,25 +67,31 @@ export default {
     };
   },
   computed: {
-    ...mapGetters('IMStore', ['mainSessionWindow', 'sessionWindowList']),
+    ...mapGetters('IMStore', [
+      'mainSessionWindow',
+      'sessionWindowList',
+    ]),
   },
   watch: {
     mainSessionWindow: {
       deep: true,
       handler() {
-        console.log(213);
         this.visibleSettings = false;
         this.visibleGroupSettings = false;
-      }
-    }
+      },
+    },
   },
   created() {},
   mounted() {
     this.recordrtc = new Recordrtc();
   },
   methods: {
-    handleMoreCallback(type) {
-      switch (type) {
+    ...mapActions('IMStore', ['setActionWindow']),
+
+    handleMoreCallback(data) {
+      const { command, session } = data;
+      this.setActionWindow(session);
+      switch (command) {
         case this.IMHeaderMoreBtnKey.isOpenSet:
           this.visibleSettings = true;
           break;
@@ -97,7 +104,8 @@ export default {
         case this.IMHeaderMoreBtnKey.isOpenGroupSet:
           this.handleOpenGroupSet(false);
           break;
-        default: break;
+        default:
+          break;
       }
     },
 
@@ -119,8 +127,26 @@ export default {
     handleGroupClose() {
       this.visibleGroupMember = false;
     },
-    handleCroupConfirm() {
-      this.visibleGroupMember = false;
+    handleCroupConfirm(data) {
+      const { groupName, selectList } = data;
+      console.log(groupName, selectList);
+      const avatar =
+        'https://diy.jiuwa.net/make/ps?sktype=&fontsize=380&skwidth=3&fillcolor=022b6f&shadowtype=2&filltype=1&text=%E9%A9%AC&skcolor=999999&skopacity=1&distort=9&fontype=21';
+      const groupAddType = 2;
+      const members = selectList.map((d) => d.toUser);
+      renderProcess
+        .IMSDKIPC(
+          IMSDKGroupProvider.provider,
+          IMSDKGroupProvider.events.createGroup,
+          groupName,
+          avatar,
+          groupAddType,
+          members,
+        )
+        .then(() => {
+          this.$message.success('群聊创建成功');
+          this.visibleGroupMember = false;
+        });
     },
   },
 };

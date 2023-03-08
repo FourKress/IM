@@ -19,26 +19,7 @@
       </RowChat>
     </div>
 
-    <div class='row'>
-      <RowChat label="消息置顶" @click="createGroup">
-        <span slot="right-btn" class="check-btn">
-          <el-switch
-            v-model="value"
-            active-color="#0066FF"
-            inactive-color="#C9CDD4"
-          ></el-switch>
-        </span>
-      </RowChat>
-      <RowChat label="消息免打扰" @click="createGroup">
-        <span slot="right-btn" class="check-btn">
-          <el-switch
-            v-model="value2"
-            active-color="#0066FF"
-            inactive-color="#C9CDD4"
-          ></el-switch>
-        </span>
-      </RowChat>
-    </div>
+    <MsgTopAndSilence />
 
     <div class="row">
       <RowChat label="群管理" @callback="openGroupManager" show-right-btn />
@@ -49,11 +30,18 @@
     <div class="clear-btn" @click="handleOutGroup">退出群聊</div>
     <div class="clear-btn" @click="handleRemoveGroup">解散群聊</div>
 
-    <Manager :visible.sync='visibleDrawer' @groupRecord='handleGroupRecord' @groupTransfer='handleGroupTransfer' />
+    <Manager
+      :visible.sync="visibleDrawer"
+      @groupRecord="handleGroupRecord"
+      @groupTransfer="handleGroupTransfer"
+    />
 
-    <Record :visible.sync='visibleRecord' />
+    <Record :visible.sync="visibleRecord" />
 
-    <GroupTransfer :visible.sync='visibleGroupTransfer' @confirm='handleConfirmTransfer'></GroupTransfer>
+    <GroupTransfer
+      :visible.sync="visibleGroupTransfer"
+      @confirm="handleConfirmTransfer"
+    ></GroupTransfer>
   </div>
 </template>
 
@@ -63,6 +51,7 @@ import RowChat from './row-chat';
 import Manager from './manager';
 import Record from './record';
 import GroupTransfer from './group-transfer';
+import MsgTopAndSilence from '../base-settings/msgTopAndSilence';
 
 export default {
   name: 'Group-settings',
@@ -71,15 +60,14 @@ export default {
     RowChat,
     Manager,
     Record,
-    GroupTransfer
+    GroupTransfer,
+    MsgTopAndSilence,
   },
   data() {
     return {
       visibleDrawer: false,
       visibleRecord: false,
       visibleGroupTransfer: false,
-      value2: false,
-      value: true,
     };
   },
   methods: {
@@ -118,7 +106,7 @@ export default {
     },
     handleConfirmTransfer() {
       console.log(123);
-    }
+    },
   },
 };
 </script>

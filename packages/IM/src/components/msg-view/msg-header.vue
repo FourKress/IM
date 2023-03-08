@@ -6,7 +6,7 @@
       </div>
       <div class="info">
         <span class="name">{{ session.nickname }}</span>
-        <span class="tips">顶顶顶顶</span>
+<!--        <span class="tips">顶顶顶顶</span>-->
       </div>
     </div>
     <div class="right">
@@ -86,7 +86,10 @@ export default {
     ...mapActions('IMStore', ['removeSessionWindowList']),
 
     handleCommand(command) {
-      this.$emit('moreCallback', command);
+      this.$emit('moreCallback', {
+        command,
+        session: this.session
+      });
     },
 
     handleCloseSession() {

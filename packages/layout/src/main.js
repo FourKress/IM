@@ -12,6 +12,7 @@ import 'element-ui/packages/theme-chalk/src/index.scss';
 import './assets/styles/index.scss';
 
 Vue.config.productionTip = false;
+Vue.config.unwrapInjectedRef = true;
 
 Vue.use(ElementUI);
 Vue.use(LsConfirm);

@@ -1,4 +1,8 @@
-import { RecordRTCPromisesHandler, invokeSaveAsDialog } from 'recordrtc';
+import {
+  RecordRTCPromisesHandler,
+  invokeSaveAsDialog,
+  StereoAudioRecorder,
+} from 'recordrtc';
 
 export default class Recordrtc {
   constructor() {
@@ -34,6 +38,7 @@ export default class Recordrtc {
     this.recorder = new RecordRTCPromisesHandler(this.stream, {
       type: 'audio',
       mimeType: 'audio/mp3',
+      recorderType: StereoAudioRecorder,
     });
     this.recorder.startRecording();
 

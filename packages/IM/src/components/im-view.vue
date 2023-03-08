@@ -48,7 +48,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapGetters, mapActions } from 'vuex';
 import { _throttle, checkTimesInterval } from '@lanshu/utils';
 import { TimesTransform } from '@lanshu/components';
 import MsgCard from './msg-view/msg-card';
@@ -113,11 +113,19 @@ export default {
         }
       },
     },
+    refreshMsg(val) {
+      if (val) {
+        console.log('12312312123312123');
+        this.setRefreshMsg(false);
+        this.getMessageList();
+      }
+    }
   },
   computed: {
     ...mapGetters('IMStore', [
       'userInfo',
       'currentMsg',
+      'refreshMsg'
     ]),
     toAvatar() {
       return this.session.avatar;
@@ -128,12 +136,13 @@ export default {
     this.throttleGetMessageList = _throttle(this.getMessageList);
   },
   methods: {
+    ...mapActions('IMStore', ['setRefreshMsg']),
+
     checkTimesInterval,
     initData() {
       this.messageList = [];
       this.nextSeq = 0;
       this.hasNext = true;
-      console.log('123123');
       this.getMessageList();
     },
     checkSelf(item) {

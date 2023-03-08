@@ -27,7 +27,10 @@
       ></LsIcon>
     </div>
 
-    <Member v-if='selfIsMember' v-on='$listeners' />
+    <Member
+      v-if="selfIsMember"
+      v-on="$listeners"
+    />
     <Settings v-else />
   </div>
 </template>

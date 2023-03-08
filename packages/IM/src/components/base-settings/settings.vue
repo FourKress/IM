@@ -2,7 +2,14 @@
   <div class="im-settings" v-if="visible">
     <div class="top">
       <span class="label">设置</span>
-      <LsIcon class="close-icon" width='14' height='14' render-svg w icon="a-icon_close2x" @click="handleClose"></LsIcon>
+      <LsIcon
+        class="close-icon"
+        width="14"
+        height="14"
+        render-svg
+        icon="a-icon_close2x"
+        @click="handleClose"
+      ></LsIcon>
     </div>
 
     <div class="row">
@@ -12,42 +19,25 @@
       </div>
     </div>
 
+    <MsgTopAndSilence />
+
     <!--    <div class="row">-->
     <!--      <div class="item">-->
-    <!--        <span class="label">消息置顶</span>-->
-    <!--        <span class="check-btn">-->
-    <!--          <el-switch-->
-    <!--            v-model="value"-->
-    <!--            active-color="#0066FF"-->
-    <!--            inactive-color="#C9CDD4"-->
-    <!--          ></el-switch>-->
-    <!--        </span>-->
-    <!--      </div>-->
-    <!--      <div class="item">-->
-    <!--        <span class="label">消息免打扰</span>-->
-    <!--        <span class="check-btn">-->
-    <!--          <el-switch-->
-    <!--            v-model="value2"-->
-    <!--            active-color="#0066FF"-->
-    <!--            inactive-color="#C9CDD4"-->
-    <!--          ></el-switch>-->
-    <!--        </span>-->
+    <!--        <span class="label">聊天记录</span>-->
+    <!--        <i class="el-icon-arrow-right"></i>-->
     <!--      </div>-->
     <!--    </div>-->
-
-    <div class="row">
-      <div class="item">
-        <span class="label">聊天记录</span>
-        <i class="el-icon-arrow-right"></i>
-      </div>
-    </div>
 
     <div class="clear-btn" @click="handleDeleteHistoryMsg">清空聊天记录</div>
   </div>
 </template>
 
 <script>
+import { mapActions, mapGetters } from 'vuex';
 import { LsIcon } from '@lanshu/components';
+import { renderProcess } from '@lanshu/render-process';
+import { IMSDKMessageProvider } from '../../IM-event';
+import MsgTopAndSilence from './msgTopAndSilence';
 
 export default {
   name: 'IM-Settings',
@@ -60,6 +50,7 @@ export default {
   },
   components: {
     LsIcon,
+    MsgTopAndSilence,
   },
   data() {
     return {
@@ -67,7 +58,12 @@ export default {
       value2: false,
     };
   },
+  computed: {
+    ...mapGetters('IMStore', ['actionWindow'])
+  },
   methods: {
+    ...mapActions('IMStore', ['setRefreshMsg']),
+
     handleClose() {
       this.$emit('update:visible', false);
     },
@@ -78,7 +74,19 @@ export default {
       this.$Lconfirm({
         title: '确定清空聊天记录？',
         content: '聊天记录将在你的所有设备同步清空，不会影响其他群成员',
-      }).then(() => {});
+      }).then(() => {
+        renderProcess
+          .IMSDKIPC(
+            IMSDKMessageProvider.provider,
+            IMSDKMessageProvider.events.clearMessage,
+            this.actionWindow?.sessId,
+          )
+          .then(() => {
+            this.setRefreshMsg(true);
+            this.$message.success('清空聊天记录成功');
+            console.log('clearMessage Success');
+          });
+      });
     },
   },
 };

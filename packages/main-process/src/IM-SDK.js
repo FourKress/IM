@@ -4,9 +4,10 @@ import electronLog from './log';
 const { LimMain, LogLevel } = require('lim-sdk-electron');
 
 export const IMSDKInit = (appId) => {
+  console.log("app.getPath('userData')", app.getPath('userData'));
   const limMain = new LimMain({ appId });
   const IMSDK = limMain.init({
-    filePath: app.getPath('userData'),
+    filePath: `${app.getPath('userData')}/`,
   });
 
   global.IMSDK = IMSDK;
@@ -87,7 +88,6 @@ export const IMSDKEvent = async (provider, event, data) => {
   electronLog.info(
     `global.IMSDK[${provider}]()[${event}](${JSON.stringify(data)})`,
   );
-  electronLog.info(global.IMSDK[provider]()[event]);
   // const result = await global.IMSDK[provider]()[event](...data);
   // electronLog.info(result);
   // return result;
@@ -101,19 +101,6 @@ export const IMSDKEvent = async (provider, event, data) => {
     result = e;
   }
   return result;
-
-  // return new Promise((resolve, reject) => {
-  //   global.IMSDK[provider]()
-  //     [event](...data)
-  //     .then((res) => {
-  //       electronLog.info(res);
-  //       resolve(res);
-  //     })
-  //     .catch((err) => {
-  //       electronLog.info(err);
-  //       reject(err);
-  //     });
-  // });
 };
 
 export const IMSDK_Destroy = async () => {

@@ -10,6 +10,7 @@ import {
   IMSDK_Init,
   IMClearUnreadCount,
   IMGetMessageList,
+  IMSetTopStatus,
   IMLogout,
   ClientLogOut,
 } from '../src/IM-event';
@@ -30,6 +31,7 @@ export {
   IMSDK_Init,
   IMClearUnreadCount,
   IMGetMessageList,
+  IMSetTopStatus,
   IMLogout,
   ClientLogOut,
 };

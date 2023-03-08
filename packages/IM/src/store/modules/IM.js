@@ -11,6 +11,8 @@ const state = {
   SDK_READ: 1,
   currentMsg: {},
   allUnreadCount: 0,
+  refreshMsg: false,
+  actionWindow: {},
 };
 
 const getters = {
@@ -23,6 +25,8 @@ const getters = {
   SDK_READ: (state) => state.SDK_READ,
   currentMsg: (state) => state.currentMsg,
   allUnreadCount: (state) => state.allUnreadCount,
+  refreshMsg: (state) => state.refreshMsg,
+  actionWindow: (state) => state.actionWindow,
 };
 
 const mutations = {
@@ -63,6 +67,12 @@ const mutations = {
   setAllUnreadCount(data, value) {
     data.allUnreadCount = value;
   },
+  setRefreshMsg(data, value) {
+    data.refreshMsg = value;
+  },
+  setActionWindow(data, value) {
+    data.actionWindow = value;
+  },
 };
 
 const actions = {
@@ -92,6 +102,12 @@ const actions = {
   },
   setAllUnreadCount({ commit }, value) {
     commit('setAllUnreadCount', value);
+  },
+  setRefreshMsg({ commit }, value) {
+    commit('setRefreshMsg', value);
+  },
+  setActionWindow({ commit }, value) {
+    commit('setActionWindow', value);
   },
 };
 

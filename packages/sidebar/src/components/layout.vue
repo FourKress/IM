@@ -20,6 +20,25 @@
         </div>
       </div>
 
+      <div class="top-panel" v-if='topSessionList.length && tabType === isAll'>
+        <div class='top-panel-warp'>
+          <div
+            class="top-item"
+            v-for="item in topSessionList"
+            :key="item.nickname"
+          >
+            <el-tooltip
+              class="item"
+              effect="dark"
+              :content="item.nickname"
+              placement="top"
+            >
+              <img class="img" :src="item.avatar" alt="" />
+            </el-tooltip>
+          </div>
+        </div>
+      </div>
+
       <div class="sidebar-menu">
         <div
           class="menu-item"
@@ -89,6 +108,9 @@ export default {
       'sessionWindowList',
       'allUnreadCount',
     ]),
+    topSessionList() {
+      return this.selfSessionList.filter((d) => d.topState === 1);
+    },
   },
   watch: {
     sessionList: {
@@ -118,8 +140,11 @@ export default {
       }
     },
     handleSetSessionWindow(sessId, mainSessionWindow) {
-      const sessionWindowList = [this.mainSessionWindow, ...this.sessionWindowList];
-      if (sessionWindowList.some(d => d.sessId === sessId)) return;
+      const sessionWindowList = [
+        this.mainSessionWindow,
+        ...this.sessionWindowList,
+      ];
+      if (sessionWindowList.some((d) => d.sessId === sessId)) return;
       this.currentSession = sessId;
       this.setMainSessionWindow(mainSessionWindow);
       IMClearUnreadCount(sessId);
@@ -131,12 +156,12 @@ export default {
       } else {
         const mainSessionWindow = sessionList[0];
         const { sessId } = mainSessionWindow;
-        this.handleSetSessionWindow(sessId, mainSessionWindow)
+        this.handleSetSessionWindow(sessId, mainSessionWindow);
       }
     },
     handleMenuClick(session) {
       const sessId = session.sessId;
-      this.handleSetSessionWindow(sessId, session)
+      this.handleSetSessionWindow(sessId, session);
       // this.addSessionWindowList(session)
     },
   },
@@ -209,6 +234,37 @@ export default {
             &::after {
               background: $primary-color;
             }
+          }
+        }
+      }
+    }
+
+    .top-panel {
+      padding: 0 10px 12px 10px;
+
+      .top-panel-warp {
+        padding: 0 20px 12px 20px;
+        box-sizing: border-box;
+        display: grid;
+        justify-content: space-between;
+        justify-items: center;
+        align-content: flex-start;
+        align-items: center;
+        grid-row-gap: 12px;
+        grid-template-columns: repeat(4, 34px);
+        border-bottom: 1px solid $split-line-color;
+
+        .top-item {
+          width: 34px;
+          height: 34px;
+          border-radius: 5px;
+          overflow: hidden;
+          cursor: pointer;
+
+          .img {
+            display: block;
+            width: 100%;
+            height: 100%;
           }
         }
       }

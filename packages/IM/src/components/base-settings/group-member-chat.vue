@@ -23,7 +23,10 @@
         </div>
         <div
           class="active-row"
-          v-if="panelType !== IMGroupMemberPanelType.isDel && !(tabType === isAddress && staffName)"
+          v-if="
+            panelType !== IMGroupMemberPanelType.isDel &&
+            !(tabType === isAddress && staffName)
+          "
         >
           <div class="action">
             <span
@@ -91,7 +94,9 @@
               :key="key"
               v-for="(group, key) in addressBookPYObj"
             >
-              <span class="group-name" v-if="!staffName">{{ key === 'special' ? '#' : key }}</span>
+              <span class="group-name" v-if="!staffName">
+                {{ key === 'special' ? '#' : key }}
+              </span>
 
               <div
                 class="item"
@@ -265,12 +270,14 @@ export default {
     },
   },
   mounted() {
-    this.selfSessionList = _.cloneDeep(this.sessionList).map((d) => {
-      return {
-        ...d,
-        checked: false,
-      };
-    });
+    this.selfSessionList = _.cloneDeep(this.sessionList)
+      .filter((d) => d.toUserType === 0)
+      .map((d) => {
+        return {
+          ...d,
+          checked: false,
+        };
+      });
     const addressBookList = this.addressBookList.map((d) => {
       return {
         ...d,
@@ -288,11 +295,14 @@ export default {
       this.$emit('close');
     },
     handleConfirm() {
-      if (this.selectList?.length < 2) {
-        this.$message.error('创建群聊至少选择2个联系人');
+      if (this.selectList?.length < 1) {
+        this.$message.error('创建群聊至少选择1个联系人');
         return;
       }
-      this.$emit('confirm');
+      this.$emit('confirm', {
+        groupName: this.groupName,
+        selectList: this.selectList,
+      });
     },
     handleClick(type) {
       this.staffName = '';
@@ -343,8 +353,10 @@ export default {
     filterAddress(key) {
       setTimeout(() => {
         this.pinyinKey = key;
-      }, 100)
-      document.querySelector(`#group-${key === '#' ? 'special' : key}`).scrollIntoView();
+      }, 100);
+      document
+        .querySelector(`#group-${key === '#' ? 'special' : key}`)
+        .scrollIntoView();
     },
 
     scrollHandle() {
