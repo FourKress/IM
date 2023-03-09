@@ -1,6 +1,6 @@
 {
   "name": "@lanshu/container",
-  "version": "0.1.12",
+  "version": "0.1.13",
   "description": "客户端视图容器",
   "keywords": [
     "container"
@@ -20,11 +20,11 @@
   ],
   "scripts": {},
   "dependencies": {
-    "@lanshu/components": "^0.1.12",
+    "@lanshu/components": "^0.1.13",
     "@lanshu/plugin": "^0.1.10",
-    "@lanshu/render-process": "^0.1.12",
-    "@lanshu/sidebar": "^0.1.12",
-    "@lanshu/utils": "^0.1.12"
+    "@lanshu/render-process": "^0.1.13",
+    "@lanshu/sidebar": "^0.1.13",
+    "@lanshu/utils": "^0.1.13"
   },
   "gitHead": "7e908afb2304716c59fbc8ee4449d26bb275d48a"
 }
