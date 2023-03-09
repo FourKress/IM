@@ -59,5 +59,8 @@
     "not dead"
   ],
   "license": "MIT",
-  "repository": ""
+  "publishConfig": {
+    "access": "public",
+    "registry": "http://172.16.2.250:8081/repository/npm-hosted/"
+  }
 }

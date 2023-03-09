@@ -1,6 +1,6 @@
 {
   "name": "lanshu",
-  "version": "0.1.13",
+  "version": "0.1.14",
   "private": true,
   "author": "wudong <511970747@qq.com>",
   "description": "客户端架构包 npm私有库管理",

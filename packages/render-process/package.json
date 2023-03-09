@@ -7,7 +7,8 @@
   ],
   "author": "wudong <511970747@qq.com>",
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "registry": "http://172.16.2.250:8081/repository/npm-hosted/"
   },
   "license": "MIT",
   "main": "lib/main.js",
@@ -19,5 +20,5 @@
     "src"
   ],
   "scripts": {},
-  "gitHead": "f467b69709cf4f523a85b2ec00aa2edb534f107f"
+  "gitHead": "ac47d6a3512b4a4fe1e93557ded0afdf31bd448e"
 }
