@@ -1,6 +1,6 @@
 {
   "name": "@lanshu/components",
-  "version": "0.1.14",
+  "version": "0.1.15",
   "description": "组件库",
   "keywords": [
     "components"
@@ -21,7 +21,7 @@
   ],
   "scripts": {},
   "dependencies": {
-    "@lanshu/utils": "^0.1.14"
+    "@lanshu/utils": "^0.1.15"
   },
   "gitHead": "ac47d6a3512b4a4fe1e93557ded0afdf31bd448e"
 }
