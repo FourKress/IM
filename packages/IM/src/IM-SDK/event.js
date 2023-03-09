@@ -26,19 +26,17 @@ const handleIMSDKIPCResult = async (res) => {
 
 const eventHOCFnc = async (...params) => {
   await handlePromiseResult(async () => {
-    const res = renderProcess.IMSDKIPC(params);
+    const res = await renderProcess.IMSDKIPC(...params);
     await handleIMSDKIPCResult(res);
   });
 };
 
 export const IMSDK_Init = async (loginParams) => {
   const { userId } = loginParams;
-  await handlePromiseResult(async () => {
-    await IMLogin(loginParams);
-    await IMGetUserAttribute(userId);
-    await IMGetConvList(userId);
-    await IMGetTotalUnreadMessageCount();
-  });
+  await IMLogin(loginParams);
+  await IMGetUserAttribute(userId);
+  await IMGetConvList(userId);
+  await IMGetTotalUnreadMessageCount();
 };
 
 export const IMLogin = async (loginParams) =>
@@ -81,12 +79,10 @@ export const IMLogout = async () =>
   await eventHOCFnc(IMSDKMainProvide.provider, IMSDKMainProvide.events.logout);
 
 export const ClientLogOut = async () => {
-  await handlePromiseResult(async () => {
-    await IMLogout();
-    removeToken();
-    renderProcess.showLoginWindow(500);
-    window.location.reload();
-  });
+  await IMLogout();
+  removeToken();
+  renderProcess.showLoginWindow(500);
+  window.location.reload();
 };
 export const IMClearUnreadCount = async (sessId, sessionWindowList) => {
   const res = await eventHOCFnc(

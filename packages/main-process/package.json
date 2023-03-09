@@ -24,7 +24,7 @@
     "electron-screenshots": "0.5.15",
     "electron-store": "^8.1.0",
     "electron-updater": "^5.3.0",
-    "lim-sdk-electron": "^1.2.3",
+    "lim-sdk-electron": "^1.2.5",
     "react-screenshots": "0.5.15"
   },
   "devDependencies": {

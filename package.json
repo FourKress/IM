@@ -5,7 +5,7 @@
   "author": "wudong <511970747@qq.com>",
   "description": "客户端架构包 npm私有库管理",
   "license": "MIT",
-  "repository": "https://github.com/FourKress/lanshu.git",
+  "repository": "http://172.16.2.250:8081/repository/npm-hosted/",
   "scripts": {},
   "dependencies": {
   },
