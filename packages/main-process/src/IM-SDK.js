@@ -12,10 +12,10 @@ export const IMSDKInit = (appId) => {
 
   global.IMSDK = IMSDK;
 
-  // IMSDK.getMainProvider().setLogLevel(
-  //   process.env.WEBPACK_DEV_SERVER_URL ? LogLevel.INFO : LogLevel.ERROR,
-  // );
-  IMSDK.getMainProvider().setLogLevel(LogLevel.DEBUG);
+  IMSDK.getMainProvider().setLogLevel(
+    process.env.WEBPACK_DEV_SERVER_URL ? LogLevel.INFO : LogLevel.ERROR,
+  );
+  // IMSDK.getMainProvider().setLogLevel(LogLevel.DEBUG);
 
   IMSDK.getMainProvider().setNetworkChangeCallBack((state) => {
     // state 网络状态 0：正在连接、-1：连接断开、1：连接成功

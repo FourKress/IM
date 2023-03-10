@@ -108,7 +108,7 @@ export default {
       // const token =
       //   'eyJhcHBJZCI6IjYzYjU0MWRkYjI1OTU3MTJmZDU5ZjY0MiIsImFwcFVzZXIiOiI5OTk5OTk5IiwiZXhwaXJlIjotMSwic2lnbiI6ImlrOXFhTUROWkRpNEQyMFVaSHBIRndLU1Z2THNQQXZxSE1IL2F0MTI4eEU9In0=';
       const token =
-        'eyJhcHBJZCI6IjYzYjU0MWRkYjI1OTU3MTJmZDU5ZjY0MiIsImFwcFVzZXIiOiIxMjM0NTQzMjEiLCJleHBpcmUiOi0xLCJzaWduIjoicmhaRVZ0SmtCdU42cHNGWXNRMzZGTHRBN1lvZmZDdW52RnZWelNPcTc4bz0ifQ==';
+        'eyJhcHBJZCI6IjY0MDg0YThhODcxZGY2N2ExMTc3MmM2NSIsImFwcFVzZXIiOiIxMjM0NTQzMjEiLCJleHBpcmUiOi0xLCJzaWduIjoiNTZjZUZrVWVJSjhpcUkzdENtQ0dRWFUvRldEdkFCMXNJZm5FeVhiK0plQT0ifQ==';
       setToken({
         token,
       });

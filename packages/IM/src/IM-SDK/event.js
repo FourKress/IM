@@ -11,7 +11,8 @@ import {
 
 const handlePromiseResult = async (fnc) => {
   try {
-    await fnc();
+    const res = await fnc();
+    return res;
   } catch (e) {
     console.log(e);
     window.ClientMessage.error(e.message);
@@ -24,12 +25,11 @@ const handleIMSDKIPCResult = async (res) => {
   return Promise.resolve(res);
 };
 
-const eventHOCFnc = async (...params) => {
+const eventHOCFnc = async (...params) =>
   await handlePromiseResult(async () => {
     const res = await renderProcess.IMSDKIPC(...params);
-    await handleIMSDKIPCResult(res);
+    return await handleIMSDKIPCResult(res);
   });
-};
 
 export const IMSDK_Init = async (loginParams) => {
   const { userId } = loginParams;
