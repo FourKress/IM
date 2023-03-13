@@ -2,5 +2,8 @@
   "$schema": "node_modules/lerna/schemas/lerna-schema.json",
   "useWorkspaces": true,
   "npmClient": "yarn",
-  "version": "0.1.17"
+  "version": "0.1.17",
+  "publish": {
+    "registry": "http://172.16.2.250:8081/repository/npm-hosted/"
+  }
 }
