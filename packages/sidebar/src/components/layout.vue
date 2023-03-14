@@ -40,7 +40,7 @@
         </div>
       </div>
 
-      <div class="data-sync-status" v-if="IM_DataSync_Status && IM_DataSync_Status.value !== 2">
+      <div class="data-sync-status" :style="{height: IM_DataSync_Status && IM_DataSync_Status.value !== 2 ? '42px' : '0'}">
         <img class="loading-icon" :src="LsAssets.loadingIcon" alt="">
         <span>{{ IM_DataSync_Status.label }}</span>
       </div>
@@ -293,7 +293,6 @@ export default {
 
     .data-sync-status {
       width: 264px;
-      height: 42px;
       background: $split-line-color;
       display: flex;
       justify-content: center;
@@ -302,6 +301,7 @@ export default {
       font-weight: normal;
       color: $minor-text-color;
       transition: all .2s;
+      overflow: hidden;
 
       .loading-icon {
         display: block;
