@@ -179,11 +179,11 @@ export const IMSendMessage = async (msg) =>
     IMSDKMessageProvider.events.sendMessage,
     msg,
   );
-export const IMUploadFile = async (file) =>
+export const IMUploadFile = async (filePath) =>
   await eventHOCFnc(
     IMSDKFileProvider.provider,
     IMSDKFileProvider.events.uploadFile,
-    file,
+    filePath,
   );
 
 export const IMGetByUserId = async (userId) =>

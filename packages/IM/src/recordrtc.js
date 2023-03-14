@@ -71,7 +71,8 @@ export default class Recordrtc {
 
     this.recorder = new RecordRTCPromisesHandler(this.stream, {
       type: 'video',
-      mimeType: 'video/mp4',
+      // mimeType: 'video/mp4',
+      mimeType: 'video/webm;codecs=h264',
     });
     this.recorder.startRecording();
     this.recorder.camera = this.stream;

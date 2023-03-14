@@ -6,12 +6,12 @@
       </div>
     </InfoBlock>
 
-    <InfoBlock :info="{ title: '会话气泡显示模式' }">
-      <div class="row">
-        <el-radio v-model="sessionBubbleModel" label='left'>左对齐模式</el-radio>
-        <el-radio v-model="sessionBubbleModel" label='between'>左右对话模式</el-radio>
-      </div>
-    </InfoBlock>
+<!--    <InfoBlock :info="{ title: '会话气泡显示模式' }">-->
+<!--      <div class="row">-->
+<!--        <el-radio v-model="sessionBubbleModel" label='left'>左对齐模式</el-radio>-->
+<!--        <el-radio v-model="sessionBubbleModel" label='between'>左右对话模式</el-radio>-->
+<!--      </div>-->
+<!--    </InfoBlock>-->
   </Card>
 </template>
 

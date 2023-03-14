@@ -1,42 +1,14 @@
 <template>
   <div class="action-panel">
     <div class="input-panel">
-      <div class="row">
-        <div
-          v-if="showBigTextarea"
-          :contenteditable="true"
-          class="input-textarea big"
-          @keyup.enter.exact="handleEnterSend"
-          @keyup.ctrl.enter.exact="handleCtrlEnterSend"
-          ref="msgBigInput"
-          @input="handleBigInput"
-          @blur="handleBlur"
-        ></div>
-      </div>
-      <div class="row small-row">
-        <div class="input-wrap">
-          <div class="input-content-editable">
-            <div
-              v-if="!showBigTextarea"
-              :contenteditable="true"
-              class="input-textarea small"
-              @keyup.enter.exact="handleEnterSend"
-              @keyup.ctrl.enter.exact="handleCtrlEnterSend"
-              ref="msgInput"
-              :placeholder="placeholder"
-              @input="handleInput"
-              @blur="handleBlur"
-            ></div>
-          </div>
-
-          <div class="btn-list">
-            <el-popover
-              v-model="emojiVisible"
-              placement="top"
-              width="460"
-              trigger="manual"
-            >
-              <div class="emoji-panel">
+      <div class="options-row">
+        <el-popover
+          v-model="emojiVisible"
+          placement="top"
+          width="460"
+          trigger="manual"
+        >
+          <div class="emoji-panel">
                 <span
                   class="emoji"
                   v-for="emoji in emojiList"
@@ -45,25 +17,24 @@
                 >
                   {{ emoji }}
                 </span>
-              </div>
-              <div
-                slot="reference"
-                class="btn emoji-btn"
-                @click="emojiVisible = !emojiVisible"
-              >
-                <LsIcon render-svg icon="xx_srk_bq"></LsIcon>
-              </div>
-            </el-popover>
-
-            <div class="btn" @click="handleScreenshots">
-              <LsIcon render-svg icon="xx_srk_jt"></LsIcon>
-            </div>
-
-            <div class="btn">
-              <ActionCard @actionComplete="handleActionComplete" />
-            </div>
           </div>
+          <div
+            slot="reference"
+            class="btn emoji-btn"
+            @click="emojiVisible = !emojiVisible"
+          >
+            <LsIcon render-svg icon="xx_srk_bq"></LsIcon>
+          </div>
+        </el-popover>
+
+        <div class="btn" @click="handleScreenshots">
+          <LsIcon render-svg icon="xx_srk_jt"></LsIcon>
         </div>
+
+        <div class="btn">
+          <ActionCard @actionComplete="handleActionComplete" />
+        </div>
+
         <div class="right">
           <div
             class="send-btn"
@@ -72,11 +43,23 @@
           >
             <LsIcon
               render-svg
+              width="18"
+              height="18"
               :icon="message ? 'xx_srk_fs_nor' : 'xx_srk_fs_dis'"
             ></LsIcon>
           </div>
         </div>
       </div>
+      <div
+        class="input-textarea"
+        :contenteditable="true"
+        @keyup.enter.exact="handleEnterSend"
+        @keyup.ctrl.enter.exact="handleCtrlEnterSend"
+        ref="msgInput"
+        :placeholder="placeholder"
+        @input="handleInput"
+        @blur="handleBlur"
+      ></div>
     </div>
 
     <!--      <video-->
@@ -123,8 +106,6 @@ export default {
   data() {
     return {
       message: '',
-      showBigTextarea: false,
-      refInput: null,
       inputClientWidth: 0,
       emojiList,
       emojiVisible: false,
@@ -147,11 +128,8 @@ export default {
     },
   },
   async mounted() {
-    this.$nextTick(() => {
-      this.refInput = this.$refs.msgInput;
-    });
     document.addEventListener('click', this.handleGlobalClick);
-    document.querySelector('.action-panel').addEventListener('paste', (e) => {
+    document.querySelector('.input-textarea').addEventListener('paste', (e) => {
       this.handleBlur(e);
       const items = e.clipboardData.items;
       let isFileFlag = false;
@@ -211,7 +189,7 @@ export default {
         this.sendMsg();
       } else {
         this.windowRange = window.getSelection().getRangeAt(0);
-        const innerText = this.refInput.innerText;
+        const innerText = this.$refs.msgInput.innerText;
         const endOffset = this.windowRange.endOffset;
         const before = `${innerText ? '<br>' : ''}`;
         const after = `<br>${
@@ -221,135 +199,34 @@ export default {
         this.handleTargetInsert(brNode);
       }
     },
-    selectHandleInput() {
-      if (this.showBigTextarea) {
-        this.handleBigInput();
-      } else {
-        this.handleInput();
-      }
-    },
     handleInput() {
       const element = this.$refs.msgInput;
       const innerHTML = element.innerHTML;
-      if (!innerHTML) {
-        this.message = '';
-        return;
-      }
-      const { scrollWidth, clientWidth, scrollHeight, clientHeight } = element;
-      if (scrollWidth > clientWidth || scrollHeight > clientHeight) {
-        const caretOffset = this.getRange(element);
-        this.showBigTextarea = true;
-        this.inputClientWidth = clientWidth;
-        this.message = innerHTML;
-        element.innerHTML = '';
-        this.$nextTick(() => {
-          this.inputCallback(this.$refs.msgBigInput, caretOffset);
-        });
-      } else {
-        this.getInputValue(element);
-        this.showBigTextarea = false;
-      }
-    },
-    handleBigInput() {
-      const element = this.$refs.msgBigInput;
-      const innerHTML = element.innerHTML;
       if (!innerHTML || !innerHTML.replace(/<br>/g, '')) {
-        this.showBigTextarea = false;
         this.message = '';
         this.$nextTick(() => {
           this.$refs.msgInput.focus();
         });
         return;
       }
-      const { clientWidth, scrollHeight } = element;
-      if (this.inputClientWidth > clientWidth && scrollHeight < 21) {
-        const caretOffset = this.getRange(element);
-        this.showBigTextarea = false;
-        this.message = element.innerHTML;
-        element.innerHTML = '';
-        this.$nextTick(() => {
-          this.inputCallback(this.$refs.msgInput, caretOffset);
-        });
-      } else {
-        this.getInputValue(element);
-        this.showBigTextarea = true;
-      }
-    },
-    inputCallback(element, caretOffset) {
-      this.refInput = element;
-      this.refInput.focus();
-      this.refInput.innerHTML = this.message;
-      this.setRange(this.refInput, caretOffset);
+      console.log(element.innerHTML);
+      this.message = element.innerHTML;
     },
     handleBlur(event) {
-      this.refInput = event.target;
+      this.$refs.msgInput = event.target;
       this.windowRange = window.getSelection().getRangeAt(0);
     },
     clearInput() {
       this.$nextTick(() => {
-        if (this.refInput) {
-          this.refInput.innerHTML = '';
+        if (this.$refs.msgInput) {
+          this.$refs.msgInput.innerHTML = '';
         } else {
-          this.refInput = this.$refs.msgInput;
-          this.refInput.focus();
+          this.$refs.msgInput.focus();
         }
-        this.showBigTextarea = false;
         this.message = '';
       });
     },
 
-    getInputValue(element) {
-      console.log(element.innerHTML);
-      this.message = element.innerHTML;
-    },
-    getRange(element) {
-      const range = window.getSelection().getRangeAt(0);
-      const preCaretRange = range.cloneRange();
-      preCaretRange.selectNodeContents(element);
-      preCaretRange.setEnd(range.endContainer, range.endOffset);
-      return preCaretRange.toString().length;
-    },
-    setRange(element, caretOffset) {
-      // 创建一个选中区域
-      const range = document.createRange();
-      // 选中节点的内容
-      range.selectNodeContents(element);
-      const childNodes = element.childNodes;
-      if (childNodes?.length > 1) {
-        let targetNode;
-        let targetOffset = caretOffset;
-        let count = 0;
-        childNodes.forEach((n) => {
-          const textLength = n.innerHTML?.length || 0;
-          if (targetNode) return;
-          count += textLength;
-          targetOffset -= textLength;
-          if (count >= caretOffset) {
-            targetNode = n.firstChild;
-          }
-        });
-        if (targetNode) {
-          range.setStart(
-            targetNode,
-            targetNode.length ? targetOffset + (targetNode.length || 0) : 0,
-          );
-        } else {
-          range.setStart(element.lastChild, element.lastChild.length || 0);
-        }
-      } else {
-        const childNode = element.childNodes[0];
-        const targetNode = childNode?.firstChild || childNode;
-        range.setStart(targetNode, caretOffset);
-      }
-      // 设置选中区域为一个点
-      range.collapse(true);
-      // 获取当前选中区域
-      const selection = window.getSelection();
-      // 移除所有的选中范围
-      selection.removeAllRanges();
-      // 添加新建的范围
-      selection.addRange(range);
-    },
     handleTargetInsert(node) {
       const selection = window.getSelection();
       const range = this.windowRange;
@@ -374,7 +251,7 @@ export default {
       selection.removeAllRanges();
       selection.addRange(range);
 
-      this.selectHandleInput();
+      this.handleInput();
     },
     getEmoji(emoji) {
       this.emojiVisible = false;
@@ -391,7 +268,7 @@ export default {
     },
 
     handleImageInsert(base64Url) {
-      const innerText = this.refInput.innerText;
+      const innerText = this.$refs.msgInput.innerText;
       const endOffset = this.windowRange.endOffset;
       const before = `${innerText ? '<br>' : ''}`;
       const after = `<br>${
@@ -444,12 +321,11 @@ export default {
     },
 
     async handleIMSendMsg(msg, cb) {
-      await IMSendMessage(msg)
-        .then((res) => {
-          console.log('消息发送成功', res);
-          this.$emit('refreshMsg');
-          cb && cb();
-        });
+      await IMSendMessage(msg).then((res) => {
+        console.log('消息发送成功', res);
+        this.$emit('refreshMsg');
+        cb && cb();
+      });
     },
 
     async getImageSize(url) {
@@ -475,7 +351,7 @@ export default {
       const msgArr = this.message
         .replace(/<span|div>|<\/span|div>/g, '<br>')
         .match(regExp)
-        .filter((d) => d !== 'br');
+        ?.filter((d) => d !== 'br') || [this.message];
 
       const sendMsgArr = await Promise.all(
         msgArr
@@ -589,9 +465,9 @@ export default {
       return await IMCreateMsg(msgEvent, msgData);
     },
 
-    async handleFileUpload(file) {
+    async handleFileUpload(filePath) {
       return new Promise(async (resolve) => {
-        await IMUploadFile(file)
+        await IMUploadFile(filePath)
           .then((res) => {
             resolve(res.data.url);
           })
@@ -609,8 +485,8 @@ export default {
         const sendMsgArr = (
           await Promise.all(
             value.map(async (d) => {
-              const file = d.file;
-              const url = await this.handleFileUpload(file);
+              const filePath = d.file.path;
+              const url = await this.handleFileUpload(filePath);
               if (!url) return;
               console.log(d);
               return await this.handleCreateMsg(d, url);
@@ -634,115 +510,70 @@ export default {
 <style scoped lang="scss">
 .action-panel {
   width: 100%;
-  min-height: 100px;
-  padding: 20px;
+  min-height: 160px;
   box-sizing: border-box;
 
   .input-panel {
-    min-height: 60px;
+    min-height: 160px;
     box-sizing: border-box;
     background: $bg-white-color;
-    border-radius: 10px;
-    border: 2px solid rgba(148, 130, 255, 0.5);
-    padding: 16px 20px;
+    padding: 0 0px 16px 20px;
     display: flex;
-    justify-content: flex-end;
+    justify-content: flex-start;
     flex-direction: column;
 
-    .row {
+    .options-row {
+      width: 100%;
+      height: 52px;
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      overflow-x: auto;
+      justify-content: flex-start;
 
-      &.small-row {
-        overflow-y: hidden;
+      .btn {
+        width: 18px;
+        height: 18px;
+        cursor: pointer;
+        margin-right: 20px;
+      }
+
+      .right {
+        height: 21px;
+        border-left: 1px solid $split-line-color;
+        display: flex;
+        align-items: center;
+
+        .send-btn {
+          width: 18px;
+          height: 18px;
+          cursor: pointer;
+          margin-left: 17px;
+          transform-origin: center;
+          transform: scale(1.2);
+
+          &.disabled {
+            cursor: not-allowed;
+          }
+        }
       }
     }
 
     .input-textarea {
       width: 100%;
       height: 100%;
-      min-height: 21px;
-      max-height: 21px;
+      min-height: 92px;
       line-height: 21px;
       border: none;
       outline: none;
-      white-space: nowrap;
       font-size: 14px;
       overflow-y: auto;
-
-      &.small {
-        &::-webkit-scrollbar {
-          display: none;
-        }
-      }
-
-      &.big {
-        white-space: normal;
-        word-break: break-all;
-        word-break: break-word;
-        margin-bottom: 16px;
-        max-height: 340px;
-      }
+      white-space: normal;
+      word-break: break-all;
+      max-height: 340px;
 
       &:empty::before {
         content: attr(placeholder);
         color: $tips-text-color;
         font-size: 14px;
-      }
-    }
-
-    .input-wrap,
-    .right {
-      display: flex;
-      justify-content: space-between;
-    }
-
-    .right {
-      align-items: center;
-      height: 21px;
-      border-left: 1px solid $split-line-color;
-    }
-
-    .input-wrap {
-      flex: 1;
-      align-items: flex-end;
-      min-height: 21px;
-      box-sizing: border-box;
-      font-size: 14px;
-      overflow-x: hidden;
-
-      .btn-list {
-        width: 122px;
-        display: flex;
-        align-items: center;
-        height: 21px;
-        margin-left: 16px;
-        overflow: hidden;
-
-        .btn {
-          width: 16px;
-          height: 16px;
-          cursor: pointer;
-          margin-right: 20px;
-        }
-      }
-
-      .input-content-editable {
-        width: 100%;
-        overflow-x: hidden;
-      }
-    }
-
-    .send-btn {
-      width: 18px;
-      height: 18px;
-      cursor: pointer;
-      margin-left: 17px;
-
-      &.disabled {
-        cursor: not-allowed;
       }
     }
   }

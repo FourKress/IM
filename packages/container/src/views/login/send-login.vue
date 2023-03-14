@@ -106,17 +106,16 @@ export default {
     async handleLogin() {
       this.handleClearInterval();
       // const token =
-      //   'eyJhcHBJZCI6IjYzYjU0MWRkYjI1OTU3MTJmZDU5ZjY0MiIsImFwcFVzZXIiOiI5OTk5OTk5IiwiZXhwaXJlIjotMSwic2lnbiI6ImlrOXFhTUROWkRpNEQyMFVaSHBIRndLU1Z2THNQQXZxSE1IL2F0MTI4eEU9In0=';
-      const token =
-        'eyJhcHBJZCI6IjY0MDg0YThhODcxZGY2N2ExMTc3MmM2NSIsImFwcFVzZXIiOiIxMjM0NTQzMjEiLCJleHBpcmUiOi0xLCJzaWduIjoiNTZjZUZrVWVJSjhpcUkzdENtQ0dRWFUvRldEdkFCMXNJZm5FeVhiK0plQT0ifQ==';
+      //   'eyJhcHBJZCI6IjY0MDg0YThhODcxZGY2N2ExMTc3MmM2NSIsImFwcFVzZXIiOiIxMjM0NTQzMjEiLCJleHBpcmUiOi0xLCJzaWduIjoiNTZjZUZrVWVJSjhpcUkzdENtQ0dRWFUvRldEdkFCMXNJZm5FeVhiK0plQT0ifQ==';
+      const token = 'eyJhcHBJZCI6IjY0MDg0YThhODcxZGY2N2ExMTc3MmM2NSIsImFwcFVzZXIiOiI5OTk5OTk5IiwiZXhwaXJlIjotMSwic2lnbiI6InlBV3pid3orS1FrUUdRb3JIWU5RL1RNRTJpa093cURBSUozNzVHN3BVMzQ9In0=';
       setToken({
         token,
       });
       try {
         await IMSDK_Init({
           token,
-          // userId: '9999999',
-          userId: '123454321',
+          userId: '9999999',
+          // userId: '123454321',
         });
 
         this.$router.push('/');

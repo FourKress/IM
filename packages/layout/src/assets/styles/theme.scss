@@ -1,35 +1,97 @@
 // 主色
-$primary-color: #0066FF;
-$primary-hover-color: #2B83FA;
-$primary-click-color: #0356E2;
-$primary-disabled-color: #96BFF3;
+$primary-color: #0066ff;
+$primary-hover-color: #2b83fa;
+$primary-click-color: #0356e2;
+$primary-disabled-color: #96bff3;
 // IM气泡
-$bubble-IM-color: #BCD7FF;
+$bubble-IM-color: #bcd7ff;
 // 背景色
-$bg-select-color: #ECF3FF;
-$bg-blue-color: #EEF4FD;
-$bg-IM-color: #F6F7FB;
-$bg-grey-color: #FAFAFA;
-$bg-hover-grey-color: #F5F5F5;
-$bg-white-color: #FFFFFF;
+$bg-select-color: #ecf3ff;
+$bg-blue-color: #eef4fd;
+$bg-IM-color: #f6f7fb;
+$bg-grey-color: #fafafa;
+$bg-hover-grey-color: #f5f5f5;
+$bg-white-color: #ffffff;
 // 文字色
 $main-text-color: #333333;
 $minor-text-color: #777777;
 $tips-text-color: #999999;
 // 分割线
-$split-line-color: #EAEAEA;
+$split-line-color: #eaeaea;
 // 辅色
-$minor-color: #00CBA8;
-$minor-red-color: #FF443A;
-$minor-yellow-color: #FFB100;
+$minor-color: #00cba8;
+$minor-red-color: #ff443a;
+$minor-yellow-color: #ffb100;
 // 渐变色
-$gradient-header-color: linear-gradient(90deg, #DDE2EF 0%, #DFE6EA 19%, #F5F2EC 44%, #EDECF5 76%, #DDE2EF 100%);
-$gradient-sidebar-color: linear-gradient(360deg, #DDE2EF 0%, #EDECF5 24%, #F5F2EC 56%, #DFE6EA 81%, #DDE2EF 100%);
-$gradient-line-color: linear-gradient(180deg, #DDE2EF 0%, #DFE6EA 19%, #F5F2EC 44%, #EDECF5 76%, #DDE2EF 100%);
+$gradient-header-color: linear-gradient(
+  90deg,
+  #dde2ef 0%,
+  #dfe6ea 19%,
+  #f5f2ec 44%,
+  #edecf5 76%,
+  #dde2ef 100%
+);
+$gradient-sidebar-color: linear-gradient(
+  360deg,
+  #dde2ef 0%,
+  #edecf5 24%,
+  #f5f2ec 56%,
+  #dfe6ea 81%,
+  #dde2ef 100%
+);
+$gradient-line-color: linear-gradient(
+  180deg,
+  #dde2ef 0%,
+  #dfe6ea 19%,
+  #f5f2ec 44%,
+  #edecf5 76%,
+  #dde2ef 100%
+);
 // 阴影
-$bg-card-shadow: 0px 4px 20px 0px rgba(51,51,51,0.1);
-$bg-pop-shadow: 0px 4px 20px 0px rgba(51,51,51,0.1);
-$bg-select-shadow: 0px 2px 10px 0px rgba(51,51,51,0.1);
+$bg-card-shadow: 0px 4px 20px 0px rgba(51, 51, 51, 0.1);
+$bg-pop-shadow: 0px 4px 20px 0px rgba(51, 51, 51, 0.1);
+$bg-select-shadow: 0px 2px 10px 0px rgba(51, 51, 51, 0.1);
 
 /* 改变 element 主题色变量 */
 $--color-primary: $primary-color;
+
+/*---滚动条默认显示样式--*/
+::-webkit-scrollbar-thumb {
+  height: 50px;
+  outline-offset: -2px;
+  outline: 2px solid #fff;
+  -webkit-border-radius: 4px;
+  border: 2px solid #fff;
+}
+
+/*---鼠标点击滚动条显示样式--*/
+::-webkit-scrollbar-thumb:hover {
+  height: 150px;
+  -webkit-border-radius: 4px;
+}
+
+/*---滚动条大小--*/
+::-webkit-scrollbar {
+  width: 10px;
+  height: 8px;
+  cursor: pointer;
+}
+
+/*---滚动框背景样式--*/
+::-webkit-scrollbar-track-piece {
+  -webkit-border-radius: 0;
+  background-color: transparent;
+}
+
+::-webkit-scrollbar-track {
+  display: none;
+} /* 滚动条的滑轨背景颜色 */
+::-webkit-scrollbar-thumb {
+  background-color: $split-line-color;
+} /* 滑块颜色 */
+::-webkit-scrollbar-button {
+  display: none;
+} /* 滑轨两头的监听按钮颜色 */
+::-webkit-scrollbar-corner {
+  background-color: transparent;
+} /* 横向滚动条和纵向滚动条相交处尖角的颜色 */

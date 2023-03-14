@@ -1,4 +1,5 @@
 import { app } from 'electron';
+import fs from 'fs';
 import electronLog from './log';
 
 const { LimMain, LogLevel } = require('lim-sdk-electron');
@@ -85,11 +86,14 @@ export const IMSDKInit = (appId) => {
 };
 
 export const IMSDKEvent = async (provider, event, data) => {
-  electronLog.info(
-    `global.IMSDK[${provider}]()[${event}](${JSON.stringify(data)})`,
-  );
   try {
-    const res = await global.IMSDK[provider]()[event](...data);
+    let res;
+    if (event === 'uploadFile') {
+      const file = fs.createReadStream(data[0]);
+      res = await global.IMSDK[provider]()[event](file);
+    } else {
+      res = await global.IMSDK[provider]()[event](...data);
+    }
     electronLog.info(JSON.stringify(res));
     console.log(res);
     return res;

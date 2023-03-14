@@ -21,10 +21,11 @@
           <!--          <span>你邀请李安林、于时放加入了群聊</span>-->
           <span v-if="!baseMsgTypes.includes(item.msgType)">{{ msgFormatMap[item.msgType]?.label(item.data) }}</span>
         </div>
+
+<!--        :class="checkSelf(item) ? 'self' : 'target'"-->
         <div
           v-if="baseMsgTypes.includes(item.msgType)"
-          class="msg-row"
-          :class="checkSelf(item) ? 'self' : 'target'"
+          class="msg-row target"
         >
           <div class="img">
             <img :src="checkSelf(item) ? userInfo.avatar : toAvatar" alt="" />
