@@ -446,12 +446,9 @@ export default {
     async handleIMSendMsg(msg, cb) {
       await IMSendMessage(msg)
         .then((res) => {
-          console.log('消息发送成功', e);
+          console.log('消息发送成功', res);
           this.$emit('refreshMsg');
           cb && cb();
-        })
-        .catch((e) => {
-          console.log('消息发送失败', e);
         });
     },
 
@@ -493,7 +490,7 @@ export default {
               if (!url) return;
 
               const { width, height } = await this.getImageSize(url);
-              msg = this.handleCreateMsg(
+              msg = await this.handleCreateMsg(
                 {
                   name,
                   type: type.replace(/\/[a-z]+/g, ''),
@@ -505,7 +502,7 @@ export default {
                 url,
               );
             } else {
-              msg = this.handleCreateMsg({
+              msg = await this.handleCreateMsg({
                 type: this.checkMsgType.isText,
                 message: d,
               });
@@ -521,7 +518,7 @@ export default {
       });
     },
 
-    handleCreateMsg(params, url = '') {
+    async handleCreateMsg(params, url = '') {
       let msgEvent = null;
       let msgData = [
         this.session.toUser, //消息接收方，为会话列表中的toUser
@@ -589,7 +586,7 @@ export default {
           break;
       }
 
-      return IMCreateMsg(msgEvent, msgData);
+      return await IMCreateMsg(msgEvent, msgData);
     },
 
     async handleFileUpload(file) {
@@ -616,7 +613,7 @@ export default {
               const url = await this.handleFileUpload(file);
               if (!url) return;
               console.log(d);
-              return this.handleCreateMsg(d, url);
+              return await this.handleCreateMsg(d, url);
             }),
           )
         ).filter((d) => d);

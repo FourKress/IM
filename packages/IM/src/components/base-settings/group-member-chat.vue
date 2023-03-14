@@ -1,6 +1,6 @@
 <template>
   <div class="group-member-chat">
-    <div class="title">创建群聊</div>
+    <div class="title">{{ groupTitle }}</div>
     <div class="main">
       <div class="left">
         <div class="input-row">
@@ -70,6 +70,7 @@
             >
               <el-checkbox
                 v-model="item.checked"
+                :disabled="item.isDefault"
                 @change="(val) => handleSelect(val, item)"
               >
                 <div class="info">
@@ -168,7 +169,11 @@
                   <span>{{ item.nickname }}</span>
                 </div>
               </div>
-              <div class="close-icon" @click="handleUnSelect(item, index)">
+              <div
+                class="close-icon"
+                v-if="!item.isDefault"
+                @click="handleUnSelect(item, index)"
+              >
                 <LsIcon
                   icon="a-icon_close2x"
                   width="14"
@@ -192,9 +197,10 @@
 
 <script>
 import { LsIcon } from '@lanshu/components';
-import { mapGetters } from 'vuex';
+import { mapGetters, mapActions } from 'vuex';
 import _ from 'lodash';
 import { IMGroupMemberPanelType, sortedPY, groupedPy } from '@lanshu/utils';
+import { IMCreateGroup, IMInviteMember } from '../../IM-SDK';
 
 const isAddress = false;
 
@@ -205,6 +211,14 @@ export default {
       required: true,
       type: String,
       default: IMGroupMemberPanelType.isCreate,
+    },
+    defaultMembers: {
+      type: Array,
+      default: () => [],
+    },
+    defaultGroup: {
+      type: Object,
+      default: () => {},
     },
   },
   components: {
@@ -268,42 +282,100 @@ export default {
       }
       return wordArr?.length ? [...wordArr, '#'] : wordArr;
     },
+    groupTitle() {
+      if (this.isDel) return '删除成员';
+      if (this.isAdd) return '添加成员';
+      if (this.isCreate) return '创建群聊';
+    },
+    isDel() {
+      return this.panelType === this.IMGroupMemberPanelType.isDel;
+    },
+    isAdd() {
+      return this.panelType === this.IMGroupMemberPanelType.isAdd;
+    },
+    isCreate() {
+      return this.panelType === this.IMGroupMemberPanelType.isCreate;
+    },
   },
   mounted() {
     this.selfSessionList = _.cloneDeep(this.sessionList)
       .filter((d) => d.toUserType === 0)
       .map((d) => {
-        return {
-          ...d,
-          checked: false,
-        };
+        return this.getCheckedStatus(d);
       });
     const addressBookList = this.addressBookList.map((d) => {
-      return {
-        ...d,
-        checked: false,
-        avatar: '',
-      };
+      return this.getCheckedStatus(d);
     });
     this.addressBookList = addressBookList;
     const addressBookPYObj = groupedPy(sortedPY(addressBookList));
     this.pinyinKey = Object.keys(addressBookPYObj)[0];
     this.addressBookPYObj = addressBookPYObj;
+    if (!this.isCreate) {
+      this.groupName = this.defaultGroup.nickname;
+    }
+    this.selectList = [
+      ...this.defaultMembers.map((d) => {
+        d.isDefault = this.isDel ? false : true;
+        return d;
+      }),
+    ];
   },
   methods: {
+    ...mapActions('IMStore', ['setRefreshMembers']),
+
     handleClose() {
       this.$emit('close');
     },
-    handleConfirm() {
-      if (this.selectList?.length < 1) {
-        this.$message.error('创建群聊至少选择1个联系人');
+    async handleConfirm() {
+      const handleMap = {
+        [this.IMGroupMemberPanelType.isDel]: {
+          label: '删除群成员',
+          func: () => {},
+        },
+        [this.IMGroupMemberPanelType.isAdd]: {
+          label: '添加群成员',
+          func: this.handleAddGroupMember,
+        },
+        [this.IMGroupMemberPanelType.isCreate]: {
+          label: '创建群聊',
+          func: this.handleCreateGroup,
+        },
+      };
+      console.log(handleMap);
+      const handleTarget = handleMap[this.panelType];
+      const realSelectList = this.isAdd
+        ? this.selectList.filter((d) => !d.isDefault)
+        : this.selectList;
+      if (realSelectList?.length < 1) {
+        this.$message.error(`${handleTarget.label}至少选择1个联系人`);
         return;
       }
-      this.$emit('confirm', {
-        groupName: this.groupName,
-        selectList: this.selectList,
-      });
+      if (!this.groupName) {
+        this.$message.error('请输入群聊名称');
+        return;
+      }
+      const members = realSelectList.map((d) => d.toUser);
+      const res = await handleTarget.func(members);
+      this.$message.success(`${handleTarget.label}成功`);
+      this.$emit('confirm', res?.data);
     },
+
+    async handleCreateGroup(members) {
+      const avatar =
+        'https://diy.jiuwa.net/make/ps?sktype=&fontsize=380&skwidth=3&fillcolor=022b6f&shadowtype=2&filltype=1&text=%E9%A9%AC&skcolor=999999&skopacity=1&distort=9&fontype=21';
+      const groupAddType = 2;
+      return await IMCreateGroup(this.groupName, avatar, groupAddType, members);
+    },
+    async handleAddGroupMember(members) {
+      console.log(this.defaultGroup, members);
+      return await IMInviteMember(this.defaultGroup.toUser, members).then(
+        () => {
+          // 刷新群成员
+          this.setRefreshMembers(Date.now());
+        },
+      );
+    },
+
     handleClick(type) {
       this.staffName = '';
       this.tabType = type;
@@ -389,6 +461,17 @@ export default {
           });
         }
       });
+    },
+
+    getCheckedStatus(item) {
+      const key = this.isCreate ? 'toUser' : 'userId';
+      console.log(key, item.toUser);
+      const isDefault = this.defaultMembers.some((c) => c[key] === item.toUser);
+      return {
+        ...item,
+        checked: isDefault ? true : false,
+        isDefault: isDefault && !this.isDel,
+      };
     },
   },
   destroyed() {

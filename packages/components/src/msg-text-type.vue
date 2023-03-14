@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import { msgTypeMap } from '@lanshu/utils';
+import { msgFormatMap } from '@lanshu/utils';
 
 export default {
   name: 'Msg-text-type',
@@ -20,7 +20,7 @@ export default {
       if (msgType === 1) {
         return data.content;
       }
-      return `[${msgTypeMap[msgType]?.label}]`;
+      return `${msgFormatMap[msgType]?.label(data)}`;
     },
   },
 };

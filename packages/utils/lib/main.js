@@ -7,5 +7,6 @@ export * from '../src/base';
 export * from '../src/pinyin';
 import lodash, { _throttle } from '../src/lodash';
 import generateStore, { stareInstance } from '../src/store';
+import regexUtils from '../src/regex';
 
-export { lodash, _throttle, generateStore, stareInstance };
+export { lodash, _throttle, generateStore, stareInstance, regexUtils };

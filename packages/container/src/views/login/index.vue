@@ -2,14 +2,14 @@
   <div id="login">
     <div class="image"></div>
     <div class="operate-panel">
-      <div class="login-type" @click="switchLoginType">
-        <LsIcon
-          render-svg
-          width="117"
-          height="115"
-          :icon="isAccountLogin ? 'a-icon_erweima2x' : 'a-icon_shouji2x'"
-        ></LsIcon>
-      </div>
+<!--      <div class="login-type" @click="switchLoginType">-->
+<!--        <LsIcon-->
+<!--          render-svg-->
+<!--          width="117"-->
+<!--          height="115"-->
+<!--          :icon="isAccountLogin ? 'a-icon_erweima2x' : 'a-icon_shouji2x'"-->
+<!--        ></LsIcon>-->
+<!--      </div>-->
 
       <BasicLogin
         ref="basicLogin"

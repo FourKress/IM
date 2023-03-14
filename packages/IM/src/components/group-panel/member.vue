@@ -8,7 +8,7 @@
         <el-input type="text" v-model="memberName" placeholder="搜索群成员" />
       </div>
     </div>
-    <div class="tips">共40位成员</div>
+    <div class="tips">共{{ members.length }}位成员</div>
 
     <div class="action">
       <span class="add btn" @click="changeMember(IMGroupMemberPanelType.isAdd)">
@@ -28,7 +28,7 @@
       <div class="scroll-view">
         <div
           class="item"
-          v-for="(item, index) in selectList"
+          v-for="(item, index) in members"
           :key="index"
           v-if="item.nickname && item.nickname.includes(memberName)"
         >
@@ -38,8 +38,12 @@
           <div class="name">
             <span>{{ item.nickname }}</span>
           </div>
-          <div class="tag">
-            <span>群组是</span>
+          <div
+            class="tag"
+            :class="memberClass(item.role)"
+            v-if="[2, 3].includes(item.role)"
+          >
+            <span>{{ groupMemberTypeMap[item.role] }}</span>
           </div>
         </div>
       </div>
@@ -50,7 +54,7 @@
 <script>
 import { LsIcon } from '@lanshu/components';
 import { mapGetters } from 'vuex';
-import { IMGroupMemberPanelType } from '@lanshu/utils';
+import { IMGroupMemberPanelType, groupMemberTypeMap } from '@lanshu/utils';
 import { IMGetGroupMemberList } from '../../IM-SDK';
 
 export default {
@@ -64,47 +68,45 @@ export default {
       memberName: '',
       isAdd: false,
       nextSeq: 0,
-      selectList: [
-        {},
-        {},
-        {},
-        {},
-        {},
-        {},
-        {},
-        {},
-        {},
-        {},
-        {},
-        {},
-        {},
-        {},
-        {},
-        {},
-      ],
+      members: [],
+      groupMemberTypeMap,
     };
   },
   computed: {
-    ...mapGetters('IMStore', ['actionWindow']),
+    ...mapGetters('IMStore', ['actionWindow', 'userInfo', 'refreshMembers']),
     groupId() {
       return this.actionWindow.toUser;
     },
   },
+  watch: {
+    refreshMembers() {
+      this.getGroupMemberList();
+    }
+  },
   methods: {
-    getGroupMemberList(nextSeq) {
-      IMGetGroupMemberList(this.groupId, nextSeq).then((res) => {
+    getGroupMemberList() {
+      IMGetGroupMemberList(this.groupId, 0).then((res) => {
         console.log(res, 'getGroupMemberList');
-        const { nextSeq, members = [] } = res.data;
+        const { nextSeq, members = [] } = res;
         this.nextSeq = nextSeq;
-        this.selectList = members;
+        this.members = members;
       });
     },
     changeMember(type) {
-      this.$emit('changeGroupMember', type);
+      this.$emit(
+        'changeGroupMember',
+        {
+          type,
+          members: this.members.filter((d) => d.userId !== this.userInfo.userId)
+        }
+      );
+    },
+    memberClass(role) {
+      return role === 3 ? 'owner' : role === 2 ? 'manage' : '';
     },
   },
   mounted() {
-    this.getGroupMemberList(this.nextSeq);
+    this.getGroupMemberList();
   },
 };
 </script>
@@ -246,10 +248,18 @@ export default {
         height: 20px;
         text-align: center;
         line-height: 20px;
-        background: #fff3d7;
         border-radius: 3px;
         font-size: 12px;
-        color: #2b83fa;
+
+        &.owner {
+          background: #e9f2ff;
+          color: #2b83fa;
+        }
+
+        &.manage {
+          background: #fff3d7;
+          color: #cf8f00;
+        }
       }
     }
   }

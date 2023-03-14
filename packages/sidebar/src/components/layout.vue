@@ -20,12 +20,13 @@
         </div>
       </div>
 
-      <div class="top-panel" v-if='topSessionList.length && tabType === isAll'>
-        <div class='top-panel-warp'>
+      <div class="top-panel" v-if="topSessionList.length && tabType === isAll">
+        <div class="top-panel-warp">
           <div
             class="top-item"
             v-for="item in topSessionList"
             :key="item.nickname"
+            @click="handleMenuClick(item)"
           >
             <el-tooltip
               class="item"
@@ -39,7 +40,12 @@
         </div>
       </div>
 
-      <div class="sidebar-menu">
+      <div class="data-sync-status" v-if="IM_DataSync_Status && IM_DataSync_Status.value !== 2">
+        <img class="loading-icon" :src="LsAssets.loadingIcon" alt="">
+        <span>{{ IM_DataSync_Status.label }}</span>
+      </div>
+
+      <div class="sidebar-menu" ref="sidebarMenu">
         <div
           class="menu-item"
           v-for="item in selfSessionList"
@@ -82,7 +88,7 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex';
-import { MsgTextType, TimesTransform } from '@lanshu/components';
+import { MsgTextType, TimesTransform, LsIcon, LsAssets } from '@lanshu/components';
 import { IMClearUnreadCount } from '@lanshu/im';
 
 const isAll = true;
@@ -95,11 +101,14 @@ export default {
       tabType: isAll,
       currentSession: '',
       selfSessionList: [],
+      LsAssets,
+      isScroll: true,
     };
   },
   components: {
     MsgTextType,
     TimesTransform,
+    LsIcon
   },
   computed: {
     ...mapGetters('IMStore', [
@@ -107,6 +116,7 @@ export default {
       'mainSessionWindow',
       'sessionWindowList',
       'allUnreadCount',
+      'IM_DataSync_Status',
     ]),
     topSessionList() {
       return this.selfSessionList.filter((d) => d.topState === 1);
@@ -120,6 +130,17 @@ export default {
         // this._setMainSessionWindow(val);
       },
     },
+    mainSessionWindow: {
+      deep: true,
+      handler(val) {
+        console.log(val, 'mainSessionWindow')
+        if (this.isScroll) {
+          this.$refs.sidebarMenu.scrollTop = 0;
+        }
+        this.isScroll = true;
+        this.currentSession = val?.sessId;
+      }
+    }
   },
   mounted() {
     this.selfSessionList = this.sessionList;
@@ -145,7 +166,7 @@ export default {
         ...this.sessionWindowList,
       ];
       if (sessionWindowList.some((d) => d.sessId === sessId)) return;
-      this.currentSession = sessId;
+      this.isScroll = false;
       this.setMainSessionWindow(mainSessionWindow);
       IMClearUnreadCount(sessId);
     },
@@ -243,7 +264,7 @@ export default {
       padding: 0 10px 12px 10px;
 
       .top-panel-warp {
-        padding: 0 20px 12px 20px;
+        padding: 0 10px 12px 10px;
         box-sizing: border-box;
         display: grid;
         justify-content: space-between;
@@ -251,7 +272,7 @@ export default {
         align-content: flex-start;
         align-items: center;
         grid-row-gap: 12px;
-        grid-template-columns: repeat(4, 34px);
+        grid-template-columns: repeat(5, 34px);
         border-bottom: 1px solid $split-line-color;
 
         .top-item {
@@ -266,6 +287,37 @@ export default {
             width: 100%;
             height: 100%;
           }
+        }
+      }
+    }
+
+    .data-sync-status {
+      width: 264px;
+      height: 42px;
+      background: $split-line-color;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 14px;
+      font-weight: normal;
+      color: $minor-text-color;
+      transition: all .2s;
+
+      .loading-icon {
+        display: block;
+        width: 17px;
+        height: 17px;
+        transform-origin: center;
+        margin-right: 6px;
+        animation: 1s wordsLoop linear infinite normal;
+      }
+
+      @keyframes wordsLoop {
+        0% {
+          transform: rotateZ(0deg);
+        }
+        100% {
+          transform: rotateZ(360deg);
         }
       }
     }

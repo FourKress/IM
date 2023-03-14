@@ -68,9 +68,7 @@
       </div>
     </template>
 
-    <template v-else>
-      <OtherLogin @wechatLogin="handleWechatLogin" />
-    </template>
+<!--    <template v-els2-->
   </div>
 </template>
 

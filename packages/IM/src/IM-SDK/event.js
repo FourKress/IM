@@ -131,13 +131,32 @@ export const IMClearMessage = async (sessId) =>
     IMSDKMessageProvider.events.clearMessage,
     sessId,
   );
-export const IMGetGroupMemberList = async (groupId, nextSeq) =>
-  await eventHOCFnc(
-    IMSDKGroupProvider.provider,
-    IMSDKGroupProvider.events.getGroupMemberList,
-    groupId,
-    nextSeq,
-  );
+export const IMGetGroupMemberList = async (groupId, nextSeq) => {
+  return new Promise(async (resolve, reject) => {
+    let _nextSeq = nextSeq;
+    const totalMembers = [];
+    while (_nextSeq !== -1) {
+      try {
+        const res = await eventHOCFnc(
+          IMSDKGroupProvider.provider,
+          IMSDKGroupProvider.events.getGroupMemberList,
+          groupId,
+          nextSeq,
+        );
+        const { nextSeq: currentNextSeq, members = [] } = res.data;
+        totalMembers.push(...members);
+        _nextSeq = currentNextSeq;
+      } catch (e) {
+        reject(e);
+      }
+    }
+    resolve({
+      members: totalMembers,
+      nextSeq: _nextSeq,
+    });
+  });
+};
+
 export const IMCreateGroup = async (groupName, avatar, groupAddType, members) =>
   await eventHOCFnc(
     IMSDKGroupProvider.provider,
@@ -149,7 +168,7 @@ export const IMCreateGroup = async (groupName, avatar, groupAddType, members) =>
   );
 
 export const IMCreateMsg = async (msgEvent, msgData) =>
-  await eventHOCFnc(
+  await renderProcess.IMSDKIPC(
     IMSDKMessageProvider.provider,
     IMSDKMessageProvider.events[msgEvent],
     ...msgData,
@@ -165,4 +184,19 @@ export const IMUploadFile = async (file) =>
     IMSDKFileProvider.provider,
     IMSDKFileProvider.events.uploadFile,
     file,
+  );
+
+export const IMGetByUserId = async (userId) =>
+  await eventHOCFnc(
+    IMSDKConvProvider.provider,
+    IMSDKConvProvider.events.getByUserId,
+    userId,
+  );
+
+export const IMInviteMember = async (groupId, members) =>
+  await eventHOCFnc(
+    IMSDKGroupProvider.provider,
+    IMSDKGroupProvider.events.inviteMember,
+    groupId,
+    members,
   );

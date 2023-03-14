@@ -7,12 +7,13 @@ const state = {
   // 其余会话窗口
   sessionWindowList: [],
   IM_Network_Status: '',
-  IM_DataSync_Status: '',
+  IM_DataSync_Status: null,
   SDK_READ: 1,
   currentMsg: {},
   allUnreadCount: 0,
   refreshMsg: false,
   actionWindow: {},
+  refreshMembers: '',
 };
 
 const getters = {
@@ -27,6 +28,7 @@ const getters = {
   allUnreadCount: (state) => state.allUnreadCount,
   refreshMsg: (state) => state.refreshMsg,
   actionWindow: (state) => state.actionWindow,
+  refreshMembers: (state) => state.refreshMembers,
 };
 
 const mutations = {
@@ -73,6 +75,9 @@ const mutations = {
   setActionWindow(data, value) {
     data.actionWindow = value;
   },
+  setRefreshMembers(data, value) {
+    data.refreshMembers = value;
+  },
 };
 
 const actions = {
@@ -108,6 +113,9 @@ const actions = {
   },
   setActionWindow({ commit }, value) {
     commit('setActionWindow', value);
+  },
+  setRefreshMembers({ commit }, value) {
+    commit('setRefreshMembers', value);
   },
 };
 

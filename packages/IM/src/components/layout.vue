@@ -28,6 +28,8 @@
         :panelType="groupMemberPanelType"
         @close="handleGroupClose"
         @confirm="handleCroupConfirm"
+        :defaultMembers="defaultMembers"
+        :defaultGroup="defaultGroup"
       ></GroupMemberChat>
     </LsCardDialog>
   </div>
@@ -63,10 +65,12 @@ export default {
       visibleGroupMember: false,
       visibleGroupSettings: false,
       groupMemberPanelType: IMGroupMemberPanelType.isCreate,
+      defaultMembers: [],
+      defaultGroup: null,
     };
   },
   computed: {
-    ...mapGetters('IMStore', ['mainSessionWindow', 'sessionWindowList']),
+    ...mapGetters('IMStore', ['mainSessionWindow', 'sessionWindowList', 'actionWindow']),
   },
   watch: {
     mainSessionWindow: {
@@ -82,11 +86,12 @@ export default {
     this.recordrtc = new Recordrtc();
   },
   methods: {
-    ...mapActions('IMStore', ['setActionWindow']),
+    ...mapActions('IMStore', ['setActionWindow', 'setMainSessionWindow']),
 
     handleMoreCallback(data) {
       const { command, session } = data;
       this.setActionWindow(session);
+      this.defaultMembers = [session];
       switch (command) {
         case this.IMHeaderMoreBtnKey.isOpenSet:
           this.visibleSettings = true;
@@ -105,8 +110,11 @@ export default {
       }
     },
 
-    handleChangeGroupMember(type) {
-      console.log(type);
+    handleChangeGroupMember(data) {
+      const { type, members, group } = data;
+      console.log(type, members, group);
+      this.defaultMembers = members;
+      this.defaultGroup = this.actionWindow;
       this.groupMemberPanelType = type;
       this.visibleGroupMember = true;
     },
@@ -122,18 +130,15 @@ export default {
 
     handleGroupClose() {
       this.visibleGroupMember = false;
+      this.defaultMembers = [];
+      this.defaultGroup = null;
     },
-    handleCroupConfirm(data) {
-      const { groupName, selectList } = data;
-      console.log(groupName, selectList);
-      const avatar =
-        'https://diy.jiuwa.net/make/ps?sktype=&fontsize=380&skwidth=3&fillcolor=022b6f&shadowtype=2&filltype=1&text=%E9%A9%AC&skcolor=999999&skopacity=1&distort=9&fontype=21';
-      const groupAddType = 2;
-      const members = selectList.map((d) => d.toUser);
-      IMCreateGroup(groupName, avatar, groupAddType, members).then(() => {
-        this.$message.success('群聊创建成功');
-        this.visibleGroupMember = false;
-      });
+    handleCroupConfirm(session) {
+      console.log(session)
+      if(session) {
+        this.setMainSessionWindow(session);
+      }
+      this.handleGroupClose();
     },
   },
 };

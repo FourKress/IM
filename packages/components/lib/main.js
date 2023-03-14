@@ -5,6 +5,7 @@ import WindowOperate from '../src/window-operate';
 import LsDialog from '../src/ls-dialog';
 import LsConfirm from '../src/ls-confirm';
 import LsCardDialog from '../src/ls-card-dialog';
+import LsAssets from '../src/assets';
 
 export {
   MsgTextType,
@@ -14,4 +15,5 @@ export {
   LsDialog,
   LsConfirm,
   LsCardDialog,
+  LsAssets,
 };

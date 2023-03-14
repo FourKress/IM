@@ -45,6 +45,7 @@ export const IMSDKGroupProvider = {
   events: {
     createGroup: 'createGroup',
     getGroupMemberList: 'getGroupMemberList',
+    inviteMember: 'inviteMember',
   },
 };
 

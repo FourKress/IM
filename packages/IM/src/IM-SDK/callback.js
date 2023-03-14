@@ -8,7 +8,16 @@ export const IMSDKCallBackEvents = {
   },
   DataSync: (state) => {
     console.log('@@@@@ DataSync');
-    stareInstance.commit('IMStore/setIMDataSyncStatus', state);
+    // 1、同步中，2、同步完成，3、同步失败
+    const map = {
+      1: '同步中',
+      2: '同步完成',
+      3: '同步失败',
+    };
+    stareInstance.commit('IMStore/setIMDataSyncStatus', {
+      label: map[state],
+      value: state,
+    });
   },
   UpdateConvList: (convList) => {
     console.log('@@@@@ UpdateConvList');

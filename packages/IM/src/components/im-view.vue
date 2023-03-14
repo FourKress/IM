@@ -3,7 +3,11 @@
     <MsgHeader v-bind="$props" v-on="$listeners" />
 
     <div class="message-panel" ref="messagePanel" @scroll="handleScroll">
-      <div class="message-item" v-for="(item, index) in messageList" :key='item.msgId'>
+      <div
+        class="message-item"
+        v-for="(item, index) in messageList"
+        :key="item.msgId"
+      >
         <div class="tips-row">
           <TimesTransform
             v-if="
@@ -14,22 +18,19 @@
             "
             :timestamp="item.timestamp"
           />
-          <span>你邀请李安林、于时放加入了群聊</span>
+          <!--          <span>你邀请李安林、于时放加入了群聊</span>-->
+          <span v-if="!baseMsgTypes.includes(item.msgType)">{{ msgFormatMap[item.msgType]?.label(item.data) }}</span>
         </div>
         <div
+          v-if="baseMsgTypes.includes(item.msgType)"
           class="msg-row"
           :class="checkSelf(item) ? 'self' : 'target'"
         >
           <div class="img">
-            <img
-              :src="
-                checkSelf(item) ? userInfo.avatar : toAvatar
-              "
-              alt=""
-            />
+            <img :src="checkSelf(item) ? userInfo.avatar : toAvatar" alt="" />
           </div>
           <div class="info">
-            <MsgCard :isSelf='checkSelf(item)' :msg="item" />
+            <MsgCard :isSelf="checkSelf(item)" :msg="item" />
           </div>
         </div>
       </div>
@@ -37,19 +38,24 @@
 
     <MsgInputAction v-bind="$props" @refreshMsg="handleRefreshMsg" />
 
-    <div class='notify'>
-      <LsIcon render-svg width='16' height='16' icon='a-icon_qungonggao2x'></LsIcon>
-      <span class='label'>群公告:</span>
-      <span class='content'>
-        <span>啊实打实大师大大撒上的啊实打实大师大大撒上的啊实打实大师大大撒上的啊</span>
-      </span>
-    </div>
+    <!--    <div class='notify'>-->
+    <!--      <LsIcon render-svg width='16' height='16' icon='a-icon_qungonggao2x'></LsIcon>-->
+    <!--      <span class='label'>群公告:</span>-->
+    <!--      <span class='content'>-->
+    <!--        <span>啊实打实大师大大撒上的啊实打实大师大大撒上的啊实打实大师大大撒上的啊</span>-->
+    <!--      </span>-->
+    <!--    </div>-->
   </div>
 </template>
 
 <script>
 import { mapGetters, mapActions } from 'vuex';
-import { _throttle, checkTimesInterval } from '@lanshu/utils';
+import {
+  _throttle,
+  checkTimesInterval,
+  baseMsgTypes,
+  msgFormatMap,
+} from '@lanshu/utils';
 import { TimesTransform } from '@lanshu/components';
 import MsgCard from './msg-view/msg-card';
 import MsgHeader from './msg-view/msg-header';
@@ -91,6 +97,8 @@ export default {
 
       scrollTop: 0,
       accept: '',
+      baseMsgTypes,
+      msgFormatMap,
     };
   },
   watch: {
@@ -119,14 +127,10 @@ export default {
         this.setRefreshMsg(false);
         this.getMessageList();
       }
-    }
+    },
   },
   computed: {
-    ...mapGetters('IMStore', [
-      'userInfo',
-      'currentMsg',
-      'refreshMsg'
-    ]),
+    ...mapGetters('IMStore', ['userInfo', 'currentMsg', 'refreshMsg']),
     toAvatar() {
       return this.session.avatar;
     },
@@ -146,7 +150,7 @@ export default {
       this.getMessageList();
     },
     checkSelf(item) {
-      return item.fromUser === this.userInfo.userId
+      return item.fromUser === this.userInfo.userId;
     },
 
     getMessageList(isContinue = false) {
@@ -168,10 +172,11 @@ export default {
         } else {
           this.messageList = msgs;
           this.$nextTick(() => {
-            this.$refs.messagePanel.scrollTop = this.$refs.messagePanel.scrollHeight;
+            this.$refs.messagePanel.scrollTop =
+              this.$refs.messagePanel.scrollHeight;
           });
         }
-      })
+      });
     },
 
     handleScroll(event) {
@@ -329,7 +334,8 @@ export default {
       }
 
       @keyframes wordsLoop {
-        0%, 20% {
+        0%,
+        20% {
           transform: translateX(0px);
         }
         100% {
@@ -337,8 +343,6 @@ export default {
         }
       }
     }
-
-
   }
 }
 </style>

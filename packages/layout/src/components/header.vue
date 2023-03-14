@@ -42,7 +42,9 @@
 
     <LsCardDialog :visible.sync="showSettingsDialog">
       <div class="settings-dialog">
-        <div class="top"></div>
+        <div class="top">
+          <img :src="LsAssets.topBg" alt="" />
+        </div>
         <div class="info">
           <div class="avatar">
             <img :src="userInfo.avatar" class="img" />
@@ -77,7 +79,12 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex';
-import { LsIcon, WindowOperate, LsCardDialog } from '@lanshu/components';
+import {
+  LsIcon,
+  WindowOperate,
+  LsCardDialog,
+  LsAssets,
+} from '@lanshu/components';
 import { ClientLogOut } from '@lanshu/im';
 
 export default {
@@ -94,6 +101,7 @@ export default {
     return {
       showSettingsDialog: false,
       keywords: '',
+      LsAssets,
     };
   },
   mounted() {},
@@ -286,8 +294,12 @@ export default {
   .top {
     width: 100%;
     height: 110px;
-    background: url('../assets/images/top-bg.png') no-repeat;
-    background-size: 100% 100%;
+
+    img {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
   }
 
   .info {

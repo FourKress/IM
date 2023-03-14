@@ -58,7 +58,7 @@
 </template>
 
 <script>
-import { msgTypeMap, checkMsgType, getFileSize, downloadFile } from '@lanshu/utils';
+import { msgFormatMap, checkMsgType, getFileSize, downloadFile } from '@lanshu/utils';
 import { LsIcon } from '@lanshu/components';
 
 export default {
@@ -80,14 +80,14 @@ export default {
   },
   data() {
     return {
-      msgTypeMap,
+      msgFormatMap,
       checkMsgType,
     };
   },
   computed: {
     msgType() {
       const msgType = this.msg?.msgType;
-      return this.msgTypeMap[msgType].type;
+      return this.msgFormatMap[msgType].type;
     },
     msgData() {
       return this.msg?.data || {};

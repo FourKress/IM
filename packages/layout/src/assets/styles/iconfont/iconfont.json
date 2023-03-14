@@ -1,10 +1,101 @@
 {
   "id": "3760592",
-  "name": "IM-PC",
+  "name": "2.0-IM-PC",
   "font_family": "ls-icon-font",
   "css_prefix_text": "ls-icon-",
   "description": "IM、政务通用",
   "glyphs": [
+    {
+      "icon_id": "34538917",
+      "name": "icon_shipin",
+      "font_class": "icon_shipin",
+      "unicode": "e70f",
+      "unicode_decimal": 59151
+    },
+    {
+      "icon_id": "34538918",
+      "name": "icon_cjql",
+      "font_class": "icon_cjql",
+      "unicode": "e710",
+      "unicode_decimal": 59152
+    },
+    {
+      "icon_id": "34538951",
+      "name": "icon_yuyin",
+      "font_class": "icon_yuyin",
+      "unicode": "e711",
+      "unicode_decimal": 59153
+    },
+    {
+      "icon_id": "34538638",
+      "name": "icon_shanchu",
+      "font_class": "icon_shanchu",
+      "unicode": "e70c",
+      "unicode_decimal": 59148
+    },
+    {
+      "icon_id": "34538639",
+      "name": "icon_tianxie",
+      "font_class": "icon_tianxie",
+      "unicode": "e70d",
+      "unicode_decimal": 59149
+    },
+    {
+      "icon_id": "34538640",
+      "name": "icon_zhuanfa",
+      "font_class": "icon_zhuanfa",
+      "unicode": "e70e",
+      "unicode_decimal": 59150
+    },
+    {
+      "icon_id": "34537702",
+      "name": "icon_txl_lxr",
+      "font_class": "icon_txl_lxr",
+      "unicode": "e707",
+      "unicode_decimal": 59143
+    },
+    {
+      "icon_id": "34537703",
+      "name": "icon_txl_xdlxr",
+      "font_class": "icon_txl_xdlxr",
+      "unicode": "e708",
+      "unicode_decimal": 59144
+    },
+    {
+      "icon_id": "34537704",
+      "name": "icon_tianjiahaoyou",
+      "font_class": "icon_tianjiahaoyou",
+      "unicode": "e709",
+      "unicode_decimal": 59145
+    },
+    {
+      "icon_id": "34537705",
+      "name": "icon_txl_jszc",
+      "font_class": "icon_txl_jszc",
+      "unicode": "e70a",
+      "unicode_decimal": 59146
+    },
+    {
+      "icon_id": "34537706",
+      "name": "icon_txl_ql",
+      "font_class": "icon_txl_ql",
+      "unicode": "e70b",
+      "unicode_decimal": 59147
+    },
+    {
+      "icon_id": "34125999",
+      "name": "icon_duanwang@2x",
+      "font_class": "a-icon_duanwang2x",
+      "unicode": "e705",
+      "unicode_decimal": 59141
+    },
+    {
+      "icon_id": "34126000",
+      "name": "zt_ts_icon@2x",
+      "font_class": "a-zt_ts_icon2x",
+      "unicode": "e706",
+      "unicode_decimal": 59142
+    },
     {
       "icon_id": "34076220",
       "name": "shipin@2x",
