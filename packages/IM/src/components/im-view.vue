@@ -32,6 +32,12 @@
           </div>
           <div class="info">
             <MsgCard :isSelf="checkSelf(item)" :msg="item" />
+            <div class="send-tips" v-if="item.sendState !== 1">
+              <img class="loading-icon" v-if="item.sendState === 0" :src="LsAssets.loadingIcon" alt="">
+              <span class="send-error" v-if="item.sendState === -1" @click="handleResendMsg">
+              <LsIcon render-svg width='17' height='17' icon='a-zt_ts_icon2x'></LsIcon>
+            </span>
+            </div>
           </div>
         </div>
       </div>
@@ -61,7 +67,7 @@ import { TimesTransform } from '@lanshu/components';
 import MsgCard from './msg-view/msg-card';
 import MsgHeader from './msg-view/msg-header';
 import MsgInputAction from './msg-view/msg-input-action';
-import { LsIcon } from '@lanshu/components';
+import { LsIcon, LsAssets } from '@lanshu/components';
 import { IMGetMessageList } from '../IM-SDK';
 
 export default {
@@ -100,6 +106,7 @@ export default {
       accept: '',
       baseMsgTypes,
       msgFormatMap,
+      LsAssets,
     };
   },
   watch: {
@@ -195,6 +202,10 @@ export default {
     handleRefreshMsg() {
       this.getMessageList();
     },
+
+    handleResendMsg() {
+      console.log('重发')
+    }
   },
 };
 </script>
@@ -290,15 +301,43 @@ export default {
           display: flex;
           align-items: center;
           justify-content: flex-start;
-
+          position: relative;
           font-size: 14px;
           color: $main-text-color;
           line-height: 20px;
+
+          .send-tips {
+            position: absolute;
+            bottom: 0;
+            right: -25px;
+
+            .loading-icon {
+              display: block;
+              width: 17px;
+              height: 17px;
+              transform-origin: center;
+              animation: 2s loadLoop linear infinite normal;
+            }
+
+            @keyframes loadLoop {
+              0% {
+                transform: rotateZ(0deg);
+              }
+              100% {
+                transform: rotateZ(360deg);
+              }
+            }
+
+            .send-error {
+              display: flex;
+              cursor: pointer;
+            }
+          }
         }
       }
 
       &:last-child {
-        margin-bottom: 0;
+        margin-bottom: 20px;
       }
     }
   }

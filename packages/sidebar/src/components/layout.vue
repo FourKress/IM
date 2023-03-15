@@ -309,10 +309,10 @@ export default {
         height: 17px;
         transform-origin: center;
         margin-right: 6px;
-        animation: 1s wordsLoop linear infinite normal;
+        animation: 2s loadLoop linear infinite normal;
       }
 
-      @keyframes wordsLoop {
+      @keyframes loadLoop {
         0% {
           transform: rotateZ(0deg);
         }
