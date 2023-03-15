@@ -38,7 +38,6 @@
 <script>
 import { mapGetters, mapActions } from 'vuex';
 import Recordrtc from '../recordrtc';
-import { IMCreateGroup } from '../IM-SDK';
 import ImView from './im-view';
 import Settings from './base-settings/settings';
 import GroupMemberChat from './base-settings/group-member-chat';

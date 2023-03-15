@@ -59,7 +59,9 @@
       "**/lim-sdk-electron",
       "**/@lanshu/main-process",
       "**/@lanshu/layout",
-      "**/@lanshu/render-process"
+      "**/@lanshu/render-process",
+      "**/trtc-electron-sdk",
+      "**/native-ext-loader"
     ]
   }
 }

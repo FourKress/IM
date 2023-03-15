@@ -11,6 +11,11 @@ global.store = store;
 
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
+console.log(
+  'process.env.ELECTRON_NODE_INTEGRATION',
+  process.env.ELECTRON_NODE_INTEGRATION,
+);
+
 async function createWindow() {
   const win = new BrowserWindow({
     transparent: true,
@@ -61,6 +66,22 @@ const initElectron = (appId) => {
 
       if (process.platform === 'darwin') {
         app.dock.setIcon(path.join(__dirname, '../icons/icon_512x512.png'));
+      }
+
+      const gotTheLock = app.requestSingleInstanceLock();
+      if (!gotTheLock) {
+        app.quit();
+      } else {
+        app.on('second-instance', (event, argv) => {
+          // 当运行第二个实例时,将会聚焦到myWindow这个窗口
+          if (global.mainWindow) {
+            global.mainWindow.show();
+            if (global.mainWindow.isMinimized()) {
+              global.mainWindow.restore();
+            }
+            global.mainWindow.focus();
+          }
+        });
       }
 
       app.on('window-all-closed', () => {

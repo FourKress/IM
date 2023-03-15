@@ -7,7 +7,7 @@ module.exports = defineConfig({
       // 不打包，使用 require 加载
       externals: ['electron-screenshots', 'lim-sdk-electron'],
       preload: './src/preload.js',
-      // nodeIntegration: true,
+      nodeIntegration: true,
       // nodeModulesPath: '../node_modules',
 
       builderOptions: {
@@ -57,6 +57,13 @@ module.exports = defineConfig({
               ],
             },
           ],
+          extraFiles: [
+            {
+              from: 'node_modules/trtc-electron-sdk/build/Release/',
+              to: './resources',
+              filter: ['**/*'],
+            },
+          ],
         },
 
         publish: [
@@ -68,6 +75,26 @@ module.exports = defineConfig({
       },
     },
   },
+
+  configureWebpack: {
+    target: 'electron-renderer',
+    externals: {
+      'trtc-electron-sdk': 'commonjs2 trtc-electron-sdk',
+    },
+    module: {
+      rules: [
+        {
+          test: /\.node$/,
+          loader: 'native-ext-loader',
+          options: {
+            emit: true,
+            rewritePath: 'node_modules/trtc-electron-sdk/build/Release',
+          },
+        },
+      ],
+    },
+  },
+
   css: {
     loaderOptions: {
       scss: {

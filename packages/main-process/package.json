@@ -20,6 +20,7 @@
   ],
   "scripts": {},
   "dependencies": {
+    "electron": "22.2.0",
     "electron-log": "^4.4.1",
     "electron-screenshots": "0.5.15",
     "electron-store": "^8.1.0",
