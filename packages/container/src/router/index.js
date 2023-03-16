@@ -1,3 +1,5 @@
+import { TrtcView } from '@lanshu/im';
+
 const baseRoutes = [
   {
     name: 'MainView',
@@ -26,7 +28,7 @@ const baseRoutes = [
     path: '/login',
     component: () => import('../views/login/index'),
     meta: {
-      isLogin: true,
+      isFull: true,
     },
   },
   {
@@ -51,6 +53,14 @@ const baseRoutes = [
         component: () => import('../views/settings/devices/index'),
       },
     ],
+  },
+  {
+    name: 'TRTC',
+    path: '/TRTC',
+    component: TrtcView,
+    meta: {
+      isFull: true,
+    },
   },
 ];
 

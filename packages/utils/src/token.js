@@ -8,18 +8,18 @@ const authKey = 'authKey';
 
 // 获取本地token
 export function getToken() {
-  return sessionStorage.getItem(authKey);
+  return localStorage.getItem(authKey);
 }
 
 // 设置/更新本地token
 export function setToken(data) {
   const { token } = data;
-  return sessionStorage.setItem(authKey, token);
+  return localStorage.setItem(authKey, token);
 }
 
 // 移除本地token
 export function removeToken(key = authKey) {
-  sessionStorage.removeItem(authKey);
+  localStorage.removeItem(authKey);
 }
 
 /**

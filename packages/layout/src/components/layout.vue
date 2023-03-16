@@ -1,5 +1,5 @@
 <template>
-  <div id="client-layout" v-if="!isLogin">
+  <div id="client-layout" v-if="!isFull">
     <Header />
     <ContainerView />
   </div>
@@ -17,9 +17,9 @@ export default {
     ContainerView,
   },
   computed: {
-    isLogin() {
-      const { isLogin = false } = this.$route.meta;
-      return isLogin;
+    isFull() {
+      const { isFull = false } = this.$route.meta;
+      return isFull;
     },
   },
 };

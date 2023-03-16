@@ -20,7 +20,6 @@ async function createWindow() {
   const win = new BrowserWindow({
     transparent: true,
     frame: false,
-    // titleBarStyle: 'hidden',
     hasShadow: false,
     autoHideMenuBar: true,
     webPreferences: {

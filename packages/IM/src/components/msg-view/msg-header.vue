@@ -6,15 +6,19 @@
       </div>
       <div class="info">
         <span class="name">{{ session.nickname }}</span>
-<!--        <span class="tips">顶顶顶顶</span>-->
+        <!--        <span class="tips">顶顶顶顶</span>-->
       </div>
     </div>
     <div class="right">
-<!--      <div class="btn" @click="handleCloseSession">-->
-<!--        <LsIcon render-svg icon="a-icon_sp2x"></LsIcon>-->
-<!--      </div>-->
+      <!--      <div class="btn" @click="handleCloseSession">-->
+      <!--        <LsIcon render-svg icon="a-icon_sp2x"></LsIcon>-->
+      <!--      </div>-->
       <div class="btn">
-        <LsIcon render-svg icon="a-icon_sp2x"></LsIcon>
+        <LsIcon
+          render-svg
+          icon="a-icon_sp2x"
+          @click="handleStartVideo"
+        ></LsIcon>
       </div>
       <div class="btn">
         <LsIcon render-svg icon="a-icon_yy2x"></LsIcon>
@@ -22,14 +26,14 @@
       <div class="btn">
         <el-dropdown trigger="click" @command="handleCommand">
           <LsIcon render-svg icon="a-icon_more2x"></LsIcon>
-          <el-dropdown-menu slot="dropdown" v-if='isGroup'>
-            <el-dropdown-item :command='IMHeaderMoreBtnKey.isOpenGroupMember'>
+          <el-dropdown-menu slot="dropdown" v-if="isGroup">
+            <el-dropdown-item :command="IMHeaderMoreBtnKey.isOpenGroupMember">
               <div class="send-down-row">
                 <LsIcon render-svg icon="pop_cd_cjql"></LsIcon>
                 <span>群成员</span>
               </div>
             </el-dropdown-item>
-            <el-dropdown-item :command='IMHeaderMoreBtnKey.isOpenGroupSet'>
+            <el-dropdown-item :command="IMHeaderMoreBtnKey.isOpenGroupSet">
               <div class="send-down-row">
                 <LsIcon render-svg icon="pop_cd_sz"></LsIcon>
                 <span>群设置</span>
@@ -37,13 +41,13 @@
             </el-dropdown-item>
           </el-dropdown-menu>
           <el-dropdown-menu slot="dropdown" v-else>
-            <el-dropdown-item :command='IMHeaderMoreBtnKey.isCreateGroup'>
+            <el-dropdown-item :command="IMHeaderMoreBtnKey.isCreateGroup">
               <div class="send-down-row">
                 <LsIcon render-svg icon="pop_cd_cjql"></LsIcon>
                 <span>创建群聊</span>
               </div>
             </el-dropdown-item>
-            <el-dropdown-item :command='IMHeaderMoreBtnKey.isOpenSet'>
+            <el-dropdown-item :command="IMHeaderMoreBtnKey.isOpenSet">
               <div class="send-down-row">
                 <LsIcon render-svg icon="pop_cd_sz"></LsIcon>
                 <span>设置</span>
@@ -57,21 +61,25 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 import { LsIcon } from '@lanshu/components';
-import { IMHeaderMoreBtnKey } from '@lanshu/utils';
+import { IMHeaderMoreBtnKey, getToken } from '@lanshu/utils';
+import { renderProcess } from '@lanshu/render-process';
+import { IMCreateMsg, IMSendMessage, IMSDKMessageProvider } from '../../IM-SDK';
 
 export default {
   name: 'Msg-header',
   components: {
-    LsIcon
+    LsIcon,
   },
   data() {
     return {
-      IMHeaderMoreBtnKey
-    }
+      IMHeaderMoreBtnKey,
+    };
   },
   computed: {
+    ...mapGetters('IMStore', ['userInfo']),
+
     session() {
       return this.$attrs.session;
     },
@@ -80,7 +88,7 @@ export default {
     },
     isGroup() {
       return this.session?.toUserType === 15;
-    }
+    },
   },
   methods: {
     ...mapActions('IMStore', ['removeSessionWindowList']),
@@ -88,19 +96,42 @@ export default {
     handleCommand(command) {
       this.$emit('moreCallback', {
         command,
-        session: this.session
+        session: this.session,
       });
+    },
+
+    async handleStartVideo() {
+      const msgData = [
+        this.session.toUser, //消息接收方，为会话列表中的toUser
+        this.session.toUserType, //消息接收方类型，为会话列表中的toUserType];
+        100,
+        {
+          userId: this.session.toUser,
+          roomId: 999,
+        }
+      ];
+      const msg = await IMCreateMsg(
+        IMSDKMessageProvider.events.createCustomMessage,
+        msgData,
+      );
+
+      await IMSendMessage(msg)
+
+      await renderProcess.setStore('trtcMsg', msg);
+      await renderProcess.setStore('userInfo', this.userInfo);
+
+      renderProcess.openTRTCWindow(getToken());
     },
 
     handleCloseSession() {
       if (this.isMainSession) return;
       this.removeSessionWindowList(this.session);
     },
-  }
+  },
 };
 </script>
 
-<style scoped lang='scss'>
+<style scoped lang="scss">
 .top {
   height: 66px;
   box-sizing: border-box;

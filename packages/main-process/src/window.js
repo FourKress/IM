@@ -1,3 +1,6 @@
+import { BrowserWindow } from 'electron';
+import path from 'path';
+
 const initLoginWindow = () => {
   const mainWindow = global.mainWindow;
   mainWindow.setSize(1440, 1080);
@@ -41,17 +44,65 @@ export const showLoginWindow = (delay) => {
   }
 };
 
-export const changeWindow = (type) => {
-  const mainWindow = global.mainWindow;
+export const changeWindow = (type, win) => {
+  const windowMap = {
+    main: global.mainWindow,
+    trtc: global.TRTCWindow,
+  };
+  const targetWindow = windowMap[win];
   const actionFnMap = {
-    min: () => mainWindow.minimize(),
+    min: () => targetWindow.minimize(),
     max: () =>
-      mainWindow.isMaximized()
-        ? mainWindow.unmaximize()
-        : mainWindow.maximize(),
-    full: () => mainWindow.setFullScreen(!mainWindow.isFullScreen()),
-    close: () => mainWindow.close(),
+      targetWindow.isMaximized()
+        ? targetWindow.unmaximize()
+        : targetWindow.maximize(),
+    full: () => targetWindow.setFullScreen(!targetWindow.isFullScreen()),
+    close: () => targetWindow.close(),
   };
   const action = actionFnMap[type];
   action && action();
+};
+
+export const openTRTCWindow = async () => {
+  const TRTCWindow = new BrowserWindow({
+    transparent: true,
+    frame: false,
+    hasShadow: false,
+    autoHideMenuBar: true,
+    webPreferences: {
+      nodeIntegration: true,
+      contextIsolation: false,
+      preload: process.env.WEBPACK_DEV_SERVER_URL
+        ? path.join(process.cwd(), './src/preload.js')
+        : path.join(__dirname, 'preload.js'),
+    },
+    parent: global.mainWindow,
+    width: 360,
+    height: 640,
+    center: true,
+  });
+
+  const isDevelopment = process.env.NODE_ENV !== 'production';
+  const loadURL = isDevelopment
+    ? 'http://localhost:8080/#/TRTC'
+    : 'app://./index.html/#/TRTC';
+
+  if (isDevelopment) {
+    if (!process.env.IS_TEST) TRTCWindow.webContents.openDevTools();
+  }
+  await TRTCWindow.loadURL(loadURL);
+
+  // const code = `sessionStorage.setItem("authKey", "${token}")`;
+  // await TRTCWindow.webContents.executeJavaScript(code).then(async () => {
+  //   await TRTCWindow.loadURL(loadURL);
+  // });
+
+  global.TRTCWindow = TRTCWindow;
+
+  TRTCWindow.on('closed', () => {
+    console.log('TRTCWindow Close');
+    global.TRTCWindow = null;
+    global.store.delete('userInfo');
+    global.store.delete('trtcMsg');
+  });
 };

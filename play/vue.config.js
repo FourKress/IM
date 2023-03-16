@@ -66,6 +66,16 @@ module.exports = defineConfig({
           ],
         },
 
+        mac: {
+          extraFiles: [
+            {
+              from:
+                'node_modules/trtc-electron-sdk/build/Release/trtc_electron_sdk.node',
+              to: './Resources',
+            },
+          ],
+        },
+
         publish: [
           {
             provider: 'generic',

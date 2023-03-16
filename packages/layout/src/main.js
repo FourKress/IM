@@ -3,7 +3,7 @@ import localforage from 'localforage';
 import ElementUI, { Message } from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 import { baseRoutes } from '@lanshu/container';
-import { IMStore, LS_RTC } from '@lanshu/im';
+import { IMStore } from '@lanshu/im';
 import { generateRoute, generateStore } from '@lanshu/utils';
 import App from './App';
 import { LsConfirm } from '@lanshu/components';
@@ -17,7 +17,6 @@ Vue.config.unwrapInjectedRef = true;
 Vue.use(ElementUI);
 Vue.use(LsConfirm);
 window.ClientMessage = Message;
-window.LS_RTC = LS_RTC;
 
 const Layout = (config = {}) => {
   return new Promise(async (resolve, reject) => {

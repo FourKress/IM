@@ -1,12 +1,12 @@
 <template>
   <div class="window-action">
-    <span class="btn small" @click="handleWindowChange(isMin)">
+    <span class="btn" @click="handleWindowChange(isMin)">
       <LsIcon icon="navi_zxh_icon" render-svg></LsIcon>
     </span>
-    <span class="btn big" :class='isLogin && "disable"' @click="handleWindowChange(isMax)">
+    <span class="btn" :class='isLogin && "disable"' @click="handleWindowChange(isMax)">
       <LsIcon icon="navi_sx_icon" render-svg></LsIcon>
     </span>
-    <span class="btn close" @click="handleWindowChange(isClose)">
+    <span class="btn" @click="handleWindowChange(isClose)">
       <LsIcon icon="navi_gb_icon" render-svg></LsIcon>
     </span>
   </div>
@@ -38,7 +38,7 @@ export default {
     handleWindowChange(type) {
       console.log(type);
       if (type === this.isMax && this.isLogin) return;
-      renderProcess.changeWindow(type);
+      renderProcess.changeWindow(type, 'main');
     },
   },
 };

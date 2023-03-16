@@ -24,18 +24,16 @@ const enterRoom = (params, type) => {
       audio: TRTCAppScene.TRTCAppSceneAudioCall,
     };
 
-    const { userId } = params;
+    const { userId, roomId } = params;
     const userSigInfo = genUserSig(userId);
     const trtcParams = new TRTCParams();
 
-    trtcCloud.enterRoom(
-      {
-        ...trtcParams,
-        ...userSigInfo,
-        ...params,
-      },
-      rtcMap[type],
-    );
+    trtcParams.userId = userId;
+    trtcParams.roomId = roomId;
+    trtcParams.sdkAppId = userSigInfo.SDKAppID;
+    trtcParams.userSig = userSigInfo.userSig;
+
+    trtcCloud.enterRoom(trtcParams, rtcMap[type]);
 
     trtcCloud.on('onEnterRoom', (result) => {
       if (result > 0) {
@@ -103,11 +101,10 @@ const stopAllRemoteView = () => {
 };
 
 const setRemoteRenderParams = (userId) => {
-  const param = new TRTCRenderParams(
-    TRTCVideoRotation.TRTCVideoRotation0,
-    TRTCVideoFillMode.TRTCVideoFillMode_Fill,
-    TRTCVideoMirrorType.TRTCVideoMirrorType_Enable,
-  );
+  const param = new TRTCRenderParams();
+  param.fillMode = TRTCVideoFillMode.TRTCVideoFillMode_Fill;
+  param.rotation = TRTCVideoRotation.TRTCVideoRotation0;
+  param.mirrorType = TRTCVideoMirrorType.TRTCVideoMirrorType_Auto;
   trtcCloud.setRemoteRenderParams(
     userId,
     TRTCVideoStreamType.TRTCVideoStreamTypeBig,
@@ -143,21 +140,15 @@ trtcCloud.on('onUserVideoAvailable', onUserVideoAvailable);
 trtcCloud.on('onUserAudioAvailable', onUserAudioAvailable);
 
 const setLocalRenderParams = () => {
-  const param = new TRTCRenderParams(
-    TRTCVideoRotation.TRTCVideoRotation0,
-    TRTCVideoFillMode.TRTCVideoFillMode_Fill,
-    TRTCVideoMirrorType.TRTCVideoMirrorType_Auto,
-  );
+  const param = new TRTCRenderParams();
+  param.fillMode = TRTCVideoFillMode.TRTCVideoFillMode_Fill;
+  param.rotation = TRTCVideoRotation.TRTCVideoRotation0;
+  param.mirrorType = TRTCVideoMirrorType.TRTCVideoMirrorType_Auto;
   trtcCloud.setLocalRenderParams(param);
 };
 
 const startLocalPreview = (cameraVideoDom) => {
-  const param = new TRTCRenderParams(
-    TRTCVideoRotation.TRTCVideoRotation0,
-    TRTCVideoFillMode.TRTCVideoFillMode_Fill,
-    TRTCVideoMirrorType.TRTCVideoMirrorType_Auto,
-  );
-  setLocalRenderParams(param);
+  setLocalRenderParams();
   trtcCloud.startLocalPreview(cameraVideoDom);
 };
 
@@ -222,7 +213,7 @@ const enableAudioVolumeEvaluation = (interval) => {
   trtcCloud.enableAudioVolumeEvaluation(interval);
 };
 
-const LS_RTC = {
+export {
   enterRoom,
   exitRoom,
   startLocalPreview,
@@ -237,7 +228,6 @@ const LS_RTC = {
   setNetworkQosParam,
   setLocalRenderParams,
   setRemoteRenderParams,
-
   startLocalAudio,
   stopLocalAudio,
   muteLocalAudio,
@@ -250,5 +240,3 @@ const LS_RTC = {
   enableAudioVolumeEvaluation,
   setRemoteAudioVolume,
 };
-
-export default LS_RTC;

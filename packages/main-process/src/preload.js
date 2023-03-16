@@ -19,8 +19,9 @@
 // });
 
 const { ipcRenderer } = require('electron');
+
 window.electronAPI = {
-  changeWindow: (type) => ipcRenderer.send('changeWindow', type),
+  changeWindow: (type, win) => ipcRenderer.send('changeWindow', type, win),
   openFile: (type) => ipcRenderer.invoke('openFile', type),
   startScreenshots: () => ipcRenderer.invoke('startScreenshots'),
   showMainWindow: (config) => ipcRenderer.send('showMainWindow', config),
@@ -35,4 +36,5 @@ window.electronAPI = {
   IMSDKIPC: (provider, event, ...data) =>
     ipcRenderer.invoke('IMSDKIPC', provider, event, data),
   IMSDKListener: (callback) => ipcRenderer.on('IMSDKListener', callback),
+  openTRTCWindow: () => ipcRenderer.send('openTRTCWindow'),
 };

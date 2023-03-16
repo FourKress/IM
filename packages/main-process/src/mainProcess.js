@@ -2,7 +2,12 @@ import { ipcMain, app, shell } from 'electron';
 
 import { handleFileOpen, calcFileSize, deleteFile } from './utils';
 import { initScreenshots } from './screenshots';
-import { showLoginWindow, showMainWindow, changeWindow } from './window';
+import {
+  showLoginWindow,
+  showMainWindow,
+  changeWindow,
+  openTRTCWindow,
+} from './window';
 import { unregisterHotKeyAll, initHotKeys, handleHotKey } from './hotKey';
 import { IMSDKEvent, IMSDK_Destroy } from './IM-SDK';
 
@@ -11,11 +16,11 @@ const initIpcMain = () => {
     // 初始化截图
     initScreenshots();
 
-    ipcMain.on('changeWindow', async (_event, type) => {
-      if (type === 'close') {
+    ipcMain.on('changeWindow', async (_event, type, win) => {
+      if (type === 'close' && win === 'main') {
         await IMSDK_Destroy();
       }
-      changeWindow(type);
+      changeWindow(type, win);
     });
 
     ipcMain.handle('openFile', (_event, type) => handleFileOpen(type));
@@ -57,6 +62,8 @@ const initIpcMain = () => {
     ipcMain.on('setStore', async (_event, key, data) => {
       await global.store.set(key, data);
     });
+
+    ipcMain.on('openTRTCWindow', async (_event) => await openTRTCWindow());
   });
 };
 
