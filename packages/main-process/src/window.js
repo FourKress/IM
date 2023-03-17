@@ -102,7 +102,7 @@ export const openTRTCWindow = async () => {
   TRTCWindow.on('closed', () => {
     console.log('TRTCWindow Close');
     global.TRTCWindow = null;
-    global.store.delete('userInfo');
+    global.store.delete('trtcUserInfo');
     global.store.delete('trtcMsg');
   });
 };

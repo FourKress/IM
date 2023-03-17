@@ -3,6 +3,8 @@ import Router from 'vue-router';
 import { stareInstance } from './store';
 import { checkToken } from './token';
 
+const whitelist = ['Login', 'TRTC'];
+
 /**
  * 路由鉴权
  * 1：是否需要鉴权 white 白名单
@@ -14,7 +16,7 @@ const routerIntercept = () => {
   return async (to, form, next) => {
     try {
       // return next();
-      if (to.name === 'Login') return next();
+      if (whitelist.includes(to.name)) return next();
       const token = checkToken();
       // const { userInfo } = stareInstance.state.globalStore;
       // if (token && token !== 'undefined' && userInfo) {

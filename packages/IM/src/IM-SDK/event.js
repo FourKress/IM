@@ -53,6 +53,7 @@ export const IMGetUserAttribute = async (userId) => {
     userId,
   );
   stareInstance.commit('IMStore/setUserInfo', res.data);
+  renderProcess.setStore('userInfo', res.data);
   return res;
 };
 export const IMGetConvList = async (userId) => {

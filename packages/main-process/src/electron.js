@@ -63,9 +63,9 @@ const initElectron = (appId) => {
         { scheme: 'app', privileges: { secure: true, standard: true } },
       ]);
 
-      if (process.platform === 'darwin') {
-        app.dock.setIcon(path.join(__dirname, '../icons/icon_512x512.png'));
-      }
+      // if (process.platform === 'darwin') {
+      //   app.dock.setIcon(path.join(__dirname, '../icons/icon_512x512.png'));
+      // }
 
       const gotTheLock = app.requestSingleInstanceLock();
       if (!gotTheLock) {

@@ -5,10 +5,32 @@ module.exports = defineConfig({
   pluginOptions: {
     electronBuilder: {
       // 不打包，使用 require 加载
-      externals: ['electron-screenshots', 'lim-sdk-electron'],
+      externals: [
+        'electron-screenshots',
+        'lim-sdk-electron',
+        'trtc-electron-sdk',
+      ],
       preload: './src/preload.js',
       nodeIntegration: true,
       // nodeModulesPath: '../node_modules',
+
+      chainWebpackRendererProcess: (config) => {
+        config.externals({
+          'trtc-electron-sdk': 'commonjs2 trtc-electron-sdk',
+        });
+        config.module
+          .rule()
+          .test(/\.node$/)
+          .use()
+          .loader('native-ext-loader')
+          .options({
+            emit: true,
+            rewritePath: 'node_modules/trtc-electron-sdk/build/Release',
+            // rewritePath: '../Resources',
+          });
+
+        return config;
+      },
 
       builderOptions: {
         appId: 'com.lanshu.app',
@@ -73,6 +95,10 @@ module.exports = defineConfig({
                 'node_modules/trtc-electron-sdk/build/Release/trtc_electron_sdk.node',
               to: './Resources',
             },
+            {
+              from: 'node_modules/trtc-electron-sdk/build/mac-framework/',
+              to: './Frameworks',
+            },
           ],
         },
 
@@ -83,25 +109,6 @@ module.exports = defineConfig({
           },
         ],
       },
-    },
-  },
-
-  configureWebpack: {
-    target: 'electron-renderer',
-    externals: {
-      'trtc-electron-sdk': 'commonjs2 trtc-electron-sdk',
-    },
-    module: {
-      rules: [
-        {
-          test: /\.node$/,
-          loader: 'native-ext-loader',
-          options: {
-            emit: true,
-            rewritePath: 'node_modules/trtc-electron-sdk/build/Release',
-          },
-        },
-      ],
     },
   },
 

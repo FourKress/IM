@@ -18,7 +18,6 @@
             "
             :timestamp="item.timestamp"
           />
-          <!--          <span>你邀请李安林、于时放加入了群聊</span>-->
           <span v-if="!baseMsgTypes.includes(item.msgType)">{{ msgFormatMap[item.msgType]?.label(item.data) }}</span>
         </div>
 
@@ -69,7 +68,6 @@ import MsgHeader from './msg-view/msg-header';
 import MsgInputAction from './msg-view/msg-input-action';
 import { LsIcon, LsAssets } from '@lanshu/components';
 import { IMGetMessageList } from '../IM-SDK';
-import { renderProcess } from '@lanshu/render-process';
 
 export default {
   name: 'ImView',
@@ -127,8 +125,6 @@ export default {
         if (!this?.session?.sessId) return;
         if (msg?.sessId === this?.session?.sessId) {
           this.getMessageList();
-          await renderProcess.setStore('trtcMsg', msg);
-          renderProcess.openTRTCWindow()
         }
       },
     },

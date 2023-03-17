@@ -1,6 +1,7 @@
 import { app } from 'electron';
 import fs from 'fs';
 import electronLog from './log';
+import { openTRTCWindow } from './window';
 
 const { LimMain, LogLevel } = require('lim-sdk-electron');
 
@@ -72,16 +73,34 @@ export const IMSDKInit = (appId) => {
     });
   });
 
-  IMSDK.getMainProvider().AddReceiveNewMessageCallBack((message, silence) => {
-    console.log('AddReceiveNewMessage', { message, silence });
-    global.mainWindow.webContents.send('IMSDKListener', {
-      type: 'AddReceiveNewMessage',
-      value: {
-        message,
-        silence,
-      },
-    });
-  });
+  IMSDK.getMainProvider().AddReceiveNewMessageCallBack(
+    async (message, silence) => {
+      console.log('AddReceiveNewMessage', { message, silence });
+
+      const {
+        msgType,
+        data: { trtcType },
+      } = message;
+      if (msgType === 100) {
+        // 收到音视频
+        if (trtcType === 1000) {
+          await global.store.set('trtcMsg', message);
+          await global.store.set('trtcUserInfo');
+          await openTRTCWindow();
+          return;
+        }
+        global.mainWindow.webContents.send('TRTCListener', message);
+      }
+
+      global.mainWindow.webContents.send('IMSDKListener', {
+        type: 'AddReceiveNewMessage',
+        value: {
+          message,
+          silence,
+        },
+      });
+    },
+  );
 };
 
 export const IMSDKEvent = async (provider, event, data) => {

@@ -42,7 +42,7 @@
 
       <div class="data-sync-status" :style="{height: IM_DataSync_Status && IM_DataSync_Status.value !== 2 ? '42px' : '0'}">
         <img class="loading-icon" :src="LsAssets.loadingIcon" alt="">
-<!--        <span>{{ IM_DataSync_Status.label }}</span>-->
+        <span>{{ IM_DataSync_Status.label }}</span>
       </div>
 
       <div class="sidebar-menu" ref="sidebarMenu">

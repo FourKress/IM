@@ -1,4 +1,4 @@
-import { ipcMain, app, shell } from 'electron';
+import { ipcMain, app, shell, systemPreferences } from 'electron';
 
 import { handleFileOpen, calcFileSize, deleteFile } from './utils';
 import { initScreenshots } from './screenshots';
@@ -11,8 +11,34 @@ import {
 import { unregisterHotKeyAll, initHotKeys, handleHotKey } from './hotKey';
 import { IMSDKEvent, IMSDK_Destroy } from './IM-SDK';
 
+// 检查并申请设备权限：麦克风、摄像头、屏幕录制
+async function checkAndApplyDeviceAccessPrivilege() {
+  const cameraPrivilege = systemPreferences.getMediaAccessStatus('camera');
+  console.log(
+    `checkAndApplyDeviceAccessPrivilege before apply cameraPrivilege: ${cameraPrivilege}`,
+  );
+  if (cameraPrivilege !== 'granted') {
+    await systemPreferences.askForMediaAccess('camera');
+  }
+
+  const micPrivilege = systemPreferences.getMediaAccessStatus('microphone');
+  console.log(
+    `checkAndApplyDeviceAccessPrivilege before apply micPrivilege: ${micPrivilege}`,
+  );
+  if (micPrivilege !== 'granted') {
+    await systemPreferences.askForMediaAccess('microphone');
+  }
+
+  const screenPrivilege = systemPreferences.getMediaAccessStatus('screen');
+  console.log(
+    `checkAndApplyDeviceAccessPrivilege before apply screenPrivilege: ${screenPrivilege}`,
+  );
+}
+
 const initIpcMain = () => {
-  app.whenReady().then(() => {
+  app.whenReady().then(async () => {
+    await checkAndApplyDeviceAccessPrivilege();
+
     // 初始化截图
     initScreenshots();
 

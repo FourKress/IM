@@ -60,7 +60,10 @@ const exitRoom = () => {
   });
 };
 
-const muteLocalVideo = (status, videoType) => {
+const muteLocalVideo = (
+  status,
+  videoType = TRTCVideoStreamType.TRTCVideoStreamTypeBig,
+) => {
   const videoMap = {
     big: TRTCVideoStreamType.TRTCVideoStreamTypeBig,
     sub: TRTCVideoStreamType.TRTCVideoStreamTypeSub,
@@ -86,6 +89,8 @@ const startRemoteView = (
   cameraView,
   videoType = TRTCVideoStreamType.TRTCVideoStreamTypeBig,
 ) => {
+  setRemoteRenderParams(userId);
+  setVideoEncoderParam();
   trtcCloud.startRemoteView(userId, cameraView, videoType);
 };
 
@@ -101,10 +106,11 @@ const stopAllRemoteView = () => {
 };
 
 const setRemoteRenderParams = (userId) => {
-  const param = new TRTCRenderParams();
-  param.fillMode = TRTCVideoFillMode.TRTCVideoFillMode_Fill;
-  param.rotation = TRTCVideoRotation.TRTCVideoRotation0;
-  param.mirrorType = TRTCVideoMirrorType.TRTCVideoMirrorType_Auto;
+  const param = new TRTCRenderParams(
+    TRTCVideoRotation.TRTCVideoRotation0,
+    TRTCVideoFillMode.TRTCVideoFillMode_Fill,
+    TRTCVideoMirrorType.TRTCVideoMirrorType_Auto,
+  );
   trtcCloud.setRemoteRenderParams(
     userId,
     TRTCVideoStreamType.TRTCVideoStreamTypeBig,
@@ -140,15 +146,17 @@ trtcCloud.on('onUserVideoAvailable', onUserVideoAvailable);
 trtcCloud.on('onUserAudioAvailable', onUserAudioAvailable);
 
 const setLocalRenderParams = () => {
-  const param = new TRTCRenderParams();
-  param.fillMode = TRTCVideoFillMode.TRTCVideoFillMode_Fill;
-  param.rotation = TRTCVideoRotation.TRTCVideoRotation0;
-  param.mirrorType = TRTCVideoMirrorType.TRTCVideoMirrorType_Auto;
+  const param = new TRTCRenderParams(
+    TRTCVideoRotation.TRTCVideoRotation0,
+    TRTCVideoFillMode.TRTCVideoFillMode_Fill,
+    TRTCVideoMirrorType.TRTCVideoMirrorType_Auto,
+  );
   trtcCloud.setLocalRenderParams(param);
 };
 
 const startLocalPreview = (cameraVideoDom) => {
   setLocalRenderParams();
+  setVideoEncoderParam();
   trtcCloud.startLocalPreview(cameraVideoDom);
 };
 
@@ -162,7 +170,6 @@ const startLocalAudio = (type = TRTCAudioQuality.TRTCAudioQualitySpeech) => {
 };
 
 const stopLocalAudio = () => {
-  // 开启麦克风采集，并设置当前场景为：语音模式（高噪声抑制能力、强弱网络抗性）
   trtcCloud.stopLocalAudio();
 };
 
@@ -240,3 +247,5 @@ export {
   enableAudioVolumeEvaluation,
   setRemoteAudioVolume,
 };
+
+export default trtcCloud;

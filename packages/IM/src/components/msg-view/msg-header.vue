@@ -106,7 +106,7 @@ export default {
         this.session.toUserType, //消息接收方类型，为会话列表中的toUserType];
         100,
         {
-          userId: this.session.toUser,
+          trtcType: 1000,
           roomId: 999,
         }
       ];

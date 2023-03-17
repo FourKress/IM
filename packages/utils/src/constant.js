@@ -9,13 +9,14 @@ export const checkMsgType = {
   isSendFile: 'File',
   isSendBusinessCard: 'BusinessCard',
   isCreateGroup: 'createGroup',
+  isTRTC: 'TRTC',
 };
 
 const formatMsgType = (val, isBaseType = true) => {
   return isBaseType ? `[${val}]` : val;
 };
 
-export const baseMsgTypes = [1, 2, 3, 4, 5, 6];
+export const baseMsgTypes = [1, 2, 3, 4, 5, 6, 100];
 
 export const msgFormatMap = {
   1: {
@@ -51,6 +52,10 @@ export const msgFormatMap = {
       );
     },
     type: checkMsgType.isCreateGroup,
+  },
+  100: {
+    label: () => formatMsgType('视频'),
+    type: checkMsgType.isTRTC,
   },
 };
 
