@@ -121,7 +121,7 @@ export default {
       await renderProcess.setStore('trtcSession', this.session);
       await renderProcess.setStore('trtcUserInfo', this.userInfo);
 
-      renderProcess.openTRTCWindow(getToken());
+      renderProcess.openTRTCWindow();
     },
 
     handleCloseSession() {

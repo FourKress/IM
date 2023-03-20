@@ -106,10 +106,6 @@ export default {
     };
   },
   async mounted() {
-    renderProcess.IMSDKListener((event, data) => {
-      const { type, value } = data;
-      console.log(type, value);
-    });
     renderProcess.TRTCListener((event, message) => {
       console.log(message);
       this.stopTime();
