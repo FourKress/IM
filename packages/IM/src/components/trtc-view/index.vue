@@ -132,7 +132,7 @@ export default {
       this.remoteTrtcContainer = this.$refs.remoteTrtcContainer;
     });
 
-    const userInfo = await renderProcess.getStore('userInfo');
+    const userInfo = await renderProcess.getStore('trtcUserInfo');
     const trtcMsg = await renderProcess.getStore('trtcMsg');
     const trtcSession = await renderProcess.getStore('trtcSession');
     console.log(userInfo, trtcMsg, trtcSession);
