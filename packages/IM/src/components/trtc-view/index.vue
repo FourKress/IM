@@ -380,7 +380,7 @@ export default {
 
   .btn-list {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
     position: absolute;
     bottom: 20px;
@@ -391,6 +391,8 @@ export default {
     height: 40px;
     background: rgba(51, 51, 51, 0.75);
     border-radius: 6px;
+
+    color: #fff;
 
     .min {
       width: 34px;
