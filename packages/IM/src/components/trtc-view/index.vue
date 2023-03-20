@@ -11,11 +11,13 @@
         <LsIcon icon="navi_gb_icon" width="14" height="14" render-svg></LsIcon>
       </span>
     </div>
-    <div class="user-panel" v-if="userInfo.userId">
-      <img class="avatar" :src="userInfo.avatar" alt="" />
+    <div class="user-panel" v-if="trtcSession.userId">
+      <img class="avatar" :src="trtcSession.avatar" alt="" />
       <div class="info">
-        <span class="name">{{ userInfo.nickname }}</span>
-        <span class="tips">邀请你{{ callType }}通话</span>
+        <span class="name">{{ trtcSession.nickname }}</span>
+        <span class="tips">
+          {{ isBeInvited ? '等待对方接听' : `邀请你${callType}通话` }}
+        </span>
       </div>
     </div>
     <div v-if="isBeInvited && !isEnterRoom" class="btn-list">
@@ -90,6 +92,7 @@ export default {
       toUserType: '',
       roomId: '',
       userInfo: {},
+      trtcSession: {},
       remoteUserId: '',
       timer: null,
       countdown: 10,
@@ -109,6 +112,7 @@ export default {
     });
     renderProcess.TRTCListener((event, message) => {
       console.log(message);
+      this.stopTime();
       const {
         data: { trtcType },
       } = message;
@@ -130,11 +134,12 @@ export default {
     this.$nextTick(() => {
       this.localTrtcContainer = this.$refs.localTrtcContainer;
       this.remoteTrtcContainer = this.$refs.remoteTrtcContainer;
-    })
+    });
 
     const userInfo = await renderProcess.getStore('userInfo');
     const trtcMsg = await renderProcess.getStore('trtcMsg');
-    console.log(userInfo, trtcMsg);
+    const trtcSession = await renderProcess.getStore('trtcSession');
+    console.log(userInfo, trtcMsg, trtcSession);
     const userId = userInfo.userId;
     const {
       toUser,
@@ -156,6 +161,7 @@ export default {
     this.toUserType = toUserType;
     this.roomId = roomId;
     this.userInfo = userInfo;
+    this.trtcSession = trtcSession;
     this.remoteUserId = remoteUserId;
 
     this.startTime();
@@ -187,7 +193,6 @@ export default {
     },
 
     handleEnterRoom() {
-
       startLocalAudio();
       if (!this.isVoice) {
         startLocalPreview(this.localTrtcContainer);
@@ -282,10 +287,10 @@ export default {
 
     async handleCamera() {
       if (this.isVoice) {
-        return
+        return;
       }
       this.disCamStatus = !this.disCamStatus;
-      muteLocalVideo(this.disCamStatus)
+      muteLocalVideo(this.disCamStatus);
     },
 
     startTime() {
@@ -294,7 +299,7 @@ export default {
         if (this.countdown <= 0) {
           this.stopTime();
           if (!this.isBeInvited) {
-            this.handleWindowChange('close', 1004);
+            // this.handleWindowChange('close', 1004);
           }
         }
       }, 1000);

@@ -118,6 +118,7 @@ export default {
       await IMSendMessage(msg)
 
       await renderProcess.setStore('trtcMsg', msg);
+      await renderProcess.setStore('trtcSession', this.session);
       await renderProcess.setStore('trtcUserInfo', this.userInfo);
 
       renderProcess.openTRTCWindow(getToken());

@@ -104,5 +104,6 @@ export const openTRTCWindow = async () => {
     global.TRTCWindow = null;
     global.store.delete('trtcUserInfo');
     global.store.delete('trtcMsg');
+    global.store.delete('trtcSession');
   });
 };

@@ -36,8 +36,9 @@ export const IMSDKInit = (appId) => {
     });
   });
 
-  IMSDK.getMainProvider().setConvEventCallBack((convList) => {
+  IMSDK.getMainProvider().setConvEventCallBack(async (convList) => {
     console.log('UpdateConvList', convList);
+    await global.store.set('convList', convList);
     global.mainWindow.webContents.send('IMSDKListener', {
       type: 'UpdateConvList',
       value: convList,
@@ -86,6 +87,11 @@ export const IMSDKInit = (appId) => {
         // 收到音视频
         if (trtcType && trtcType === 1000) {
           await global.store.set('trtcMsg', message);
+          const convList = global.store.get('convList');
+          await global.store.set(
+            'trtcSession',
+            convList.find((d) => d.sessId === message.sessId),
+          );
           await openTRTCWindow();
         } else {
           global.TRTCWindow.webContents.send('TRTCListener', message);
