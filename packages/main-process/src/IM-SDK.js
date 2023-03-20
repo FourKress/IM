@@ -79,19 +79,16 @@ export const IMSDKInit = (appId) => {
 
       const {
         msgType,
-        data: { trtcType = null },
+        data: { trtcType = 0 },
       } = message;
-
-      console.log('TRTC-Msg', msgType, trtcType);
 
       if (msgType && msgType === 100) {
         // 收到音视频
         if (trtcType && trtcType === 1000) {
           await global.store.set('trtcMsg', message);
-          await global.store.set('trtcUserInfo');
           await openTRTCWindow();
         } else {
-          global.mainWindow.webContents.send('TRTCListener', message);
+          global.TRTCWindow.webContents.send('TRTCListener', message);
         }
       }
 
