@@ -12,9 +12,9 @@
       </span>
     </div>
     <div class="user-panel" v-if="trtcSession.userId">
-      <img class="avatar" :src="isBeInvited ? userInfo.avatar : trtcSession.avatar" alt="" />
+      <img class="avatar" :src="trtcSession.avatar" alt="" />
       <div class="info">
-        <span class="name">{{ isBeInvited ? userInfo.nickname : trtcSession.nickname }}</span>
+        <span class="name">{{ trtcSession.nickname }}</span>
         <span class="tips">
           {{ isBeInvited ? `邀请你${callType}通话` : '等待对方接听' }}
         </span>
