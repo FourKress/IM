@@ -14,6 +14,11 @@ export default {
   components: {
     MainLayout,
   },
+  data() {
+    return {
+      keys: []
+    }
+  },
   created() {
     renderProcess.updateClient((event, value) => {
       this.$Lconfirm({
@@ -28,6 +33,22 @@ export default {
       console.log(type, value);
       IMSDKCallBackEvents[type](value)
     });
+  },
+  mounted() {
+    document.addEventListener('keydown', (event) => {
+      const code = event.code;
+      const keys = ['ShiftRight', 'ShiftLeft', 'ControlRight', 'ControlLeft', 'KeyR', 'KeyI'];
+      if (keys.includes(code)) {
+        this.keys.push(code)
+        if (this.keys.every(d => keys.includes(d))) {
+          // event.preventDefault();
+          return;
+        }
+      }
+    })
+    document.addEventListener('keyup', () => {
+      this.keys = []
+    })
   },
   methods: {},
 };

@@ -22,6 +22,7 @@ async function createWindow() {
     frame: false,
     hasShadow: false,
     autoHideMenuBar: true,
+    show: false,
     webPreferences: {
       nodeIntegration: process.env.ELECTRON_NODE_INTEGRATION,
       contextIsolation: !process.env.ELECTRON_NODE_INTEGRATION,

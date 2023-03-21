@@ -68,10 +68,12 @@ export const groupMemberTypeMap = {
 
 const ctrlCharacter = 'Ctrl';
 
+export const isMacPlatform = /macintosh|mac os x/i.test(navigator.userAgent);
+
 export const keyCode = {
   isEnter: 'Enter',
   isCtrlEnter: `${ctrlCharacter}+Enter`,
-  viewCharacter: '⌘',
+  viewCharacter: isMacPlatform ? '⌘' : ctrlCharacter,
   realCharacter: ctrlCharacter,
 };
 

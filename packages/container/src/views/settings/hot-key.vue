@@ -73,7 +73,7 @@
 import Card from './card';
 import InfoBlock from './info-block';
 import { renderProcess } from '@lanshu/render-process';
-import {keyCode} from '@lanshu/utils';
+import { keyCode, isMacPlatform } from '@lanshu/utils';
 
 export default {
   name: 'HotKey-Card',
@@ -124,7 +124,6 @@ export default {
     };
   },
   created() {
-    window.$isMac = /macintosh|mac os x/i.test(navigator.userAgent);
     this.init();
     this.$nextTick(() => {
       const [_first, ...hotKeyInputList] = [
@@ -227,7 +226,7 @@ export default {
       // mac下禁止使用快捷键option
       let publicKey =
         someKeys.indexOf(e.key) < 0 ? e.key.toLocaleUpperCase() : '';
-      if (window.$isMac && e.altKey) {
+      if (isMacPlatform && e.altKey) {
         publicKey = '';
       }
       if (auxiliaryKey.length) {

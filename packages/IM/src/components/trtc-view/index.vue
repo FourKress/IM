@@ -11,7 +11,7 @@
         <LsIcon icon="navi_gb_icon" width="14" height="14" render-svg></LsIcon>
       </span>
     </div>
-    <div class="user-panel" v-if="trtcSession.userId">
+    <div class="user-panel" v-if="trtcSession.userId && !isEnterRoom">
       <img class="avatar" :src="trtcSession.avatar" alt="" />
       <div class="info">
         <span class="name">{{ trtcSession.nickname }}</span>
@@ -56,6 +56,7 @@ import {
   muteLocalAudio,
   stopRemoteView,
   muteLocalVideo,
+  getCameraDevicesList
 } from '../../TRTC-SDK';
 import { LsIcon } from '@lanshu/components';
 import { renderProcess } from '@lanshu/render-process';
@@ -130,6 +131,8 @@ export default {
     this.$nextTick(() => {
       this.localTrtcContainer = this.$refs.localTrtcContainer;
       this.remoteTrtcContainer = this.$refs.remoteTrtcContainer;
+
+      console.log(getCameraDevicesList())
     });
 
     const userInfo = await renderProcess.getStore('trtcUserInfo');
@@ -185,6 +188,7 @@ export default {
           }
         }
       }
+      console.log(type)
       renderProcess.changeWindow(type, 'trtc');
     },
 
@@ -338,6 +342,8 @@ export default {
       margin-left: 18px;
       border-radius: 50%;
       cursor: pointer;
+
+      -webkit-app-region: no-drag !important;
     }
   }
 

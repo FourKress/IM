@@ -220,6 +220,10 @@ const enableAudioVolumeEvaluation = (interval) => {
   trtcCloud.enableAudioVolumeEvaluation(interval);
 };
 
+const getCameraDevicesList = () => {
+  return trtcCloud.getCameraDevicesList();
+};
+
 export {
   enterRoom,
   exitRoom,
@@ -246,6 +250,7 @@ export {
   getAudioPlayoutVolume,
   enableAudioVolumeEvaluation,
   setRemoteAudioVolume,
+  getCameraDevicesList,
 };
 
 export default trtcCloud;

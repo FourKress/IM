@@ -69,7 +69,7 @@ export default {
     };
   },
   created() {
-    renderProcess.showLoginWindow();
+    // renderProcess.showLoginWindow();
   },
   methods: {
     clear() {
