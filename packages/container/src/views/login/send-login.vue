@@ -3,8 +3,8 @@
     <div class="back-icon" @click="backLogin">
       <LsIcon
         render-svg
-        width="40"
-        height="30"
+        width="30"
+        height="20"
         icon="a-icon_zuobian2x"
       ></LsIcon>
     </div>
@@ -22,7 +22,7 @@
         <AuthCode ref="authCode" @inputComplete="handleInputComplete" />
       </div>
 
-      <OtherLogin @wechatLogin="handleWechatLogin" />
+<!--      <OtherLogin @wechatLogin="handleWechatLogin" />-->
     </template>
 
     <template v-else>
@@ -129,8 +129,8 @@ export default {
 
 <style scoped lang="scss">
 .back-icon {
-  width: 40px;
-  height: 30px;
+  width: 30px;
+  height: 20px;
   margin: 24px 0 44px 0;
   cursor: pointer;
 }

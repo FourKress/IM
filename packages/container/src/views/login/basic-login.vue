@@ -18,7 +18,7 @@
     <template v-if="isAccountLogin && !isWechatLogin">
       <div class="input-panel">
         <el-form
-          :model="loginForm"
+          :model="form"
           :rules="rules"
           ref="loginForm"
           label-width="0px"
@@ -29,7 +29,7 @@
                 type="text"
                 maxlength="13"
                 placeholder="输入手机号码，登录或注册"
-                v-model="loginForm.phoneNum"
+                v-model="form.phoneNum"
               />
             </el-form-item>
           </div>
@@ -68,17 +68,18 @@
       </div>
     </template>
 
-<!--    <template v-els2-->
+    <!--    <template v-els2-->
   </div>
 </template>
 
 <script>
 import { renderProcess } from '@lanshu/render-process';
 import OtherLogin from './other-login';
-import { formatPhoneNum } from '@lanshu/utils';
+import { formatPhoneNum, regexUtils, PhoneNumMixins } from '@lanshu/utils';
 
 export default {
   name: 'Basic-login',
+  mixins: [PhoneNumMixins],
   props: {
     isAccountLogin: {
       type: Boolean,
@@ -89,9 +90,10 @@ export default {
     OtherLogin,
   },
   data() {
+
     return {
       isWechatLogin: false,
-      loginForm: {
+      form: {
         phoneNum: '',
       },
       rules: {
@@ -101,6 +103,7 @@ export default {
             message: '请输入有效的电话号码',
             trigger: ['change', 'blur'],
           },
+          { validator: this.validateFormValue, trigger: ['blur', 'change'] },
           {
             message: '请输入有效的电话号码',
             max: 13,
@@ -117,7 +120,7 @@ export default {
   },
   computed: {
     activeBtn() {
-      return this.protocolChecked && this.loginForm.phoneNum.length === 13;
+      return this.protocolChecked && this.validPhoneNum;
     },
   },
   watch: {
@@ -132,10 +135,10 @@ export default {
       }
       this.isWechatLogin = false;
     },
-    'loginForm.phoneNum': function (val, oldVal) {
+    'form.phoneNum': function (val, oldVal) {
       const phoneNum = formatPhoneNum(val, oldVal);
       if (phoneNum) {
-        this.loginForm.phoneNum = phoneNum;
+        this.form.phoneNum = phoneNum;
       }
     },
   },
@@ -159,7 +162,7 @@ export default {
       }
       if (!this.activeBtn) return;
 
-      this.$emit('sendLogin', this.loginForm.phoneNum.replace(/ /g, ''));
+      this.$emit('sendLogin', this.replacePhoneNum());
     },
     loopAppLogin() {
       this.appQrcodeTimer = setInterval(() => {

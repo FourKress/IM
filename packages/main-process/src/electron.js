@@ -1,4 +1,4 @@
-import { app, protocol, BrowserWindow } from 'electron';
+import { app, protocol, BrowserWindow, Tray, Menu } from 'electron';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
 import * as path from 'path';
@@ -6,6 +6,7 @@ import * as path from 'path';
 import store from './datastore';
 import checkUpload from './checkUpload';
 import { IMSDKInit } from './IM-SDK';
+import trayAction from './trayEvent';
 
 global.store = store;
 
@@ -100,6 +101,9 @@ const initElectron = (appId) => {
             console.error('Vue Devtools failed to install:', e.toString());
           }
         }
+
+        trayAction();
+
         await createWindow();
 
         IMSDKInit(appId);

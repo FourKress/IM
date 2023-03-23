@@ -43,24 +43,10 @@
 </template>
 
 <script>
-import {
-  startLocalPreview,
-  stopLocalPreview,
-  enterRoom,
-  exitRoom,
-  muteRemoteAudio,
-  startRemoteView,
-  startLocalAudio,
-  stopLocalAudio,
-  stopAllRemoteView,
-  muteLocalAudio,
-  stopRemoteView,
-  muteLocalVideo,
-  getCameraDevicesList
-} from '../../TRTC-SDK';
 import { LsIcon } from '@lanshu/components';
 import { renderProcess } from '@lanshu/render-process';
 import { IMCreateMsg, IMSDKMessageProvider, IMSendMessage } from '../../IM-SDK';
+import trtcCloudInstance from '../../TRTC-SDK';
 
 // {
 //   1000: '发起TRTC',
@@ -104,8 +90,13 @@ export default {
       disCamStatus: false,
       localTrtcContainer: null,
       remoteTrtcContainer: null,
+      trtcCloud: null,
     };
   },
+  created() {
+    this.trtcCloud = trtcCloudInstance();
+  },
+
   async mounted() {
     renderProcess.TRTCListener((event, message) => {
       console.log(message);
@@ -132,7 +123,7 @@ export default {
       this.localTrtcContainer = this.$refs.localTrtcContainer;
       this.remoteTrtcContainer = this.$refs.remoteTrtcContainer;
 
-      console.log(getCameraDevicesList())
+      console.log(this.trtcCloud.getCameraDevicesList())
     });
 
     const userInfo = await renderProcess.getStore('trtcUserInfo');
@@ -169,9 +160,9 @@ export default {
     async handleWindowChange(type, trtcType) {
       console.log(type);
       if (type === 'close') {
-        stopLocalPreview();
-        stopLocalAudio();
-        stopAllRemoteView();
+        this.trtcCloud.stopLocalPreview();
+        this.trtcCloud.stopLocalAudio();
+        this.trtcCloud.stopAllRemoteView();
         if (trtcType) {
           await this.handleSendIMMsg(trtcType);
         } else {
@@ -193,30 +184,30 @@ export default {
     },
 
     handleEnterRoom() {
-      startLocalAudio();
+      this.trtcCloud.startLocalAudio();
       if (!this.isVoice) {
-        startLocalPreview(this.localTrtcContainer);
+        this.trtcCloud.startLocalPreview(this.localTrtcContainer);
       }
 
-      enterRoom(
+      this.trtcCloud.enterRoom(
         {
           userId: this.userInfo.userId,
           roomId: this.roomId,
         },
         'video',
       ).then(() => {
-        muteRemoteAudio(this.remoteUserId, false);
+        this.trtcCloud.muteRemoteAudio(this.remoteUserId, false);
         if (this.isVoice) {
           this.disCamStatus = true;
         } else {
-          startRemoteView(this.remoteUserId, this.remoteTrtcContainer);
+          this.trtcCloud.startRemoteView(this.remoteUserId, this.remoteTrtcContainer);
         }
         this.isEnterRoom = true;
       });
     },
 
     async handleExitRoom() {
-      await exitRoom().then(async () => {
+      await this.trtcCloud.exitRoom().then(async () => {
         await this.handleCallEnd;
       });
     },
@@ -261,14 +252,14 @@ export default {
     async handleVoice(isEnd = false) {
       this.isVoice = !this.isVoice;
       if (this.isVoice) {
-        stopLocalPreview();
+        this.trtcCloud.stopLocalPreview();
         if (this.isEnterRoom) {
-          stopRemoteView(this.remoteUserId);
+          this.trtcCloud.stopRemoteView(this.remoteUserId);
         }
       } else {
-        startLocalPreview(this.localTrtcContainer);
+        this.trtcCloud.startLocalPreview(this.localTrtcContainer);
         if (this.isEnterRoom) {
-          startRemoteView(this.remoteUserId, this.remoteTrtcContainer);
+          this.trtcCloud.startRemoteView(this.remoteUserId, this.remoteTrtcContainer);
         }
       }
       if (isEnd) return;
@@ -277,12 +268,12 @@ export default {
 
     async handleMicrophone() {
       this.disMicStatus = !this.disMicStatus;
-      muteLocalAudio(this.disMicStatus);
+      this.trtcCloud.muteLocalAudio(this.disMicStatus);
     },
 
     async handleSpeaker() {
       this.disSpeStatus = !this.disSpeStatus;
-      muteRemoteAudio(this.disSpeStatus, this.disSpeStatus);
+      this.trtcCloud.muteRemoteAudio(this.disSpeStatus, this.disSpeStatus);
     },
 
     async handleCamera() {
@@ -290,7 +281,7 @@ export default {
         return;
       }
       this.disCamStatus = !this.disCamStatus;
-      muteLocalVideo(this.disCamStatus);
+      this.trtcCloud.muteLocalVideo(this.disCamStatus);
     },
 
     startTime() {

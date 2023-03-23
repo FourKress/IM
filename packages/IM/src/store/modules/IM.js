@@ -6,7 +6,7 @@ const state = {
   mainSessionWindow: {},
   // 其余会话窗口
   sessionWindowList: [],
-  IM_Network_Status: '',
+  IM_Network_Status: 0,
   IM_DataSync_Status: null,
   SDK_READ: 1,
   currentMsg: {},

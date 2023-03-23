@@ -6,6 +6,7 @@ import LsDialog from '../src/ls-dialog';
 import LsConfirm from '../src/ls-confirm';
 import LsCardDialog from '../src/ls-card-dialog';
 import LsAssets from '../src/assets';
+import LsNetwork from '../src/ls-network.vue';
 
 export {
   MsgTextType,
@@ -16,4 +17,5 @@ export {
   LsConfirm,
   LsCardDialog,
   LsAssets,
+  LsNetwork,
 };

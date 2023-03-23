@@ -2,14 +2,18 @@
   <div id="login">
     <div class="image"></div>
     <div class="operate-panel">
-<!--      <div class="login-type" @click="switchLoginType">-->
-<!--        <LsIcon-->
-<!--          render-svg-->
-<!--          width="117"-->
-<!--          height="115"-->
-<!--          :icon="isAccountLogin ? 'a-icon_erweima2x' : 'a-icon_shouji2x'"-->
-<!--        ></LsIcon>-->
-<!--      </div>-->
+      <!--      <div class="login-type" @click="switchLoginType">-->
+      <!--        <LsIcon-->
+      <!--          render-svg-->
+      <!--          width="117"-->
+      <!--          height="115"-->
+      <!--          :icon="isAccountLogin ? 'a-icon_erweima2x' : 'a-icon_shouji2x'"-->
+      <!--        ></LsIcon>-->
+      <!--      </div>-->
+
+      <div class="network_status">
+        <LsNetwork />
+      </div>
 
       <BasicLogin
         ref="basicLogin"
@@ -25,16 +29,16 @@
         @changeLoginType="changeLoginType"
       ></SendLogin>
 
-      <div
-        class="footer-btn"
-        v-if="isAccountLogin || phoneNum"
-        @click="openDialog"
-      >
-        <span>
-          <span>手机号已停用？去找回</span>
-          <i class="el-icon-arrow-right"></i>
-        </span>
-      </div>
+      <!--      <div-->
+      <!--        class="footer-btn"-->
+      <!--        v-if="isAccountLogin || phoneNum"-->
+      <!--        @click="openDialog"-->
+      <!--      >-->
+      <!--        <span>-->
+      <!--          <span>手机号已停用？去找回</span>-->
+      <!--          <i class="el-icon-arrow-right"></i>-->
+      <!--        </span>-->
+      <!--      </div>-->
     </div>
 
     <div class="header">
@@ -46,11 +50,10 @@
 </template>
 
 <script>
-import { renderProcess } from '@lanshu/render-process';
-import { WindowOperate, LsIcon } from '@lanshu/components';
+import { WindowOperate, LsIcon, LsNetwork } from '@lanshu/components';
 import BasicLogin from './basic-login';
 import SendLogin from './send-login';
-import recoverAccount from '../../mixins/recover-account';
+import { RecoverAccountMixins } from '@lanshu/utils';
 
 export default {
   name: 'Login',
@@ -59,17 +62,15 @@ export default {
     BasicLogin,
     SendLogin,
     LsIcon,
+    LsNetwork,
   },
-  mixins: [recoverAccount],
+  mixins: [RecoverAccountMixins],
   data() {
     return {
       isAccountLogin: true,
       isSendLogin: false,
       phoneNum: '',
     };
-  },
-  created() {
-    // renderProcess.showLoginWindow();
   },
   methods: {
     clear() {
@@ -160,6 +161,13 @@ export default {
       position: absolute;
       right: 0;
       bottom: 0;
+    }
+
+    .network_status {
+      position: absolute;
+      top: 38px;
+      left: 50%;
+      transform: translateX(-50%);
     }
   }
 

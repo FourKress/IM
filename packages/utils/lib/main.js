@@ -9,6 +9,8 @@ import lodash, { _throttle } from '../src/lodash';
 import generateStore, { stareInstance } from '../src/store';
 import regexUtils from '../src/regex';
 import AddressBookMixins from '../src/mixins/addressBook';
+import PhoneNumMixins from '../src/mixins/phoneNum';
+import RecoverAccountMixins from '../src/mixins/recoverAccount';
 
 export {
   lodash,
@@ -17,4 +19,6 @@ export {
   stareInstance,
   regexUtils,
   AddressBookMixins,
+  PhoneNumMixins,
+  RecoverAccountMixins,
 };

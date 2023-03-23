@@ -1,74 +1,89 @@
 <template>
   <div class="change-phoneNum">
-    <div class="panel-container">
-      <div class="back-icon" v-if="[1, 2].includes(step)" @click="goBack"></div>
+    <div class="main-wrap">
+      <div class="panel-container">
+        <div class="back-icon">
+          <LsIcon
+            v-if="[1, 2].includes(step)"
+            render-svg
+            width="30"
+            height="20"
+            icon="a-icon_zuobian2x"
+            @click="goBack"
+          ></LsIcon>
+        </div>
 
-      <div class="title">{{ title }}</div>
+        <div class="title">{{ title }}</div>
 
-      <div class="title-tips">
-        {{ titleTips }}
-      </div>
+        <div class="title-tips">
+          {{ titleTips }}
+        </div>
 
-      <div class="input-panel">
-        <template v-if="[0, 2].includes(step)">
-          <AuthCode ref="authCode" @inputComplete="handleInputComplete" />
+        <div class="input-panel">
+          <template v-if="[0, 2].includes(step)">
+            <AuthCode ref="authCode" @inputComplete="handleInputComplete" />
 
-          <div class="recover-account" v-if="step === 0">
-            <span>手机号已停用？</span>
-            <span class="link" @click="openDialog">
-              <span>去找回</span>
-              <i class="el-icon-arrow-right"></i>
-            </span>
-          </div>
-        </template>
+            <!--          <div class="recover-account" v-if="step === 0">-->
+            <!--            <span>手机号已停用？</span>-->
+            <!--            <span class="link" @click="openDialog">-->
+            <!--              <span>去找回</span>-->
+            <!--              <i class="el-icon-arrow-right"></i>-->
+            <!--            </span>-->
+            <!--          </div>-->
+          </template>
 
-        <template v-if="step === 1">
-          <el-form :model="form" :rules="rules" ref="form" label-width="0px">
-            <div class="phone">
-              <el-form-item label="" prop="phoneNum">
-                <el-input
-                  type="text"
-                  ref="newPhoneNum"
-                  maxlength="13"
-                  placeholder="请输入新手机号码"
-                  v-model="form.phoneNum"
-                />
-              </el-form-item>
+          <template v-if="step === 1">
+            <el-form :model="form" :rules="rules" ref="form" label-width="0px">
+              <div class="phone">
+                <el-form-item label="" prop="phoneNum">
+                  <el-input
+                    type="text"
+                    ref="newPhoneNum"
+                    maxlength="13"
+                    placeholder="请输入新手机号码"
+                    v-model="form.phoneNum"
+                  />
+                </el-form-item>
+              </div>
+            </el-form>
+
+            <div
+              class="login-btn"
+              :class="validPhoneNum && 'active'"
+              @click="handleAuth"
+            >
+              下一步
             </div>
-          </el-form>
+          </template>
 
-          <div
-            class="login-btn"
-            :class="activeBtn && 'active'"
-            @click="handleAuth"
-          >
-            下一步
-          </div>
-        </template>
+          <template v-if="step == 3">
+            <div class="success">
+              <div class="success-icon">
+                <LsIcon render-svg width="53" height="53" icon="a-icon_genghuanchenggong2x"></LsIcon>
+              </div>
+              <div class="title">手机号码更换成功！</div>
 
-        <template v-if="step == 3">
-          <div class="success">
-            <div class="success-icon">
-              <LsIcon render-svg icon="xx_srk_bq"></LsIcon>
+              <div class="title-tips">
+                {{ countdown }}s后客户端将自动退出，请使用手机号码{{
+                  getPhoneText(this.newPhoneNum)
+                }}重新登录
+              </div>
             </div>
-            <div class="title">手机号码更换成功！</div>
-
-            <div class="title-tips">
-              {{ countdown }}s后客户端将自动退出，请使用手机号码{{
-                getPhoneText(this.newPhoneNum)
-              }}重新登录
-            </div>
-          </div>
-        </template>
+          </template>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import recoverAccount from '../../../mixins/recover-account';
 import AuthCode from '../../../components/authCode';
-import { phoneEncryption, formatPhoneNum } from '@lanshu/utils';
+import {
+  phoneEncryption,
+  formatPhoneNum,
+  PhoneNumMixins,
+  RecoverAccountMixins,
+} from '@lanshu/utils';
 import { ClientLogOut } from '@lanshu/im';
 import { LsIcon } from '@lanshu/components';
 
@@ -78,7 +93,7 @@ export default {
     AuthCode,
     LsIcon,
   },
-  mixins: [recoverAccount],
+  mixins: [RecoverAccountMixins, PhoneNumMixins],
   data() {
     return {
       phoneNum: '17384094566',
@@ -97,6 +112,7 @@ export default {
             message: '请输入有效的电话号码',
             trigger: ['change', 'blur'],
           },
+          { validator: this.validateFormValue, trigger: ['blur', 'change'] },
           {
             message: '请输入有效的电话号码',
             max: 13,
@@ -108,11 +124,6 @@ export default {
 
       countdown: 5,
     };
-  },
-  computed: {
-    activeBtn() {
-      return this.form.phoneNum.length === 13;
-    },
   },
   watch: {
     step(val) {
@@ -153,6 +164,7 @@ export default {
       if (flag) {
         if (this.step === 0) {
           this.step = 1;
+          this.form.phoneNum = ''
           this.$nextTick(() => {
             this.$refs.newPhoneNum.focus();
           });
@@ -170,11 +182,13 @@ export default {
         }
       }
     },
-    goBack() {},
+    goBack() {
+      this.step -= 1;
+    },
 
     handleAuth() {
-      if (!this.form.phoneNum) return;
-      this.newPhoneNum = this.form.phoneNum.replace(/ /g, '');
+      if (!this.validPhoneNum) return;
+      this.newPhoneNum = this.replacePhoneNum();
       this.step = 2;
     },
   },
@@ -195,14 +209,17 @@ export default {
   align-items: center;
   justify-content: center;
 
+  .main-wrap {
+    height: 448px;
+  }
+
   .panel-container {
     width: 360px;
     transform: translateY(-100px);
 
     .back-icon {
-      width: 14px;
-      height: 6px;
-      background-color: #333;
+      width: 30px;
+      height: 20px;
       margin: 24px 0 44px 0;
       cursor: pointer;
     }
@@ -287,8 +304,6 @@ export default {
       .success-icon {
         width: 53px;
         height: 53px;
-
-        background-color: #ccc;
       }
 
       .title-tips {

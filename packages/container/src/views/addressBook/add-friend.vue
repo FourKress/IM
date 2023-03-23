@@ -53,29 +53,19 @@
 </template>
 
 <script>
-import { formatPhoneNum, regexUtils } from '@lanshu/utils';
+import { formatPhoneNum, regexUtils, PhoneNumMixins } from '@lanshu/utils';
 import { LsCardDialog } from '@lanshu/components';
 import FriendPanel from './friend-panel.vue';
 import mixins from './mixins';
 
 export default {
   name: 'Add-friend',
-  mixins: [mixins],
+  mixins: [mixins, PhoneNumMixins],
   components: {
     LsCardDialog,
     FriendPanel,
   },
   data() {
-    const validateFormValue = (rule, value, callback) => {
-      if (!value || !this.replacePhoneNum()) {
-        return callback(new Error('请输入有效的电话号码'));
-      }
-      if (!/\d/.test(this.replacePhoneNum())) {
-        return callback(new Error('请输入有效的电话号码'));
-      }
-      return callback();
-    };
-
     return {
       regexUtils,
       form: {
@@ -83,7 +73,7 @@ export default {
       },
       rules: {
         phoneNum: [
-          { validator: validateFormValue, trigger: ['blur', 'change'] },
+          { validator: this.validateFormValue, trigger: ['blur', 'change'] },
           {
             message: '请输入有效的电话号码',
             max: 13,
@@ -102,20 +92,10 @@ export default {
       }
     },
   },
-  computed: {
-    validPhoneNum() {
-      return regexUtils.phone.test(this.replacePhoneNum());
-    },
-  },
   mounted() {
     this.msg = `我是${this.userInfo.nickname}`;
   },
   methods: {
-    replacePhoneNum() {
-      const phoneNum = this.form.phoneNum;
-      if (!phoneNum) return phoneNum;
-      return phoneNum.replace(/ /g, '');
-    },
     handleSearch() {
       if (!this.validPhoneNum) return;
       this.friendInfo = {

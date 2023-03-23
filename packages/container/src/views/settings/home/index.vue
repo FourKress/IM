@@ -19,7 +19,7 @@
         <AccountCenter></AccountCenter>
         <Notify></Notify>
         <File></File>
-        <Basic></Basic>
+<!--        <Basic></Basic>-->
         <Privacy></Privacy>
         <HotKey></HotKey>
         <Update></Update>
@@ -71,11 +71,11 @@ export default {
           label: '文件',
           icon: 'sz_wj',
         },
-        {
-          key: 'Basic',
-          label: '通用',
-          icon: 'sz_ty',
-        },
+        // {
+        //   key: 'Basic',
+        //   label: '通用',
+        //   icon: 'sz_ty',
+        // },
         {
           key: 'Privacy',
           label: '隐私',
