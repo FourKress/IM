@@ -8,5 +8,13 @@ export * from '../src/pinyin';
 import lodash, { _throttle } from '../src/lodash';
 import generateStore, { stareInstance } from '../src/store';
 import regexUtils from '../src/regex';
+import AddressBookMixins from '../src/mixins/addressBook';
 
-export { lodash, _throttle, generateStore, stareInstance, regexUtils };
+export {
+  lodash,
+  _throttle,
+  generateStore,
+  stareInstance,
+  regexUtils,
+  AddressBookMixins,
+};

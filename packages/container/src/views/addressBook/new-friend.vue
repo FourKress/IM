@@ -24,7 +24,10 @@
         :friend-info="friendInfo"
         :position="position"
         :config="config"
-        @confirm="handleConfirm"
+        @sendAuth="handleSendAuth"
+        @sendMsg="handleSendMsg"
+        @sendVideo="handleSendVideo"
+        @sendAudio="handleSendAudio"
         @resetApply="handleResetApply"
       ></FriendPanel>
     </LsCardDialog>
@@ -51,9 +54,6 @@ export default {
     };
   },
   methods: {
-    handleConfirm() {
-      this.showFriendDialog = false;
-    },
     handleResetApply() {
       this.config = {
         isExpired: false,

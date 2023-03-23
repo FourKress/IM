@@ -144,6 +144,9 @@ export default {
   },
   mounted() {
     this.selfSessionList = this.sessionList;
+    if (this.mainSessionWindow?.sessId) {
+      this.currentSession = this.mainSessionWindow.sessId;
+    }
     // this._setMainSessionWindow(this.sessionList);
   },
   methods: {

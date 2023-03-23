@@ -89,8 +89,8 @@
           </div>
         </div>
       </div>
-      <div class="btn" v-if="config.isApply" @click="handleConfirm">发送申请</div>
-      <div class="btn auth" v-if="config.isAuth" @click="handleConfirm">通过验证</div>
+      <div class="btn" v-if="config.isApply" @click="handleSendApply">发送申请</div>
+      <div class="btn auth" v-if="config.isAuth" @click="handleSendAuth">通过验证</div>
       <template v-if="config.isExpired">
         <div class="btn expired">通过验证</div>
         <p class="expired-tips">
@@ -99,9 +99,9 @@
         </p>
       </template>
       <div class="btn-list" v-if="config.isPass">
-        <div class="action-btn left" @click="handleConfirm">发信息</div>
-        <div class="action-btn">视频</div>
-        <div class="action-btn">语音呢</div>
+        <div class="action-btn left" @click="handleSendMsg">发信息</div>
+        <div class="action-btn" @click="handleSendVideo">视频</div>
+        <div class="action-btn" @click="handleSendAudio">语音</div>
       </div>
     </div>
   </div>
@@ -154,8 +154,20 @@ export default {
     ...mapGetters('IMStore', ['userInfo']),
   },
   methods: {
-    handleConfirm() {
-      this.$emit('confirm');
+    handleSendAuth() {
+      this.$emit('sendAuth');
+    },
+    handleSendApply() {
+      this.$emit('sendApply');
+    },
+    handleSendMsg() {
+      this.$emit('sendMsg');
+    },
+    handleSendVideo() {
+      this.$emit('sendVideo');
+    },
+    handleSendAudio() {
+      this.$emit('sendAudio');
     },
     handleResetApply() {
       this.$emit('resetApply')

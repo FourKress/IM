@@ -47,16 +47,17 @@
         :friend-info="friendInfo"
         :position="position"
         :config="{ isPass: true }"
-        @confirm="handleConfirm"
+        @sendMsg="handleSendMsg"
+        @sendVideo="handleSendVideo"
+        @sendAudio="handleSendAudio"
       />
     </LsCardDialog>
-
   </div>
 </template>
 
 <script>
-import { groupedPy, sortedPY } from '@lanshu/utils';
-import {LsCardDialog} from '@lanshu/components'
+import { AddressBookMixins } from '@lanshu/utils';
+import { LsCardDialog } from '@lanshu/components';
 import FriendPanel from './friend-panel.vue';
 import mixins from './mixins';
 
@@ -66,121 +67,24 @@ export default {
     isBot: {
       type: Boolean,
       default: false,
-    }
+    },
   },
-  mixins: [mixins],
+  mixins: [mixins, AddressBookMixins],
   components: {
     LsCardDialog,
     FriendPanel,
   },
   data() {
     return {
-      addressBookList: [
-        { nickname: '张三' },
-        { nickname: '李四' },
-        { nickname: '王五' },
-        { nickname: '2' },
-        { nickname: '3' },
-        { nickname: '4' },
-        { nickname: 'a' },
-        { nickname: 'b' },
-        { nickname: 'c' },
-        { nickname: '!' },
-        { nickname: '@' },
-        { nickname: '#' },
-        { nickname: '赵六' },
-        { nickname: '钱七' },
-        { nickname: '钱1' },
-        { nickname: '钱2' },
-        { nickname: '钱3' },
-        { nickname: '钱4' },
-        { nickname: '钱5' },
-        { nickname: '钱6' },
-        { nickname: '东7' },
-        { nickname: '东1' },
-        { nickname: '东2' },
-        { nickname: '东3' },
-        { nickname: '东4' },
-        { nickname: '东5' },
-        { nickname: '东6' },
-      ],
-      addressBookPYObj: [],
-      pinyinKey: 'A',
-      scrollView: null,
     };
   },
-  computed: {
-    pyList() {
-      const wordArr = [];
-      const keys = Object.keys(this.addressBookPYObj);
-      for (let i = 65; i <= 90; i++) {
-        const code = String.fromCharCode(i);
-        if (keys.includes(code)) {
-          wordArr.push(code);
-        }
-      }
-      return wordArr?.length ? [...wordArr, '#'] : wordArr;
-    },
+  created() {
+    this.minScrollTop = 80;
+    this.maxScrollTop = 120;
   },
   mounted() {
-    const addressBookPYObj = groupedPy(sortedPY(this.addressBookList));
-    this.pinyinKey = Object.keys(addressBookPYObj)[0];
-    this.addressBookPYObj = addressBookPYObj;
-    this.$nextTick(() => {
-      this.scrollView = document.querySelector('.selected-scroll-view');
-      this.scrollView.addEventListener('scroll', this.scrollHandle, true);
-    });
-  },
-  methods: {
-    scrollHandle() {
-      const scrollView = document.querySelector('.selected-scroll-view');
-      const { scrollTop } = scrollView;
-      const isDown = this.scrollTop <= scrollTop;
-      this.scrollTop = scrollTop;
-
-      let realKey;
-      Object.keys(this.addressBookPYObj).forEach((key) => {
-        const pinyinKey = key === 'special' ? '#' : key;
-        const offset = document
-          .querySelector(`#group-${key}`)
-          .getBoundingClientRect();
-
-        const { top, height } = offset;
-
-        if (isDown && top <= 120) {
-          realKey = pinyinKey;
-          return;
-        }
-
-        if (
-          !isDown &&
-          ((top < 0 && top * -1 <= (height - 120) / 3) ||
-            (top >= 80 && top <= 120))
-        ) {
-          realKey = pinyinKey;
-        }
-      });
-
-      if (realKey) {
-        this.pinyinKey = realKey;
-      }
-    },
-    filterAddress(key) {
-      setTimeout(() => {
-        this.pinyinKey = key;
-      }, 100);
-      document
-        .querySelector(`#group-${key === '#' ? 'special' : key}`)
-        .scrollIntoView();
-    },
-
-    handleConfirm() {
-      console.log(213)
-    }
-  },
-  destroyed() {
-    this.scrollView.removeEventListener('scroll', this.scrollHandle, true);
-  },
+    this.handleRegisterScroll()
+  }
 };
 </script>
 

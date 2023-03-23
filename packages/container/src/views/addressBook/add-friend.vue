@@ -45,8 +45,8 @@
       <FriendPanel
         :friend-info="friendInfo"
         :position="position"
-        :config="{ isApple: true }"
-        @confirm="handleConfirm"
+        :config="{ isApply: true }"
+        @sendApply="handleSendApply"
       />
     </LsCardDialog>
   </div>
@@ -125,8 +125,8 @@ export default {
     handleOpenFriendDialog(event) {
       this.openFriendDialog(this.friendInfo, event);
     },
-    handleConfirm() {
-      this.showFriendDialog = false;
+    handleSendApply() {
+      this.handleCloseDialog()
     },
   },
 };

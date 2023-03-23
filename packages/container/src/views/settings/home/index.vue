@@ -120,6 +120,8 @@ export default {
       const { scrollTop } = scrollView;
       const isDown = this.scrollTop <= scrollTop;
       this.scrollTop = scrollTop;
+
+      let realKey;
       this.navList.forEach((d) => {
         const { key } = d;
         const offset = document
@@ -129,17 +131,17 @@ export default {
         const {top, height} = offset;
 
         if (isDown && top <= 162) {
-          this.$nextTick(() => {
-            this.navSelectKey = key;
-          })
+          realKey = key;
           return
         }
         if (!isDown && top < 0 && top * -1 <= (height - 60) / 5 ) {
-          this.$nextTick(() => {
-            this.navSelectKey = key;
-          })
+          realKey = key;
         }
       });
+
+      if (realKey) {
+        this.navSelectKey = realKey;
+      }
     },
   },
 

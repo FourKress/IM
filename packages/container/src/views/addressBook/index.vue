@@ -121,7 +121,11 @@ export default {
     ...mapActions('IMStore', ['setMainSessionWindow']),
 
     addFriend() {
-      this.setComponentConfig('添加好友', 'add-friend');
+      this.setComponentConfig({
+        label: '添加好友',
+        component: 'AddFriend',
+        key: 'AddFriend',
+      });
     },
     handleSelectNav(nav, index) {
       this.activeIndex = index;
@@ -142,10 +146,13 @@ export default {
     },
     handleCroupConfirm(session) {
       console.log(session);
-      if (session) {
-        this.setMainSessionWindow(session);
-      }
       this.handleGroupClose();
+      if (session) {
+        this.$nextTick(() => {
+          this.$router.push('/');
+          this.setMainSessionWindow(session);
+        })
+      }
     },
   },
 };

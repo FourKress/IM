@@ -199,13 +199,14 @@
 import { LsIcon } from '@lanshu/components';
 import { mapGetters, mapActions } from 'vuex';
 import _ from 'lodash';
-import { IMGroupMemberPanelType, sortedPY, groupedPy } from '@lanshu/utils';
+import { IMGroupMemberPanelType, AddressBookMixins } from '@lanshu/utils';
 import { IMCreateGroup, IMInviteMember } from '../../IM-SDK';
 
 const isAddress = false;
 
 export default {
   name: 'Group-member-chat',
+  mixins: [AddressBookMixins],
   props: {
     panelType: {
       required: true,
@@ -229,59 +230,15 @@ export default {
       IMGroupMemberPanelType,
       isAddress,
       tabType: !isAddress,
-      addressBookList: [
-        { nickname: '张三' },
-        { nickname: '李四' },
-        { nickname: '王五' },
-        { nickname: '2' },
-        { nickname: '3' },
-        { nickname: '4' },
-        { nickname: 'a' },
-        { nickname: 'b' },
-        { nickname: 'c' },
-        { nickname: '!' },
-        { nickname: '@' },
-        { nickname: '#' },
-        { nickname: '赵六' },
-        { nickname: '钱七' },
-        { nickname: '钱1' },
-        { nickname: '钱2' },
-        { nickname: '钱3' },
-        { nickname: '钱4' },
-        { nickname: '钱5' },
-        { nickname: '钱6' },
-        { nickname: '东7' },
-        { nickname: '东1' },
-        { nickname: '东2' },
-        { nickname: '东3' },
-        { nickname: '东4' },
-        { nickname: '东5' },
-        { nickname: '东6' },
-      ],
-      addressBookPYObj: [],
       selfSessionList: [],
       selectList: [],
       selectName: null,
       staffName: '',
       groupName: '',
-      pinyinKey: 'A',
-      scrollView: null,
-      scrollTop: 0,
     };
   },
   computed: {
     ...mapGetters('IMStore', ['sessionList']),
-    pyList() {
-      const wordArr = [];
-      const keys = Object.keys(this.addressBookPYObj);
-      for (let i = 65; i <= 90; i++) {
-        const code = String.fromCharCode(i);
-        if (keys.includes(code)) {
-          wordArr.push(code);
-        }
-      }
-      return wordArr?.length ? [...wordArr, '#'] : wordArr;
-    },
     groupTitle() {
       if (this.isDel) return '删除成员';
       if (this.isAdd) return '添加成员';
@@ -307,9 +264,10 @@ export default {
       return this.getCheckedStatus(d);
     });
     this.addressBookList = addressBookList;
-    const addressBookPYObj = groupedPy(sortedPY(addressBookList));
-    this.pinyinKey = Object.keys(addressBookPYObj)[0];
-    this.addressBookPYObj = addressBookPYObj;
+
+    this.minScrollTop = 370;
+    this.maxScrollTop = 440;
+
     if (!this.isCreate) {
       this.groupName = this.defaultGroup.nickname;
     }
@@ -380,10 +338,7 @@ export default {
       this.staffName = '';
       this.tabType = type;
       if (type === this.isAddress && !this.scrollView) {
-        this.$nextTick(() => {
-          this.scrollView = document.querySelector('.selected-scroll-view');
-          this.scrollView.addEventListener('scroll', this.scrollHandle, true);
-        });
+        this.handleRegisterScroll()
       }
     },
 
@@ -422,50 +377,6 @@ export default {
       });
     },
 
-    filterAddress(key) {
-      setTimeout(() => {
-        this.pinyinKey = key;
-      }, 100);
-      document
-        .querySelector(`#group-${key === '#' ? 'special' : key}`)
-        .scrollIntoView();
-    },
-
-    scrollHandle() {
-      const scrollView = document.querySelector('.selected-scroll-view');
-      const { scrollTop } = scrollView;
-      const isDown = this.scrollTop <= scrollTop;
-      this.scrollTop = scrollTop;
-
-      let realKey;
-      Object.keys(this.addressBookPYObj).forEach((key) => {
-        const pinyinKey = key === 'special' ? '#' : key;
-        const offset = document
-          .querySelector(`#group-${key}`)
-          .getBoundingClientRect();
-
-        const { top, height } = offset;
-
-        if (isDown && top <= 440) {
-          realKey = pinyinKey;
-          return;
-        }
-
-        if (
-          !isDown &&
-          ((top < 0 && top * -1 <= (height - 440) / 3) ||
-            (top >= 370 && top <= 440))
-        ) {
-          realKey = pinyinKey;
-        }
-      });
-
-      console.log('realKey', realKey)
-      if (realKey) {
-        this.pinyinKey = realKey;
-      }
-    },
-
     getCheckedStatus(item) {
       const key = this.isCreate ? 'toUser' : 'userId';
       console.log(key, item.toUser);
@@ -476,11 +387,6 @@ export default {
         isDefault: isDefault && !this.isDel,
       };
     },
-  },
-  destroyed() {
-    if (this.scrollView) {
-      this.scrollView.removeEventListener('scroll', this.scrollHandle, true);
-    }
   },
 };
 </script>
