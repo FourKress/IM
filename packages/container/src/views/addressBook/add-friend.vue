@@ -17,24 +17,59 @@
 
       <span
         class="btn"
-        :class="regexUtils.phone.test(replacePhoneNum()) && 'active'"
+        :class="validPhoneNum && 'active'"
+        @click="handleSearch"
       >
         搜索
       </span>
     </div>
+
+    <div
+      class="friend-row"
+      v-if="friendInfo.nickname"
+      @click="handleOpenFriendDialog"
+    >
+      <div class="left">
+        <img class="img" src="" alt="" />
+        <div class="info">
+          <span class="name">{{ friendInfo.nickname }}</span>
+          <span class="tips">大撒大撒大撒</span>
+        </div>
+      </div>
+      <div class="right">
+        <span>添加好友</span>
+      </div>
+    </div>
+
+    <LsCardDialog :visible.sync="showFriendDialog">
+      <FriendPanel
+        :friend-info="friendInfo"
+        :position="position"
+        :config="{ isApple: true }"
+        @confirm="handleConfirm"
+      />
+    </LsCardDialog>
   </div>
 </template>
 
 <script>
 import { formatPhoneNum, regexUtils } from '@lanshu/utils';
+import { LsCardDialog } from '@lanshu/components';
+import FriendPanel from './friend-panel.vue';
+import mixins from './mixins';
+
 export default {
   name: 'Add-friend',
+  mixins: [mixins],
+  components: {
+    LsCardDialog,
+    FriendPanel,
+  },
   data() {
     const validateFormValue = (rule, value, callback) => {
       if (!value || !this.replacePhoneNum()) {
         return callback(new Error('请输入有效的电话号码'));
       }
-      console.log(this.replacePhoneNum(), !/\d/.test(this.replacePhoneNum()));
       if (!/\d/.test(this.replacePhoneNum())) {
         return callback(new Error('请输入有效的电话号码'));
       }
@@ -67,11 +102,31 @@ export default {
       }
     },
   },
+  computed: {
+    validPhoneNum() {
+      return regexUtils.phone.test(this.replacePhoneNum());
+    },
+  },
+  mounted() {
+    this.msg = `我是${this.userInfo.nickname}`;
+  },
   methods: {
     replacePhoneNum() {
       const phoneNum = this.form.phoneNum;
       if (!phoneNum) return phoneNum;
       return phoneNum.replace(/ /g, '');
+    },
+    handleSearch() {
+      if (!this.validPhoneNum) return;
+      this.friendInfo = {
+        nickname: '啊实打实',
+      };
+    },
+    handleOpenFriendDialog(event) {
+      this.openFriendDialog(this.friendInfo, event);
+    },
+    handleConfirm() {
+      this.showFriendDialog = false;
     },
   },
 };
@@ -136,6 +191,57 @@ export default {
 
       &.active {
         background: $primary-color;
+      }
+    }
+  }
+
+  .friend-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 50%;
+    height: 44px;
+    padding: 12px 15px;
+    margin: 10px auto 0;
+    background: $bg-white-color;
+    box-shadow: 0px 2px 10px 0px rgba(51, 51, 51, 0.1);
+    border-radius: 10px;
+    cursor: pointer;
+
+    .right {
+      font-size: 12px;
+      color: $primary-hover-color;
+    }
+
+    .left {
+      display: flex;
+      align-items: center;
+
+      .img {
+        display: block;
+        width: 46px;
+        height: 46px;
+        border-radius: 6px;
+      }
+
+      .info {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: flex-start;
+        padding-left: 8px;
+
+        .name {
+          font-size: 14px;
+          font-weight: bold;
+          color: $main-text-color;
+          margin-bottom: 5px;
+        }
+
+        .tips {
+          font-size: 12px;
+          color: $tips-text-color;
+        }
       }
     }
   }

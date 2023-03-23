@@ -436,6 +436,8 @@ export default {
       const { scrollTop } = scrollView;
       const isDown = this.scrollTop <= scrollTop;
       this.scrollTop = scrollTop;
+
+      let realKey;
       Object.keys(this.addressBookPYObj).forEach((key) => {
         const pinyinKey = key === 'special' ? '#' : key;
         const offset = document
@@ -444,23 +446,24 @@ export default {
 
         const { top, height } = offset;
 
-        if (isDown && top <= 235) {
-          this.$nextTick(() => {
-            this.pinyinKey = pinyinKey;
-          });
+        if (isDown && top <= 440) {
+          realKey = pinyinKey;
           return;
         }
 
         if (
           !isDown &&
-          ((top < 0 && top * -1 <= (height - 235) / 3) ||
-            (top >= 170 && top <= 235))
+          ((top < 0 && top * -1 <= (height - 440) / 3) ||
+            (top >= 370 && top <= 440))
         ) {
-          this.$nextTick(() => {
-            this.pinyinKey = pinyinKey;
-          });
+          realKey = pinyinKey;
         }
       });
+
+      console.log('realKey', realKey)
+      if (realKey) {
+        this.pinyinKey = realKey;
+      }
     },
 
     getCheckedStatus(item) {

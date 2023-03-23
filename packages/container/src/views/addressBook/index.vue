@@ -18,35 +18,69 @@
           @click="handleSelectNav(item, index)"
         >
           <LsIcon class="nav-icon" render-svg :icon="item.icon"></LsIcon>
-          <span class="label">{{item.label}}</span>
+          <span class="label">{{ item.label }}</span>
           <el-badge
             v-if="index === 0"
             :value="item.count"
             :max="99"
             class="count"
           ></el-badge>
-          <span v-else class="count">{{item.count}}</span>
+          <span v-else class="count">{{ item.count }}</span>
         </div>
       </div>
     </div>
     <div class="right">
-      <div class="top">{{ componentConfig.title }}</div>
+      <div class="top">
+        {{ componentConfig.label }}
+        <span class="create-group" v-if="componentConfig.key === 'GroupFriend'">
+          <LsIcon
+            icon="icon_tianjiahaoyou"
+            width="14"
+            height="14"
+            class="top-btn"
+            render-svg
+          ></LsIcon>
+          <span @click="handleCreateGroup">创建群聊</span>
+        </span>
+      </div>
       <div class="main-warp">
-        <component :is="componentConfig.component"></component>
+        <component
+          :is="componentConfig.component"
+          :isBot="componentConfig.key === 'FriendListBot'"
+        ></component>
       </div>
     </div>
+
+    <LsCardDialog :visible.sync="visibleGroupMember" :isModalClose="false">
+      <GroupMemberChat
+        :panelType="IMGroupMemberPanelType.isCreate"
+        @close="handleGroupClose"
+        @confirm="handleCroupConfirm"
+      ></GroupMemberChat>
+    </LsCardDialog>
   </div>
 </template>
 
 <script>
-import { LsIcon } from '@lanshu/components';
+import { mapActions } from 'vuex';
+import { LsIcon, LsCardDialog } from '@lanshu/components';
 import AddFriend from './add-friend.vue';
+import NewFriend from './new-friend.vue';
+import GroupFriend from './group-friend.vue';
+import FriendList from './friend-list.vue';
+import { IMGroupMemberPanelType } from '@lanshu/utils';
+import { GroupMemberChat } from '@lanshu/im';
 
 export default {
   name: 'AddressBook',
   components: {
     LsIcon,
     AddFriend,
+    NewFriend,
+    GroupFriend,
+    FriendList,
+    GroupMemberChat,
+    LsCardDialog,
   },
   data() {
     return {
@@ -54,45 +88,64 @@ export default {
       nvaList: [
         {
           label: '新的联系人',
-          component: 'newAddress',
+          component: 'NewFriend',
+          key: 'NewFriend',
           count: 3,
           icon: 'icon_txl_xdlxr',
         },
         {
           label: '群聊',
-          component: 'group',
-          count: 3,
+          component: 'GroupFriend',
+          key: 'GroupFriend',
           icon: 'icon_txl_ql',
         },
         {
           label: '联系人',
-          component: 'addressBook',
-          count: 3,
+          component: 'FriendList',
+          key: 'FriendList',
           icon: 'icon_txl_lxr',
         },
         {
           label: '技术支持',
-          // component: 'addressBook',
-          count: 3,
+          component: 'FriendList',
+          key: 'FriendListBot',
           icon: 'icon_txl_jszc',
         },
       ],
       componentConfig: {},
+      visibleGroupMember: false,
+      IMGroupMemberPanelType,
     };
   },
   methods: {
+    ...mapActions('IMStore', ['setMainSessionWindow']),
+
     addFriend() {
       this.setComponentConfig('添加好友', 'add-friend');
     },
     handleSelectNav(nav, index) {
       this.activeIndex = index;
-      this.setComponentConfig(nav.label, nav.component);
+      this.setComponentConfig(nav);
     },
-    setComponentConfig(title, component) {
+    setComponentConfig(nav) {
       this.componentConfig = {
-        title,
-        component,
+        ...nav,
       };
+    },
+
+    handleCreateGroup() {
+      this.visibleGroupMember = true;
+    },
+
+    handleGroupClose() {
+      this.visibleGroupMember = false;
+    },
+    handleCroupConfirm(session) {
+      console.log(session);
+      if (session) {
+        this.setMainSessionWindow(session);
+      }
+      this.handleGroupClose();
     },
   },
 };
@@ -170,14 +223,33 @@ export default {
       height: 52px;
       line-height: 52px;
       padding: 0 20px;
+      box-sizing: border-box;
       font-size: 16px;
       font-weight: normal;
       color: $main-text-color;
       border-bottom: 1px solid $split-line-color;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      .create-group {
+        width: 86px;
+        height: 28px;
+        border-radius: 4px;
+        border: 1px solid $primary-color;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        color: $primary-color;
+        cursor: pointer;
+      }
     }
 
     .main-warp {
       flex: 1;
+      overflow: hidden;
+      position: relative;
     }
   }
 }

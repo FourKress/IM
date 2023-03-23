@@ -24,7 +24,8 @@
     "@lanshu/plugin": "^0.1.21",
     "@lanshu/render-process": "^0.1.21",
     "@lanshu/sidebar": "^0.1.21",
-    "@lanshu/utils": "^0.1.21"
+    "@lanshu/utils": "^0.1.21",
+    "@lanshu/im": "^0.1.21"
   },
   "gitHead": "3ddb0ea8d7a74c51e724ecaebae05919607c9513"
 }
