@@ -38,22 +38,30 @@ export default {
       minScrollTop: null,
       maxScrollTop: null,
       scrollTop: 0,
+      isSpecial: 'special',
+      specialKey: '#',
     };
   },
   computed: {
     pyList() {
       const wordArr = [];
       const keys = Object.keys(this.addressBookPYObj);
+      // 拼音排序
       for (let i = 65; i <= 90; i++) {
         const code = String.fromCharCode(i);
         if (keys.includes(code)) {
           wordArr.push(code);
         }
       }
-      return wordArr?.length ? [...wordArr, '#'] : wordArr;
+      return wordArr?.length ? [...wordArr, this.specialKey] : wordArr;
     },
   },
+  created() {
+    this.isSpecial = 'special';
+    this.specialKey = '#';
+  },
   mounted() {
+    // 数据转为拼音键值对 {A:[], B: []} 类型
     const addressBookPYObj = groupedPy(sortedPY(this.addressBookList));
     this.pinyinKey = Object.keys(addressBookPYObj)[0];
     this.addressBookPYObj = addressBookPYObj;
@@ -69,12 +77,13 @@ export default {
     scrollHandle() {
       const scrollView = document.querySelector('.selected-scroll-view');
       const { scrollTop } = scrollView;
+      // 判断滚动方向
       const isDown = this.scrollTop <= scrollTop;
       this.scrollTop = scrollTop;
-
+      // 遍历节点，定位对应的锚点
       let realKey;
       Object.keys(this.addressBookPYObj).forEach((key) => {
-        const pinyinKey = key === 'special' ? '#' : key;
+        const pinyinKey = key === this.isSpecial ? this.specialKey : key;
         const offset = document
           .querySelector(`#group-${key}`)
           .getBoundingClientRect();
@@ -103,8 +112,11 @@ export default {
       setTimeout(() => {
         this.pinyinKey = key;
       }, 100);
+      // 滚动描点
       document
-        .querySelector(`#group-${key === '#' ? 'special' : key}`)
+        .querySelector(
+          `#group-${key === this.specialKey ? this.isSpecial : key}`,
+        )
         .scrollIntoView();
     },
   },

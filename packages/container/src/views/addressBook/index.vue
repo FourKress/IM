@@ -46,6 +46,7 @@
       <div class="main-warp">
         <component
           :is="componentConfig.component"
+          :key="componentConfig.key"
           :isBot="componentConfig.key === 'FriendListBot'"
         ></component>
       </div>
@@ -112,6 +113,11 @@ export default {
           icon: 'icon_txl_jszc',
         },
       ],
+      addFriendConfig: {
+        label: '添加好友',
+        component: 'AddFriend',
+        key: 'AddFriend',
+      },
       componentConfig: {},
       visibleGroupMember: false,
       IMGroupMemberPanelType,
@@ -121,11 +127,7 @@ export default {
     ...mapActions('IMStore', ['setMainSessionWindow']),
 
     addFriend() {
-      this.setComponentConfig({
-        label: '添加好友',
-        component: 'AddFriend',
-        key: 'AddFriend',
-      });
+      this.setComponentConfig(this.addFriendConfig);
     },
     handleSelectNav(nav, index) {
       this.activeIndex = index;

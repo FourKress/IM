@@ -75,7 +75,7 @@
 <script>
 import { renderProcess } from '@lanshu/render-process';
 import OtherLogin from './other-login';
-import { formatPhoneNum, regexUtils, PhoneNumMixins } from '@lanshu/utils';
+import { formatPhoneNum, PhoneNumMixins } from '@lanshu/utils';
 
 export default {
   name: 'Basic-login',
@@ -90,7 +90,6 @@ export default {
     OtherLogin,
   },
   data() {
-
     return {
       isWechatLogin: false,
       form: {
@@ -120,6 +119,7 @@ export default {
   },
   computed: {
     activeBtn() {
+      // 勾选协议并且手机号格式正确
       return this.protocolChecked && this.validPhoneNum;
     },
   },

@@ -52,7 +52,7 @@
             type="text"
             :maxlength="10"
             placeholder="输入备注"
-            :disabled="config.isExpired"
+            :disabled="panelConfig.isExpired"
             v-model="friendMark"
           ></el-input>
         </div>
@@ -66,16 +66,16 @@
             :maxlength="100"
             :autosize="{ minRows: 1, maxRows: 3 }"
             placeholder="输入描述"
-            :disabled="config.isExpired"
+            :disabled="panelConfig.isExpired"
             v-model="friendTips"
           ></el-input>
         </div>
       </div>
-      <div class="row" v-if="!config.isPass">
+      <div class="row" v-if="!panelConfig.isPass">
         <span class="label">招呼</span>
         <div class="input">
           <el-input
-            v-if="config.isApply"
+            v-if="panelConfig.isApply"
             class="msg"
             type="textarea"
             resize="none"
@@ -89,16 +89,16 @@
           </div>
         </div>
       </div>
-      <div class="btn" v-if="config.isApply" @click="handleSendApply">发送申请</div>
-      <div class="btn auth" v-if="config.isAuth" @click="handleSendAuth">通过验证</div>
-      <template v-if="config.isExpired">
+      <div class="btn" v-if="panelConfig.isApply" @click="handleSendApply">发送申请</div>
+      <div class="btn auth" v-if="panelConfig.isAuth" @click="handleSendAuth">通过验证</div>
+      <template v-if="panelConfig.isExpired">
         <div class="btn expired">通过验证</div>
         <p class="expired-tips">
           <span>好友申请已过期，你可以发起</span>
           <span class="link" @click="handleResetApply">好友申请</span>
         </p>
       </template>
-      <div class="btn-list" v-if="config.isPass">
+      <div class="btn-list" v-if="panelConfig.isPass">
         <div class="action-btn left" @click="handleSendMsg">发信息</div>
         <div class="action-btn" @click="handleSendVideo">视频</div>
         <div class="action-btn" @click="handleSendAudio">语音</div>
@@ -145,6 +145,12 @@ export default {
       friendMsg: '',
       friendTips: '',
       friendMark: '',
+      defaultConfig: {
+        isExpired: false,
+        isApply: false,
+        isAuth: false,
+        isPass: false,
+      }
     };
   },
   components: {
@@ -152,6 +158,13 @@ export default {
   },
   computed: {
     ...mapGetters('IMStore', ['userInfo']),
+
+    panelConfig() {
+      return {
+        ...this.defaultConfig,
+        ...this.config,
+      }
+    }
   },
   methods: {
     handleSendAuth() {

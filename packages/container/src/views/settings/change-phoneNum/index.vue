@@ -132,7 +132,7 @@ export default {
         1: '请输入新手机号码',
         2: '请输入手机验证码',
       };
-      const map = {
+      const titleTipsMap = {
         0: `4位数的验证码已发送至手机 ${this.getPhoneText(
           this.phoneNum,
         )}，有效期10分钟`,
@@ -142,7 +142,7 @@ export default {
         )}，有效期10分钟`,
       };
       this.title = titleMap[val];
-      this.titleTips = map[val];
+      this.titleTips = titleTipsMap[val];
     },
     'form.phoneNum': function (val, oldVal) {
       const phoneNum = formatPhoneNum(val, oldVal);
@@ -193,6 +193,7 @@ export default {
     },
   },
   beforeDestroy() {
+    // 清理和保存未结束的定时器
     if ([0, 2].includes(this.step)) {
       this.$refs.authCode.handleClearInterval();
       this.$refs.authCode.handleSaveCountdown();

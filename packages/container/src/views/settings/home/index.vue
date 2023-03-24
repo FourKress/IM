@@ -118,9 +118,10 @@ export default {
     scrollHandle() {
       const scrollView = document.querySelector('.scroll-view');
       const { scrollTop } = scrollView;
+      // 判断滚动方向
       const isDown = this.scrollTop <= scrollTop;
       this.scrollTop = scrollTop;
-
+      // 遍历节点，定位对应的锚点
       let realKey;
       this.navList.forEach((d) => {
         const { key } = d;

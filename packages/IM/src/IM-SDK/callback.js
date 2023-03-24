@@ -1,4 +1,4 @@
-import { stareInstance } from '@lanshu/utils';
+import { stareInstance, routeInstance } from '@lanshu/utils';
 import { IMClearUnreadCount } from './event';
 
 export const IMSDKCallBackEvents = {
@@ -32,11 +32,18 @@ export const IMSDKCallBackEvents = {
 
     const NOTIFICATION_TITLE = '客户端通知';
     const NOTIFICATION_BODY = message?.data?.content;
-    const CLICK_MESSAGE = message;
     new Notification(NOTIFICATION_TITLE, {
       body: NOTIFICATION_BODY,
     }).onclick = () => {
-      console.log(CLICK_MESSAGE);
+      console.log(message);
+      const sessionList = stareInstance.getters['IMStore/sessionList'];
+      const targetSession = sessionList.find(
+        (d) => d.sessId === message.sessId,
+      );
+      if (!targetSession) return;
+      stareInstance.commit('IMStore/setMainSessionWindow', targetSession);
+      if (location.hash === '#/') return;
+      routeInstance.push('/');
     };
 
     console.log('@@@@@ AddReceiveNewMessage');

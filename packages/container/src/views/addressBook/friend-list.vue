@@ -19,7 +19,7 @@
           v-for="(group, key) in addressBookPYObj"
         >
           <span class="group-name">
-            {{ key === 'special' ? '#' : key }}
+            {{ key === isSpecial ? specialKey : key }}
           </span>
 
           <div

@@ -54,6 +54,7 @@ import { WindowOperate, LsIcon, LsNetwork } from '@lanshu/components';
 import BasicLogin from './basic-login';
 import SendLogin from './send-login';
 import { RecoverAccountMixins } from '@lanshu/utils';
+import { renderProcess } from '@lanshu/render-process';
 
 export default {
   name: 'Login',
@@ -71,6 +72,9 @@ export default {
       isSendLogin: false,
       phoneNum: '',
     };
+  },
+  created() {
+    renderProcess.showLoginWindow();
   },
   methods: {
     clear() {

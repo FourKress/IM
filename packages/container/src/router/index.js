@@ -1,5 +1,8 @@
 import { TrtcView } from '@lanshu/im';
 
+// isMenu: 是否渲染到菜单
+// isFull: 是否全屏
+
 const baseRoutes = [
   {
     name: 'MainView',

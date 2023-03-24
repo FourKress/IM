@@ -128,6 +128,11 @@ export default {
     },
   },
   async mounted() {
+    this.$nextTick(() => {
+      this.$refs.msgInput.focus();
+      this.windowRange = window.getSelection().getRangeAt(0);
+    })
+
     document.addEventListener('click', this.handleGlobalClick);
     document.querySelector('.input-textarea').addEventListener('paste', (e) => {
       this.handleBlur(e);

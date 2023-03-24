@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import { msgFormatMap } from '@lanshu/utils';
+import { msgFormatMap, checkMsgType } from '@lanshu/utils';
 
 export default {
   name: 'Msg-text-type',
@@ -17,9 +17,11 @@ export default {
     messageTextType() {
       const { msgType, data } = this.lastMsg;
       if (!msgType && !data) return '暂无消息';
-      if (msgType === 1) {
+      // 文本类型的消息直接展示
+      if (msgFormatMap[msgType].type === checkMsgType.isText) {
         return data.content;
       }
+      // 其他类型消息动态处理
       return `${msgFormatMap[msgType]?.label(data)}`;
     },
   },

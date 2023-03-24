@@ -53,6 +53,7 @@ export default {
 
       this.visible = true;
 
+      // 增加链式调用方式
       return new Promise((resolve, reject) => {
         this.promiseStatus = { resolve, reject };
       });

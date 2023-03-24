@@ -46,6 +46,7 @@ export default {
     },
   },
   created() {
+    // 获取入口传入的Menu项
     const pluginMenu = JSON.parse(localStorage.getItem('menu') || '[]');
 
     this.navList = BaseRoutes.filter((r) => r?.meta?.isMenu)

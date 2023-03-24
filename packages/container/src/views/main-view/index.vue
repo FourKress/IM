@@ -24,6 +24,7 @@ export default {
     }
   },
   created() {
+    // 获取入口是否传入Plugin项
     this.hasPlugin = JSON.parse(localStorage.getItem('hasPlugin') || 'false');
   }
 };

@@ -3,7 +3,11 @@
     <span class="btn" @click="handleWindowChange(isMin)">
       <LsIcon icon="navi_zxh_icon" render-svg></LsIcon>
     </span>
-    <span class="btn" :class='isLogin && "disable"' @click="handleWindowChange(isMax)">
+    <span
+      class="btn"
+      :class="isLogin && 'disable'"
+      @click="handleWindowChange(isMax)"
+    >
       <LsIcon icon="navi_sx_icon" render-svg></LsIcon>
     </span>
     <span class="btn" @click="handleWindowChange(isClose)">
@@ -15,30 +19,31 @@
 <script>
 import { renderProcess } from '@lanshu/render-process';
 import LsIcon from './ls-icon';
+import { windowType } from '@lanshu/utils';
 
 export default {
   name: 'Window-action',
   props: {
     isLogin: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   components: {
-    LsIcon
+    LsIcon,
   },
   data() {
     return {
       isMin: 'min',
       isMax: 'max',
       isClose: 'close',
-    }
+    };
   },
   methods: {
     handleWindowChange(type) {
-      console.log(type);
       if (type === this.isMax && this.isLogin) return;
-      renderProcess.changeWindow(type, 'main');
+      // isMain => 主窗口标识
+      renderProcess.changeWindow(type, windowType.isMain);
     },
   },
 };
@@ -64,7 +69,7 @@ export default {
 
     &.disable {
       cursor: not-allowed;
-      opacity: .5;
+      opacity: 0.5;
     }
   }
 }

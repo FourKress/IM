@@ -295,7 +295,7 @@ export default {
     }
 
     .data-sync-status {
-      width: 264px;
+      width: 100%;
       background: $split-line-color;
       display: flex;
       justify-content: center;
@@ -305,6 +305,7 @@ export default {
       color: $minor-text-color;
       transition: all .2s;
       overflow: hidden;
+      margin: -13px 0 12px 0;
 
       .loading-icon {
         display: block;

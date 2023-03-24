@@ -89,3 +89,20 @@ export const IMGroupMemberPanelType = {
   isAdd: 'Add',
   isDel: 'Del',
 };
+
+export const windowType = {
+  isMain: 'main',
+  isTrtc: 'trtc',
+};
+
+export const groupRoleType = {
+  isOwner: 3,
+  isManage: 2,
+};
+
+// 普通用户为0，群为15，机器人9
+export const sessionUserType = {
+  isBasic: 0,
+  isGroup: 15,
+  isBot: 9,
+};

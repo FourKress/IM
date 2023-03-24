@@ -54,7 +54,7 @@
 <script>
 import { LsIcon } from '@lanshu/components';
 import { mapGetters } from 'vuex';
-import { IMGroupMemberPanelType, groupMemberTypeMap } from '@lanshu/utils';
+import { IMGroupMemberPanelType, groupMemberTypeMap, groupRoleType } from '@lanshu/utils';
 import { IMGetGroupMemberList } from '../../IM-SDK';
 
 export default {
@@ -85,6 +85,7 @@ export default {
   },
   methods: {
     getGroupMemberList() {
+      // nextSeq默认从0开始
       IMGetGroupMemberList(this.groupId, 0).then((res) => {
         console.log(res, 'getGroupMemberList');
         const { nextSeq, members = [] } = res;
@@ -102,7 +103,7 @@ export default {
       );
     },
     memberClass(role) {
-      return role === 3 ? 'owner' : role === 2 ? 'manage' : '';
+      return role === groupRoleType.isOwner ? 'owner' : role === groupRoleType.isManage ? 'manage' : '';
     },
   },
   mounted() {

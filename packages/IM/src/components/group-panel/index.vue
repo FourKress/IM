@@ -62,9 +62,6 @@ export default {
   data() {
     return {
       selfIsMember: true,
-
-      value: true,
-      value2: false,
     };
   },
   watch: {

@@ -96,7 +96,7 @@
               v-for="(group, key) in addressBookPYObj"
             >
               <span class="group-name" v-if="!staffName">
-                {{ key === 'special' ? '#' : key }}
+                {{ key === isSpecial ? specialKey : key }}
               </span>
 
               <div
@@ -273,6 +273,7 @@ export default {
     }
     this.selectList = [
       ...this.defaultMembers.map((d) => {
+        // isDefault 默认勾选
         d.isDefault = this.isDel ? false : true;
         return d;
       }),
@@ -338,6 +339,7 @@ export default {
       this.staffName = '';
       this.tabType = type;
       if (type === this.isAddress && !this.scrollView) {
+        // 注册滚动事件的处理
         this.handleRegisterScroll()
       }
     },
@@ -380,6 +382,7 @@ export default {
     getCheckedStatus(item) {
       const key = this.isCreate ? 'toUser' : 'userId';
       console.log(key, item.toUser);
+      // isDefault 默认勾选
       const isDefault = this.defaultMembers.some((c) => c[key] === item.toUser);
       return {
         ...item,

@@ -36,14 +36,22 @@ const routerIntercept = () => {
   };
 };
 
-export const generateRoute = (Vue, routes) => {
+let routeInstance = null;
+
+const generateRoute = (Vue, routes) => {
   Vue.use(Router);
 
   const router = new Router({
     routes,
   });
 
+  routeInstance = router;
+
   router.beforeEach(routerIntercept(routes));
 
   return router;
 };
+
+export { routeInstance };
+
+export default generateRoute;

@@ -23,7 +23,6 @@ export default {
 <style scoped lang="scss">
 #client-container {
   flex: 1;
-  height: calc(100% - 90px);
   max-height: calc(100% - 90px);
   background-color: $bg-blue-color;
   height: calc(100% - 68px);

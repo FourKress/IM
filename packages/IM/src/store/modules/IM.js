@@ -6,13 +6,21 @@ const state = {
   mainSessionWindow: {},
   // 其余会话窗口
   sessionWindowList: [],
+  // 网络状态
   IM_Network_Status: 0,
+  // 数据同步状态
   IM_DataSync_Status: null,
+  // SDK准备完成标识
   SDK_READ: 1,
+  // 当前消息
   currentMsg: {},
+  // 总未读数
   allUnreadCount: 0,
+  // 刷新聊天Msg
   refreshMsg: false,
+  // 当前操作的SessionWindow
   actionWindow: {},
+  // 刷新群成员
   refreshMembers: '',
 };
 

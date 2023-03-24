@@ -10,6 +10,7 @@ export default {
     openFriendDialog(friend, event) {
       this.friendInfo = friend;
       const clientWidth = document.body.clientWidth;
+      // 网页宽度 - 面板宽度 = left的最大值，避免定位超出视图区
       const masLeft = clientWidth - 380;
       const { clientY, clientX } = event;
       this.position = {

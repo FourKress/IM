@@ -38,10 +38,12 @@ export default {
   watch: {
     codeList(val) {
       const active = val.every((d) => d);
+      // 输入完毕自动触发
       this.$emit('inputComplete', active);
     },
   },
   mounted() {
+    // 读取历史倒计时
     this.countdown = this.codeCountdown;
     if (this.countdown) {
       this.handleCountdown();
@@ -59,6 +61,7 @@ export default {
     handleClearInterval() {
       this.timer && clearInterval(this.timer);
     },
+    // 保存倒计时
     handleSaveCountdown() {
       this.countdown && this.setCodeCountdown(this.countdown);
     },

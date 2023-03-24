@@ -84,25 +84,25 @@ export default {
       avatar: '',
 
       infos: [
-        // {
-        //   key: 'sign',
-        //   title: '个性签名',
-        //   label: '',
-        //   value: '这是个性签名',
-        //   btnText: '',
-        //   render: (h, row) => {
-        //     const target = this.infos.find((d) => d.key === row.key);
-        //     return (
-        //       <el-input
-        //         style="width: 300px;"
-        //         type="text"
-        //         placeholder="编辑个性签名…"
-        //         onChange={(val) => this.handleChange(val)}
-        //         v-model={target.value}
-        //       />
-        //     );
-        //   },
-        // },
+        {
+          key: 'sign',
+          title: '个性签名',
+          label: '',
+          value: '这是个性签名',
+          btnText: '',
+          render: (h, row) => {
+            const target = this.infos.find((d) => d.key === row.key);
+            return (
+              <el-input
+                style="width: 300px;"
+                type="text"
+                placeholder="编辑个性签名…"
+                onChange={(val) => this.handleChange(val)}
+                v-model={target.value}
+              />
+            );
+          },
+        },
         {
           key: 'phoneNum',
           title: '手机号码',

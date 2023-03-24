@@ -63,7 +63,7 @@
 <script>
 import { mapActions, mapGetters } from 'vuex';
 import { LsIcon } from '@lanshu/components';
-import { IMHeaderMoreBtnKey, getToken } from '@lanshu/utils';
+import {IMHeaderMoreBtnKey, sessionUserType} from '@lanshu/utils';
 import { renderProcess } from '@lanshu/render-process';
 import { IMCreateMsg, IMSendMessage, IMSDKMessageProvider } from '../../IM-SDK';
 
@@ -87,7 +87,7 @@ export default {
       return this.session.avatar;
     },
     isGroup() {
-      return this.session?.toUserType === 15;
+      return this.session?.toUserType === sessionUserType.isGroup;
     },
   },
   methods: {
