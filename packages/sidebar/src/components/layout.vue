@@ -171,7 +171,9 @@ export default {
       if (sessionWindowList.some((d) => d.sessId === sessId)) return;
       this.isScroll = false;
       this.setMainSessionWindow(mainSessionWindow);
-      IMClearUnreadCount(sessId);
+      if (mainSessionWindow?.unreadCount > 0) {
+        IMClearUnreadCount(sessId);
+      }
     },
     _setMainSessionWindow(sessionList) {
       if (!sessionList?.length) return;
