@@ -45,7 +45,7 @@ export default {
   computed: {
     iconClass() {
       const { icon } = this;
-      return `ls-icon-${icon}`;
+      return icon.includes('ls-icon') ? icon : `ls-icon-${icon}`;
     },
     svgStyle() {
       const { color, width, height } = this;

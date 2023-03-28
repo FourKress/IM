@@ -91,8 +91,7 @@ module.exports = defineConfig({
         mac: {
           extraFiles: [
             {
-              from:
-                'node_modules/trtc-electron-sdk/build/Release/trtc_electron_sdk.node',
+              from: 'node_modules/trtc-electron-sdk/build/Release/trtc_electron_sdk.node',
               to: './Resources',
             },
             {
@@ -105,7 +104,7 @@ module.exports = defineConfig({
         publish: [
           {
             provider: 'generic',
-            url: 'http://192.168.88.115:7777/',
+            channel: 'latest',
           },
         ],
       },

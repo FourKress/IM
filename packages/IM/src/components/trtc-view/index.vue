@@ -1,5 +1,7 @@
 <template>
   <div class="trtc-view">
+    <img class="bg" :src="LsAssets.trtcBgMobile" alt="">
+
     <div class="top">
       <span class="btn" @click="handleWindowChange(isMin)">
         <LsIcon icon="navi_zxh_icon" width="14" height="14" render-svg></LsIcon>
@@ -27,7 +29,9 @@
     </div>
     <div v-if="!isBeInvited && !isEnterRoom" class="btn-list">
       <span class="reject" @click="handleVoice">{{ callType }}</span>
-      <span class="resolve" @click="handleCancel">取消</span>
+      <span class="resolve" @click="handleCancel">
+        <LsIcon render-svg icon="ls-icon-icon_boda_guaduan" ></LsIcon>
+      </span>
       <span class="voice" @click="handleMicrophone">麦克风</span>
     </div>
     <div v-if="isEnterRoom" class="btn-list">
@@ -43,7 +47,7 @@
 </template>
 
 <script>
-import { LsIcon } from '@lanshu/components';
+import { LsIcon, LsAssets } from '@lanshu/components';
 import { renderProcess } from '@lanshu/render-process';
 import { IMCreateMsg, IMSDKMessageProvider, IMSendMessage } from '../../IM-SDK';
 import trtcCloudInstance from '../../TRTC-SDK';
@@ -71,6 +75,7 @@ export default {
   },
   data() {
     return {
+      LsAssets,
       isMin: 'min',
       isMax: 'max',
       isClose: 'close',
@@ -311,7 +316,16 @@ export default {
 .trtc-view {
   height: 100%;
   position: relative;
-  background-color: #243a61;
+
+  .bg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: -1;
+  }
 
   .top {
     width: 100%;

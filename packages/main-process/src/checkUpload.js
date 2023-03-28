@@ -1,10 +1,17 @@
 import { autoUpdater } from 'electron-updater';
 import { ipcMain } from 'electron';
+import electronLog from 'electron-log';
 
 const checkUpdate = async () => {
-  autoUpdater.setFeedURL('http://192.168.88.115:7777/');
+  // 设置日志打印
+  autoUpdater.logger = electronLog;
+  autoUpdater.logger.transports.file.level = 'info';
+
+  autoUpdater.setFeedURL('http://192.168.88.46:8080/');
 
   autoUpdater.autoInstallOnAppQuit = false;
+  autoUpdater.autoDownload = false;
+  autoUpdater.allowDowngrade = true;
 
   // 检测更新
   await autoUpdater.checkForUpdates();
@@ -33,6 +40,10 @@ const checkUpdate = async () => {
 
   ipcMain.on('startUpdate', (_event, value) => {
     autoUpdater.quitAndInstall();
+  });
+
+  ipcMain.on('checkForUpdates', async (_event, value) => {
+    await autoUpdater.checkForUpdates();
   });
 };
 

@@ -6,6 +6,90 @@
   "description": "IM、政务通用",
   "glyphs": [
     {
+      "icon_id": "34728027",
+      "name": "icon_guaduan",
+      "font_class": "icon_guaduan",
+      "unicode": "e712",
+      "unicode_decimal": 59154
+    },
+    {
+      "icon_id": "34728028",
+      "name": "icon_boda_guaduan",
+      "font_class": "icon_boda_guaduan",
+      "unicode": "e713",
+      "unicode_decimal": 59155
+    },
+    {
+      "icon_id": "34728029",
+      "name": "icon_jieting",
+      "font_class": "icon_jieting",
+      "unicode": "e714",
+      "unicode_decimal": 59156
+    },
+    {
+      "icon_id": "34728030",
+      "name": "icon_maikefeng_dakai",
+      "font_class": "icon_maikefeng_dakai",
+      "unicode": "e715",
+      "unicode_decimal": 59157
+    },
+    {
+      "icon_id": "34728031",
+      "name": "icon_shexiangtou_dakai",
+      "font_class": "icon_shexiangtou_dakai",
+      "unicode": "e716",
+      "unicode_decimal": 59158
+    },
+    {
+      "icon_id": "34728032",
+      "name": "icon_sheixnagtou_guanji",
+      "font_class": "icon_sheixnagtou_guanji",
+      "unicode": "e717",
+      "unicode_decimal": 59159
+    },
+    {
+      "icon_id": "34728033",
+      "name": "icon_maikefeng_guanbi",
+      "font_class": "icon_maikefeng_guanbi",
+      "unicode": "e718",
+      "unicode_decimal": 59160
+    },
+    {
+      "icon_id": "34728034",
+      "name": "icon_shipin_duifang",
+      "font_class": "icon_shipin_duifang",
+      "unicode": "e719",
+      "unicode_decimal": 59161
+    },
+    {
+      "icon_id": "34728035",
+      "name": "icon_shipin_wo",
+      "font_class": "icon_shipin_wo",
+      "unicode": "e71a",
+      "unicode_decimal": 59162
+    },
+    {
+      "icon_id": "34728036",
+      "name": "icon_zhuanyuyin",
+      "font_class": "icon_zhuanyuyin",
+      "unicode": "e71b",
+      "unicode_decimal": 59163
+    },
+    {
+      "icon_id": "34728037",
+      "name": "icon_yangshengqi_dakai",
+      "font_class": "icon_yangshengqi_dakai",
+      "unicode": "e71c",
+      "unicode_decimal": 59164
+    },
+    {
+      "icon_id": "34728038",
+      "name": "icon_yangshengqi_guanbi",
+      "font_class": "icon_yangshengqi_guanbi",
+      "unicode": "e71d",
+      "unicode_decimal": 59165
+    },
+    {
       "icon_id": "34538917",
       "name": "icon_shipin",
       "font_class": "icon_shipin",

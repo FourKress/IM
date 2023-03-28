@@ -10,6 +10,7 @@ import { LsConfirm } from '@lanshu/components';
 
 import 'element-ui/packages/theme-chalk/src/index.scss';
 import './assets/styles/index.scss';
+import './assets/fonts/index.css';
 
 Vue.config.productionTip = false;
 Vue.config.unwrapInjectedRef = true;
