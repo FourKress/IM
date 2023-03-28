@@ -20,7 +20,7 @@
     "@lanshu/main-process": "^0.1.22",
     "core-js": "^3.8.3",
     "electron-screenshots": "0.5.15",
-    "lim-sdk-electron": "1.3.4-test",
+    "lim-sdk-electron": "1.3.5-test",
     "trtc-electron-sdk": "10.3.406",
     "vue": "^2.6.14",
     "vue-router": "^3.6.5",

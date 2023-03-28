@@ -1,6 +1,6 @@
 <template>
   <div class="trtc-view">
-    <img class="bg" :src="LsAssets.trtcBgMobile" alt="">
+    <img class="bg" :src="LsAssets.trtcBgMobile" alt="" />
 
     <div class="top">
       <span class="btn" @click="handleWindowChange(isMin)">
@@ -18,7 +18,7 @@
       <div class="info">
         <span class="name">{{ trtcSession.nickname }}</span>
         <span class="tips">
-          {{ isBeInvited ? `邀请你${callType}通话` : '等待对方接听' }}
+          {{ isBeInvited ? `邀请你${callType}通话` : '等待对方接听' }}...
         </span>
       </div>
     </div>
@@ -28,11 +28,14 @@
       <span class="reject" @click="handleReject">拒绝</span>
     </div>
     <div v-if="!isBeInvited && !isEnterRoom" class="btn-list">
-      <span class="reject" @click="handleVoice">{{ callType }}</span>
+      <span class="reject" @click="handleVoice">{{ callType }} ls-icon-icon_zhuanyuyin </span>
       <span class="resolve" @click="handleCancel">
-        <LsIcon render-svg icon="ls-icon-icon_boda_guaduan" ></LsIcon>
+        <LsIcon icon="ls-icon-icon_boda_guaduan" render-svg></LsIcon>
       </span>
-      <span class="voice" @click="handleMicrophone">麦克风</span>
+      <span class="voice" @click="handleMicrophone">麦克风
+
+      ls-icon-icon_maikefeng_dakai
+      </span>
     </div>
     <div v-if="isEnterRoom" class="btn-list">
       <span class="reject" @click="handleVoice">{{ callType }}</span>
@@ -128,7 +131,9 @@ export default {
       this.localTrtcContainer = this.$refs.localTrtcContainer;
       this.remoteTrtcContainer = this.$refs.remoteTrtcContainer;
 
-      console.log(this.trtcCloud.getCameraDevicesList())
+      console.log(this.trtcCloud.getCameraDevicesList());
+      // this.trtcCloud.startLocalAudio();
+      // this.trtcCloud.startLocalPreview(this.localTrtcContainer);
     });
 
     const userInfo = await renderProcess.getStore('trtcUserInfo');
@@ -159,7 +164,7 @@ export default {
     this.trtcSession = trtcSession;
     this.remoteUserId = remoteUserId;
 
-    this.startTime();
+    // this.startTime();
   },
   methods: {
     async handleWindowChange(type, trtcType) {
@@ -184,7 +189,7 @@ export default {
           }
         }
       }
-      console.log(type)
+      console.log(type);
       renderProcess.changeWindow(type, 'trtc');
     },
 
@@ -194,21 +199,26 @@ export default {
         this.trtcCloud.startLocalPreview(this.localTrtcContainer);
       }
 
-      this.trtcCloud.enterRoom(
-        {
-          userId: this.userInfo.userId,
-          roomId: this.roomId,
-        },
-        'video',
-      ).then(() => {
-        this.trtcCloud.muteRemoteAudio(this.remoteUserId, false);
-        if (this.isVoice) {
-          this.disCamStatus = true;
-        } else {
-          this.trtcCloud.startRemoteView(this.remoteUserId, this.remoteTrtcContainer);
-        }
-        this.isEnterRoom = true;
-      });
+      this.trtcCloud
+        .enterRoom(
+          {
+            userId: this.userInfo.userId,
+            roomId: this.roomId,
+          },
+          'video',
+        )
+        .then(() => {
+          this.trtcCloud.muteRemoteAudio(this.remoteUserId, false);
+          if (this.isVoice) {
+            this.disCamStatus = true;
+          } else {
+            this.trtcCloud.startRemoteView(
+              this.remoteUserId,
+              this.remoteTrtcContainer,
+            );
+          }
+          this.isEnterRoom = true;
+        });
     },
 
     async handleExitRoom() {
@@ -264,7 +274,10 @@ export default {
       } else {
         this.trtcCloud.startLocalPreview(this.localTrtcContainer);
         if (this.isEnterRoom) {
-          this.trtcCloud.startRemoteView(this.remoteUserId, this.remoteTrtcContainer);
+          this.trtcCloud.startRemoteView(
+            this.remoteUserId,
+            this.remoteTrtcContainer,
+          );
         }
       }
       if (isEnd) return;

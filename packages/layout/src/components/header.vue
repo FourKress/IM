@@ -321,7 +321,6 @@ export default {
       .img {
         width: 66px;
         height: 66px;
-        background: #ffb100;
         border-radius: 8px;
         display: block;
       }

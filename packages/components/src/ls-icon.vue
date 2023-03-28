@@ -8,7 +8,7 @@
       :style="svgStyle"
       @click="handClick"
     >
-      <use :xlink:href="`#ls-icon-${icon}`"></use>
+      <use :xlink:href="`#${iconClass}`"></use>
     </svg>
     <!-- class模式 -->
     <i
