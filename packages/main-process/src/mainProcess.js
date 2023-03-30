@@ -18,6 +18,8 @@ const initIpcMain = () => {
       app.setAppUserModelId('蓝数IM');
     }
 
+    showLoginWindow();
+
     await checkAndApplyDeviceAccessPrivilege();
 
     // 初始化截图

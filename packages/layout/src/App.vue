@@ -65,7 +65,7 @@ export default {
 * {
   margin: 0;
   padding: 0;
-  font-family: 'Alibaba PuHuiTi R';
+  font-family: 'Alibaba-PuHuiTi-R';
 }
 
 html,

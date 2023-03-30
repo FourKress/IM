@@ -33,7 +33,7 @@ const delayShowWindow = (initFn, delay) => {
 };
 
 export const showMainWindow = () => {
-  delayShowWindow(initMainWindow, 200);
+  delayShowWindow(initMainWindow, 500);
 };
 
 export const showLoginWindow = (delay) => {
@@ -94,7 +94,7 @@ export const openTRTCWindow = async () => {
     : 'app://./index.html/#/TRTC';
 
   if (isDevelopment) {
-    if (!process.env.IS_TEST) TRTCWindow.webContents.openDevTools();
+    // if (!process.env.IS_TEST) TRTCWindow.webContents.openDevTools();
   }
   await TRTCWindow.loadURL(loadURL);
 

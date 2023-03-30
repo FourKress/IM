@@ -306,7 +306,7 @@ export default {
 
       setTimeout(() => {
         renderProcess.changeWindow(type, 'trtc');
-      }, 3000)
+      }, 1000)
     },
 
     handleEnterRoom() {

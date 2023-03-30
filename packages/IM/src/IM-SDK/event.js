@@ -82,7 +82,7 @@ export const IMLogout = async () =>
 export const ClientLogOut = async () => {
   await IMLogout();
   removeToken();
-  renderProcess.showLoginWindow(500);
+  renderProcess.showLoginWindow(1000);
   window.location.reload();
 };
 export const IMClearUnreadCount = async (sessId, sessionWindowList) => {
