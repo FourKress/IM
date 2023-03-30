@@ -65,6 +65,7 @@ export default {
 * {
   margin: 0;
   padding: 0;
+  font-family: 'Alibaba PuHuiTi R';
 }
 
 html,
@@ -72,11 +73,11 @@ body {
   height: 100%;
   scroll-behavior: smooth;
   user-select: none;
-  font-family: 'Alibaba PuHuiTi R';
+  border-radius: 16px;
+  overflow: hidden;
 }
 
 #app {
-  font-family: 'Alibaba PuHuiTi R';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   transform: translate3d(0, 0, 0);

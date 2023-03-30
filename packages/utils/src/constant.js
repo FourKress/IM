@@ -16,7 +16,7 @@ const formatMsgType = (val, isBaseType = true) => {
   return isBaseType ? `[${val}]` : val;
 };
 
-export const baseMsgTypes = [1, 2, 3, 4, 5, 6, 100];
+export const baseMsgTypes = [1, 2, 3, 4, 5, 6, 100, 200];
 
 export const msgFormatMap = {
   1: {
@@ -55,6 +55,10 @@ export const msgFormatMap = {
   },
   100: {
     label: () => formatMsgType('视频'),
+    type: checkMsgType.isTRTC,
+  },
+  200: {
+    label: () => formatMsgType('语音'),
     type: checkMsgType.isTRTC,
   },
 };
@@ -105,4 +109,9 @@ export const sessionUserType = {
   isBasic: 0,
   isGroup: 15,
   isBot: 9,
+};
+
+export const trtcType = {
+  isVideo: 100,
+  isAudio: 200,
 };

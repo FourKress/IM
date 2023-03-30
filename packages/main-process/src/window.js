@@ -63,28 +63,34 @@ export const changeWindow = (type, win) => {
   action && action();
 };
 
+export const defaultWindowConfig = {
+  transparent: true,
+  frame: false,
+  hasShadow: false,
+  autoHideMenuBar: true,
+  webPreferences: {
+    nodeIntegration: true,
+    contextIsolation: false,
+    preload: process.env.WEBPACK_DEV_SERVER_URL
+      ? path.join(process.cwd(), './src/preload.js')
+      : path.join(__dirname, 'preload.js'),
+  },
+  center: true,
+};
+
 export const openTRTCWindow = async () => {
   const TRTCWindow = new BrowserWindow({
-    transparent: true,
-    frame: false,
-    hasShadow: false,
-    autoHideMenuBar: true,
-    webPreferences: {
-      nodeIntegration: true,
-      contextIsolation: false,
-      preload: process.env.WEBPACK_DEV_SERVER_URL
-        ? path.join(process.cwd(), './src/preload.js')
-        : path.join(__dirname, 'preload.js'),
-    },
+    ...defaultWindowConfig,
     parent: global.mainWindow,
-    width: 360,
-    height: 640,
-    center: true,
+    width: 640,
+    height: 360,
+    // minWidth: 360,
+    // minHeight: 640,
   });
 
   const isDevelopment = process.env.NODE_ENV !== 'production';
   const loadURL = isDevelopment
-    ? 'http://localhost:8080/#/TRTC'
+    ? `${process.env.WEBPACK_DEV_SERVER_URL}#/TRTC`
     : 'app://./index.html/#/TRTC';
 
   if (isDevelopment) {
@@ -98,6 +104,10 @@ export const openTRTCWindow = async () => {
   // });
 
   global.TRTCWindow = TRTCWindow;
+
+  TRTCWindow.on('ready-to-show', () => {
+    TRTCWindow.show();
+  });
 
   TRTCWindow.on('closed', () => {
     console.log('TRTCWindow Close');

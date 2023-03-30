@@ -2,7 +2,7 @@ import { app, protocol, BrowserWindow } from 'electron';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
 import * as path from 'path';
-
+import { defaultWindowConfig } from './window';
 import store from './datastore';
 import checkUpload from './checkUpload';
 import { IMSDKInit } from './IM-SDK';
@@ -13,28 +13,16 @@ global.store = store;
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
 console.log(
-  'process.env.ELECTRON_NODE_INTEGRATION',
-  process.env.ELECTRON_NODE_INTEGRATION,
+  'process.env.WEBPACK_DEV_SERVER_URL',
+  process.env.WEBPACK_DEV_SERVER_URL,
 );
 
 async function createWindow() {
   const win = new BrowserWindow({
-    transparent: true,
-    frame: false,
-    hasShadow: false,
-    autoHideMenuBar: true,
-    show: false,
-    webPreferences: {
-      nodeIntegration: process.env.ELECTRON_NODE_INTEGRATION,
-      contextIsolation: !process.env.ELECTRON_NODE_INTEGRATION,
-      preload: process.env.WEBPACK_DEV_SERVER_URL
-        ? path.join(process.cwd(), './src/preload.js')
-        : path.join(__dirname, 'preload.js'),
-    },
+    ...defaultWindowConfig,
     icon: './icons/icon.ico',
     width: 1440,
     height: 1080,
-    center: true,
   });
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {

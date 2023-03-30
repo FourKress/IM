@@ -17,11 +17,11 @@
         <LsIcon
           render-svg
           icon="a-icon_sp2x"
-          @click="handleStartVideo"
+          @click="handleStartTrtc(isVideo)"
         ></LsIcon>
       </div>
       <div class="btn">
-        <LsIcon render-svg icon="a-icon_yy2x"></LsIcon>
+        <LsIcon render-svg icon="a-icon_yy2x" @click="handleStartTrtc(isAudio)"></LsIcon>
       </div>
       <div class="btn">
         <el-dropdown trigger="click" @command="handleCommand">
@@ -75,6 +75,8 @@ export default {
   data() {
     return {
       IMHeaderMoreBtnKey,
+      isVideo: 100,
+      isAudio: 200
     };
   },
   computed: {
@@ -100,11 +102,11 @@ export default {
       });
     },
 
-    async handleStartVideo() {
+    async handleStartTrtc(msgType) {
       const msgData = [
         this.session.toUser, //消息接收方，为会话列表中的toUser
         this.session.toUserType, //消息接收方类型，为会话列表中的toUserType];
-        100,
+        msgType,
         {
           trtcType: 1000,
           roomId: 999,

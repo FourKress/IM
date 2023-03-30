@@ -57,7 +57,7 @@
 <script>
 import { mapGetters, mapActions } from 'vuex';
 import {
-  _throttle,
+  lodash,
   checkTimesInterval,
   baseMsgTypes,
   msgFormatMap,
@@ -144,7 +144,10 @@ export default {
   },
   async mounted() {
     // this.initData();
-    this.throttleGetMessageList = _throttle(this.getMessageList);
+    this.throttleGetMessageList = lodash.throttle(this.getMessageList, 20, {
+      leading: true,
+      trailing: false,
+    });
   },
   methods: {
     ...mapActions('IMStore', ['setRefreshMsg']),

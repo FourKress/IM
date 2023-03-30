@@ -9,14 +9,14 @@
           trigger="manual"
         >
           <div class="emoji-panel">
-                <span
-                  class="emoji"
-                  v-for="emoji in emojiList"
-                  :key="emoji"
-                  @click="getEmoji(emoji)"
-                >
-                  {{ emoji }}
-                </span>
+            <span
+              class="emoji"
+              v-for="emoji in emojiList"
+              :key="emoji"
+              @click="getEmoji(emoji)"
+            >
+              {{ emoji }}
+            </span>
           </div>
           <div
             slot="reference"
@@ -36,18 +36,13 @@
         </div>
 
         <div class="right">
-          <div
+          <span
             class="send-btn"
             :class="!message && 'disabled'"
             @click="sendMsg"
           >
-            <LsIcon
-              render-svg
-              width="18"
-              height="18"
-              :icon="message ? 'xx_srk_fs_nor' : 'xx_srk_fs_dis'"
-            ></LsIcon>
-          </div>
+            发送
+          </span>
         </div>
       </div>
       <div
@@ -131,7 +126,7 @@ export default {
     this.$nextTick(() => {
       this.$refs.msgInput.focus();
       this.windowRange = window.getSelection().getRangeAt(0);
-    })
+    });
 
     document.addEventListener('click', this.handleGlobalClick);
     document.querySelector('.input-textarea').addEventListener('paste', (e) => {
@@ -542,21 +537,25 @@ export default {
       }
 
       .right {
-        height: 21px;
-        border-left: 1px solid $split-line-color;
-        display: flex;
-        align-items: center;
+        flex: 1;
+        text-align: right;
 
         .send-btn {
-          width: 18px;
-          height: 18px;
+          width: 64px;
+          height: 28px;
+          line-height: 28px;
+          text-align: center;
+          font-size: 12px;
+          color: $bg-white-color;
+          background: $primary-color;
+          border-radius: 4px;
           cursor: pointer;
-          margin-left: 17px;
-          transform-origin: center;
-          transform: scale(1.2);
+          display: inline-block;
+          margin-right: 14px;
 
           &.disabled {
             cursor: not-allowed;
+            background: #87a1cd;
           }
         }
       }

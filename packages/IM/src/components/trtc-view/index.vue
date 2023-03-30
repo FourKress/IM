@@ -1,6 +1,10 @@
 <template>
   <div class="trtc-view">
-    <img class="bg" :src="LsAssets.trtcBgMobile" alt="" />
+    <img
+      class="bg"
+      :src="isPc ? LsAssets.trtcBgPc : LsAssets.trtcBgMobile"
+      alt=""
+    />
 
     <div class="top">
       <span class="btn" @click="handleWindowChange(isMin)">
@@ -22,38 +26,100 @@
         </span>
       </div>
     </div>
-    <div v-if="isBeInvited && !isEnterRoom" class="btn-list">
-      <span class="voice" @click="handleVoice">语音</span>
-      <span class="resolve" @click="handleResolve">接听</span>
-      <span class="reject" @click="handleReject">拒绝</span>
-    </div>
-    <div v-if="!isBeInvited && !isEnterRoom" class="btn-list">
-      <span class="reject" @click="handleVoice">{{ callType }} ls-icon-icon_zhuanyuyin </span>
-      <span class="resolve" @click="handleCancel">
-        <LsIcon icon="ls-icon-icon_boda_guaduan" render-svg></LsIcon>
-      </span>
-      <span class="voice" @click="handleMicrophone">麦克风
 
-      ls-icon-icon_maikefeng_dakai
-      </span>
+    <div class="opt-panel" v-if="optPanelVisible">
+      <!--  接听方未进入房间  -->
+      <div v-if="isBeInvited && !isEnterRoom" class="btn-list">
+        <OptBtn
+          tooltip="接听"
+          icon="ls-icon-icon_jieting"
+          className="resolve mid"
+          @action="handleResolve"
+        />
+        <OptBtn
+          tooltip="挂断"
+          icon="ls-icon-icon_boda_guaduan"
+          className="reject"
+          @action="handleReject"
+        />
+      </div>
+      <!--  拨打方未进入房间  -->
+      <div v-if="!isBeInvited && !isEnterRoom" class="btn-list">
+        <OptBtn
+          tooltip="挂断"
+          icon="ls-icon-icon_boda_guaduan"
+          className="reject mid"
+          @action="handleCancel"
+        />
+      </div>
+
+      <!--  进入房间  -->
+      <div v-if="isEnterRoom" class="btn-list">
+        <OptBtn
+          v-if="isVideoCall"
+          :tooltip="`摄像头已${disCamStatus ? '关' : '开'}`"
+          :className="disCamStatus ? 'disabled' : ''"
+          :icon="`${
+            disCamStatus ? 'icon_sheixnagtou_guanji' : 'icon_shexiangtou_dakai'
+          }`"
+          @action="handleCamera"
+        />
+
+        <OptBtn
+          tooltip="挂断"
+          icon="ls-icon-icon_boda_guaduan"
+          className="reject mid"
+          @action="handleCallEnd"
+        />
+
+        <OptBtn
+          :tooltip="microphoneTooltip"
+          :className="microphoneClass"
+          :icon="microphoneIcon"
+          @action="handleMicrophone"
+        />
+
+        <OptBtn
+          :tooltip="`扬声器已${disSpeStatus ? '关' : '开'}`"
+          :className="disSpeStatus ? 'disabled right-btn' : 'right-btn'"
+          :icon="`${
+            disSpeStatus ? 'icon_yangshengqi_guanbi' : 'icon_yangshengqi_dakai'
+          }`"
+          @action="handleSpeaker"
+        />
+      </div>
     </div>
-    <div v-if="isEnterRoom" class="btn-list">
-      <span class="reject" @click="handleVoice">{{ callType }}</span>
-      <span class="resolve" @click="handleCamera">摄像头</span>
-      <span class="voice" @click="handleCallEnd">挂断</span>
-      <span class="voice" @click="handleMicrophone">麦克风</span>
-      <span class="resolve" @click="handleSpeaker">扬声器</span>
+
+    <div
+      class="local-preview"
+      :class="isPc && 'pc'"
+      v-if="isEnterRoom"
+      ref="localTrtcContainer"
+    >
+      <div class="bg-wrap">
+        <img
+          class="bg"
+          :src="isPc ? LsAssets.trtcMePc : LsAssets.trtcBgMobile"
+          alt=""
+        />
+        <img class="avatar" :src="trtcSession.avatar" alt="" />
+      </div>
     </div>
-    <div class="local-preview" ref="localTrtcContainer"></div>
     <div class="remote-preview" ref="remoteTrtcContainer"></div>
+
+    <div class="tips-wrap" v-if="tipsInfo.visible" :class="tipsInfo.className">
+      {{tipsInfo.text}}
+    </div>
   </div>
 </template>
 
 <script>
 import { LsIcon, LsAssets } from '@lanshu/components';
+import { lodash } from '@lanshu/utils';
 import { renderProcess } from '@lanshu/render-process';
 import { IMCreateMsg, IMSDKMessageProvider, IMSendMessage } from '../../IM-SDK';
 import trtcCloudInstance from '../../TRTC-SDK';
+import OptBtn from './opt-btn.vue';
 
 // {
 //   1000: '发起TRTC',
@@ -70,10 +136,22 @@ export default {
   name: 'Trtc-View',
   components: {
     LsIcon,
+    OptBtn,
   },
   computed: {
     callType() {
-      return this.isVoice ? '语音' : '视频';
+      return this.isVideoCall ? '视频' : '语音';
+    },
+    microphoneTooltip() {
+      return `麦克风已${this.disMicStatus ? '关' : '开'}`;
+    },
+    microphoneClass() {
+      return this.disMicStatus ? 'disabled' : '';
+    },
+    microphoneIcon() {
+      return `${
+        this.disMicStatus ? 'icon_maikefeng_guanbi' : 'icon_maikefeng_dakai'
+      }`;
     },
   },
   data() {
@@ -92,13 +170,17 @@ export default {
       timer: null,
       countdown: 10,
       isEnterRoom: false,
-      isVoice: false,
+      isVideoCall: false,
       disMicStatus: false,
       disSpeStatus: false,
       disCamStatus: false,
       localTrtcContainer: null,
       remoteTrtcContainer: null,
       trtcCloud: null,
+      isPc: false,
+      debounceOptPanelVisible: null,
+      optPanelVisible: true,
+      tipsInfo: {},
     };
   },
   created() {
@@ -106,34 +188,27 @@ export default {
   },
 
   async mounted() {
+    this.debounceOptPanelVisible = lodash.debounce(
+      this.changeOptPanelVisible,
+      3000,
+    );
+
     renderProcess.TRTCListener((event, message) => {
       console.log(message);
-      this.stopTime();
-      const {
-        data: { trtcType },
-      } = message;
-      switch (true) {
-        case trtcType === 1001:
-          this.handleEnterRoom();
-          break;
-        case [1002, 1004, 1006].includes(trtcType):
-          this.handleWindowChange('close');
-          break;
-        case trtcType === 1007:
-          this.handleVoice(true);
-          break;
-        default:
-          break;
-      }
-    });
-
-    this.$nextTick(() => {
-      this.localTrtcContainer = this.$refs.localTrtcContainer;
-      this.remoteTrtcContainer = this.$refs.remoteTrtcContainer;
-
-      console.log(this.trtcCloud.getCameraDevicesList());
-      // this.trtcCloud.startLocalAudio();
-      // this.trtcCloud.startLocalPreview(this.localTrtcContainer);
+      // this.stopTime();
+      // const {
+      //   data: { trtcType },
+      // } = message;
+      // switch (true) {
+      //   case trtcType === 1001:
+      //     this.handleEnterRoom();
+      //     break;
+      //   case [1002, 1004, 1006].includes(trtcType):
+      //     this.handleWindowChange('close');
+      //     break;
+      //   default:
+      //     break;
+      // }
     });
 
     const userInfo = await renderProcess.getStore('trtcUserInfo');
@@ -146,7 +221,10 @@ export default {
       toUserType,
       fromUser = '',
       data: { roomId },
+      msgType,
     } = trtcMsg;
+
+    console.log(msgType);
 
     let remoteUserId;
 
@@ -163,12 +241,47 @@ export default {
     this.userInfo = userInfo;
     this.trtcSession = trtcSession;
     this.remoteUserId = remoteUserId;
+    this.msgType = msgType;
+    this.isVideoCall = this.msgType === 100;
+
+    this.$nextTick(() => {
+      this.localTrtcContainer = this.$refs.localTrtcContainer;
+      this.remoteTrtcContainer = this.$refs.remoteTrtcContainer;
+
+      console.log(this.trtcCloud.getCameraDevicesList());
+
+      this.trtcCloud.startLocalAudio();
+      if (this.isVideoCall) {
+        this.trtcCloud.startLocalPreview(this.remoteTrtcContainer);
+      }
+
+      document
+        .querySelector('.trtc-view')
+        .addEventListener('mousemove', this.handleMouseMove);
+    });
 
     // this.startTime();
   },
   methods: {
+    handleMouseMove() {
+      if (!this.optPanelVisible) {
+        this.optPanelVisible = true;
+      }
+      this.debounceOptPanelVisible();
+    },
+    changeOptPanelVisible() {
+      if (this.isEnterRoom) {
+        this.optPanelVisible = false;
+      }
+    },
+
     async handleWindowChange(type, trtcType) {
       console.log(type);
+      this.tipsInfo = {
+        text: '已挂断',
+        visible: true,
+        className: 'waring'
+      }
       if (type === 'close') {
         this.trtcCloud.stopLocalPreview();
         this.trtcCloud.stopLocalAudio();
@@ -190,12 +303,15 @@ export default {
         }
       }
       console.log(type);
-      renderProcess.changeWindow(type, 'trtc');
+
+      setTimeout(() => {
+        renderProcess.changeWindow(type, 'trtc');
+      }, 3000)
     },
 
     handleEnterRoom() {
       this.trtcCloud.startLocalAudio();
-      if (!this.isVoice) {
+      if (this.isVideoCall) {
         this.trtcCloud.startLocalPreview(this.localTrtcContainer);
       }
 
@@ -205,13 +321,11 @@ export default {
             userId: this.userInfo.userId,
             roomId: this.roomId,
           },
-          'video',
+          this.isVideoCall ? 'audio' : 'video',
         )
         .then(() => {
           this.trtcCloud.muteRemoteAudio(this.remoteUserId, false);
-          if (this.isVoice) {
-            this.disCamStatus = true;
-          } else {
+          if (this.isVideoCall) {
             this.trtcCloud.startRemoteView(
               this.remoteUserId,
               this.remoteTrtcContainer,
@@ -264,26 +378,6 @@ export default {
       await this.handleSendIMMsg(1006);
     },
 
-    async handleVoice(isEnd = false) {
-      this.isVoice = !this.isVoice;
-      if (this.isVoice) {
-        this.trtcCloud.stopLocalPreview();
-        if (this.isEnterRoom) {
-          this.trtcCloud.stopRemoteView(this.remoteUserId);
-        }
-      } else {
-        this.trtcCloud.startLocalPreview(this.localTrtcContainer);
-        if (this.isEnterRoom) {
-          this.trtcCloud.startRemoteView(
-            this.remoteUserId,
-            this.remoteTrtcContainer,
-          );
-        }
-      }
-      if (isEnd) return;
-      await this.handleSendIMMsg(1007);
-    },
-
     async handleMicrophone() {
       this.disMicStatus = !this.disMicStatus;
       this.trtcCloud.muteLocalAudio(this.disMicStatus);
@@ -295,9 +389,6 @@ export default {
     },
 
     async handleCamera() {
-      if (this.isVoice) {
-        return;
-      }
       this.disCamStatus = !this.disCamStatus;
       this.trtcCloud.muteLocalVideo(this.disCamStatus);
     },
@@ -321,6 +412,9 @@ export default {
       this.timer = null;
       this.countdown = 10;
     },
+  },
+  destroyed() {
+    document.querySelector('.trtc-view').removeEventListener('mousemove', this.handleMouseMove);
   },
 };
 </script>
@@ -371,7 +465,7 @@ export default {
     left: 20px;
     height: 60px;
     width: 100%;
-
+    z-index: 4;
     display: flex;
     justify-content: flex-start;
     align-items: center;
@@ -403,28 +497,80 @@ export default {
     }
   }
 
-  .btn-list {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  .opt-panel {
     position: absolute;
     bottom: 20px;
     left: 50%;
     transform: translateX(-50%);
-
-    min-width: 230px;
+    max-width: 320px;
     height: 40px;
+    padding: 0 24px;
+    z-index: 4;
     background: rgba(51, 51, 51, 0.75);
     border-radius: 6px;
+  }
 
-    color: #fff;
+  .btn-list {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: $bg-white-color;
 
-    .min {
+    .btn {
+      cursor: pointer;
       width: 34px;
       height: 34px;
-      margin: 0 40px;
-      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
       overflow: hidden;
+      text-align: center;
+      border-radius: 6px;
+      background: transparent;
+      font-size: 18px;
+
+      &.disabled {
+        color: $tips-text-color;
+      }
+
+      &.left-btn {
+        margin-right: 20px;
+      }
+
+      &.right-btn {
+        margin-left: 20px;
+      }
+
+      &.reject {
+        color: #ff3b30;
+      }
+
+      &.mid {
+        margin: 0 31px;
+        border-radius: 50%;
+        color: $bg-white-color;
+
+        &.reject {
+          background: #ff3b30;
+        }
+
+        &.resolve {
+          background: #4cd575;
+        }
+      }
+
+      ::v-deep .ls-icon-wrap {
+        transform-origin: center;
+        transform: scale(1.2);
+      }
+
+      &:not(.mid) {
+        &:hover {
+          background: $main-text-color;
+        }
+      }
     }
   }
 
@@ -437,10 +583,63 @@ export default {
     border-radius: 6px;
     z-index: 9;
     overflow: hidden;
+
+    &.pc {
+      width: 146px;
+      height: 82px;
+    }
+
+    .bg-wrap {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      .avatar {
+        display: block;
+        width: 46px;
+        height: 46px;
+        border-radius: 6px;
+      }
+
+      .bg {
+        position: absolute;
+        left: 0;
+        top: 0;
+        z-index: -1;
+      }
+    }
   }
 
   .remote-preview {
     height: 100%;
+  }
+
+  .tips-wrap {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    height: 36px;
+    line-height: 36px;
+    border-radius: 4px;
+    font-size: 12px;
+    padding: 0 20px;
+    box-sizing: border-box;
+    border: 1px solid transparent;
+
+    &.waring {
+      background: #FFF4F4;
+      border-color: #FF3B30;
+      color: #FF3B30;
+    }
+
+    &.info {
+      background: #BCC3CF;
+      color: $main-text-color;
+      border-color: transparent;
+    }
   }
 }
 </style>
