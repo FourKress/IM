@@ -8,13 +8,13 @@
 
     <div class="top">
       <span class="btn" @click="handleWindowChange(isMin)">
-        <LsIcon icon="navi_zxh_icon" width="14" height="14" render-svg></LsIcon>
+        <LsIcon icon="ls-icon-icon_zuixiaohua" size="14"></LsIcon>
       </span>
       <span class="btn" @click="handleWindowChange(isMax)">
-        <LsIcon icon="navi_sx_icon" width="14" height="14" render-svg></LsIcon>
+        <LsIcon icon="ls-icon-icon_suoxiao" size="14"></LsIcon>
       </span>
       <span class="btn" @click="handleWindowChange(isClose)">
-        <LsIcon icon="navi_gb_icon" width="14" height="14" render-svg></LsIcon>
+        <LsIcon icon="ls-icon-icon_guanbi" size="14"></LsIcon>
       </span>
     </div>
     <div class="user-panel" v-if="trtcSession.userId && !isEnterRoom">
@@ -29,26 +29,28 @@
 
     <div class="opt-panel" v-if="optPanelVisible">
       <!--  接听方未进入房间  -->
-      <div v-if="isBeInvited && !isEnterRoom" class="btn-list">
+      <div v-if="isBeInvited && !isEnterRoom" class="btn-list-await">
         <OptBtn
           tooltip="接听"
-          icon="ls-icon-icon_jieting"
-          className="resolve mid"
+          :icon="`${
+            isVideoCall ? 'ls-icon-icon_jieting' : 'ls-icon-icon_zhuanyuyin'
+          }`"
+          className="resolve"
           @action="handleResolve"
         />
         <OptBtn
           tooltip="挂断"
-          icon="ls-icon-icon_boda_guaduan"
+          icon="ls-icon-icon_guaduan"
           className="reject"
           @action="handleReject"
         />
       </div>
       <!--  拨打方未进入房间  -->
-      <div v-if="!isBeInvited && !isEnterRoom" class="btn-list">
+      <div v-if="!isBeInvited && !isEnterRoom" class="btn-list-await">
         <OptBtn
           tooltip="挂断"
-          icon="ls-icon-icon_boda_guaduan"
-          className="reject mid"
+          icon="ls-icon-icon_guaduan"
+          className="reject"
           @action="handleCancel"
         />
       </div>
@@ -57,8 +59,8 @@
       <div v-if="isEnterRoom" class="btn-list">
         <OptBtn
           v-if="isVideoCall"
-          :tooltip="`摄像头已${disCamStatus ? '关' : '开'}`"
-          :className="disCamStatus ? 'disabled' : ''"
+          :tooltip="getToolTipLabel('摄像头', disSpeStatus)"
+          :className="getClassName(disCamStatus)"
           :icon="`${
             disCamStatus ? 'icon_sheixnagtou_guanji' : 'icon_shexiangtou_dakai'
           }`"
@@ -66,26 +68,26 @@
         />
 
         <OptBtn
-          tooltip="挂断"
-          icon="ls-icon-icon_boda_guaduan"
-          className="reject mid"
-          @action="handleCallEnd"
-        />
-
-        <OptBtn
-          :tooltip="microphoneTooltip"
-          :className="microphoneClass"
+          :tooltip="getToolTipLabel('麦克风', disSpeStatus)"
+          :className="getClassName(disMicStatus)"
           :icon="microphoneIcon"
           @action="handleMicrophone"
         />
 
         <OptBtn
-          :tooltip="`扬声器已${disSpeStatus ? '关' : '开'}`"
-          :className="disSpeStatus ? 'disabled right-btn' : 'right-btn'"
+          :tooltip="getToolTipLabel('扬声器', disSpeStatus)"
+          :className="getClassName(disSpeStatus)"
           :icon="`${
             disSpeStatus ? 'icon_yangshengqi_guanbi' : 'icon_yangshengqi_dakai'
           }`"
           @action="handleSpeaker"
+        />
+
+        <OptBtn
+          tooltip="挂断"
+          icon="ls-icon-icon_guaduan"
+          className="reject"
+          @action="handleCallEnd"
         />
       </div>
     </div>
@@ -108,7 +110,7 @@
     <div class="remote-preview" ref="remoteTrtcContainer"></div>
 
     <div class="tips-wrap" v-if="tipsInfo.visible" :class="tipsInfo.className">
-      {{tipsInfo.text}}
+      {{ tipsInfo.text }}
     </div>
   </div>
 </template>
@@ -145,9 +147,6 @@ export default {
     microphoneTooltip() {
       return `麦克风已${this.disMicStatus ? '关' : '开'}`;
     },
-    microphoneClass() {
-      return this.disMicStatus ? 'disabled' : '';
-    },
     microphoneIcon() {
       return `${
         this.disMicStatus ? 'icon_maikefeng_guanbi' : 'icon_maikefeng_dakai'
@@ -181,6 +180,7 @@ export default {
       debounceOptPanelVisible: null,
       optPanelVisible: true,
       tipsInfo: {},
+      isFull: false,
     };
   },
   created() {
@@ -263,11 +263,18 @@ export default {
     // this.startTime();
   },
   methods: {
+    getClassName(status) {
+      return status ? 'disabled' : '';
+    },
+    getToolTipLabel(text, status) {
+      return `${text}已${status ? '关' : '开'}`;
+    },
+
     handleMouseMove() {
       if (!this.optPanelVisible) {
         this.optPanelVisible = true;
       }
-      this.debounceOptPanelVisible();
+      // this.debounceOptPanelVisible();
     },
     changeOptPanelVisible() {
       if (this.isEnterRoom) {
@@ -277,36 +284,41 @@ export default {
 
     async handleWindowChange(type, trtcType) {
       console.log(type);
+      if (type !== this.isClose) {
+        renderProcess.changeWindow(type, 'trtc');
+        return;
+      }
+
+      if (type === this.isMax) {
+        this.isFull = !this.isFull
+      }
+
       this.tipsInfo = {
         text: '已挂断',
         visible: true,
-        className: 'waring'
-      }
-      if (type === 'close') {
-        this.trtcCloud.stopLocalPreview();
-        this.trtcCloud.stopLocalAudio();
-        this.trtcCloud.stopAllRemoteView();
-        if (trtcType) {
-          await this.handleSendIMMsg(trtcType);
+        className: 'waring',
+      };
+      this.trtcCloud.stopLocalPreview();
+      this.trtcCloud.stopLocalAudio();
+      this.trtcCloud.stopAllRemoteView();
+      if (trtcType) {
+        await this.handleSendIMMsg(trtcType);
+      } else {
+        // 是否在房间
+        if (this.isEnterRoom) {
+          await this.handleExitRoom();
         } else {
-          // 是否在房间
-          if (this.isEnterRoom) {
-            await this.handleExitRoom();
+          // 是否是接听方
+          if (this.isBeInvited) {
+            await this.handleReject();
           } else {
-            // 是否是接听方
-            if (this.isBeInvited) {
-              await this.handleReject();
-            } else {
-              await this.handleCancel();
-            }
+            await this.handleCancel();
           }
         }
       }
-      console.log(type);
-
       setTimeout(() => {
         renderProcess.changeWindow(type, 'trtc');
-      }, 1000)
+      }, 1000);
     },
 
     handleEnterRoom() {
@@ -362,7 +374,7 @@ export default {
     },
 
     async handleReject() {
-      await this.handleWindowChange('close', 1002);
+      await this.handleWindowChange(this.isClose, 1002);
     },
 
     async handleResolve() {
@@ -371,7 +383,7 @@ export default {
     },
 
     async handleCancel() {
-      await this.handleWindowChange('close', 1005);
+      await this.handleWindowChange(this.isClose, 1005);
     },
 
     async handleCallEnd() {
@@ -399,7 +411,7 @@ export default {
         if (this.countdown <= 0) {
           this.stopTime();
           if (!this.isBeInvited) {
-            // this.handleWindowChange('close', 1004);
+            // this.handleWindowChange(this.isClose, 1004);
           }
         }
       }, 1000);
@@ -414,7 +426,9 @@ export default {
     },
   },
   destroyed() {
-    document.querySelector('.trtc-view').removeEventListener('mousemove', this.handleMouseMove);
+    document
+      .querySelector('.trtc-view')
+      .removeEventListener('mousemove', this.handleMouseMove);
   },
 };
 </script>
@@ -432,6 +446,8 @@ export default {
     left: 0;
     top: 0;
     z-index: -1;
+    border-radius: 16px;
+    overflow: hidden;
   }
 
   .top {
@@ -446,11 +462,11 @@ export default {
     display: flex;
     align-items: center;
     justify-content: flex-end;
+    color: $bg-white-color;
 
     -webkit-app-region: drag;
 
     .btn {
-      height: 14px;
       margin-left: 18px;
       border-radius: 50%;
       cursor: pointer;
@@ -499,29 +515,70 @@ export default {
 
   .opt-panel {
     position: absolute;
-    bottom: 20px;
+    bottom: 40px;
     left: 50%;
     transform: translateX(-50%);
     max-width: 320px;
     height: 40px;
-    padding: 0 24px;
     z-index: 4;
-    background: rgba(51, 51, 51, 0.75);
-    border-radius: 6px;
+  }
+
+  .btn-list-await {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .btn {
+      width: 56px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      color: $bg-white-color;
+      margin: 0 24px;
+      cursor: pointer;
+
+      &.reject {
+        background: #ff3b30;
+
+        &:hover {
+          background: #ff5e55;
+        }
+      }
+
+      &.resolve {
+        background: #4cd575;
+
+        &:hover {
+          background: #29bb55;
+        }
+      }
+    }
+
+    ::v-deep .ls-icon-wrap {
+      transform-origin: center;
+      transform: scale(1.8);
+    }
   }
 
   .btn-list {
-    width: 100%;
+    width: 320px;
     height: 100%;
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
     color: $bg-white-color;
+    background: rgba(51, 51, 51, 0.75);
+    border-radius: 6px;
+    padding: 0 34px;
+    box-sizing: border-box;
 
     .btn {
       cursor: pointer;
-      width: 34px;
-      height: 34px;
+      width: 32px;
+      height: 32px;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -544,20 +601,11 @@ export default {
       }
 
       &.reject {
-        color: #ff3b30;
-      }
-
-      &.mid {
-        margin: 0 31px;
         border-radius: 50%;
         color: $bg-white-color;
-
-        &.reject {
-          background: #ff3b30;
-        }
-
-        &.resolve {
-          background: #4cd575;
+        background: #ff3b30;
+        &:hover {
+          background: #ff5e55;
         }
       }
 
@@ -566,10 +614,8 @@ export default {
         transform: scale(1.2);
       }
 
-      &:not(.mid) {
-        &:hover {
-          background: $main-text-color;
-        }
+      &:hover {
+        background: $main-text-color;
       }
     }
   }
@@ -630,13 +676,13 @@ export default {
     border: 1px solid transparent;
 
     &.waring {
-      background: #FFF4F4;
-      border-color: #FF3B30;
-      color: #FF3B30;
+      background: #fff4f4;
+      border-color: #ff3b30;
+      color: #ff3b30;
     }
 
     &.info {
-      background: #BCC3CF;
+      background: #bcc3cf;
       color: $main-text-color;
       border-color: transparent;
     }

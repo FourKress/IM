@@ -1,5 +1,6 @@
 import { BrowserWindow } from 'electron';
 import path from 'path';
+import { isMac } from './utils';
 
 const initLoginWindow = () => {
   const mainWindow = global.mainWindow;
@@ -21,12 +22,16 @@ const initMainWindow = () => {
 
 const delayShowWindow = (initFn, delay) => {
   const mainWindow = global.mainWindow;
-  // mainWindow.setOpacity(0);
+  if (isMac) {
+    mainWindow.setOpacity(0);
+  }
   initFn();
   // 在最小化之后修改size会无效，所以要在最小化之前修改大小
   mainWindow.minimize();
   setTimeout(() => {
-    // mainWindow.setOpacity(1);
+    if (isMac) {
+      mainWindow.setOpacity(1);
+    }
     mainWindow.show();
     mainWindow.focus();
   }, delay);
@@ -71,6 +76,7 @@ export const defaultWindowConfig = {
   webPreferences: {
     nodeIntegration: true,
     contextIsolation: false,
+    backgroundThrottling: false,
     preload: process.env.WEBPACK_DEV_SERVER_URL
       ? path.join(process.cwd(), './src/preload.js')
       : path.join(__dirname, 'preload.js'),
@@ -88,13 +94,15 @@ export const openTRTCWindow = async () => {
     // minHeight: 640,
   });
 
+  TRTCWindow.setAspectRatio(16 / 9);
+
   const isDevelopment = process.env.NODE_ENV !== 'production';
   const loadURL = isDevelopment
     ? `${process.env.WEBPACK_DEV_SERVER_URL}#/TRTC`
     : 'app://./index.html/#/TRTC';
 
   if (isDevelopment) {
-    // if (!process.env.IS_TEST) TRTCWindow.webContents.openDevTools();
+    if (!process.env.IS_TEST) TRTCWindow.webContents.openDevTools();
   }
   await TRTCWindow.loadURL(loadURL);
 

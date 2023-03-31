@@ -73,6 +73,10 @@ const initIpcMain = () => {
     });
 
     ipcMain.on('openTRTCWindow', async (_event) => await openTRTCWindow());
+
+    ipcMain.handle('hasWindow', (_event, win) => {
+      return !!global[win];
+    });
   });
 };
 

@@ -40,9 +40,16 @@ export default {
     };
   },
   methods: {
-    handleWindowChange(type) {
+    async handleWindowChange(type) {
       if (type === this.isMax && this.isLogin) return;
       // isMain => 主窗口标识
+      if (type === this.isClose) {
+        const hasWindow = await renderProcess.hasWindow('TRTCWindow');
+        if (hasWindow) {
+          this.$message.warning('请先结束当前通话');
+          return;
+        }
+      }
       renderProcess.changeWindow(type, windowType.isMain);
     },
   },

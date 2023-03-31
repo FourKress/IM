@@ -1,7 +1,7 @@
 import { app, protocol, BrowserWindow } from 'electron';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
-import * as path from 'path';
+
 import { defaultWindowConfig } from './window';
 import store from './datastore';
 import checkUpload from './checkUpload';
@@ -44,6 +44,9 @@ async function createWindow() {
     // 每次启动程序，就检查更新
     checkUpload();
   });
+
+  win.on('focus', () => win.flashFrame(false));
+  win.flashFrame(true);
 }
 
 const initElectron = (appId) => {

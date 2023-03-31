@@ -105,6 +105,7 @@ module.exports = defineConfig({
           {
             provider: 'generic',
             channel: 'latest',
+            url: 'http://192.168.88.253:7654',
           },
         ],
       },
@@ -118,8 +119,4 @@ module.exports = defineConfig({
       },
     },
   },
-
-  // devServer: {
-  //   host: '127.0.0.1',
-  // },
 });

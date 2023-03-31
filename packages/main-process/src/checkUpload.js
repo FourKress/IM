@@ -7,7 +7,7 @@ const checkUpdate = async () => {
   autoUpdater.logger = electronLog;
   autoUpdater.logger.transports.file.level = 'info';
 
-  autoUpdater.setFeedURL('http://192.168.88.46:8080/');
+  autoUpdater.setFeedURL('http://192.168.88.253:7654');
 
   autoUpdater.autoInstallOnAppQuit = false;
   autoUpdater.autoDownload = false;

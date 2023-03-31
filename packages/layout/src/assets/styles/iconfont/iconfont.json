@@ -6,18 +6,46 @@
   "description": "IM、政务通用",
   "glyphs": [
     {
+      "icon_id": "34838750",
+      "name": "icon_duihuakuang_yuyin",
+      "font_class": "icon_duihuakuang_yuyin",
+      "unicode": "e713",
+      "unicode_decimal": 59155
+    },
+    {
+      "icon_id": "34812173",
+      "name": "icon_guanbi",
+      "font_class": "icon_guanbi",
+      "unicode": "e71e",
+      "unicode_decimal": 59166
+    },
+    {
+      "icon_id": "34812174",
+      "name": "icon_quanpin",
+      "font_class": "icon_quanpin",
+      "unicode": "e71f",
+      "unicode_decimal": 59167
+    },
+    {
+      "icon_id": "34812175",
+      "name": "icon_suoxiao",
+      "font_class": "icon_suoxiao",
+      "unicode": "e720",
+      "unicode_decimal": 59168
+    },
+    {
+      "icon_id": "34812176",
+      "name": "icon_zuixiaohua",
+      "font_class": "icon_zuixiaohua",
+      "unicode": "e721",
+      "unicode_decimal": 59169
+    },
+    {
       "icon_id": "34728027",
       "name": "icon_guaduan",
       "font_class": "icon_guaduan",
       "unicode": "e712",
       "unicode_decimal": 59154
-    },
-    {
-      "icon_id": "34728028",
-      "name": "icon_boda_guaduan",
-      "font_class": "icon_boda_guaduan",
-      "unicode": "e713",
-      "unicode_decimal": 59155
     },
     {
       "icon_id": "34728029",

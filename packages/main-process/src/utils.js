@@ -85,3 +85,5 @@ export const deleteFile = (path) => {
     });
   }
 };
+
+export const isMac = process.platform === 'darwin';

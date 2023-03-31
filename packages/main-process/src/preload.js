@@ -38,4 +38,5 @@ window.electronAPI = {
   IMSDKListener: (callback) => ipcRenderer.on('IMSDKListener', callback),
   openTRTCWindow: () => ipcRenderer.send('openTRTCWindow'),
   TRTCListener: (callback) => ipcRenderer.on('TRTCListener', callback),
+  hasWindow: (win) => ipcRenderer.invoke('hasWindow', win),
 };
