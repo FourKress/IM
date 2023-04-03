@@ -94,6 +94,12 @@ export const IMGroupMemberPanelType = {
   isDel: 'Del',
 };
 
+export const winActionType = {
+  isMin: 'min',
+  isMax: 'max',
+  isClose: 'close',
+};
+
 export const windowType = {
   isMain: 'main',
   isTrtc: 'trtc',

@@ -41,4 +41,6 @@ window.electronAPI = {
   TRTCListener: (callback) => ipcRenderer.on('TRTCListener', callback),
   hasWindow: (win) => ipcRenderer.invoke('hasWindow', win),
   mainProcessError: (callback) => ipcRenderer.on('mainProcessError', callback),
+  downloadProgress: (callback) => ipcRenderer.on('downloadProgress', callback),
+  checkForUpdates: () => ipcRenderer.send('checkForUpdates'),
 };

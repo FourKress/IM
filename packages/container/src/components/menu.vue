@@ -5,7 +5,7 @@
       <div
         class="menu-item"
         v-for="item in navList"
-        :key='item.path'
+        :key="item.path"
         :class="activePath === item.path && 'active'"
         @click="handleMenuSwitch(item.path)"
       >
@@ -22,23 +22,55 @@
         <span>{{ item.label }}</span>
       </div>
     </div>
+    <div class="update" v-if="updateVersion" @click="handleUpdate">
+      <img class="img" src="" alt="" />
+      <span class="label">新版本</span>
+    </div>
+
+    <LsCardDialog :visible.sync="visibleUpdate">
+      <div class="update-panel">
+        <div class="top">
+          <img class="img" :src="LsAssets.updateBgSmall" alt="" />
+        </div>
+        <div class="container">
+          <div class="title">离开大陆就大撒大撒但是</div>
+          <div class="text-wrap">
+            <div class="scroll-view" v-html="richText"></div>
+          </div>
+        </div>
+        <div class="footer">
+          <span class="left btn">更新日志</span>
+          <span class="right btn" @click="handleStartUpdate">立即更新</span>
+        </div>
+      </div>
+    </LsCardDialog>
   </div>
 </template>
 
 <script>
 import BaseRoutes from '../router';
-import { LsIcon } from '@lanshu/components';
+import { LsIcon, LsCardDialog, LsAssets } from '@lanshu/components';
+import { renderProcess } from '@lanshu/render-process';
+import { mapGetters, mapActions } from 'vuex';
 
 export default {
   name: 'MainMenu',
   components: {
     LsIcon,
+    LsCardDialog,
   },
   data() {
     return {
       activePath: '/',
       navList: [],
+      visibleUpdate: false,
+      LsAssets,
+      richText:
+        'dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>',
     };
+  },
+  computed: {
+    ...mapGetters('globalStore', ['updateVersion'])
   },
   watch: {
     $route(val) {
@@ -62,10 +94,22 @@ export default {
       .concat(pluginMenu);
   },
   methods: {
+    ...mapActions('globalStore', ['setStartDownload']),
+
     handleMenuSwitch(path) {
       if (this.activePath === path) return;
       this.activePath = path;
       this.$router.push(path);
+    },
+
+    handleUpdate() {
+      this.visibleUpdate = true;
+    },
+
+    handleStartUpdate() {
+      this.visibleUpdate = false;
+      this.setStartDownload(true);
+      renderProcess.checkForUpdates();
     },
   },
 };
@@ -90,6 +134,7 @@ export default {
   }
 
   .menu-panel {
+    flex: 1;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -132,6 +177,111 @@ export default {
           height: 20px;
           margin-bottom: 4px;
         }
+      }
+    }
+  }
+
+  .update {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: 12px;
+    color: $main-text-color;
+    cursor: pointer;
+    margin: 8px 0 20px 0;
+
+    .img {
+      display: block;
+      width: 28px;
+      height: 28px;
+    }
+
+    .label {
+      margin-top: 6px;
+    }
+  }
+}
+
+.update-panel {
+  width: 320px;
+  height: 424px;
+  box-sizing: border-box;
+  position: fixed;
+  bottom: 24px;
+  left: 82px;
+  z-index: 8;
+  display: flex;
+  flex-direction: column;
+  background: $bg-white-color;
+  border-radius: 12px;
+  overflow: hidden;
+
+  .top {
+    width: 100%;
+    height: 78px;
+
+    .img {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  .container {
+    flex: 1;
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+
+    .title {
+      padding: 16px;
+      box-sizing: border-box;
+      font-size: 16px;
+      color: $main-text-color;
+      font-weight: bold;
+    }
+
+    .text-wrap {
+      flex: 1;
+      overflow-y: auto;
+      transform: translate3d(0, 0, 0);
+      padding: 0 16px;
+
+      .scroll-view {
+      }
+    }
+  }
+
+  .footer {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 10px 0 16px 0;
+
+    .btn {
+      width: 120px;
+      height: 34px;
+      border-radius: 6px;
+      background: $bg-white-color;
+      text-align: center;
+      line-height: 34px;
+      font-size: 14px;
+      color: $bg-white-color;
+      cursor: pointer;
+
+      &.right {
+        background: $primary-color;
+      }
+
+      &.left {
+        color: $primary-color;
+        text-align: left;
       }
     }
   }

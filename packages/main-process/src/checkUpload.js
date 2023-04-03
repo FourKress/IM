@@ -13,36 +13,40 @@ const checkUpdate = async () => {
   autoUpdater.autoDownload = false;
   autoUpdater.allowDowngrade = true;
 
-  // 检测更新
-  await autoUpdater.checkForUpdates();
-
   // 监听error事件
   autoUpdater.on('error', (err) => {
     console.log(err);
+    electronLog.info('更新时error');
+    electronLog.info(err);
+    global.mainWindow.webContents.send('mainProcessError', err);
   });
 
   // 监听update-available事件，发现有新版本时触发
   autoUpdater.on('update-available', () => {
-    console.log('found new version');
+    autoUpdater.downloadUpdate();
   });
 
   // 当没有可用更新的时候触发。
   autoUpdater.on('update-not-available', () => {
-    console.log('update-not-available');
+    electronLog.info('当前没有可用更新');
+    global.mainWindow.webContents.send('mainProcessError', '当前没有可用更新');
   });
 
-  // 默认会自动下载新版本，如果不想自动下载，设置autoUpdater.autoDownload = false
+  autoUpdater.on('download-progress', (res) => {
+    electronLog.info(res);
+    global.mainWindow.webContents.send('downloadProgress', res);
+  });
 
   // 监听update-downloaded事件，新版本下载完成时触发
   autoUpdater.on('update-downloaded', () => {
-    global.mainWindow.webContents.send('updateClient', 'updateClient');
-  });
-
-  ipcMain.on('startUpdate', (_event, value) => {
+    electronLog.info('新版本下载完成，安装更新');
     autoUpdater.quitAndInstall();
   });
 
-  ipcMain.on('checkForUpdates', async (_event, value) => {
+  // 触发检查更新并且下载
+  ipcMain.on('checkForUpdates', async (_event) => {
+    console.log('检查更新');
+    electronLog.info('检查更新');
     await autoUpdater.checkForUpdates();
   });
 };

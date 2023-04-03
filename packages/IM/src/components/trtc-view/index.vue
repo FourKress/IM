@@ -7,13 +7,13 @@
     />
 
     <div class="top">
-      <span class="btn" @click="handleWindowChange(isMin)">
+      <span class="btn" @click="handleWindowChange(winActionType.isMin)">
         <LsIcon icon="ls-icon-icon_zuixiaohua" size="14"></LsIcon>
       </span>
-      <span class="btn" @click="handleWindowChange(isMax)">
+      <span class="btn" @click="handleWindowChange(winActionType.isMax)">
         <LsIcon icon="ls-icon-icon_suoxiao" size="14"></LsIcon>
       </span>
-      <span class="btn" @click="handleWindowChange(isClose)">
+      <span class="btn" @click="handleWindowChange(winActionType.isClose)">
         <LsIcon icon="ls-icon-icon_guanbi" size="14"></LsIcon>
       </span>
     </div>
@@ -122,6 +122,7 @@ import { renderProcess } from '@lanshu/render-process';
 import { IMCreateMsg, IMSDKMessageProvider, IMSendMessage } from '../../IM-SDK';
 import trtcCloudInstance from '../../TRTC-SDK';
 import OptBtn from './opt-btn.vue';
+import { winActionType, windowType } from '@lanshu/utils';
 
 // {
 //   1000: '发起TRTC',
@@ -156,9 +157,8 @@ export default {
   data() {
     return {
       LsAssets,
-      isMin: 'min',
-      isMax: 'max',
-      isClose: 'close',
+      winActionType,
+      windowType,
       isBeInvited: false,
       toUser: '',
       toUserType: '',
@@ -284,13 +284,13 @@ export default {
 
     async handleWindowChange(type, trtcType) {
       console.log(type);
-      if (type !== this.isClose) {
-        renderProcess.changeWindow(type, 'trtc');
+      if (type !== this.winActionType.isClose) {
+        renderProcess.changeWindow(type, this.windowType.isTrtc);
         return;
       }
 
-      if (type === this.isMax) {
-        this.isFull = !this.isFull
+      if (type === this.winActionType.isMax) {
+        this.isFull = !this.isFull;
       }
 
       this.tipsInfo = {
@@ -317,7 +317,7 @@ export default {
         }
       }
       setTimeout(() => {
-        renderProcess.changeWindow(type, 'trtc');
+        renderProcess.changeWindow(type, this.windowType.isTrtc);
       }, 1000);
     },
 
@@ -374,7 +374,7 @@ export default {
     },
 
     async handleReject() {
-      await this.handleWindowChange(this.isClose, 1002);
+      await this.handleWindowChange(this.winActionType.isClose, 1002);
     },
 
     async handleResolve() {
@@ -383,7 +383,7 @@ export default {
     },
 
     async handleCancel() {
-      await this.handleWindowChange(this.isClose, 1005);
+      await this.handleWindowChange(this.winActionType.isClose, 1005);
     },
 
     async handleCallEnd() {
@@ -411,7 +411,7 @@ export default {
         if (this.countdown <= 0) {
           this.stopTime();
           if (!this.isBeInvited) {
-            // this.handleWindowChange(this.isClose, 1004);
+            // this.handleWindowChange(this.winActionType.isClose, 1004);
           }
         }
       }, 1000);

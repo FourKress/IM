@@ -6,12 +6,16 @@ const state = {
     type: '',
   },
   codeCountdown: 0,
+  updateVersion: '',
+  startDownload: false,
 };
 
 const getters = {
   userInfo: (state) => state.userInfo,
   userError: (state) => state.userError,
   codeCountdown: (state) => state.codeCountdown,
+  updateVersion: (state) => state.updateVersion,
+  startDownload: (state) => state.startDownload,
 };
 
 const mutations = {
@@ -31,6 +35,12 @@ const mutations = {
       }
     }, 1000);
   },
+  setUpdateVersion(data, value) {
+    data.updateVersion = value;
+  },
+  setStartDownload(data, value) {
+    data.startDownload = value;
+  },
 };
 
 const actions = {
@@ -42,6 +52,12 @@ const actions = {
   },
   setCodeCountdown({ commit }, value) {
     commit('setCodeCountdown', value);
+  },
+  setUpdateVersion({ commit }, value) {
+    commit('setUpdateVersion', value);
+  },
+  setStartDownload({ commit }, value) {
+    commit('setStartDownload', value);
   },
 };
 

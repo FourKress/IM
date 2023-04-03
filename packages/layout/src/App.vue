@@ -1,6 +1,10 @@
 <template>
   <div id="app">
     <MainLayout />
+
+    <LsCardDialog :visible.sync="visibleUpdate" :is-modal-close="false">
+      <LsUpdate :startDownload="startDownload" />
+    </LsCardDialog>
   </div>
 </template>
 
@@ -8,16 +12,32 @@
 import MainLayout from './components/layout';
 import { IMSDKCallBackEvents } from '@lanshu/im';
 import { renderProcess } from '@lanshu/render-process';
+import { LsUpdate, LsCardDialog } from '@lanshu/components';
+import { mapGetters } from 'vuex';
 
 export default {
   name: 'App',
   components: {
     MainLayout,
+    LsUpdate,
+    LsCardDialog,
   },
   data() {
     return {
       keys: [],
+      visibleUpdate: false,
     };
+  },
+  computed: {
+    ...mapGetters('globalStore', ['updateVersion', 'startDownload'])
+  },
+  watch: {
+    updateVersion() {
+      this.visibleUpdate = true;
+    },
+    startDownload() {
+      this.visibleUpdate = true;
+    }
   },
   created() {
     renderProcess.updateClient((event, value) => {
@@ -34,7 +54,7 @@ export default {
       IMSDKCallBackEvents[type](value);
     });
     renderProcess.mainProcessError((event, msg) => {
-      this.$message.warning(msg)
+      this.$message.warning(msg);
     });
   },
   mounted() {
