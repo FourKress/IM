@@ -87,6 +87,10 @@ module.exports = defineConfig({
               to: './resources',
               filter: ['**/*'],
             },
+            {
+              from: './icons',
+              to: './resources/icons',
+            },
           ],
         },
 

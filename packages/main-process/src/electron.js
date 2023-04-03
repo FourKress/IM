@@ -98,7 +98,7 @@ const initElectron = (appId) => {
           }
         }
 
-        // trayAction();
+        trayAction();
 
         await createWindow();
 
