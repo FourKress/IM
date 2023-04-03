@@ -36,7 +36,9 @@ window.electronAPI = {
   IMSDKIPC: (provider, event, ...data) =>
     ipcRenderer.invoke('IMSDKIPC', provider, event, data),
   IMSDKListener: (callback) => ipcRenderer.on('IMSDKListener', callback),
-  openTRTCWindow: () => ipcRenderer.send('openTRTCWindow'),
+  openTRTCWindow: (clientType) =>
+    ipcRenderer.send('openTRTCWindow', clientType),
   TRTCListener: (callback) => ipcRenderer.on('TRTCListener', callback),
   hasWindow: (win) => ipcRenderer.invoke('hasWindow', win),
+  mainProcessError: (callback) => ipcRenderer.on('mainProcessError', callback),
 };

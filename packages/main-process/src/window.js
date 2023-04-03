@@ -1,6 +1,6 @@
 import { BrowserWindow } from 'electron';
 import path from 'path';
-import { isMac } from './utils';
+import { isMac, clientType } from './utils';
 
 const initLoginWindow = () => {
   const mainWindow = global.mainWindow;
@@ -82,19 +82,39 @@ export const defaultWindowConfig = {
       : path.join(__dirname, 'preload.js'),
   },
   center: true,
+  icon: './icons/icon.ico',
 };
 
-export const openTRTCWindow = async () => {
-  const TRTCWindow = new BrowserWindow({
+export const openTRTCWindow = async (type = clientType.isPc) => {
+  const configMap = {
+    [clientType.isPc]: {
+      size: {
+        width: 640,
+        height: 360,
+        minWidth: 640,
+        minHeight: 360,
+      },
+      ratio: 16 / 9,
+    },
+    [clientType.isMobile]: {
+      size: {
+        width: 360,
+        height: 640,
+        minWidth: 360,
+        minHeight: 640,
+      },
+      ratio: 9 / 16,
+    },
+  };
+  const targetClient = configMap[type];
+  console.log(configMap, type, targetClient);
+  let TRTCWindow = new BrowserWindow({
     ...defaultWindowConfig,
-    parent: global.mainWindow,
-    width: 640,
-    height: 360,
-    // minWidth: 360,
-    // minHeight: 640,
+    ...targetClient.size,
+    alwaysOnTop: true,
   });
 
-  TRTCWindow.setAspectRatio(16 / 9);
+  TRTCWindow.setAspectRatio(targetClient.ratio);
 
   const isDevelopment = process.env.NODE_ENV !== 'production';
   const loadURL = isDevelopment
@@ -102,7 +122,7 @@ export const openTRTCWindow = async () => {
     : 'app://./index.html/#/TRTC';
 
   if (isDevelopment) {
-    if (!process.env.IS_TEST) TRTCWindow.webContents.openDevTools();
+    // if (!process.env.IS_TEST) TRTCWindow.webContents.openDevTools();
   }
   await TRTCWindow.loadURL(loadURL);
 
@@ -119,6 +139,7 @@ export const openTRTCWindow = async () => {
 
   TRTCWindow.on('closed', () => {
     console.log('TRTCWindow Close');
+    TRTCWindow = null;
     global.TRTCWindow = null;
     global.store.delete('trtcUserInfo');
     global.store.delete('trtcMsg');

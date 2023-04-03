@@ -22,7 +22,7 @@
   "dependencies": {
     "dayjs": "^1.11.6",
     "lodash": "^4.17.21",
-    "pinyin": "^3.0.0-alpha.5",
+    "pinyin": "2.11.2",
     "vue-router": "^3.6.5",
     "vuex": "^3.6.2"
   },

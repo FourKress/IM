@@ -2,6 +2,7 @@ import { app } from 'electron';
 import fs from 'fs';
 import electronLog from './log';
 import { openTRTCWindow } from './window';
+import { clientType } from './utils';
 
 const { LimMain, LogLevel } = require('lim-sdk-electron');
 
@@ -92,7 +93,7 @@ export const IMSDKInit = (appId) => {
             'trtcSession',
             convList.find((d) => d.sessId === message.sessId),
           );
-          await openTRTCWindow();
+          await openTRTCWindow(clientType.isPc);
         } else {
           global.TRTCWindow.webContents.send('TRTCListener', message);
         }

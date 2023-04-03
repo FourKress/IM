@@ -9,7 +9,7 @@ import {
 } from './window';
 import { unregisterHotKeyAll, initHotKeys, handleHotKey } from './hotKey';
 import { IMSDKEvent, IMSDK_Destroy } from './IM-SDK';
-import checkAndApplyDeviceAccessPrivilege from './checkAndApplyDeviceAccessPrivilege';
+import checkDevices from './checkDevices';
 
 const initIpcMain = () => {
   app.whenReady().then(async () => {
@@ -20,7 +20,7 @@ const initIpcMain = () => {
 
     showLoginWindow();
 
-    await checkAndApplyDeviceAccessPrivilege();
+    await checkDevices();
 
     // 初始化截图
     initScreenshots();
@@ -72,7 +72,10 @@ const initIpcMain = () => {
       await global.store.set(key, data);
     });
 
-    ipcMain.on('openTRTCWindow', async (_event) => await openTRTCWindow());
+    ipcMain.on(
+      'openTRTCWindow',
+      async (_event, clientType) => await openTRTCWindow(clientType),
+    );
 
     ipcMain.handle('hasWindow', (_event, win) => {
       return !!global[win];

@@ -115,3 +115,8 @@ export const trtcType = {
   isVideo: 100,
   isAudio: 200,
 };
+
+export const clientType = {
+  isPc: 'isPc',
+  isMobile: 'isMobile',
+};

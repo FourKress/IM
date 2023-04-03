@@ -274,7 +274,7 @@ export default {
       if (!this.optPanelVisible) {
         this.optPanelVisible = true;
       }
-      // this.debounceOptPanelVisible();
+      this.debounceOptPanelVisible();
     },
     changeOptPanelVisible() {
       if (this.isEnterRoom) {

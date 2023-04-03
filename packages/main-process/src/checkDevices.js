@@ -1,7 +1,7 @@
 // 检查并申请设备权限：麦克风、摄像头、屏幕录制
 import { systemPreferences } from 'electron';
 
-const checkAndApplyDeviceAccessPrivilege = async () => {
+const checkDevices = async () => {
   const cameraPrivilege = systemPreferences.getMediaAccessStatus('camera');
   console.log(
     `checkAndApplyDeviceAccessPrivilege before apply cameraPrivilege: ${cameraPrivilege}`,
@@ -24,4 +24,4 @@ const checkAndApplyDeviceAccessPrivilege = async () => {
   );
 };
 
-export default checkAndApplyDeviceAccessPrivilege;
+export default checkDevices;

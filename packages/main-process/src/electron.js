@@ -20,7 +20,6 @@ console.log(
 async function createWindow() {
   const win = new BrowserWindow({
     ...defaultWindowConfig,
-    icon: './icons/icon.ico',
     width: 1440,
     height: 1080,
   });
@@ -35,6 +34,15 @@ async function createWindow() {
 
   global.mainWindow = win;
 
+  win.on('close', (event) => {
+    const hasGlobalWindow = !!global.TRTCWindow;
+    if (hasGlobalWindow) {
+      event.preventDefault();
+      win.webContents.send('mainProcessError', '请先结束当前通话');
+      return;
+    }
+  });
+
   win.on('closed', () => {
     global.mainWindow = null;
   });
@@ -44,9 +52,6 @@ async function createWindow() {
     // 每次启动程序，就检查更新
     checkUpload();
   });
-
-  win.on('focus', () => win.flashFrame(false));
-  win.flashFrame(true);
 }
 
 const initElectron = (appId) => {
@@ -93,7 +98,7 @@ const initElectron = (appId) => {
           }
         }
 
-        trayAction();
+        // trayAction();
 
         await createWindow();
 

@@ -17,3 +17,5 @@ export const IMSDKListener = electronAPI?.IMSDKListener;
 export const openTRTCWindow = electronAPI?.openTRTCWindow;
 export const TRTCListener = electronAPI?.TRTCListener;
 export const hasWindow = electronAPI?.hasWindow;
+
+export const mainProcessError = electronAPI?.mainProcessError;

@@ -14,6 +14,8 @@ module.exports = defineConfig({
       nodeIntegration: true,
       // nodeModulesPath: '../node_modules',
 
+      customFileProtocol: '../',
+
       chainWebpackRendererProcess: (config) => {
         config.externals({
           'trtc-electron-sdk': 'commonjs2 trtc-electron-sdk',

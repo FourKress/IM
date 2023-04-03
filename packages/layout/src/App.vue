@@ -33,6 +33,9 @@ export default {
       console.log(type, value);
       IMSDKCallBackEvents[type](value);
     });
+    renderProcess.mainProcessError((event, msg) => {
+      this.$message.warning(msg)
+    });
   },
   mounted() {
     document.addEventListener('keydown', (event) => {

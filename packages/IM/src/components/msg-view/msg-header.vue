@@ -21,7 +21,11 @@
         ></LsIcon>
       </div>
       <div class="btn">
-        <LsIcon render-svg icon="a-icon_yy2x" @click="handleStartTrtc(isAudio)"></LsIcon>
+        <LsIcon
+          render-svg
+          icon="a-icon_yy2x"
+          @click="handleStartTrtc(isAudio)"
+        ></LsIcon>
       </div>
       <div class="btn">
         <el-dropdown trigger="click" @command="handleCommand">
@@ -63,7 +67,7 @@
 <script>
 import { mapActions, mapGetters } from 'vuex';
 import { LsIcon } from '@lanshu/components';
-import {IMHeaderMoreBtnKey, sessionUserType} from '@lanshu/utils';
+import { IMHeaderMoreBtnKey, sessionUserType, clientType } from '@lanshu/utils';
 import { renderProcess } from '@lanshu/render-process';
 import { IMCreateMsg, IMSendMessage, IMSDKMessageProvider } from '../../IM-SDK';
 
@@ -76,7 +80,7 @@ export default {
     return {
       IMHeaderMoreBtnKey,
       isVideo: 100,
-      isAudio: 200
+      isAudio: 200,
     };
   },
   computed: {
@@ -110,20 +114,20 @@ export default {
         {
           trtcType: 1000,
           roomId: 999,
-        }
+        },
       ];
       const msg = await IMCreateMsg(
         IMSDKMessageProvider.events.createCustomMessage,
         msgData,
       );
 
-      await IMSendMessage(msg)
+      await IMSendMessage(msg);
 
       await renderProcess.setStore('trtcMsg', msg);
       await renderProcess.setStore('trtcSession', this.session);
       await renderProcess.setStore('trtcUserInfo', this.userInfo);
 
-      renderProcess.openTRTCWindow();
+      renderProcess.openTRTCWindow(clientType.isMobile);
     },
 
     handleCloseSession() {

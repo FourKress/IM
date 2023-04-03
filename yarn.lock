@@ -945,7 +945,7 @@
   resolved "http://172.16.2.250:8081/repository/npm-group/@babel/regjsgen/-/regjsgen-0.8.0.tgz#f0ba69b075e1f05fb2825b7fad991e7adbb18310"
   integrity sha512-x/rqGMdzj+fWZvCOYForTghzbtqPDZ5gPwaoNGHdgDfF2QA/XZbCBp4Moo5scrkAMPhB7z26XM/AaHuIJdgauA==
 
-"@babel/runtime@^7.12.13", "@babel/runtime@^7.7.2", "@babel/runtime@^7.8.4":
+"@babel/runtime@^7.12.13", "@babel/runtime@^7.8.4":
   version "7.21.0"
   resolved "http://172.16.2.250:8081/repository/npm-group/@babel/runtime/-/runtime-7.21.0.tgz#5b55c9d394e5fcf304909a8b00c07dc217b56673"
   integrity sha512-xwII0//EObnq89Ji5AKYQaRYiW/nZ3llSv29d49IuxPhKbtJoLP+9QUUZ4nVragQVtaVGeZrpB+ZtG/Pdy/POw==
@@ -1247,90 +1247,6 @@
   integrity sha512-fL1wpr8hhD5gT2dA1qifeVaoDFlQR5es8tFuKqjHX+kdOtdNHnxkVZbtIrR2rxnMFvehkjaZRNV2H/gPXlb0hw==
   dependencies:
     easy-stack "1.0.1"
-
-"@node-rs/jieba-android-arm-eabi@1.6.2":
-  version "1.6.2"
-  resolved "http://172.16.2.250:8081/repository/npm-group/@node-rs/jieba-android-arm-eabi/-/jieba-android-arm-eabi-1.6.2.tgz#e34836593a7d5144fc625c924d6957d888ac298e"
-  integrity sha512-DWRjc+RmSsiALdS7Ay1dI/Qh86M9tP20UKNeKKHKQLeVCl8isupUVLFxBdSLqmarPBJImh6nI67TTRpPfcOYMg==
-
-"@node-rs/jieba-android-arm64@1.6.2":
-  version "1.6.2"
-  resolved "http://172.16.2.250:8081/repository/npm-group/@node-rs/jieba-android-arm64/-/jieba-android-arm64-1.6.2.tgz#727935efd7bbaccdc9d9454e61cb693fcd0b1c00"
-  integrity sha512-3T6+mG9ZR28eu1qe3Sh2DTR/eZVIaAQaaR5C2UHTsJfxVZSeGcd1ogoLgBom9iU3QDIa0kJCliH+GHiOmqr1xw==
-
-"@node-rs/jieba-darwin-arm64@1.6.2":
-  version "1.6.2"
-  resolved "http://172.16.2.250:8081/repository/npm-group/@node-rs/jieba-darwin-arm64/-/jieba-darwin-arm64-1.6.2.tgz#184cb496d407c7cac45659c5b7c1494698c6abdc"
-  integrity sha512-CvYmRSYebd4gpBYzmLivB17M4faNAe3o3BQ1E3MvjmlEu/J43XD59rOTdSkbe5ZykstC4i/xhaXKWRG2gcaOig==
-
-"@node-rs/jieba-darwin-x64@1.6.2":
-  version "1.6.2"
-  resolved "http://172.16.2.250:8081/repository/npm-group/@node-rs/jieba-darwin-x64/-/jieba-darwin-x64-1.6.2.tgz#1aa3ef1b290d5ebf63dd7cd5401ed55134356132"
-  integrity sha512-YcI9nNnYrNMhh2onnWnEkNdByYj0JbqPD4yF4GCmF4SsFRcEUEEnJrFE42FZoWzhDhUrE3hSU0uBjL+8iggr9w==
-
-"@node-rs/jieba-freebsd-x64@1.6.2":
-  version "1.6.2"
-  resolved "http://172.16.2.250:8081/repository/npm-group/@node-rs/jieba-freebsd-x64/-/jieba-freebsd-x64-1.6.2.tgz#12ba9046f913d6b839e90e5c5d7ac209e330f46d"
-  integrity sha512-iaH/F6JWEkE1DCeC0MEsglBuHbRj03Rj/PMAMhLZBruQyVJaQU7WHVFEt+eN+FbR0cPLUhvj4oltPF2nGlVYFQ==
-
-"@node-rs/jieba-linux-arm-gnueabihf@1.6.2":
-  version "1.6.2"
-  resolved "http://172.16.2.250:8081/repository/npm-group/@node-rs/jieba-linux-arm-gnueabihf/-/jieba-linux-arm-gnueabihf-1.6.2.tgz#0d6f1882798ff99e3b196f1f92676a47074bedc6"
-  integrity sha512-T2V1KZ7Xhorm3xVG4k52xw0pH8Q4UevAey4mEdA6NDwlCnScqqENfzgMpt8Egv5xpBExte8tebB1+LLACD6Khg==
-
-"@node-rs/jieba-linux-arm64-gnu@1.6.2":
-  version "1.6.2"
-  resolved "http://172.16.2.250:8081/repository/npm-group/@node-rs/jieba-linux-arm64-gnu/-/jieba-linux-arm64-gnu-1.6.2.tgz#ebe31ad3b5cbc3d0800ac40a589798ce0d1f554f"
-  integrity sha512-sZcAa/MGy6LTlEIU6uON9uY/AorQLbWVEEZ3g4W8FHAyqtdEeOByNNZG84qZzjXlWZbsjKRETArpGH2QBaXeWQ==
-
-"@node-rs/jieba-linux-arm64-musl@1.6.2":
-  version "1.6.2"
-  resolved "http://172.16.2.250:8081/repository/npm-group/@node-rs/jieba-linux-arm64-musl/-/jieba-linux-arm64-musl-1.6.2.tgz#8a7b613c6c8f673f5258c1e9a710a808942689d3"
-  integrity sha512-k+T34g1Pwr5sfpOSyjaCa9Mp4JCZ2XbP4pzrRsbc6ri7Y1tf9QzFR/fXgG5H24qRdLhzuXOJqdnJ6xVHTVUU9Q==
-
-"@node-rs/jieba-linux-x64-gnu@1.6.2":
-  version "1.6.2"
-  resolved "http://172.16.2.250:8081/repository/npm-group/@node-rs/jieba-linux-x64-gnu/-/jieba-linux-x64-gnu-1.6.2.tgz#d12c7ef648f21357642f7c517e2859e669feaf3f"
-  integrity sha512-jcbrneEACIhZkVs3VOwhDWn7X8q18kfUugF3hhxW9ZzymuEMTUvcBFRWR18hk/WoHA5/MbcStr3ufteI+Wy5aw==
-
-"@node-rs/jieba-linux-x64-musl@1.6.2":
-  version "1.6.2"
-  resolved "http://172.16.2.250:8081/repository/npm-group/@node-rs/jieba-linux-x64-musl/-/jieba-linux-x64-musl-1.6.2.tgz#a8a0106977785be1eb7b6afc5246024df5cffcf1"
-  integrity sha512-DbvAGsU+LNIiC7cK7uHsbM6ptwb0MMe4DSfYYhxJgt7GqDeWoDEd/fIGFO6GAgBLzFUpjAQgP6PBhCl55X2Avg==
-
-"@node-rs/jieba-win32-arm64-msvc@1.6.2":
-  version "1.6.2"
-  resolved "http://172.16.2.250:8081/repository/npm-group/@node-rs/jieba-win32-arm64-msvc/-/jieba-win32-arm64-msvc-1.6.2.tgz#2997afa0e340ee2ffabf4c47d3a878d073e62ce6"
-  integrity sha512-I62/aVCCKxuTmCagvjyfj4rCbUaJTEjVModv2iWDw9lzt8UJtPd8C4XDe112r5I5AfkTfAHNZBe4k0zcE2NeuQ==
-
-"@node-rs/jieba-win32-ia32-msvc@1.6.2":
-  version "1.6.2"
-  resolved "http://172.16.2.250:8081/repository/npm-group/@node-rs/jieba-win32-ia32-msvc/-/jieba-win32-ia32-msvc-1.6.2.tgz#a0c3a31f310ecc410dc94b8dd5c2f7cc6825e544"
-  integrity sha512-MizaOJGcYxHgeiGj/dEap+E0LZNuCxejh2NSjY5QMDMPOv8O7I0PdXSgdnOPypDTQE0dnO99r+TI2EUB0TDHxw==
-
-"@node-rs/jieba-win32-x64-msvc@1.6.2":
-  version "1.6.2"
-  resolved "http://172.16.2.250:8081/repository/npm-group/@node-rs/jieba-win32-x64-msvc/-/jieba-win32-x64-msvc-1.6.2.tgz#3ee5d52014821c6dc41da8e4d9dc00a9e08dd070"
-  integrity sha512-d2W0IoxJ176jODE8wF6nNxfddYEaCtQ1xckJjIve/xHwUiBElnt81A41wZnfeyGx3pUaWMo4132s9EYJlN0Umg==
-
-"@node-rs/jieba@^1.6.0":
-  version "1.6.2"
-  resolved "http://172.16.2.250:8081/repository/npm-group/@node-rs/jieba/-/jieba-1.6.2.tgz#64e1a5482b01e72a03ee4a395c71de0702133c70"
-  integrity sha512-1GA3RqfGgjemgMoh2wajdiApYEGZ7mjzsqIqEjHv7rHuIpSJSEgV+Jt81popd0DK0HLPNShVV3T3fSmTgv20Zw==
-  optionalDependencies:
-    "@node-rs/jieba-android-arm-eabi" "1.6.2"
-    "@node-rs/jieba-android-arm64" "1.6.2"
-    "@node-rs/jieba-darwin-arm64" "1.6.2"
-    "@node-rs/jieba-darwin-x64" "1.6.2"
-    "@node-rs/jieba-freebsd-x64" "1.6.2"
-    "@node-rs/jieba-linux-arm-gnueabihf" "1.6.2"
-    "@node-rs/jieba-linux-arm64-gnu" "1.6.2"
-    "@node-rs/jieba-linux-arm64-musl" "1.6.2"
-    "@node-rs/jieba-linux-x64-gnu" "1.6.2"
-    "@node-rs/jieba-linux-x64-musl" "1.6.2"
-    "@node-rs/jieba-win32-arm64-msvc" "1.6.2"
-    "@node-rs/jieba-win32-ia32-msvc" "1.6.2"
-    "@node-rs/jieba-win32-x64-msvc" "1.6.2"
 
 "@nodelib/fs.scandir@2.1.5":
   version "2.1.5"
@@ -3206,15 +3122,6 @@ babel-plugin-dynamic-import-node@^2.3.3:
   dependencies:
     object.assign "^4.1.0"
 
-babel-plugin-macros@^2.6.1:
-  version "2.8.0"
-  resolved "http://172.16.2.250:8081/repository/npm-group/babel-plugin-macros/-/babel-plugin-macros-2.8.0.tgz#0f958a7cc6556b1e65344465d99111a1e5e10138"
-  integrity sha512-SEP5kJpfGYqYKpBrj5XU3ahw5p5GOHJ0U5ssOSQ/WBVdwkD2Dzlce95exQTs3jOVWPPKLBN2rlEWkCK7dSmLvg==
-  dependencies:
-    "@babel/runtime" "^7.7.2"
-    cosmiconfig "^6.0.0"
-    resolve "^1.12.0"
-
 babel-plugin-polyfill-corejs2@^0.3.3:
   version "0.3.3"
   resolved "http://172.16.2.250:8081/repository/npm-group/babel-plugin-polyfill-corejs2/-/babel-plugin-polyfill-corejs2-0.3.3.tgz#5d1bd3836d0a19e1b84bbf2d9640ccb6f951c122"
@@ -3238,15 +3145,6 @@ babel-plugin-polyfill-regenerator@^0.4.1:
   integrity sha512-NtQGmyQDXjQqQ+IzRkBVwEOz9lQ4zxAQZgoAYEtU9dJjnl1Oc98qnN7jcp+bE7O7aYzVpavXE3/VKXNzUbh7aw==
   dependencies:
     "@babel/helper-define-polyfill-provider" "^0.3.3"
-
-babel-plugin-preval@^4.0.0:
-  version "4.0.0"
-  resolved "http://172.16.2.250:8081/repository/npm-group/babel-plugin-preval/-/babel-plugin-preval-4.0.0.tgz#edb8501167985752aafcc31086791e1314052e9d"
-  integrity sha512-fZI/4cYneinlj2k/FsXw0/lTWSC5KKoepUueS1g25Gb5vx3GrRyaVwxWCshYqx11GEU4mZnbbFhee8vpquFS2w==
-  dependencies:
-    "@babel/runtime" "^7.7.2"
-    babel-plugin-macros "^2.6.1"
-    require-from-string "^2.0.2"
 
 babel-runtime@6.x:
   version "6.26.0"
@@ -4566,17 +4464,6 @@ cosmiconfig@7.0.0:
     parse-json "^5.0.0"
     path-type "^4.0.0"
     yaml "^1.10.0"
-
-cosmiconfig@^6.0.0:
-  version "6.0.0"
-  resolved "http://172.16.2.250:8081/repository/npm-group/cosmiconfig/-/cosmiconfig-6.0.0.tgz#da4fee853c52f6b1e6935f41c1a2fc50bd4a9982"
-  integrity sha512-xb3ZL6+L8b9JLLCx3ZdoZy4+2ECphCMo2PwqgP1tlfVq6M6YReyzBJtvWWtbDSpNr9hn96pkCiZqUcFEc+54Qg==
-  dependencies:
-    "@types/parse-json" "^4.0.0"
-    import-fresh "^3.1.0"
-    parse-json "^5.0.0"
-    path-type "^4.0.0"
-    yaml "^1.7.2"
 
 cosmiconfig@^7.0.0:
   version "7.1.0"
@@ -7143,7 +7030,7 @@ immutable@^4.0.0:
   resolved "http://172.16.2.250:8081/repository/npm-group/immutable/-/immutable-4.3.0.tgz#eb1738f14ffb39fd068b1dbe1296117484dd34be"
   integrity sha512-0AOCmOip+xgJwEVTQj1EfiDDOkPmuyllDuTuEX+DDXUgapLAsBIfkg3sxCYyCEA8mQqZrrxPUGjcOQ2JS3WLkg==
 
-import-fresh@^3.0.0, import-fresh@^3.1.0, import-fresh@^3.2.1:
+import-fresh@^3.0.0, import-fresh@^3.2.1:
   version "3.3.0"
   resolved "http://172.16.2.250:8081/repository/npm-group/import-fresh/-/import-fresh-3.3.0.tgz#37162c25fcb9ebaa2e6e53d5b4d88ce17d9e0c2b"
   integrity sha512-veYYhQa+D1QBKznvhUHxb8faxlrwUnxseDAbAp457E0wLNio2bOSKnjYDhMj+YiAq61xrMGhQk9iXVk5FzgQMw==
@@ -9862,16 +9749,15 @@ pinkie@^2.0.0:
   resolved "http://172.16.2.250:8081/repository/npm-group/pinkie/-/pinkie-2.0.4.tgz#72556b80cfa0d48a974e80e77248e80ed4f7f870"
   integrity sha512-MnUuEycAemtSaeFSjXKW/aroV7akBbY+Sv+RkyqFjgAe73F+MR0TBWKBRDkmfWq/HiFmdavfZ1G7h4SPZXaCSg==
 
-pinyin@^3.0.0-alpha.5:
-  version "3.0.0-alpha.5"
-  resolved "http://172.16.2.250:8081/repository/npm-group/pinyin/-/pinyin-3.0.0-alpha.5.tgz#04e3aacc0bcfcf44e2baa4bf41fe91e9d8314c4b"
-  integrity sha512-Sc8+Ch8uxZsVO0zvzHxvy24fEIixSl7V4kZoX4ThSyQ1BI0H8jIAqf0kxT8WMCX2xEHr1CYslKGDgSE4yj71hg==
+pinyin@2.11.2:
+  version "2.11.2"
+  resolved "http://172.16.2.250:8081/repository/npm-group/pinyin/-/pinyin-2.11.2.tgz#0d8afa8d79332d6ecd2c59fffba011e69d7cfb2f"
+  integrity sha512-tAWDBcowj09j/vLUjty98nVqrbTVNhutf1VcyID4p0sxTFPzRyXw7n7Ic0HQwBdWFIWrrDP8bYiT64gaT6h3gA==
   dependencies:
     commander "~1.1.1"
+    object-assign "^4.0.1"
   optionalDependencies:
-    "@node-rs/jieba" "^1.6.0"
     nodejieba "2.5.2"
-    segmentit "^2.0.3"
 
 pkg-conf@^2.1.0:
   version "2.1.0"
@@ -10210,13 +10096,6 @@ pretty-error@^4.0.0:
   dependencies:
     lodash "^4.17.20"
     renderkid "^3.0.0"
-
-preval.macro@^4.0.0:
-  version "4.0.0"
-  resolved "http://172.16.2.250:8081/repository/npm-group/preval.macro/-/preval.macro-4.0.0.tgz#24218fa36f68bf8a01a8c65c45d19a3ccad6496c"
-  integrity sha512-sJJnE71X+MPr64CVD2AurmUj4JEDqbudYbStav3L9Xjcqm4AR0ymMm6sugw1mUmfI/7gw4JWA4JXo/k6w34crw==
-  dependencies:
-    babel-plugin-preval "^4.0.0"
 
 proc-log@^2.0.0, proc-log@^2.0.1:
   version "2.0.1"
@@ -10821,7 +10700,7 @@ resolve-url@^0.2.1:
   resolved "http://172.16.2.250:8081/repository/npm-group/resolve-url/-/resolve-url-0.2.1.tgz#2c637fe77c893afd2a663fe21aa9080068e2052a"
   integrity sha512-ZuF55hVUQaaczgOIwqWzkEcEidmlD/xl44x1UZnhOXcYuFN2S6+rcxpG+C1N3So0wvNI3DmJICUFfu2SxhBmvg==
 
-resolve@^1.10.0, resolve@^1.12.0, resolve@^1.14.2:
+resolve@^1.10.0, resolve@^1.14.2:
   version "1.22.1"
   resolved "http://172.16.2.250:8081/repository/npm-group/resolve/-/resolve-1.22.1.tgz#27cb2ebb53f91abb49470a928bba7558066ac177"
   integrity sha512-nBpuuYuY5jFsli/JIs1oldw6fOQCBioohqWZg/2hiaOybXOft4lonv85uDOKXdf8rhyK159cxU5cDcK/NKk8zw==
@@ -11034,13 +10913,6 @@ seek-bzip@^1.0.5:
   integrity sha512-e1QtP3YL5tWww8uKaOCQ18UxIT2laNBXHjV/S2WYCiK4udiv8lkG89KRIoCjUagnAmCBurjF4zEVX2ByBbnCjQ==
   dependencies:
     commander "^2.8.1"
-
-segmentit@^2.0.3:
-  version "2.0.3"
-  resolved "http://172.16.2.250:8081/repository/npm-group/segmentit/-/segmentit-2.0.3.tgz#799897667acbc518b27811acdb2a341a79c7973f"
-  integrity sha512-7mn2XL3OdTUQ+AhHz7SbgyxLTaQRzTWQNVwiK+UlTO8aePGbSwvKUzTwE4238+OUY9MoR6ksAg35zl8sfTunQQ==
-  dependencies:
-    preval.macro "^4.0.0"
 
 select-hose@^2.0.0:
   version "2.0.0"
@@ -13141,7 +13013,7 @@ yallist@^4.0.0:
   resolved "http://172.16.2.250:8081/repository/npm-group/yallist/-/yallist-4.0.0.tgz#9bb92790d9c0effec63be73519e11a35019a3a72"
   integrity sha512-3wdGidZyq5PB084XLES5TpOSRA3wjXAlIWMhum2kRcv/41Sn2emQ0dycQW4uZXLejwKvg6EsvbdlVL+FYEct7A==
 
-yaml@^1.10.0, yaml@^1.10.2, yaml@^1.7.2:
+yaml@^1.10.0, yaml@^1.10.2:
   version "1.10.2"
   resolved "http://172.16.2.250:8081/repository/npm-group/yaml/-/yaml-1.10.2.tgz#2301c5ffbf12b467de8da2333a459e29e7920e4b"
   integrity sha512-r3vXyErRCYJ7wg28yvBY5VSoAF8ZvlcW9/BwUzEtUsjvX/DKs24dIkuwjtuprwJJHsbyUbLApepYTR1BN4uHrg==
