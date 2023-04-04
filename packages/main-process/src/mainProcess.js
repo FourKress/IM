@@ -10,6 +10,8 @@ import {
 import { unregisterHotKeyAll, initHotKeys, handleHotKey } from './hotKey';
 import { IMSDKEvent, IMSDK_Destroy } from './IM-SDK';
 import checkDevices from './checkDevices';
+import electronLog from 'electron-log';
+import increment from './increment';
 
 const initIpcMain = () => {
   app.whenReady().then(async () => {
@@ -79,6 +81,16 @@ const initIpcMain = () => {
 
     ipcMain.handle('hasWindow', (_event, win) => {
       return !!global[win];
+    });
+
+    // 触发检查更新并且下载
+    ipcMain.on('checkForUpdates', async (_event) => {
+      console.log('检查更新');
+      electronLog.info('检查更新, 增量更新');
+      await increment({
+        upDateUrl: 'http://192.168.88.253:7654/app.zip',
+        upDateExe: 'http://192.168.88.253:7654/update.exe',
+      });
     });
   });
 };

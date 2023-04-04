@@ -50,7 +50,7 @@ async function createWindow() {
   win.on('ready-to-show', () => {
     win.show();
     // 每次启动程序，就检查更新
-    checkUpload();
+    // checkUpload();
   });
 }
 

@@ -114,6 +114,8 @@ module.exports = defineConfig({
             url: 'http://192.168.88.253:7654',
           },
         ],
+
+        afterPack: './afterPack.js',
       },
     },
   },

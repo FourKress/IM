@@ -1,6 +1,7 @@
 import { BrowserWindow } from 'electron';
 import path from 'path';
 import { isMac, clientType } from './utils';
+import log from './log';
 
 const initLoginWindow = () => {
   const mainWindow = global.mainWindow;
@@ -50,22 +51,23 @@ export const showLoginWindow = (delay) => {
 };
 
 export const changeWindow = (type, win) => {
-  const windowMap = {
-    main: global.mainWindow,
-    trtc: global.TRTCWindow,
-  };
-  const targetWindow = windowMap[win];
-  const actionFnMap = {
-    min: () => targetWindow.minimize(),
-    max: () =>
-      targetWindow.isMaximized()
-        ? targetWindow.unmaximize()
-        : targetWindow.maximize(),
-    full: () => targetWindow.setFullScreen(!targetWindow.isFullScreen()),
-    close: () => targetWindow.close(),
-  };
-  const action = actionFnMap[type];
-  action && action();
+  // const windowMap = {
+  //   main: global.mainWindow,
+  //   trtc: global.TRTCWindow,
+  // };
+  // const targetWindow = windowMap[win];
+  // const actionFnMap = {
+  //   min: () => targetWindow.minimize(),
+  //   max: () =>
+  //     targetWindow.isMaximized()
+  //       ? targetWindow.unmaximize()
+  //       : targetWindow.maximize(),
+  //   full: () => targetWindow.setFullScreen(!targetWindow.isFullScreen()),
+  //   close: () => targetWindow.close(),
+  // };
+  // const action = actionFnMap[type];
+  // action && action();
+  log.info(type);
 };
 
 export const defaultWindowConfig = {

@@ -77,7 +77,7 @@ export default {
     handleStartUpdate() {
       console.log(122112);
       this.setStartDownload(true);
-      // renderProcess.checkForUpdates();
+      renderProcess.checkForUpdates();
     },
   },
 };
