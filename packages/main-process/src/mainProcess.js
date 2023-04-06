@@ -9,7 +9,6 @@ import {
 } from './window';
 import { unregisterHotKeyAll, initHotKeys, handleHotKey } from './hotKey';
 import { IMSDKEvent, IMSDK_Destroy } from './IM-SDK';
-import checkDevices from './checkDevices';
 import electronLog from 'electron-log';
 import increment from './increment';
 
@@ -21,8 +20,6 @@ const initIpcMain = () => {
     }
 
     showLoginWindow();
-
-    await checkDevices();
 
     // 初始化截图
     initScreenshots();

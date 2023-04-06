@@ -53,6 +53,7 @@
 import { LsCardDialog, LsIcon } from '@lanshu/components';
 import FileDialog from './file-dialog';
 import { checkMsgType } from '@lanshu/utils';
+import {mapActions, mapGetters} from 'vuex';
 
 export default {
   name: 'Action-card',
@@ -68,7 +69,24 @@ export default {
       files: [],
     };
   },
+  computed: {
+    ...mapGetters('IMStore', ['dragFileList'])
+  },
+  watch: {
+    dragFileList(val) {
+      console.log(val, 'dragFileList')
+      if (val?.length) {
+        this.files = [...val];
+        this.visibleFileDialog = true;
+        this.$nextTick(() => {
+          this.setDragFileList([])
+        })
+      }
+    }
+  },
   methods: {
+    ...mapActions('IMStore', ['setDragFileList']),
+
     handleUploadFile(isFile) {
       this.$refs.fileInput.value = '';
       this.accept = isFile ? '' : 'image/*,audio/*,video/*';

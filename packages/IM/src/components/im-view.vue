@@ -18,24 +18,37 @@
             "
             :timestamp="item.timestamp"
           />
-          <span v-if="!baseMsgTypes.includes(item.msgType)">{{ msgFormatMap[item.msgType]?.label(item.data) }}</span>
+          <span v-if="!baseMsgTypes.includes(item.msgType)">
+            {{ msgFormatMap[item.msgType]?.label(item.data) }}
+          </span>
         </div>
 
-<!--        :class="checkSelf(item) ? 'self' : 'target'"-->
-        <div
-          v-if="baseMsgTypes.includes(item.msgType)"
-          class="msg-row target"
-        >
+        <!--        :class="checkSelf(item) ? 'self' : 'target'"-->
+        <div v-if="baseMsgTypes.includes(item.msgType)" class="msg-row target">
           <div class="img">
             <img :src="checkSelf(item) ? userInfo.avatar : toAvatar" alt="" />
           </div>
           <div class="info">
             <MsgCard :isSelf="checkSelf(item)" :msg="item" />
             <div class="send-tips" v-if="item.sendState !== 1">
-              <img class="loading-icon" v-if="item.sendState === 0" :src="LsAssets.loadingIcon" alt="">
-              <span class="send-error" v-if="item.sendState === -1" @click="handleResendMsg">
-              <LsIcon render-svg width='17' height='17' icon='a-zt_ts_icon2x'></LsIcon>
-            </span>
+              <img
+                class="loading-icon"
+                v-if="item.sendState === 0"
+                :src="LsAssets.loadingIcon"
+                alt=""
+              />
+              <span
+                class="send-error"
+                v-if="item.sendState === -1"
+                @click="handleResendMsg"
+              >
+                <LsIcon
+                  render-svg
+                  width="17"
+                  height="17"
+                  icon="a-zt_ts_icon2x"
+                ></LsIcon>
+              </span>
             </div>
           </div>
         </div>
@@ -148,9 +161,31 @@ export default {
       leading: true,
       trailing: false,
     });
+
+    const dragWrapper = document.querySelector('.im-view');
+    //添加拖拽事件监听器
+    dragWrapper.addEventListener('drop', (e) => {
+      //阻止默认行为
+      e.preventDefault();
+      //获取文件列表
+      const files = e.dataTransfer.files;
+      console.log(files)
+
+      if (files?.length > 0) {
+        //获取文件路径
+        const path = files[0].path;
+        console.log('path:', path);
+        this.setDragFileList(files);
+      }
+    });
+
+    //阻止拖拽结束事件默认行为
+    dragWrapper.addEventListener('dragover', (e) => {
+      e.preventDefault();
+    });
   },
   methods: {
-    ...mapActions('IMStore', ['setRefreshMsg']),
+    ...mapActions('IMStore', ['setRefreshMsg', 'setDragFileList']),
 
     checkTimesInterval,
     initData() {
@@ -206,8 +241,8 @@ export default {
     },
 
     handleResendMsg() {
-      console.log('重发')
-    }
+      console.log('重发');
+    },
   },
 };
 </script>

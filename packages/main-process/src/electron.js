@@ -4,7 +4,7 @@ import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
 
 import { defaultWindowConfig } from './window';
 import store from './datastore';
-import checkUpload from './checkUpload';
+// import checkUpload from './checkUpload';
 import { IMSDKInit } from './IM-SDK';
 import trayAction from './trayEvent';
 

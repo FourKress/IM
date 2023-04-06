@@ -51,7 +51,7 @@
         </div>
         <div class="checkbox-row">
           <el-checkbox v-model="autoLoginChecked"></el-checkbox>
-          <span class="text">自动登录</span>
+          <span class="text">15天自动登录</span>
         </div>
       </div>
     </template>
@@ -64,7 +64,7 @@
       <div class="qrcode-wrap wechat-qrcode"></div>
       <div class="wechat-checkbox-row">
         <el-checkbox v-model="autoLoginChecked"></el-checkbox>
-        <span class="text">自动登录</span>
+        <span class="text">15天自动登录</span>
       </div>
     </template>
 

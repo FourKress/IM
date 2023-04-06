@@ -22,6 +22,7 @@ const state = {
   actionWindow: {},
   // 刷新群成员
   refreshMembers: '',
+  dragFileList: [],
 };
 
 const getters = {
@@ -37,6 +38,7 @@ const getters = {
   refreshMsg: (state) => state.refreshMsg,
   actionWindow: (state) => state.actionWindow,
   refreshMembers: (state) => state.refreshMembers,
+  dragFileList: (state) => state.dragFileList,
 };
 
 const mutations = {
@@ -86,6 +88,9 @@ const mutations = {
   setRefreshMembers(data, value) {
     data.refreshMembers = value;
   },
+  setDragFileList(data, value) {
+    data.dragFileList = value;
+  },
 };
 
 const actions = {
@@ -124,6 +129,9 @@ const actions = {
   },
   setRefreshMembers({ commit }, value) {
     commit('setRefreshMembers', value);
+  },
+  setDragFileList({ commit }, value) {
+    commit('setDragFileList', value);
   },
 };
 
