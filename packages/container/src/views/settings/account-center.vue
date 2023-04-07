@@ -1,16 +1,6 @@
 <template>
   <Card id="AccountCenter-Card" title="账号中心">
     <div>
-      <div class="user-info">
-        <div class="avatar">
-          <img :src="userInfo.avatar" class="img" alt="" />
-          <div class="tag"></div>
-        </div>
-        <div class="nickname">
-          <el-input v-model="nickname"></el-input>
-        </div>
-      </div>
-
       <template v-for="info in infos">
         <InfoBlock
           :key="info.key"
@@ -80,29 +70,8 @@ export default {
   },
   data() {
     return {
-      nickname: '',
-      avatar: '',
 
       infos: [
-        {
-          key: 'sign',
-          title: '个性签名',
-          label: '',
-          value: '这是个性签名',
-          btnText: '',
-          render: (h, row) => {
-            const target = this.infos.find((d) => d.key === row.key);
-            return (
-              <el-input
-                style="width: 300px;"
-                type="text"
-                placeholder="编辑个性签名…"
-                onChange={(val) => this.handleChange(val)}
-                v-model={target.value}
-              />
-            );
-          },
-        },
         {
           key: 'phoneNum',
           title: '手机号码',
@@ -149,9 +118,6 @@ export default {
     };
   },
   mounted() {
-    const { nickname, avatar } = this.userInfo;
-    this.nickname = nickname;
-    this.avatar = avatar;
   },
   methods: {
     ...mapActions('routerStore', ['addBreadCrumbs']),
@@ -211,56 +177,6 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.user-info {
-  margin-top: 26px;
-  display: flex;
-  align-items: flex-end;
-  justify-content: flex-start;
-
-  .avatar {
-    width: 50px;
-    height: 50px;
-    border-radius: 6px;
-    position: relative;
-    margin-right: 24px;
-
-    .tag {
-      width: 18px;
-      height: 18px;
-      position: absolute;
-      right: -6px;
-      bottom: -4px;
-      border-radius: 50%;
-
-      background-color: #333;
-    }
-
-    .img {
-      width: 50px;
-      height: 50px;
-      background: #d8d8d8;
-      border-radius: 6px;
-      display: block;
-    }
-  }
-
-  .nickname {
-    margin-bottom: 7px;
-
-    ::v-deep .el-input__inner {
-      border-top: none;
-      border-left: none;
-      border-right: none;
-      border-radius: unset;
-      padding: 0;
-
-      font-size: 16px;
-      font-weight: bold;
-      color: $main-text-color;
-    }
-  }
-}
-
 .auth-tag {
   margin-left: 10px;
   font-weight: normal;

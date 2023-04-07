@@ -8,6 +8,7 @@ const state = {
   codeCountdown: 0,
   updateVersion: '',
   startDownload: false,
+  updateNotify: JSON.parse(localStorage.getItem('updateNotify') || 'false'),
 };
 
 const getters = {
@@ -16,6 +17,7 @@ const getters = {
   codeCountdown: (state) => state.codeCountdown,
   updateVersion: (state) => state.updateVersion,
   startDownload: (state) => state.startDownload,
+  updateNotify: (state) => state.updateNotify,
 };
 
 const mutations = {
@@ -41,6 +43,10 @@ const mutations = {
   setStartDownload(data, value) {
     data.startDownload = value;
   },
+  setUpdateNotify(data, value) {
+    data.updateNotify = value;
+    localStorage.setItem('updateNotify', value);
+  },
 };
 
 const actions = {
@@ -58,6 +64,9 @@ const actions = {
   },
   setStartDownload({ commit }, value) {
     commit('setStartDownload', value);
+  },
+  setUpdateNotify({ commit }, value) {
+    commit('setUpdateNotify', value);
   },
 };
 

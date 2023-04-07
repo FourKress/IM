@@ -1,9 +1,11 @@
 <template>
   <div id="client-header">
     <div class="header_user">
-      <div class="avatar" @click="openDialog">
-        <img :src="userInfo.avatar" class="img" alt="" />
-      </div>
+      <el-badge is-dot :hidden="!updateNotify || !updateVersion">
+        <div class="avatar" @click="openDialog">
+          <img :src="userInfo.avatar" class="img" alt="" />
+        </div>
+      </el-badge>
       <!--      <div class="user-info">-->
       <!--        <p class="name">{{ userInfo.nickname }}</p>-->
       <!--        <div class="position">-->
@@ -58,6 +60,8 @@
           </div>
           <div class="row">
             <span class="label" @click="goToSettings">设置</span>
+            <el-badge is-dot :hidden="!updateNotify || !updateVersion">
+            </el-badge>
           </div>
           <div class="row">
             <span class="label">下载手机版</span>
@@ -98,6 +102,7 @@ export default {
   },
   computed: {
     ...mapGetters('IMStore', ['userInfo']),
+    ...mapGetters('globalStore', ['updateNotify', 'updateVersion']),
   },
   data() {
     return {
@@ -368,6 +373,10 @@ export default {
       &.disabled {
         font-size: 14px;
         color: $tips-text-color;
+      }
+
+      ::v-deep .el-badge {
+        transform: translate(6px, 4px);
       }
     }
   }

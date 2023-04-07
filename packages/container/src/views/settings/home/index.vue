@@ -12,10 +12,13 @@
           <LsIcon render-svg :icon="nav.icon"></LsIcon>
         </span>
         <span class="text">{{ nav.label }}</span>
+        <el-badge is-dot :hidden="!updateNotify || !updateVersion" v-if="nav.key === 'Update'">
+        </el-badge>
       </div>
     </div>
     <div class="content">
       <div class="scroll-view">
+        <UserInfo></UserInfo>
         <AccountCenter></AccountCenter>
         <Notify></Notify>
         <File></File>
@@ -30,6 +33,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 import { LsIcon } from '@lanshu/components';
 import AccountCenter from '../account-center';
 import Notify from '../notify';
@@ -39,11 +43,13 @@ import Privacy from '../privacy';
 import HotKey from '../hot-key';
 import Update from '../update';
 import About from '../about';
+import UserInfo from "../user-info.vue";
 
 export default {
   name: 'Settings-home',
   components: {
     LsIcon,
+    UserInfo,
     AccountCenter,
     Notify,
     File,
@@ -56,6 +62,11 @@ export default {
   data() {
     return {
       navList: [
+        {
+          key: 'UserInfo',
+          label: '个人信息',
+          icon: 'sz_zhzx',
+        },
         {
           key: 'AccountCenter',
           label: '账号中心',
@@ -102,6 +113,9 @@ export default {
       scrollView: null,
     };
   },
+  computed: {
+    ...mapGetters('globalStore', ['updateNotify', 'updateVersion']),
+  },
   mounted() {
     this.scrollView = document.querySelector('.scroll-view');
     this.scrollView.addEventListener('scroll', this.scrollHandle, true);
@@ -112,6 +126,9 @@ export default {
     },
     handleSelectNav(nav) {
       const { key } = nav;
+      setTimeout(() => {
+        this.navSelectKey = key;
+      }, 100);
       document.querySelector(`#${key}-Card`).scrollIntoView();
     },
 
@@ -196,6 +213,10 @@ export default {
         .text {
           color: $primary-color;
         }
+      }
+
+      ::v-deep .el-badge {
+        transform: translate(6px, 6px);
       }
     }
   }

@@ -1,14 +1,16 @@
 <template>
-  <Card id='Update-Card' title="更新升级">
-<!--    <InfoBlock :info='{}'>-->
-<!--      <el-checkbox class='item' v-model="autoUpdate">自动检查和安装更新</el-checkbox>-->
-<!--    </InfoBlock>-->
+  <Card id="Update-Card" title="更新升级">
+    <!--    <InfoBlock :info='{}'>-->
+    <!--      <el-checkbox class='item' v-model="autoUpdate">自动检查和安装更新</el-checkbox>-->
+    <!--    </InfoBlock>-->
 
-    <InfoBlock :info='{}'>
-      <el-checkbox class='item' v-model="updateTips">更新提醒</el-checkbox>
+    <InfoBlock :info="{}">
+      <el-checkbox class="item" v-model="selfUpdateNotify" @change="handleChange">
+        更新提醒
+      </el-checkbox>
     </InfoBlock>
 
-    <div class='tips'>当前安装版本：1.0.01</div>
+    <div class="tips">当前安装版本：1.0.01</div>
 
     <template v-for="(info, index) in infos">
       <InfoBlock
@@ -23,6 +25,7 @@
 <script>
 import Card from './card';
 import InfoBlock from './info-block';
+import { mapActions, mapGetters } from 'vuex';
 
 export default {
   name: 'Update-Card',
@@ -33,23 +36,34 @@ export default {
   data() {
     return {
       autoUpdate: false,
-      updateTips: false,
+      selfUpdateNotify: false,
 
       infos: [
         {
-          btnText: '立即升级'
+          btnText: '立即升级',
         },
         {
-          btnText: '更新日志'
+          btnText: '更新日志',
         },
-      ]
-    }
+      ],
+    };
+  },
+  computed: {
+    ...mapGetters('globalStore', ['updateNotify']),
+  },
+  created() {
+    this.selfUpdateNotify = this.updateNotify
   },
   methods: {
+    ...mapActions('globalStore', ['setUpdateNotify']),
+
     handleCallback(info) {
       console.log(info);
     },
-  }
+    handleChange() {
+      this.setUpdateNotify(this.selfUpdateNotify);
+    },
+  },
 };
 </script>
 

@@ -21,7 +21,7 @@
           <span class="label">{{ item.label }}</span>
           <el-badge
             v-if="index === 0"
-            :value="item.count"
+            :value="newFriendCount"
             :max="99"
             class="count"
           ></el-badge>
@@ -63,7 +63,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 import { LsIcon, LsCardDialog } from '@lanshu/components';
 import AddFriend from './add-friend.vue';
 import NewFriend from './new-friend.vue';
@@ -91,7 +91,6 @@ export default {
           label: '新的联系人',
           component: 'NewFriend',
           key: 'NewFriend',
-          count: 3,
           icon: 'icon_txl_xdlxr',
         },
         {
@@ -122,6 +121,9 @@ export default {
       visibleGroupMember: false,
       IMGroupMemberPanelType,
     };
+  },
+  computed: {
+    ...mapGetters('IMStore', ['newFriendCount']),
   },
   methods: {
     ...mapActions('IMStore', ['setMainSessionWindow']),

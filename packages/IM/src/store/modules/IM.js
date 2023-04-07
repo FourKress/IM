@@ -23,6 +23,7 @@ const state = {
   // 刷新群成员
   refreshMembers: '',
   dragFileList: [],
+  newFriendCount: 0,
 };
 
 const getters = {
@@ -39,6 +40,7 @@ const getters = {
   actionWindow: (state) => state.actionWindow,
   refreshMembers: (state) => state.refreshMembers,
   dragFileList: (state) => state.dragFileList,
+  newFriendCount: (state) => state.newFriendCount,
 };
 
 const mutations = {
@@ -91,6 +93,9 @@ const mutations = {
   setDragFileList(data, value) {
     data.dragFileList = value;
   },
+  setNewFriendCount(data, value) {
+    data.newFriendCount = value;
+  },
 };
 
 const actions = {
@@ -132,6 +137,9 @@ const actions = {
   },
   setDragFileList({ commit }, value) {
     commit('setDragFileList', value);
+  },
+  setNewFriendCount({ commit }, value) {
+    commit('setNewFriendCount', value);
   },
 };
 

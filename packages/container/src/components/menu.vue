@@ -20,6 +20,8 @@
           ></LsIcon>
         </span>
         <span>{{ item.label }}</span>
+
+        <el-badge v-if="getBadge(item)" :value="getBadge(item)" :max="99" class="count"></el-badge>
       </div>
     </div>
     <div class="update" v-if="updateVersion" @click="handleUpdate">
@@ -70,7 +72,8 @@ export default {
     };
   },
   computed: {
-    ...mapGetters('globalStore', ['updateVersion'])
+    ...mapGetters('globalStore', ['updateVersion']),
+    ...mapGetters('IMStore', ['allUnreadCount', 'newFriendCount']),
   },
   watch: {
     $route(val) {
@@ -111,6 +114,12 @@ export default {
       this.setStartDownload(true);
       renderProcess.checkForUpdates();
     },
+
+    getBadge(item) {
+      if (!['/', '/addressBook'].includes(item.path)) return 0;
+      if (item.path === '/') return this.allUnreadCount;
+      if(item.path === '/addressBook') return this.newFriendCount;
+    }
   },
 };
 </script>
@@ -151,7 +160,7 @@ export default {
       color: #6f8ab9;
       cursor: pointer;
       transform: translate3d(0, 0, 0);
-
+      position: relative;
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -164,6 +173,7 @@ export default {
         height: 20px;
         margin-bottom: 4px;
         transition: all 0.3s;
+        margin-top: 2px;
       }
 
       &.active {
@@ -177,6 +187,15 @@ export default {
           height: 20px;
           margin-bottom: 4px;
         }
+      }
+
+      ::v-deep .el-badge {
+        position: absolute;
+        right: 1px;
+        top: 1px;
+        display: block;
+        transform-origin: center;
+        transform: scale(0.8);
       }
     }
   }

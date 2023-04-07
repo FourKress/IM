@@ -14,9 +14,12 @@ import TRTCCloud, {
   TRTCVideoQosPreference,
 } from 'trtc-electron-sdk';
 import { genUserSig } from './utils';
+import { registryCallback } from './callback';
 
 const trtcCloudInstance = () => {
   const trtcCloud = new TRTCCloud();
+
+  registryCallback(trtcCloud);
 
   const enterRoom = (params, type) => {
     return new Promise((resolve, reject) => {
@@ -122,29 +125,6 @@ const trtcCloudInstance = () => {
   const setRemoteAudioVolume = (userId, volume) => {
     trtcCloud.setRemoteAudioVolume(userId, volume);
   };
-
-  // TODO 数据共享
-  let openCameraUserList = [];
-  let openMicUserList = [];
-
-  function onUserVideoAvailable(userId, available) {
-    if (available === 1) {
-      openCameraUserList.push(userId);
-    } else {
-      openCameraUserList = openCameraUserList.filter((item) => item !== userId);
-    }
-  }
-
-  function onUserAudioAvailable(userId, available) {
-    if (available === 1) {
-      openMicUserList.push(userId);
-    } else {
-      openMicUserList = openMicUserList.filter((item) => item !== userId);
-    }
-  }
-
-  trtcCloud.on('onUserVideoAvailable', onUserVideoAvailable);
-  trtcCloud.on('onUserAudioAvailable', onUserAudioAvailable);
 
   const setLocalRenderParams = () => {
     const param = new TRTCRenderParams(
