@@ -6,6 +6,48 @@
   "description": "IM、政务通用",
   "glyphs": [
     {
+      "icon_id": "34934869",
+      "name": "icon_gerenxinxi",
+      "font_class": "icon_gerenxinxi",
+      "unicode": "e726",
+      "unicode_decimal": 59174
+    },
+    {
+      "icon_id": "34934870",
+      "name": "icon_erweima",
+      "font_class": "icon_erweima",
+      "unicode": "e727",
+      "unicode_decimal": 59175
+    },
+    {
+      "icon_id": "34929223",
+      "name": "nan",
+      "font_class": "nan",
+      "unicode": "e724",
+      "unicode_decimal": 59172
+    },
+    {
+      "icon_id": "34929224",
+      "name": "nv",
+      "font_class": "nv",
+      "unicode": "e725",
+      "unicode_decimal": 59173
+    },
+    {
+      "icon_id": "34882134",
+      "name": "icon_genghuanchenggong@2x",
+      "font_class": "a-icon_genghuanchenggong2x1",
+      "unicode": "e723",
+      "unicode_decimal": 59171
+    },
+    {
+      "icon_id": "34881822",
+      "name": "logo",
+      "font_class": "logo",
+      "unicode": "e722",
+      "unicode_decimal": 59170
+    },
+    {
       "icon_id": "34838750",
       "name": "icon_duihuakuang_yuyin",
       "font_class": "icon_duihuakuang_yuyin",
@@ -270,13 +312,6 @@
       "font_class": "a-icon_shangchuanshenfenzheng2x",
       "unicode": "e6dd",
       "unicode_decimal": 59101
-    },
-    {
-      "icon_id": "34076156",
-      "name": "icon_genghuanchenggong@2x",
-      "font_class": "a-icon_genghuanchenggong2x",
-      "unicode": "e6f4",
-      "unicode_decimal": 59124
     },
     {
       "icon_id": "34076157",

@@ -77,7 +77,7 @@ module.exports = defineConfig({
               target: 'nsis', //利用nsis制作安装程序
               arch: [
                 'x64', //64位
-                'ia32', //32位
+                // 'ia32', //32位
               ],
             },
           ],

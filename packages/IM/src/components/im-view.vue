@@ -25,7 +25,7 @@
 
         <!--        :class="checkSelf(item) ? 'self' : 'target'"-->
         <div v-if="baseMsgTypes.includes(item.msgType)" class="msg-row target">
-          <div class="img">
+          <div class="img" @click="(event) => openFriendDialog(checkSelf(item) ? userInfo : session, event)">
             <img :src="checkSelf(item) ? userInfo.avatar : toAvatar" alt="" />
           </div>
           <div class="info">
@@ -64,6 +64,14 @@
     <!--        <span>啊实打实大师大大撒上的啊实打实大师大大撒上的啊实打实大师大大撒上的啊</span>-->
     <!--      </span>-->
     <!--    </div>-->
+
+    <LsCardDialog :visible.sync="showFriendDialog">
+      <LsFriendPanel
+        :friend-info="friendInfo"
+        :position="position"
+        :config="{ isDetails: true }"
+      />
+    </LsCardDialog>
   </div>
 </template>
 
@@ -74,12 +82,13 @@ import {
   checkTimesInterval,
   baseMsgTypes,
   msgFormatMap,
+  FriendMixins,
 } from '@lanshu/utils';
 import { TimesTransform } from '@lanshu/components';
 import MsgCard from './msg-view/msg-card';
 import MsgHeader from './msg-view/msg-header';
 import MsgInputAction from './msg-view/msg-input-action';
-import { LsIcon, LsAssets } from '@lanshu/components';
+import { LsIcon, LsAssets, LsCardDialog, LsFriendPanel } from '@lanshu/components';
 import { IMGetMessageList } from '../IM-SDK';
 
 export default {
@@ -90,7 +99,10 @@ export default {
     MsgHeader,
     MsgInputAction,
     LsIcon,
+    LsCardDialog,
+    LsFriendPanel
   },
+  mixins: [FriendMixins],
   props: {
     isMainSession: {
       type: Boolean,
@@ -119,6 +131,7 @@ export default {
       baseMsgTypes,
       msgFormatMap,
       LsAssets,
+      showFriendDialog: false,
     };
   },
   watch: {
@@ -169,7 +182,7 @@ export default {
       e.preventDefault();
       //获取文件列表
       const files = e.dataTransfer.files;
-      console.log(files)
+      console.log(files);
 
       if (files?.length > 0) {
         //获取文件路径

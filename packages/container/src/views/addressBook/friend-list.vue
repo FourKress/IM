@@ -43,10 +43,10 @@
     </div>
 
     <LsCardDialog :visible.sync="showFriendDialog">
-      <FriendPanel
+      <LsFriendPanel
         :friend-info="friendInfo"
         :position="position"
-        :config="{ isPass: true }"
+        :config="{ isDetails: true }"
         @sendMsg="handleSendMsg"
         @sendVideo="handleSendVideo"
         @sendAudio="handleSendAudio"
@@ -56,10 +56,8 @@
 </template>
 
 <script>
-import { AddressBookMixins } from '@lanshu/utils';
-import { LsCardDialog } from '@lanshu/components';
-import FriendPanel from './friend-panel.vue';
-import mixins from './mixins';
+import { AddressBookMixins, FriendMixins } from '@lanshu/utils';
+import { LsCardDialog, LsFriendPanel } from '@lanshu/components';
 
 export default {
   name: 'Friend-List',
@@ -69,10 +67,10 @@ export default {
       default: false,
     },
   },
-  mixins: [mixins, AddressBookMixins],
+  mixins: [FriendMixins, AddressBookMixins],
   components: {
     LsCardDialog,
-    FriendPanel,
+    LsFriendPanel,
   },
   data() {
     return {

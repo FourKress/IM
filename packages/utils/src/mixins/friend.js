@@ -1,3 +1,5 @@
+import { mapGetters } from 'vuex';
+
 export default {
   data() {
     return {
@@ -6,8 +8,13 @@ export default {
       position: {},
     };
   },
+  computed: {
+    ...mapGetters('IMStore', ['userInfo']),
+  },
   methods: {
     openFriendDialog(friend, event) {
+      // TODO
+      // if (friend?.id === this.userInfo?.id) return;
       this.friendInfo = friend;
       const clientWidth = document.body.clientWidth;
       // 网页宽度 - 面板宽度 = left的最大值，避免定位超出视图区

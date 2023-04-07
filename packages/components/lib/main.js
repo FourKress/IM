@@ -8,6 +8,8 @@ import LsCardDialog from '../src/ls-card-dialog';
 import LsAssets from '../src/assets';
 import LsNetwork from '../src/ls-network.vue';
 import LsUpdate from '../src/ls-update.vue';
+import LsUserTag from '../src/ls-user-tag.vue';
+import LsFriendPanel from '../src/ls-friend-panel.vue';
 
 export {
   MsgTextType,
@@ -20,4 +22,6 @@ export {
   LsAssets,
   LsNetwork,
   LsUpdate,
+  LsUserTag,
+  LsFriendPanel,
 };

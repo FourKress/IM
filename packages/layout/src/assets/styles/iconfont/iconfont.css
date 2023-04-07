@@ -1,9 +1,9 @@
 @font-face {
   font-family: "ls-icon-font"; /* Project id 3760592 */
-  src: url('iconfont.woff2?t=1680168603024') format('woff2'),
-       url('iconfont.woff?t=1680168603024') format('woff'),
-       url('iconfont.ttf?t=1680168603024') format('truetype'),
-       url('iconfont.svg?t=1680168603024#ls-icon-font') format('svg');
+  src: url('iconfont.woff2?t=1680847526385') format('woff2'),
+       url('iconfont.woff?t=1680847526385') format('woff'),
+       url('iconfont.ttf?t=1680847526385') format('truetype'),
+       url('iconfont.svg?t=1680847526385#ls-icon-font') format('svg');
 }
 
 .ls-icon-font {
@@ -12,6 +12,30 @@
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.ls-icon-icon_gerenxinxi:before {
+  content: "\e726";
+}
+
+.ls-icon-icon_erweima:before {
+  content: "\e727";
+}
+
+.ls-icon-nan:before {
+  content: "\e724";
+}
+
+.ls-icon-nv:before {
+  content: "\e725";
+}
+
+.ls-icon-a-icon_genghuanchenggong2x1:before {
+  content: "\e723";
+}
+
+.ls-icon-logo:before {
+  content: "\e722";
 }
 
 .ls-icon-icon_duihuakuang_yuyin:before {
@@ -164,10 +188,6 @@
 
 .ls-icon-a-icon_shangchuanshenfenzheng2x:before {
   content: "\e6dd";
-}
-
-.ls-icon-a-icon_genghuanchenggong2x:before {
-  content: "\e6f4";
 }
 
 .ls-icon-a-icon_genghuantouxiang2x:before {

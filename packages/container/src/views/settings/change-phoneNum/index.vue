@@ -59,7 +59,7 @@
           <template v-if="step == 3">
             <div class="success">
               <div class="success-icon">
-                <LsIcon render-svg width="53" height="53" icon="a-icon_genghuanchenggong2x"></LsIcon>
+                <LsIcon render-svg width="53" height="53" icon="ls-icon-a-icon_genghuanchenggong2x1"></LsIcon>
               </div>
               <div class="title">手机号码更换成功！</div>
 

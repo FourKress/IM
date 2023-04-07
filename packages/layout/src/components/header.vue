@@ -51,17 +51,54 @@
           <div class="avatar">
             <img :src="userInfo.avatar" class="img" />
           </div>
-          <div class="nickname">{{ userInfo.nickname }}</div>
-          <div class="tag"></div>
+          <div class="sub-info">
+            <div class="nickname">{{ userInfo.nickname }}</div>
+            <span class="auth-tag">
+              <LsIcon
+                render-svg
+                class="tag-icon"
+                icon="a-icon_yzcg2x"
+                height="12"
+                width="12"
+              ></LsIcon>
+              <span>已实名</span>
+            </span>
+          </div>
+          <div class="more">
+            <LsIcon
+              class=""
+              :color="showQrCodeDialog ? '#0066ff' : '#999999'"
+              size="13"
+              icon="ls-icon-icon_erweima"
+              @click="showQrCode"
+            ></LsIcon>
+          </div>
         </div>
+
+        <div class="tag-wrap">
+          <LsUserTag age="24" sex="1" address="重庆渝北"></LsUserTag>
+        </div>
+
+        <div class="sign">
+          <el-input
+            type="text"
+            placeholder="编辑你的个性签名…"
+            v-model="signText"
+            maxlength="50"
+            show-word-limit
+          ></el-input>
+        </div>
+
         <div class="nav-wrap">
           <div class="row split">
-            <span class="label">个人信息</span>
+            <span class="label" @click="goToSettings">个人信息</span>
           </div>
           <div class="row">
             <span class="label" @click="goToSettings">设置</span>
-            <el-badge is-dot :hidden="!updateNotify || !updateVersion">
-            </el-badge>
+            <el-badge
+              is-dot
+              :hidden="!updateNotify || !updateVersion"
+            ></el-badge>
           </div>
           <div class="row">
             <span class="label">下载手机版</span>
@@ -78,6 +115,32 @@
         </div>
       </div>
     </LsCardDialog>
+
+    <LsCardDialog :visible.sync="showQrCodeDialog">
+      <div class="qrcode-dialog">
+        <div class="top">
+          <img :src="LsAssets.topBg" alt="" />
+        </div>
+        <div class="info">
+          <div class="avatar">
+            <img :src="userInfo.avatar" class="img" />
+          </div>
+          <div class="sub-info">
+            <div class="nickname">{{ userInfo.nickname }}</div>
+          </div>
+        </div>
+
+        <div class="qrcode-wrap">
+          <img class="qrcode" v-if="qrcodeUrl" :src="qrcodeUrl" alt="" />
+        </div>
+
+        <div class="tips">扫码二维码，添加我为联系人</div>
+        <div class="btn-list">
+          <span class="btn left" @click="handleCopy">复制图片</span>
+          <span class="btn right" @click="handleDown">下载图片</span>
+        </div>
+      </div>
+    </LsCardDialog>
   </div>
 </template>
 
@@ -89,8 +152,10 @@ import {
   LsCardDialog,
   LsAssets,
   LsNetwork,
+  LsUserTag,
 } from '@lanshu/components';
 import { ClientLogOut } from '@lanshu/im';
+import { qrcode } from '@lanshu/utils';
 
 export default {
   name: 'MainHeader',
@@ -99,6 +164,7 @@ export default {
     WindowOperate,
     LsCardDialog,
     LsNetwork,
+    LsUserTag,
   },
   computed: {
     ...mapGetters('IMStore', ['userInfo']),
@@ -109,6 +175,9 @@ export default {
       showSettingsDialog: false,
       keywords: '',
       LsAssets,
+      signText: 123123,
+      showQrCodeDialog: false,
+      qrcodeUrl: '',
     };
   },
   mounted() {},
@@ -139,6 +208,63 @@ export default {
         await ClientLogOut();
         await this.$router.push('/login');
       } catch (e) {}
+    },
+
+    showQrCode() {
+      this.showQrCodeDialog = true;
+      this.$nextTick(() => {
+        qrcode.toDataURL(
+          'asdaddassd',
+          {
+            errorCorrectionLevel: 'H',
+            width: 160,
+            height: 160,
+            margin: 0,
+          },
+          (error, url) => {
+            if (error) {
+              this.$message.error('二维码生成失败!');
+            }
+            console.log(url);
+            this.qrcodeUrl = url;
+          },
+        );
+      });
+    },
+
+    dataURLtoBlob(dataUrl) {
+      let arr = dataUrl.split(','),
+        mime = arr[0].match(/:(.*?);/)[1],
+        bStr = atob(arr[1]),
+        n = bStr.length,
+        u8arr = new Uint8Array(n);
+      while (n--) {
+        u8arr[n] = bStr.charCodeAt(n);
+      }
+      return new Blob([u8arr], { type: mime });
+    },
+
+    async handleCopy() {
+      const blob = this.dataURLtoBlob(this.qrcodeUrl);
+
+      await navigator.clipboard.write([
+        new ClipboardItem({
+          [blob.type]: blob,
+        }),
+      ]);
+      this.$message.success('二维码复制成功');
+    },
+    handleDown() {
+      const tempLink = document.createElement('a');
+      tempLink.style.display = 'none';
+      tempLink.href = this.qrcodeUrl;
+      tempLink.setAttribute(
+        'download',
+        `${this.userInfo.nickname}的蓝数IM二维码`,
+      );
+      document.body.appendChild(tempLink);
+      tempLink.click();
+      document.body.removeChild(tempLink);
     },
   },
 };
@@ -287,9 +413,10 @@ export default {
   }
 }
 
-.settings-dialog {
+.settings-dialog,
+.qrcode-dialog {
   width: 372px;
-  height: 517px;
+  height: 570px;
   background: $bg-white-color;
   box-shadow: 0px 4px 20px 0px rgba(51, 51, 51, 0.1);
   border-radius: 12px;
@@ -313,10 +440,10 @@ export default {
 
   .info {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     align-items: flex-end;
     padding: 0 30px 0 24px;
-    margin: -29px 0 34px 0;
+    margin: -29px 0 17px 0;
 
     .avatar {
       border-radius: 16px;
@@ -331,26 +458,121 @@ export default {
       }
     }
 
-    .nickname {
+    .sub-info {
       flex: 1;
-      font-size: 18px;
-      font-weight: bold;
-      color: $main-text-color;
+      display: flex;
+      align-items: center;
+      max-width: 211px;
       margin-bottom: 6px;
+
+      .nickname {
+        max-width: 140px;
+        font-size: 18px;
+        font-weight: bold;
+        color: $main-text-color;
+        margin-right: 8px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .auth-tag {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 53px;
+        height: 18px;
+        border-radius: 4px;
+        border: 1px solid $minor-color;
+        text-align: center;
+        font-size: 11px;
+        color: $minor-color;
+        line-height: 18px;
+
+        .tag-icon {
+          margin-right: 2px;
+        }
+      }
     }
 
-    .tag {
-      width: 53px;
-      height: 18px;
-      border-radius: 2px;
-      opacity: 0.5;
-      border: 1px solid $minor-color;
+    .more {
       margin-bottom: 6px;
+      cursor: pointer;
+    }
+  }
+}
+
+.settings-dialog {
+  height: 570px;
+  top: 10px;
+
+  .info {
+    .sub-info {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      max-width: 211px;
+      margin-bottom: 6px;
+
+      .nickname {
+        max-width: 140px;
+        font-size: 18px;
+        font-weight: bold;
+        color: $main-text-color;
+        margin-right: 8px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .auth-tag {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 53px;
+        height: 18px;
+        border-radius: 4px;
+        border: 1px solid $minor-color;
+        text-align: center;
+        font-size: 11px;
+        color: $minor-color;
+        line-height: 18px;
+
+        .tag-icon {
+          margin-right: 2px;
+        }
+      }
+    }
+
+    .more {
+      margin-bottom: 6px;
+      cursor: pointer;
+    }
+  }
+
+  .tag-wrap {
+    margin-left: 30px;
+  }
+
+  .sign {
+    margin: 17px 15px;
+
+    ::v-deep .el-input__inner {
+      border: none;
+      background: transparent;
+
+      &:hover {
+        background: $bg-hover-grey-color;
+      }
+    }
+
+    ::v-deep .el-input__count-inner {
+      background: transparent;
     }
   }
 
   .nav-wrap {
-    padding: 0 40px;
+    padding: 0 30px;
 
     .row {
       margin-top: 20px;
@@ -367,7 +589,7 @@ export default {
         display: block;
         width: 100%;
         border-bottom: 1px solid $split-line-color;
-        margin: 26px 0;
+        margin: 22px 0;
       }
 
       &.disabled {
@@ -377,6 +599,59 @@ export default {
 
       ::v-deep .el-badge {
         transform: translate(6px, 4px);
+      }
+    }
+  }
+}
+
+.qrcode-dialog {
+  height: 516px;
+  left: 450px;
+
+  .qrcode-wrap {
+    width: 160px;
+    height: 160px;
+    margin: 34px auto 0;
+
+    background: #333;
+
+    .qrcode {
+      display: block;
+      width: 160px;
+      height: 160px;
+    }
+  }
+
+  .tips {
+    margin: 20px 0 50px 0;
+    font-size: 14px;
+    color: $tips-text-color;
+    text-align: center;
+  }
+
+  .btn-list {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .btn {
+      width: 88px;
+      height: 34px;
+      line-height: 34px;
+      text-align: center;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+
+      &.right {
+        background: $primary-color;
+        color: #fff;
+        margin-left: 10px;
+      }
+
+      &.left {
+        background: $bg-grey-color;
+        color: $primary-color;
       }
     }
   }

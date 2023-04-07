@@ -20,7 +20,7 @@
     </div>
 
     <LsCardDialog :visible.sync="showFriendDialog">
-      <FriendPanel
+      <LsFriendPanel
         :friend-info="friendInfo"
         :position="position"
         :config="config"
@@ -29,21 +29,21 @@
         @sendVideo="handleSendVideo"
         @sendAudio="handleSendAudio"
         @resetApply="handleResetApply"
-      ></FriendPanel>
+      ></LsFriendPanel>
     </LsCardDialog>
   </div>
 </template>
 
 <script>
-import { LsCardDialog } from '@lanshu/components';
-import FriendPanel from './friend-panel.vue';
-import mixins from './mixins';
+import { LsCardDialog, LsFriendPanel } from '@lanshu/components';
+import { FriendMixins } from '@lanshu/utils';
+
 export default {
   name: 'New-Friend',
-  mixins: [mixins],
+  mixins: [FriendMixins],
   components: {
     LsCardDialog,
-    FriendPanel,
+    LsFriendPanel,
   },
   data() {
     return {
@@ -57,9 +57,9 @@ export default {
     handleResetApply() {
       this.config = {
         isExpired: false,
-        isApply: true
-      }
-    }
+        isApply: true,
+      };
+    },
   },
 };
 </script>

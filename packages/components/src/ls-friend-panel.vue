@@ -10,32 +10,40 @@
         <div class="right">
           <span class="nickname">{{ friendInfo.nickname }}</span>
           <span class="tips">
-            <span class="gender">男</span>
-            <span class="address">渝北</span>
+            <LsUserTag
+              bgColor="#fff"
+              color=""
+              age="24"
+              sex="1"
+              address="重庆渝北"
+            ></LsUserTag>
           </span>
         </div>
       </div>
 
       <div class="more-btn" v-if="!isBot">
-        <el-dropdown trigger="click" placement="bottom-end" @command="handleCommand">
+        <el-dropdown
+          trigger="click"
+          placement="bottom-end"
+          @command="handleCommand"
+        >
           <LsIcon render-svg icon="a-icon_more2x"></LsIcon>
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item command="share">
               <div class="send-down-row">
-                <LsIcon render-svg icon="pop_cd_cjql"></LsIcon>
+                <LsIcon size="14" icon="pop_cd_cjql"></LsIcon>
                 <span>转发名片</span>
               </div>
             </el-dropdown-item>
             <el-dropdown-item command="delete">
               <div class="send-down-row">
-                <LsIcon render-svg icon="pop_cd_sz"></LsIcon>
-                <span>删除好友</span>
+                <LsIcon size="14" color="red" icon="pop_cd_sz"></LsIcon>
+                <span style="color: red">删除好友</span>
               </div>
             </el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
       </div>
-
     </div>
     <div class="wrap">
       <div class="row">
@@ -71,7 +79,7 @@
           ></el-input>
         </div>
       </div>
-      <div class="row" v-if="!panelConfig.isPass">
+      <div class="row" v-if="!panelConfig.isPass && !panelConfig.isDetails">
         <span class="label">招呼</span>
         <div class="input">
           <el-input
@@ -84,13 +92,21 @@
             v-model="friendMsg"
           ></el-input>
           <div class="msg-list" v-else>
-            <div class="item">阿萨打撒十大打算鲁大师鲁大师lads拉萨大大倒萨阿斯顿</div>
-            <div class="item">阿萨打撒十大打算鲁大师鲁大师lads拉萨大大倒萨阿斯顿</div>
+            <div class="item">
+              阿萨打撒十大打算鲁大师鲁大师lads拉萨大大倒萨阿斯顿
+            </div>
+            <div class="item">
+              阿萨打撒十大打算鲁大师鲁大师lads拉萨大大倒萨阿斯顿
+            </div>
           </div>
         </div>
       </div>
-      <div class="btn" v-if="panelConfig.isApply" @click="handleSendApply">发送申请</div>
-      <div class="btn auth" v-if="panelConfig.isAuth" @click="handleSendAuth">通过验证</div>
+      <div class="btn" v-if="panelConfig.isApply" @click="handleSendApply">
+        发送申请
+      </div>
+      <div class="btn auth" v-if="panelConfig.isAuth" @click="handleSendAuth">
+        通过验证
+      </div>
       <template v-if="panelConfig.isExpired">
         <div class="btn expired">通过验证</div>
         <p class="expired-tips">
@@ -109,7 +125,9 @@
 
 <script>
 import { mapGetters } from 'vuex';
-import { LsAssets, LsIcon } from '@lanshu/components';
+import LsAssets from './assets';
+import LsIcon from './ls-icon.vue';
+import LsUserTag from './ls-user-tag.vue';
 
 export default {
   name: 'Friend-Panel',
@@ -131,13 +149,14 @@ export default {
           isApply: false,
           isAuth: false,
           isPass: false,
-        }
-      }
+          isDetails: false,
+        };
+      },
     },
     isBot: {
       type: Boolean,
       default: false,
-    }
+    },
   },
   data() {
     return {
@@ -150,11 +169,12 @@ export default {
         isApply: false,
         isAuth: false,
         isPass: false,
-      }
+      },
     };
   },
   components: {
     LsIcon,
+    LsUserTag,
   },
   computed: {
     ...mapGetters('IMStore', ['userInfo']),
@@ -163,8 +183,8 @@ export default {
       return {
         ...this.defaultConfig,
         ...this.config,
-      }
-    }
+      };
+    },
   },
   methods: {
     handleSendAuth() {
@@ -183,11 +203,11 @@ export default {
       this.$emit('sendAudio');
     },
     handleResetApply() {
-      this.$emit('resetApply')
+      this.$emit('resetApply');
     },
     handleCommand(command) {
-      console.log(command)
-    }
+      console.log(command);
+    },
   },
 };
 </script>
@@ -195,7 +215,7 @@ export default {
 <style scoped lang="scss">
 .friend-dialog {
   width: 372px;
-  //min-height: 462px;
+  min-height: 338px;
   background: $bg-white-color;
   box-shadow: 0px 4px 20px 0px rgba(51, 51, 51, 0.1);
   border-radius: 12px;
@@ -253,19 +273,6 @@ export default {
         }
 
         .tips {
-          font-size: 12px;
-          color: $tips-text-color;
-          display: flex;
-          align-items: center;
-
-          .gender {
-            padding-right: 10px;
-            border-right: 1px solid $tips-text-color;
-          }
-
-          .address {
-            padding-left: 10px;
-          }
         }
       }
     }
@@ -344,7 +351,6 @@ export default {
             height: 33px;
           }
         }
-
       }
     }
 
@@ -364,7 +370,7 @@ export default {
       }
 
       &.expired {
-        background: #87A1CD;
+        background: #87a1cd;
         border-radius: 6px;
         opacity: 0.5;
         cursor: not-allowed;

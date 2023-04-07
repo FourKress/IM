@@ -62,6 +62,7 @@ export default {
               <el-input
                 type="text"
                 clearable
+                maxlength="10"
                 placeholder="编辑昵称…"
                 onChange={(val) => this.handleNickNameChange(val)}
                 v-model={target.value}

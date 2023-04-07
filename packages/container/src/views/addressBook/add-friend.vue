@@ -42,7 +42,7 @@
     </div>
 
     <LsCardDialog :visible.sync="showFriendDialog">
-      <FriendPanel
+      <LsFriendPanel
         :friend-info="friendInfo"
         :position="position"
         :config="{ isApply: true }"
@@ -53,17 +53,15 @@
 </template>
 
 <script>
-import { formatPhoneNum, regexUtils, PhoneNumMixins } from '@lanshu/utils';
-import { LsCardDialog } from '@lanshu/components';
-import FriendPanel from './friend-panel.vue';
-import mixins from './mixins';
+import { formatPhoneNum, regexUtils, PhoneNumMixins, FriendMixins } from '@lanshu/utils';
+import { LsCardDialog, LsFriendPanel } from '@lanshu/components';
 
 export default {
   name: 'Add-friend',
-  mixins: [mixins, PhoneNumMixins],
+  mixins: [FriendMixins, PhoneNumMixins],
   components: {
     LsCardDialog,
-    FriendPanel,
+    LsFriendPanel,
   },
   data() {
     return {
