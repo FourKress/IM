@@ -20,7 +20,7 @@
       <div class="scroll-view">
         <UserInfo></UserInfo>
         <AccountCenter></AccountCenter>
-        <Notify></Notify>
+<!--        <Notify></Notify>-->
         <File></File>
 <!--        <Basic></Basic>-->
         <Privacy></Privacy>
@@ -72,11 +72,11 @@ export default {
           label: '账号中心',
           icon: 'sz_zhzx',
         },
-        {
-          key: 'Notify',
-          label: '通知',
-          icon: 'sz_tz',
-        },
+        // {
+        //   key: 'Notify',
+        //   label: '通知',
+        //   icon: 'sz_tz',
+        // },
         {
           key: 'File',
           label: '文件',
