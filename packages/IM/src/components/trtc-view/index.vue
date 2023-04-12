@@ -1,17 +1,14 @@
 <template>
   <div class="trtc-view">
-    <img
-      class="bg"
-      :src="isPc ? LsAssets.trtcBgPc : LsAssets.trtcBgMobile"
-      alt=""
-    />
-
     <div class="top">
       <span class="btn" @click="handleWindowChange(winActionType.isMin)">
         <LsIcon icon="ls-icon-icon_zuixiaohua" size="14"></LsIcon>
       </span>
       <span class="btn" @click="handleWindowChange(winActionType.isMax)">
-        <LsIcon icon="ls-icon-icon_suoxiao" size="14"></LsIcon>
+        <LsIcon
+          :icon="`ls-icon-icon_${isFull ? 'quanpin' : 'suoxiao'}`"
+          size="14"
+        ></LsIcon>
       </span>
       <span class="btn" @click="handleWindowChange(winActionType.isClose)">
         <LsIcon icon="ls-icon-icon_guanbi" size="14"></LsIcon>
@@ -92,13 +89,13 @@
       </div>
     </div>
 
-    <div
-      class="local-preview"
-      :class="isPc && 'pc'"
-      v-if="isEnterRoom"
-      ref="localTrtcContainer"
-    >
-      <div class="bg-wrap">
+    <div class="local" :class="isPc && 'pc'">
+      <div
+        class="local-preview"
+        :class="!isEnterRoom && 'full'"
+        ref="localTrtcContainer"
+      ></div>
+      <div class="local-bg" v-if="isEnterRoom">
         <img
           class="bg"
           :src="isPc ? LsAssets.trtcMePc : LsAssets.trtcBgMobile"
@@ -107,7 +104,16 @@
         <img class="avatar" :src="trtcSession.avatar" alt="" />
       </div>
     </div>
-    <div class="remote-preview" ref="remoteTrtcContainer"></div>
+
+    <div class="remote">
+      <div class="remote-preview" ref="remoteTrtcContainer"></div>
+
+      <img
+        class="remote-bg"
+        :src="isPc ? LsAssets.trtcBgPc : LsAssets.trtcBgMobile"
+        alt=""
+      />
+    </div>
 
     <div class="tips-wrap" v-if="tipsInfo.visible" :class="tipsInfo.className">
       {{ tipsInfo.text }}
@@ -119,21 +125,10 @@
 import { LsIcon, LsAssets } from '@lanshu/components';
 import { lodash } from '@lanshu/utils';
 import { renderProcess } from '@lanshu/render-process';
-import { IMCreateMsg, IMSDKMessageProvider, IMSendMessage } from '../../IM-SDK';
-import trtcCloudInstance from '../../TRTC-SDK';
-import OptBtn from './opt-btn.vue';
 import { winActionType, windowType } from '@lanshu/utils';
-
-// {
-//   1000: '发起TRTC',
-//   1001: '接听',
-//   1002: '拒绝',
-//   1003: '呼叫失败'
-//   1004: '对方未接听',
-//   1005: '主动取消',
-//   1006: '通话结束'
-//   1007: '音视频切换'
-// }
+import { IMCreateMsg, IMSDKMessageProvider, IMSendMessage } from '../../IM-SDK';
+import OptBtn from './opt-btn.vue';
+import trtcCloud from '../../TRTC-SDK';
 
 export default {
   name: 'Trtc-View',
@@ -169,14 +164,12 @@ export default {
       timer: null,
       countdown: 10,
       isEnterRoom: false,
+      isExitRoom: false,
       isVideoCall: false,
       disMicStatus: false,
       disSpeStatus: false,
       disCamStatus: false,
-      localTrtcContainer: null,
-      remoteTrtcContainer: null,
-      trtcCloud: null,
-      isPc: false,
+      isPc: true,
       debounceOptPanelVisible: null,
       optPanelVisible: true,
       tipsInfo: {},
@@ -184,7 +177,25 @@ export default {
     };
   },
   created() {
-    this.trtcCloud = trtcCloudInstance();
+    this.subscribeEvents();
+
+    // renderProcess.TRTCListener((event, message) => {
+    //   console.log('message', message);
+    //   this.stopTime();
+    //   const {
+    //     data: { trtcType },
+    //   } = message;
+    //   switch (true) {
+    //     case trtcType === 1001:
+    //       this.handleEnterRoom();
+    //       break;
+    //     case [1002, 1004, 1006].includes(trtcType):
+    //       this.handleWindowChange('close');
+    //       break;
+    //     default:
+    //       break;
+    //   }
+    // });
   },
 
   async mounted() {
@@ -192,24 +203,6 @@ export default {
       this.changeOptPanelVisible,
       3000,
     );
-
-    renderProcess.TRTCListener((event, message) => {
-      console.log(message);
-      // this.stopTime();
-      // const {
-      //   data: { trtcType },
-      // } = message;
-      // switch (true) {
-      //   case trtcType === 1001:
-      //     this.handleEnterRoom();
-      //     break;
-      //   case [1002, 1004, 1006].includes(trtcType):
-      //     this.handleWindowChange('close');
-      //     break;
-      //   default:
-      //     break;
-      // }
-    });
 
     const userInfo = await renderProcess.getStore('trtcUserInfo');
     const trtcMsg = await renderProcess.getStore('trtcMsg');
@@ -223,8 +216,6 @@ export default {
       data: { roomId },
       msgType,
     } = trtcMsg;
-
-    console.log(msgType);
 
     let remoteUserId;
 
@@ -245,15 +236,15 @@ export default {
     this.isVideoCall = this.msgType === 100;
 
     this.$nextTick(() => {
-      this.localTrtcContainer = this.$refs.localTrtcContainer;
-      this.remoteTrtcContainer = this.$refs.remoteTrtcContainer;
+      console.log(trtcCloud.getCameraDevicesList());
 
-      console.log(this.trtcCloud.getCameraDevicesList());
-
-      this.trtcCloud.startLocalAudio();
       if (this.isVideoCall) {
-        this.trtcCloud.startLocalPreview(this.remoteTrtcContainer);
+        trtcCloud.startLocalPreview(this.$refs.localTrtcContainer, this.isPc);
       }
+
+      setTimeout(() => {
+        this.handleEnterRoom();
+      }, 6000);
 
       document
         .querySelector('.trtc-view')
@@ -282,52 +273,48 @@ export default {
       }
     },
 
-    async handleWindowChange(type, trtcType) {
+    handleTRTCDestroy(trtcType) {
+      this.handleSendIMMsg(trtcType);
+      this.handleWindowChange(this.winActionType.isClose);
+    },
+
+    async handleWindowChange(type) {
       console.log(type);
       if (type !== this.winActionType.isClose) {
+        if (type === this.winActionType.isMax) {
+          this.isFull = !this.isFull;
+        }
         renderProcess.changeWindow(type, this.windowType.isTrtc);
         return;
       }
 
-      if (type === this.winActionType.isMax) {
-        this.isFull = !this.isFull;
+      if (this.isExitRoom) {
+        await renderProcess.setStore('trtcCanBeClosed', 'true');
+        trtcCloud.stopLocalPreview();
+        trtcCloud.stopLocalAudio();
+        renderProcess.changeWindow(type, this.windowType.isTrtc);
+        return;
       }
 
-      this.tipsInfo = {
-        text: '已挂断',
-        visible: true,
-        className: 'waring',
-      };
-      this.trtcCloud.stopLocalPreview();
-      this.trtcCloud.stopLocalAudio();
-      this.trtcCloud.stopAllRemoteView();
-      if (trtcType) {
-        await this.handleSendIMMsg(trtcType);
+      // 是否在房间
+      if (this.isEnterRoom) {
+        await this.handleCallEnd();
       } else {
-        // 是否在房间
-        if (this.isEnterRoom) {
-          await this.handleExitRoom();
+        // 是否是接听方
+        if (this.isBeInvited) {
+          await this.handleReject();
         } else {
-          // 是否是接听方
-          if (this.isBeInvited) {
-            await this.handleReject();
-          } else {
-            await this.handleCancel();
-          }
+          await this.handleCancel();
         }
       }
-      setTimeout(() => {
-        renderProcess.changeWindow(type, this.windowType.isTrtc);
-      }, 1000);
     },
 
     handleEnterRoom() {
-      this.trtcCloud.startLocalAudio();
-      if (this.isVideoCall) {
-        this.trtcCloud.startLocalPreview(this.localTrtcContainer);
-      }
+      this.isEnterRoom = true;
 
-      this.trtcCloud
+      trtcCloud.startLocalAudio();
+
+      trtcCloud
         .enterRoom(
           {
             userId: this.userInfo.userId,
@@ -336,24 +323,19 @@ export default {
           this.isVideoCall ? 'audio' : 'video',
         )
         .then(() => {
-          this.trtcCloud.muteRemoteAudio(this.remoteUserId, false);
+          trtcCloud.muteRemoteAudio(this.remoteUserId, false);
           if (this.isVideoCall) {
-            this.trtcCloud.startRemoteView(
+            trtcCloud.startRemoteView(
+              this.isPc,
               this.remoteUserId,
-              this.remoteTrtcContainer,
+              this.$refs.remoteTrtcContainer,
             );
           }
-          this.isEnterRoom = true;
         });
     },
 
-    async handleExitRoom() {
-      await this.trtcCloud.exitRoom().then(async () => {
-        await this.handleCallEnd;
-      });
-    },
-
     async handleSendIMMsg(trtcType) {
+      console.log('handleSendIMMsg', trtcType);
       this.stopTime();
 
       const msgData = [
@@ -374,7 +356,7 @@ export default {
     },
 
     async handleReject() {
-      await this.handleWindowChange(this.winActionType.isClose, 1002);
+      await this.handleTRTCDestroy(1002);
     },
 
     async handleResolve() {
@@ -383,35 +365,44 @@ export default {
     },
 
     async handleCancel() {
-      await this.handleWindowChange(this.winActionType.isClose, 1005);
+      await this.handleTRTCDestroy(1005);
     },
 
     async handleCallEnd() {
-      await this.handleSendIMMsg(1006);
+      await trtcCloud.exitRoom().then(() => {
+        this.isExitRoom = true;
+      });
+      await this.handleTRTCDestroy(1006);
     },
 
     async handleMicrophone() {
       this.disMicStatus = !this.disMicStatus;
-      this.trtcCloud.muteLocalAudio(this.disMicStatus);
+      trtcCloud.muteLocalAudio(this.disMicStatus);
     },
 
     async handleSpeaker() {
       this.disSpeStatus = !this.disSpeStatus;
-      this.trtcCloud.muteRemoteAudio(this.disSpeStatus, this.disSpeStatus);
+      trtcCloud.muteRemoteAudio(this.remoteUserId, this.disSpeStatus);
     },
 
     async handleCamera() {
       this.disCamStatus = !this.disCamStatus;
-      this.trtcCloud.muteLocalVideo(this.disCamStatus);
+      console.log(this.disCamStatus);
+      if (this.disCamStatus) {
+        trtcCloud.stopLocalPreview();
+      } else {
+        trtcCloud.startLocalPreview(this.$refs.localTrtcContainer, this.isPc);
+      }
+      trtcCloud.muteLocalVideo(this.disCamStatus);
     },
 
     startTime() {
-      this.timer = setInterval(() => {
+      this.timer = setInterval(async () => {
         this.countdown--;
         if (this.countdown <= 0) {
           this.stopTime();
           if (!this.isBeInvited) {
-            // this.handleWindowChange(this.winActionType.isClose, 1004);
+            await this.handleTRTCDestroy(1004);
           }
         }
       }, 1000);
@@ -424,8 +415,89 @@ export default {
       this.timer = null;
       this.countdown = 10;
     },
+
+    onUserVideoAvailable(userId, available) {
+      console.log(`onUserVideoAvailable ${userId} ${available}`);
+      if (available === 1) {
+        trtcCloud.startRemoteView(
+          this.isPc,
+          this.remoteUserId,
+          this.$refs.remoteTrtcContainer,
+        );
+      } else {
+        trtcCloud.stopRemoteView(this.remoteUserId);
+      }
+    },
+
+    onUserAudioAvailable(userId, available) {
+      console.info(
+        `onUserAudioAvailable: userId: ${userId}, available: ${available}`,
+      );
+      if (available) {
+        trtcCloud.muteRemoteAudio(this.remoteUserId, false);
+      } else {
+        trtcCloud.muteRemoteAudio(this.remoteUserId, true);
+      }
+    },
+
+    onFirstVideoFrame(uid, type, width, height) {
+      console.log(`onFirstVideoFrame: ${uid} ${type} ${width} ${height}`);
+    },
+
+    onError(errCode, errMsg) {
+      console.log('onError', errCode, errMsg);
+    },
+
+    onNetworkQuality(localQuality, remoteQuality) {
+      const localQualityTips = trtcCloud.getNetworkQualityTips(localQuality);
+      const remoteQualityTips = trtcCloud.getNetworkQualityTips(
+        remoteQuality[0],
+      );
+      if (localQualityTips?.isError && localQualityTips?.errMsg) {
+        this.tipsInfo = {
+          text: `你的${localQualityTips.errMsg}`,
+          visible: true,
+          className: 'waring',
+        };
+      }
+      if (remoteQualityTips?.isError && remoteQualityTips?.errMsg) {
+        this.tipsInfo = {
+          text: `对方的${remoteQualityTips.errMsg}`,
+          visible: true,
+          className: 'waring',
+        };
+      }
+    },
+
+    onRemoteUserLeaveRoom() {
+      this.tipsInfo = {
+        text: '对方已挂断',
+        visible: true,
+        className: 'waring',
+      };
+      this.handleWindowChange(this.winActionType.isClose);
+    },
+
+    subscribeEvents() {
+      trtcCloud.TRTC.on('onError', this.onError);
+      trtcCloud.TRTC.on('onFirstVideoFrame', this.onFirstVideoFrame);
+      trtcCloud.TRTC.on('onUserVideoAvailable', this.onUserVideoAvailable);
+      trtcCloud.TRTC.on('onUserAudioAvailable', this.onUserAudioAvailable);
+      trtcCloud.TRTC.on('onNetworkQuality', this.onNetworkQuality);
+      trtcCloud.TRTC.on('onRemoteUserLeaveRoom', this.onRemoteUserLeaveRoom);
+    },
+
+    unsubscribeEvents() {
+      trtcCloud.TRTC.off('onError', this.onError);
+      trtcCloud.TRTC.off('onFirstVideoFrame', this.onFirstVideoFrame);
+      trtcCloud.TRTC.off('onUserVideoAvailable', this.onUserVideoAvailable);
+      trtcCloud.TRTC.off('onUserAudioAvailable', this.onUserAudioAvailable);
+      trtcCloud.TRTC.off('onNetworkQuality', this.onNetworkQuality);
+      trtcCloud.TRTC.off('onRemoteUserLeaveRoom', this.onRemoteUserLeaveRoom);
+    },
   },
   destroyed() {
+    this.unsubscribeEvents();
     document
       .querySelector('.trtc-view')
       .removeEventListener('mousemove', this.handleMouseMove);
@@ -437,18 +509,6 @@ export default {
 .trtc-view {
   height: 100%;
   position: relative;
-
-  .bg {
-    display: block;
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    left: 0;
-    top: 0;
-    z-index: -1;
-    border-radius: 16px;
-    overflow: hidden;
-  }
 
   .top {
     width: 100%;
@@ -470,6 +530,10 @@ export default {
       margin-left: 18px;
       border-radius: 50%;
       cursor: pointer;
+
+      &:first-child {
+        transform: translateY(1px);
+      }
 
       -webkit-app-region: no-drag !important;
     }
@@ -620,27 +684,47 @@ export default {
     }
   }
 
-  .local-preview {
+  .local {
     position: absolute;
     top: 40px;
-    left: 20px;
+    left: 16px;
     width: 90px;
     height: 160px;
-    border-radius: 6px;
-    z-index: 9;
-    overflow: hidden;
+    z-index: 1;
 
     &.pc {
       width: 146px;
       height: 82px;
+      top: 16px;
     }
 
-    .bg-wrap {
+    .local-preview {
+      display: block;
+      width: 100%;
+      height: 100%;
+      border-radius: 6px;
+      overflow: hidden;
+
+      &.full {
+        position: fixed;
+        left: 0;
+        top: 0;
+        z-index: 1;
+      }
+    }
+
+    .local-bg {
       width: 100%;
       height: 100%;
       display: flex;
       align-items: center;
       justify-content: center;
+      position: absolute;
+      left: 0;
+      top: 0;
+      z-index: -1;
+      border-radius: 6px;
+      overflow: hidden;
 
       .avatar {
         display: block;
@@ -654,12 +738,33 @@ export default {
         left: 0;
         top: 0;
         z-index: -1;
+        display: block;
+        width: 100%;
+        height: 100%;
       }
     }
   }
 
-  .remote-preview {
+  .remote {
     height: 100%;
+
+    .remote-preview {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    .remote-bg {
+      display: block;
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      left: 0;
+      top: 0;
+      z-index: -1;
+      border-radius: 16px;
+      overflow: hidden;
+    }
   }
 
   .tips-wrap {

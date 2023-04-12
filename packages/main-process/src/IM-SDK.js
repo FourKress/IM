@@ -21,7 +21,6 @@ export const IMSDKInit = (appId) => {
 
   IMSDK.getMainProvider().setNetworkChangeCallBack((state) => {
     // state 网络状态 0：正在连接、-1：连接断开、1：连接成功
-    console.log('Network', state);
     global.mainWindow.webContents.send('IMSDKListener', {
       type: 'Network',
       value: state,
@@ -30,7 +29,6 @@ export const IMSDKInit = (appId) => {
 
   IMSDK.getMainProvider().setDataSyncCallBack((state) => {
     // state 同步状态 1、同步中，2、同步完成，3、同步失败
-    console.log('DataSync', state);
     global.mainWindow.webContents.send('IMSDKListener', {
       type: 'DataSync',
       value: state,
@@ -38,7 +36,6 @@ export const IMSDKInit = (appId) => {
   });
 
   IMSDK.getMainProvider().setConvEventCallBack(async (convList) => {
-    console.log('UpdateConvList', convList);
     await global.store.set('convList', convList);
     global.mainWindow.webContents.send('IMSDKListener', {
       type: 'UpdateConvList',
@@ -48,7 +45,6 @@ export const IMSDKInit = (appId) => {
 
   IMSDK.getMainProvider().setConvTotalUnreadMessageCountChangeCallBack(
     (totalUnredMessageCount) => {
-      console.log('ConvTotalUnreadMessageCount', totalUnredMessageCount);
       global.mainWindow.webContents.send('IMSDKListener', {
         type: 'ConvTotalUnreadMessageCount',
         value: totalUnredMessageCount,
@@ -57,7 +53,6 @@ export const IMSDKInit = (appId) => {
   );
 
   IMSDK.getMainProvider().setKickOutedOfflineCallBack((info) => {
-    console.log('KickOutedOffline', info);
     global.mainWindow.webContents.send('IMSDKListener', {
       type: 'KickOutedOffline',
       value: info,
@@ -65,7 +60,6 @@ export const IMSDKInit = (appId) => {
   });
 
   IMSDK.getMainProvider().setLogOutCallBack((level, str) => {
-    console.log('LogOutCallBack', { level, str });
     global.mainWindow.webContents.send('IMSDKListener', {
       type: 'LogOutCallBack',
       value: {
@@ -120,7 +114,6 @@ export const IMSDKEvent = async (provider, event, data) => {
       res = await global.IMSDK[provider]()[event](...data);
     }
     electronLog.info(JSON.stringify(res));
-    console.log(res);
     return res;
   } catch (e) {
     electronLog.info(JSON.stringify(e));

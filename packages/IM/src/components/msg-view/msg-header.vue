@@ -125,9 +125,8 @@ export default {
 
       await renderProcess.setStore('trtcMsg', msg);
       await renderProcess.setStore('trtcSession', this.session);
-      await renderProcess.setStore('trtcUserInfo', this.userInfo);
 
-      renderProcess.openTRTCWindow(clientType.isMobile);
+      renderProcess.openTRTCWindow(clientType.isPc);
     },
 
     handleCloseSession() {

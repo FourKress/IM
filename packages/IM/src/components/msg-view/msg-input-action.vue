@@ -323,6 +323,9 @@ export default {
     async handleIMSendMsg(msg, cb) {
       await IMSendMessage(msg).then((res) => {
         console.log('消息发送成功', res);
+      }).catch(() => {
+        this.$message.error('消息发送失败')
+      }).finally(() => {
         this.$emit('refreshMsg');
         cb && cb();
       });

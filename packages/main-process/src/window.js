@@ -141,12 +141,21 @@ export const openTRTCWindow = async (type = clientType.isPc) => {
     TRTCWindow.show();
   });
 
+  TRTCWindow.on('close', (event) => {
+    const trtcCanBeClosed = global.store.get('trtcCanBeClosed');
+    if (!trtcCanBeClosed) {
+      event.preventDefault();
+      TRTCWindow.webContents.send('mainProcessError', '请先结束当前通话');
+      return;
+    }
+  });
+
   TRTCWindow.on('closed', () => {
     console.log('TRTCWindow Close');
     TRTCWindow = null;
     global.TRTCWindow = null;
-    global.store.delete('trtcUserInfo');
     global.store.delete('trtcMsg');
     global.store.delete('trtcSession');
+    global.store.delete('trtcCanBeClosed');
   });
 };

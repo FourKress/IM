@@ -12,14 +12,12 @@ import TRTCCloud, {
   TRTCVideoResolutionMode,
   TRTCNetworkQosParam,
   TRTCVideoQosPreference,
+  TRTCQuality,
 } from 'trtc-electron-sdk';
 import { genUserSig } from './utils';
-import { registryCallback } from './callback';
 
 const trtcCloudInstance = () => {
   const trtcCloud = new TRTCCloud();
-
-  registryCallback(trtcCloud);
 
   const enterRoom = (params, type) => {
     return new Promise((resolve, reject) => {
@@ -205,7 +203,37 @@ const trtcCloudInstance = () => {
     return trtcCloud.getCameraDevicesList();
   };
 
+  const getNetworkQualityTips = (quality) => {
+    if (
+      [
+        TRTCQuality.TRTCQuality_Good,
+        TRTCQuality.TRTCQuality_Excellent,
+      ].includes(quality)
+    ) {
+      return {
+        isError: false,
+        errMsg: '',
+      };
+    }
+
+    if (quality === TRTCQuality.TRTCQuality_Unknown) {
+      return {
+        isError: true,
+        errMsg: '网络状态异常',
+      };
+    }
+
+    if (quality === TRTCQuality.TRTCQuality_Unknown) {
+      return {
+        isError: true,
+        errMsg: '网络质量差',
+      };
+    }
+  };
+
   return {
+    TRTC: trtcCloud,
+
     enterRoom,
     exitRoom,
     startLocalPreview,
@@ -232,7 +260,8 @@ const trtcCloudInstance = () => {
     enableAudioVolumeEvaluation,
     setRemoteAudioVolume,
     getCameraDevicesList,
+    getNetworkQualityTips,
   };
 };
 
-export default trtcCloudInstance;
+export default trtcCloudInstance();
