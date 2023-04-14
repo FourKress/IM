@@ -19,6 +19,7 @@ registerMicroApps(apps, {
   beforeLoad: (app) => {
     console.log('before load', app.name);
     stareInstance.commit('globalStore/setMicroLoadStatus', true);
+    stareInstance.commit('globalStore/setMicroLoadPool', app.name);
     return Promise.resolve();
   },
   // qiankun 生命周期钩子 - 微应用挂载后

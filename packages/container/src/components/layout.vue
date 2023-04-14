@@ -14,7 +14,7 @@
 <script>
 import MainMenu from './menu';
 import { microAppPathMark } from '@lanshu/utils';
-import { mapGetters } from 'vuex';
+import { mapGetters, mapActions } from 'vuex';
 
 export default {
   name: 'MainLayout',
@@ -28,12 +28,13 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('globalStore', ['microLoadStatus']),
+    ...mapGetters('globalStore', ['microLoadStatus', 'microLoadPool']),
 
     isMicro() {
       const path = this.$route.path;
       const isMicro = path.includes(microAppPathMark);
-      if (isMicro) {
+      const isLoaded = this.microLoadPool.some(d => path.includes(d));
+      if (isMicro && !isLoaded) {
         this.handleMicroLoading(true)
       }
       return isMicro;
@@ -43,10 +44,13 @@ export default {
     microLoadStatus(val) {
       if (!val) {
         this.handleMicroLoading(false);
+        this.setMicroLoadStatus(true);
       }
     }
   },
   methods: {
+    ...mapActions('globalStore', ['setMicroLoadStatus']),
+
     handleMicroLoading(isOpen) {
       if (!isOpen) {
         this.microLoading?.close();
@@ -57,7 +61,7 @@ export default {
         lock: true,
         text: '应用加载中',
         spinner: 'el-icon-loading',
-        background: 'rgba(0, 0, 0, 0.7)',
+        background: 'rgba(0, 0, 0, 0.5)',
       })
     }
   }
