@@ -17,7 +17,6 @@ Vue.config.unwrapInjectedRef = true;
 Vue.use(ElementUI);
 Vue.use(LsConfirm);
 window.ClientMessage = Message;
-
 const Layout = (config = {}) => {
   return new Promise(async (resolve, reject) => {
     const { menu, routes, plugin, platform, store } = config;

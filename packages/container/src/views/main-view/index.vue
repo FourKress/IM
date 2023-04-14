@@ -10,6 +10,7 @@
 import { MainSideBar } from '@lanshu/sidebar';
 import { MainIM } from '@lanshu/im';
 import { MainPlugIn } from '@lanshu/plugin';
+import startQiankun from '../../micro'
 
 export default {
   name: 'MainView',
@@ -26,6 +27,11 @@ export default {
   created() {
     // 获取入口是否传入Plugin项
     this.hasPlugin = JSON.parse(localStorage.getItem('hasPlugin') || 'false');
+  },
+  mounted() {
+    this.$nextTick(() => {
+      startQiankun();
+    })
   }
 };
 </script>

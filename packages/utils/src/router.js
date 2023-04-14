@@ -15,7 +15,6 @@ const whitelist = ['Login', 'TRTC'];
 const routerIntercept = () => {
   return async (to, form, next) => {
     try {
-      // return next();
       if (whitelist.includes(to.name)) return next();
       const token = checkToken();
       // const { userInfo } = stareInstance.state.globalStore;

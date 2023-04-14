@@ -21,7 +21,12 @@
         </span>
         <span>{{ item.label }}</span>
 
-        <el-badge v-if="getBadge(item)" :value="getBadge(item)" :max="99" class="count"></el-badge>
+        <el-badge
+          v-if="getBadge(item)"
+          :value="getBadge(item)"
+          :max="99"
+          class="count"
+        ></el-badge>
       </div>
     </div>
     <div class="update" v-if="updateVersion" @click="handleUpdate">
@@ -54,6 +59,8 @@ import BaseRoutes from '../router';
 import { LsIcon, LsCardDialog, LsAssets } from '@lanshu/components';
 import { renderProcess } from '@lanshu/render-process';
 import { mapGetters, mapActions } from 'vuex';
+import microRouter from '../micro/router';
+import { microAppPathMark } from '@lanshu/utils';
 
 export default {
   name: 'MainMenu',
@@ -77,14 +84,18 @@ export default {
   },
   watch: {
     $route(val) {
-      this.activePath = val.path;
+      const { path = '' } = val;
+      const isMicro = path.includes(microAppPathMark);
+      const regExp = new RegExp('\/[a-zA-Z]+' + microAppPathMark, 'g');
+      this.activePath = isMicro ? path.match(regExp)[0] : path;
     },
   },
   created() {
     // 获取入口传入的Menu项
     const pluginMenu = JSON.parse(localStorage.getItem('menu') || '[]');
 
-    this.navList = BaseRoutes.filter((r) => r?.meta?.isMenu)
+    this.navList = [...BaseRoutes, ...microRouter]
+      .filter((r) => r?.meta?.isMenu)
       .map((r) => {
         const meta = r?.meta;
         return {
@@ -118,8 +129,8 @@ export default {
     getBadge(item) {
       if (!['/', '/addressBook'].includes(item.path)) return 0;
       if (item.path === '/') return this.allUnreadCount;
-      if(item.path === '/addressBook') return this.newFriendCount;
-    }
+      if (item.path === '/addressBook') return this.newFriendCount;
+    },
   },
 };
 </script>

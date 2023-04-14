@@ -1,3 +1,5 @@
+export * from './micro';
+
 export const checkMsgType = {
   isText: 'text',
   isImage: 'image',
