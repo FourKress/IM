@@ -87,12 +87,13 @@ const trtcCloudInstance = () => {
   };
 
   const startRemoteView = (
+    isPc,
     userId,
     cameraView,
     videoType = TRTCVideoStreamType.TRTCVideoStreamTypeBig,
   ) => {
     setRemoteRenderParams(userId);
-    setVideoEncoderParam();
+    setVideoEncoderParam(isPc);
     trtcCloud.startRemoteView(userId, cameraView, videoType);
   };
 
@@ -133,9 +134,9 @@ const trtcCloudInstance = () => {
     trtcCloud.setLocalRenderParams(param);
   };
 
-  const startLocalPreview = (cameraVideoDom) => {
+  const startLocalPreview = (cameraVideoDom, isPc) => {
     setLocalRenderParams();
-    setVideoEncoderParam();
+    setVideoEncoderParam(isPc);
     trtcCloud.startLocalPreview(cameraVideoDom);
   };
 
@@ -152,12 +153,16 @@ const trtcCloudInstance = () => {
     trtcCloud.stopLocalAudio();
   };
 
-  const setVideoEncoderParam = () => {
+  const setVideoEncoderParam = (isPc) => {
     const params = new TRTCVideoEncParam();
     params.videoResolution = TRTCVideoResolution.TRTCVideoResolution_640_360;
-    params.resMode = TRTCVideoResolutionMode.TRTCVideoResolutionModePortrait;
-    params.videoFps = 20;
-    params.videoBitrate = 550;
+    if (isPc) {
+      params.resMode = TRTCVideoResolutionMode.TRTCVideoResolutionModeLandscape;
+    } else {
+      params.resMode = TRTCVideoResolutionMode.TRTCVideoResolutionModePortrait;
+    }
+    params.videoFps = 24;
+    params.videoBitrate = 1300;
     params.enableAdjustRes = true;
     trtcCloud.setVideoEncoderParam(params);
   };

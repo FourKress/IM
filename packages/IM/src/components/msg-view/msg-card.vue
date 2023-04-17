@@ -167,6 +167,7 @@ export default {
 
     &.text {
       user-select: text;
+      word-break: break-all;
     }
   }
 

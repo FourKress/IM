@@ -46,7 +46,7 @@
       <LsFriendPanel
         :friend-info="friendInfo"
         :position="position"
-        :config="{ isDetails: true }"
+        :config="{ isPass: true }"
         @sendMsg="handleSendMsg"
         @sendVideo="handleSendVideo"
         @sendAudio="handleSendAudio"
