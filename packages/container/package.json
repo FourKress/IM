@@ -22,11 +22,12 @@
   "dependencies": {
     "@lanshu/components": "^0.1.22",
     "@lanshu/im": "^0.1.22",
+    "@lanshu/micro": "file:../../../lanshu-micro",
     "@lanshu/plugin": "^0.1.21",
     "@lanshu/render-process": "^0.1.22",
     "@lanshu/sidebar": "^0.1.22",
     "@lanshu/utils": "^0.1.22",
-    "qiankun": "^2.10.5"
+    "vuex": "^3.6.2"
   },
   "gitHead": "3ddb0ea8d7a74c51e724ecaebae05919607c9513"
 }

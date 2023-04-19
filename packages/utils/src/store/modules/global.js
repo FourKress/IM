@@ -9,8 +9,6 @@ const state = {
   updateVersion: '',
   startDownload: false,
   updateNotify: JSON.parse(localStorage.getItem('updateNotify') || 'false'),
-  microLoadStatus: false,
-  microLoadPool: [],
 };
 
 const getters = {
@@ -20,8 +18,6 @@ const getters = {
   updateVersion: (state) => state.updateVersion,
   startDownload: (state) => state.startDownload,
   updateNotify: (state) => state.updateNotify,
-  microLoadStatus: (state) => state.microLoadStatus,
-  microLoadPool: (state) => state.microLoadPool,
 };
 
 const mutations = {
@@ -51,12 +47,6 @@ const mutations = {
     data.updateNotify = value;
     localStorage.setItem('updateNotify', value);
   },
-  setMicroLoadStatus(data, value) {
-    data.microLoadStatus = value;
-  },
-  setMicroLoadPool(data, value) {
-    data.microLoadPool.push(value);
-  },
 };
 
 const actions = {
@@ -77,12 +67,6 @@ const actions = {
   },
   setUpdateNotify({ commit }, value) {
     commit('setUpdateNotify', value);
-  },
-  setMicroLoadStatus({ commit }, value) {
-    commit('setMicroLoadStatus', value);
-  },
-  setMicroLoadPool({ commit }, value) {
-    commit('setMicroLoadPool', value);
   },
 };
 

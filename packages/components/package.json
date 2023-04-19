@@ -20,7 +20,8 @@
   ],
   "scripts": {},
   "dependencies": {
-    "@lanshu/utils": "^0.1.22"
+    "@lanshu/utils": "^0.1.22",
+    "vuex": "^3.6.2"
   },
   "gitHead": "ac47d6a3512b4a4fe1e93557ded0afdf31bd448e"
 }

@@ -22,7 +22,7 @@
         <AuthCode ref="authCode" @inputComplete="handleInputComplete" />
       </div>
 
-<!--      <OtherLogin @wechatLogin="handleWechatLogin" />-->
+      <!--      <OtherLogin @wechatLogin="handleWechatLogin" />-->
     </template>
 
     <template v-else>
@@ -42,6 +42,7 @@ import { renderProcess } from '@lanshu/render-process';
 import OtherLogin from './other-login';
 import AuthCode from '../../components/authCode';
 import { LsIcon } from '@lanshu/components';
+import { microShared } from '@lanshu/micro';
 
 export default {
   name: 'Send-login',
@@ -117,6 +118,8 @@ export default {
           // userId: '9999999',
           userId: '123454321',
         });
+
+        microShared.setToken(token);
 
         this.$router.push('/');
         this.clearBreadCrumb();

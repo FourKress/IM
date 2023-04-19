@@ -1,4 +1,5 @@
-import { microKeyMap, mergeMicroAppMark } from '@lanshu/utils';
+import { microKeyMap } from '@lanshu/utils';
+import { initMicroRoutes } from '@lanshu/micro';
 
 const microRoutes = [
   {
@@ -10,12 +11,14 @@ const microRoutes = [
       activeIcon: 'menu_txl_sel',
     },
   },
+  {
+    key: microKeyMap.KnowledgeBase,
+    meta: {
+      isMenu: true,
+      name: '知识库',
+      disableIcon: 'menu_txl_nor',
+      activeIcon: 'menu_txl_sel',
+    },
+  },
 ];
-export default microRoutes.map((d) => {
-  const { key } = d;
-  return {
-    ...d,
-    name: mergeMicroAppMark(key),
-    path: mergeMicroAppMark(`/${key}`),
-  };
-});
+export default initMicroRoutes(microRoutes);

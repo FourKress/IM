@@ -1,8 +1,4 @@
-import {
-  getMicroActiveRule,
-  mergeMicroAppMark,
-  microKeyMap,
-} from '@lanshu/utils';
+import { microKeyMap } from '@lanshu/utils';
 
 const microAppConfigs = [
   /**
@@ -12,22 +8,13 @@ const microAppConfigs = [
    * activeRule: 微应用触发的路由规则 - 触发路由规则后将加载该微应用
    */
   {
-    name: mergeMicroAppMark(microKeyMap.System),
+    key: microKeyMap.System,
     entry: '//localhost:5000/',
-    activeRule: mergeMicroAppMark(`#/${microKeyMap.System}`),
+  },
+  {
+    key: microKeyMap.KnowledgeBase,
+    entry: '//localhost:7777/',
   },
 ];
 
-const apps = microAppConfigs.map((app) => {
-  const { activeRule } = app;
-  return {
-    ...app,
-    container: mergeMicroAppMark('#'),
-    activeRule: getMicroActiveRule(activeRule),
-    props: {
-      prefixPath: activeRule.replace('#', ''),
-    },
-  };
-});
-
-export default apps;
+export default microAppConfigs;

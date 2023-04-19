@@ -15,6 +15,7 @@
 import MainMenu from './menu';
 import { microAppPathMark } from '@lanshu/utils';
 import { mapGetters, mapActions } from 'vuex';
+import microStore from '../micro/microStore';
 
 export default {
   name: 'MainLayout',
@@ -25,17 +26,21 @@ export default {
     return {
       microContainerId: microAppPathMark,
       microLoading: null,
-    }
+    };
   },
   computed: {
-    ...mapGetters('globalStore', ['microLoadStatus', 'microLoadPool']),
+    ...mapGetters('microStore', [
+      'microLoadStatus',
+      'microLoadPool',
+      'microSharedState',
+    ]),
 
     isMicro() {
       const path = this.$route.path;
       const isMicro = path.includes(microAppPathMark);
-      const isLoaded = this.microLoadPool.some(d => path.includes(d));
+      const isLoaded = this.microLoadPool.some((d) => path.includes(d));
       if (isMicro && !isLoaded) {
-        this.handleMicroLoading(true)
+        this.handleMicroLoading(true);
       }
       return isMicro;
     },
@@ -46,10 +51,19 @@ export default {
         this.handleMicroLoading(false);
         this.setMicroLoadStatus(true);
       }
-    }
+    },
+    microSharedState: {
+      deep: true,
+      handler(val) {
+        console.log('microSharedState', val);
+      },
+    },
+  },
+  mounted() {
+    microStore.subscribe();
   },
   methods: {
-    ...mapActions('globalStore', ['setMicroLoadStatus']),
+    ...mapActions('microStore', ['setMicroLoadStatus']),
 
     handleMicroLoading(isOpen) {
       if (!isOpen) {
@@ -62,9 +76,13 @@ export default {
         text: '应用加载中',
         spinner: 'el-icon-loading',
         background: 'rgba(0, 0, 0, 0.5)',
-      })
-    }
-  }
+      });
+    },
+  },
+
+  destroyed() {
+    microStore.unsubscribe();
+  },
 };
 </script>
 
