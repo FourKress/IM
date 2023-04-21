@@ -58,7 +58,7 @@ const Layout = (config = {}) => {
         render: (h) => h(App),
         router: generateRoute(Vue, completeRoutes),
         store: generateStore(Vue, completeStore),
-      }).$mount('#app'),
+      }).$mount('#lanshu-app'),
     );
   });
 };

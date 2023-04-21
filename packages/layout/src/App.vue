@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="lanshu-app">
     <MainLayout />
 
     <LsCardDialog :visible.sync="visibleUpdate" :is-modal-close="false">
@@ -100,7 +100,7 @@ body {
   overflow: hidden;
 }
 
-#app {
+#lanshu-app {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   transform: translate3d(0, 0, 0);

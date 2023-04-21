@@ -14,6 +14,7 @@
 import MainMenu from './menu';
 import { MicroSharedObservable, microLoadingMixins } from '@lanshu/micro';
 import { microContainer } from '@lanshu/utils';
+import { mapGetters } from 'vuex';
 
 export default {
   name: 'MainLayout',
@@ -26,7 +27,9 @@ export default {
       microContainer,
     };
   },
-  computed: {},
+  computed: {
+    ...mapGetters('microVuexStore', ['microSharedState']),
+  },
   watch: {
     microSharedState: {
       deep: true,
