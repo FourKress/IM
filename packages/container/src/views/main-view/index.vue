@@ -11,7 +11,6 @@ import { MainSideBar } from '@lanshu/sidebar';
 import { MainIM } from '@lanshu/im';
 import { MainPlugIn } from '@lanshu/plugin';
 import { startQiankun } from '@lanshu/micro';
-import { mapActions } from 'vuex';
 import microAppConfigs from '../../micro/apps';
 
 export default {
@@ -34,20 +33,17 @@ export default {
     this.$nextTick(() => {
       startQiankun(microAppConfigs, {
         beforeLoadHandler: (app) => {
-          this.setMicroLoadStatus(true);
-          this.setMicroLoadPool(app?.name);
+          console.log('主应用 beforeLoadHandler')
         },
         afterMountHandler: () => {
-          this.setMicroLoadStatus(false);
+          console.log('主应用 afterMountHandler')
         },
         globalErrorHandler: () => {
           window.ClientMessage.error('微应用加载失败，请检查应用是否可运行');
+          console.log('主应用 globalErrorHandler')
         },
       });
     });
-  },
-  methods: {
-    ...mapActions('microStore', ['setMicroLoadStatus', 'setMicroLoadPool']),
   },
 };
 </script>

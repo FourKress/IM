@@ -1,5 +1,4 @@
 import { microKeyMap } from '@lanshu/utils';
-import { initMicroRoutes } from '@lanshu/micro';
 
 const microRoutes = [
   {
@@ -21,4 +20,12 @@ const microRoutes = [
     },
   },
 ];
-export default initMicroRoutes(microRoutes);
+export default microRoutes.map((d) => {
+  const { key } = d;
+  return {
+    ...d,
+    name: key,
+    path: `/${key}`,
+  };
+});
+1;

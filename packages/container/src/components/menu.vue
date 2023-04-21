@@ -60,7 +60,7 @@ import { LsIcon, LsCardDialog, LsAssets } from '@lanshu/components';
 import { renderProcess } from '@lanshu/render-process';
 import { mapGetters, mapActions } from 'vuex';
 import microRouter from '../micro/router';
-import { microAppPathMark } from '@lanshu/utils';
+import { microAppPathMark } from '@lanshu/micro';
 
 export default {
   name: 'MainMenu',

@@ -1,8 +1,7 @@
 import Vuex from 'vuex';
-
+import { microVuexStore, MicroVuexStoreModule } from '@lanshu/micro';
 import globalStore from './modules/global.js';
 import routerStore from './modules/router.js';
-import microStore from './modules/micro';
 
 let stareInstance = null;
 
@@ -13,12 +12,14 @@ const generateStore = (Vue, stores) => {
     modules: {
       globalStore,
       routerStore,
-      microStore,
+      microVuexStore,
       ...stores,
     },
   });
 
   stareInstance = store;
+  // 把store实例注册到微应用依赖
+  MicroVuexStoreModule.setStore(stareInstance);
 
   return store;
 };

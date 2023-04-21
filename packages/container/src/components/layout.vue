@@ -3,8 +3,7 @@
     <div class="container">
       <MainMenu />
       <div class="view-container">
-        <div :id="microContainerId" v-if="isMicro"></div>
-        <div class="micro-bg" v- v-if="isMicro"></div>
+        <div :id="microContainer" class="micro-app" v-if="isMicro"></div>
         <router-view class="router-view" v-else />
       </div>
     </div>
@@ -13,45 +12,22 @@
 
 <script>
 import MainMenu from './menu';
-import { microAppPathMark } from '@lanshu/utils';
-import { mapGetters, mapActions } from 'vuex';
-import microStore from '../micro/microStore';
+import { MicroSharedObservable, microLoadingMixins } from '@lanshu/micro';
+import { microContainer } from '@lanshu/utils';
 
 export default {
   name: 'MainLayout',
   components: {
     MainMenu,
   },
+  mixins: [microLoadingMixins],
   data() {
     return {
-      microContainerId: microAppPathMark,
-      microLoading: null,
+      microContainer,
     };
   },
-  computed: {
-    ...mapGetters('microStore', [
-      'microLoadStatus',
-      'microLoadPool',
-      'microSharedState',
-    ]),
-
-    isMicro() {
-      const path = this.$route.path;
-      const isMicro = path.includes(microAppPathMark);
-      const isLoaded = this.microLoadPool.some((d) => path.includes(d));
-      if (isMicro && !isLoaded) {
-        this.handleMicroLoading(true);
-      }
-      return isMicro;
-    },
-  },
+  computed: {},
   watch: {
-    microLoadStatus(val) {
-      if (!val) {
-        this.handleMicroLoading(false);
-        this.setMicroLoadStatus(true);
-      }
-    },
     microSharedState: {
       deep: true,
       handler(val) {
@@ -60,28 +36,13 @@ export default {
     },
   },
   mounted() {
-    microStore.subscribe();
+    this.loadingTarget = '.view-container';
+    MicroSharedObservable.subscribe();
   },
-  methods: {
-    ...mapActions('microStore', ['setMicroLoadStatus']),
-
-    handleMicroLoading(isOpen) {
-      if (!isOpen) {
-        this.microLoading?.close();
-        return;
-      }
-      this.microLoading = this.$loading({
-        target: '.view-container',
-        lock: true,
-        text: '应用加载中',
-        spinner: 'el-icon-loading',
-        background: 'rgba(0, 0, 0, 0.5)',
-      });
-    },
-  },
+  methods: {},
 
   destroyed() {
-    microStore.unsubscribe();
+    MicroSharedObservable.unsubscribe();
   },
 };
 </script>
@@ -113,12 +74,6 @@ export default {
         background-color: $bg-white-color;
       }
 
-      .micro-bg {
-        position: absolute;
-        left: 0;
-        top: 0;
-      }
-
       ::v-deep .el-icon-loading {
         font-size: 20px;
       }
@@ -128,7 +83,7 @@ export default {
 </style>
 
 <style lang="scss">
-#MicroApp {
+.micro-app {
   width: 100%;
 
   & > div {

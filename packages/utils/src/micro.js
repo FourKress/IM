@@ -1,5 +1,10 @@
-export const microAppPathMark = 'MicroApp';
+import { microAppPathMark } from '@lanshu/micro';
+
+const mergePathMark = (key) => `${key}${microAppPathMark}`;
+
+export const microContainer = `Main${microAppPathMark}`;
+
 export const microKeyMap = {
-  System: 'System',
-  KnowledgeBase: 'KnowledgeBase',
+  System: mergePathMark('System'),
+  KnowledgeBase: mergePathMark('KnowledgeBase'),
 };
