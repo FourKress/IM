@@ -122,6 +122,23 @@ export const IMSDKEvent = async (provider, event, data) => {
   }
 };
 
+export const IMSDKNetworkCallEvent = async (event, data) => {
+  console.log(event, data);
+  try {
+    const res = await global.IMSDK.getNetworkPhoneProvider()[event](
+      ...data,
+      (uuid, state) => {
+        console.log('挂断回调：', uuid, state);
+      },
+    );
+    electronLog.info(JSON.stringify(res));
+    return res;
+  } catch (e) {
+    electronLog.info(JSON.stringify(e));
+    return e;
+  }
+};
+
 export const IMSDK_Destroy = async () => {
   await IMSDK.getMainProvider().destroy();
 };

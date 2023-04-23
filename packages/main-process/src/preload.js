@@ -35,6 +35,8 @@ window.electronAPI = {
   updateClient: (callback) => ipcRenderer.on('updateClient', callback),
   IMSDKIPC: (provider, event, ...data) =>
     ipcRenderer.invoke('IMSDKIPC', provider, event, data),
+  IMSDKNetworkCall: (event, ...data) =>
+    ipcRenderer.invoke('IMSDKNetworkCall', event, data),
   IMSDKListener: (callback) => ipcRenderer.on('IMSDKListener', callback),
   openTRTCWindow: (clientType) =>
     ipcRenderer.send('openTRTCWindow', clientType),

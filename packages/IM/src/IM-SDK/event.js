@@ -6,6 +6,7 @@ import {
   IMSDKGroupProvider,
   IMSDKMainProvide,
   IMSDKMessageProvider,
+  IMSDKNetworkPhoneProvider,
   IMSDKUserProvider,
 } from './provide';
 
@@ -240,3 +241,24 @@ export const IMSearchUserProfileOfPhone = async (phone) =>
     IMSDKUserProvider.events.searchUserProfileOfPhone,
     phone,
   );
+
+export const IMStartNetworkCall = async (toUserId, toUserType, type, data) => {
+  const res = await renderProcess.IMSDKNetworkCall(
+    IMSDKNetworkPhoneProvider.provider,
+    IMSDKNetworkPhoneProvider.events.startNetworkCall,
+    toUserId,
+    toUserType,
+    type,
+    data,
+  );
+  console.log('IMSDKNetworkCall', res);
+  // await eventHOCFnc(
+  //   IMSDKUserProvider.provider,
+  //   IMSDKUserProvider.events.searchUserProfileOfPhone,
+  //   toUserId,
+  //   toUserType,
+  //   type,
+  //   data,
+  //   callback,
+  // );
+};

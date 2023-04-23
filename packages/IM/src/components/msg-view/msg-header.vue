@@ -17,14 +17,14 @@
         <LsIcon
           render-svg
           icon="a-icon_sp2x"
-          @click="handleStartTrtc(isVideo)"
+          @click="handleStartTrtc(callType.isVideo)"
         ></LsIcon>
       </div>
       <div class="btn">
         <LsIcon
           render-svg
           icon="a-icon_yy2x"
-          @click="handleStartTrtc(isAudio)"
+          @click="handleStartTrtc(callType.isAudio)"
         ></LsIcon>
       </div>
       <div class="btn">
@@ -67,9 +67,8 @@
 <script>
 import { mapActions, mapGetters } from 'vuex';
 import { LsIcon } from '@lanshu/components';
-import { IMHeaderMoreBtnKey, sessionUserType, clientType } from '@lanshu/utils';
+import { IMHeaderMoreBtnKey, sessionUserType, clientType, callType } from '@lanshu/utils';
 import { renderProcess } from '@lanshu/render-process';
-import { IMCreateMsg, IMSendMessage, IMSDKMessageProvider } from '../../IM-SDK';
 
 export default {
   name: 'Msg-header',
@@ -79,8 +78,7 @@ export default {
   data() {
     return {
       IMHeaderMoreBtnKey,
-      isVideo: 100,
-      isAudio: 200,
+      callType,
     };
   },
   computed: {
@@ -106,25 +104,30 @@ export default {
       });
     },
 
-    async handleStartTrtc(msgType) {
-      const msgData = [
-        this.session.toUser, //消息接收方，为会话列表中的toUser
-        this.session.toUserType, //消息接收方类型，为会话列表中的toUserType];
-        msgType,
-        {
-          trtcType: 1000,
-          roomId: 999,
-        },
-      ];
-      const msg = await IMCreateMsg(
-        IMSDKMessageProvider.events.createCustomMessage,
-        msgData,
-      );
+    async handleStartTrtc(callType) {
+      // const msgData = [
+      //   this.session.toUser, //消息接收方，为会话列表中的toUser
+      //   this.session.toUserType, //消息接收方类型，为会话列表中的toUserType];
+      //   msgType,
+      //   {
+      //     trtcType: 1000,
+      //     roomId: 999,
+      //   },
+      // ];
+      // const msg = await IMCreateMsg(
+      //   IMSDKMessageProvider.events.createCustomMessage,
+      //   msgData,
+      // );
+      //
+      // await IMSendMessage(msg);
+      //
+      // await renderProcess.setStore('trtcMsg', msg);
 
-      await IMSendMessage(msg);
-
-      await renderProcess.setStore('trtcMsg', msg);
       await renderProcess.setStore('trtcSession', this.session);
+      await renderProcess.setStore('trtcCallInfo', {
+        callType,
+        isBeInvited: false,
+      });
 
       renderProcess.openTRTCWindow(clientType.isPc);
     },

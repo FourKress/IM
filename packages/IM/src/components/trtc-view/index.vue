@@ -19,7 +19,7 @@
       <div class="info">
         <span class="name">{{ trtcSession.nickname }}</span>
         <span class="tips">
-          {{ isBeInvited ? `邀请你${callType}通话` : '等待对方接听' }}...
+          {{ isBeInvited ? `邀请你${callTypeLabel}通话` : '等待对方接听' }}...
         </span>
       </div>
     </div>
@@ -125,8 +125,13 @@
 import { LsIcon, LsAssets } from '@lanshu/components';
 import { lodash } from '@lanshu/utils';
 import { renderProcess } from '@lanshu/render-process';
-import { winActionType, windowType } from '@lanshu/utils';
-import { IMCreateMsg, IMSDKMessageProvider, IMSendMessage } from '../../IM-SDK';
+import { winActionType, windowType, callType } from '@lanshu/utils';
+import {
+  IMCreateMsg,
+  IMSDKMessageProvider,
+  IMSendMessage,
+  IMStartNetworkCall,
+} from '../../IM-SDK';
 import OptBtn from './opt-btn.vue';
 import trtcCloud from '../../TRTC-SDK';
 
@@ -137,11 +142,8 @@ export default {
     OptBtn,
   },
   computed: {
-    callType() {
+    callTypeLabel() {
       return this.isVideoCall ? '视频' : '语音';
-    },
-    microphoneTooltip() {
-      return `麦克风已${this.disMicStatus ? '关' : '开'}`;
     },
     microphoneIcon() {
       return `${
@@ -154,6 +156,7 @@ export default {
       LsAssets,
       winActionType,
       windowType,
+      callType,
       isBeInvited: false,
       toUser: '',
       toUserType: '',
@@ -161,8 +164,6 @@ export default {
       userInfo: {},
       trtcSession: {},
       remoteUserId: '',
-      timer: null,
-      countdown: 10,
       isEnterRoom: false,
       isExitRoom: false,
       isVideoCall: false,
@@ -205,35 +206,37 @@ export default {
     );
 
     const userInfo = await renderProcess.getStore('trtcUserInfo');
-    const trtcMsg = await renderProcess.getStore('trtcMsg');
+    // const trtcMsg = await renderProcess.getStore('trtcMsg');
     const trtcSession = await renderProcess.getStore('trtcSession');
-    console.log(userInfo, trtcMsg, trtcSession);
+    const trtcCallInfo = await renderProcess.getStore('trtcCallInfo');
+    console.log(userInfo, trtcSession, trtcCallInfo);
     const userId = userInfo.userId;
-    const {
+    const { toUser, toUserType } = trtcSession;
+
+    const { callType, isBeInvited } = trtcCallInfo;
+
+    await IMStartNetworkCall(
       toUser,
       toUserType,
-      fromUser = '',
-      data: { roomId },
-      msgType,
-    } = trtcMsg;
+      callType,
+      {
+        roomId: '999',
+      },
+    ).then((res) => {
+      console.log('接通', res)
+    });
 
     let remoteUserId;
 
-    if (fromUser && fromUser !== userId) {
-      this.isBeInvited = true;
-      remoteUserId = fromUser;
-    } else {
-      remoteUserId = toUser;
-    }
-
+    remoteUserId = toUser;
+    this.isBeInvited = isBeInvited;
     this.toUser = toUser;
     this.toUserType = toUserType;
-    this.roomId = roomId;
+    // this.roomId = roomId;
     this.userInfo = userInfo;
     this.trtcSession = trtcSession;
     this.remoteUserId = remoteUserId;
-    this.msgType = msgType;
-    this.isVideoCall = this.msgType === 100;
+    this.isVideoCall = callType === this.callType.isVideo;
 
     this.$nextTick(() => {
       console.log(trtcCloud.getCameraDevicesList());
@@ -242,16 +245,14 @@ export default {
         trtcCloud.startLocalPreview(this.$refs.localTrtcContainer, this.isPc);
       }
 
-      setTimeout(() => {
-        this.handleEnterRoom();
-      }, 6000);
+      // setTimeout(() => {
+      //   this.handleEnterRoom();
+      // }, 6000);
 
       document
         .querySelector('.trtc-view')
         .addEventListener('mousemove', this.handleMouseMove);
     });
-
-    // this.startTime();
   },
   methods: {
     getClassName(status) {
@@ -336,7 +337,6 @@ export default {
 
     async handleSendIMMsg(trtcType) {
       console.log('handleSendIMMsg', trtcType);
-      this.stopTime();
 
       const msgData = [
         this.toUser, //消息接收方，为会话列表中的toUser
@@ -394,26 +394,6 @@ export default {
         trtcCloud.startLocalPreview(this.$refs.localTrtcContainer, this.isPc);
       }
       trtcCloud.muteLocalVideo(this.disCamStatus);
-    },
-
-    startTime() {
-      this.timer = setInterval(async () => {
-        this.countdown--;
-        if (this.countdown <= 0) {
-          this.stopTime();
-          if (!this.isBeInvited) {
-            await this.handleTRTCDestroy(1004);
-          }
-        }
-      }, 1000);
-    },
-
-    stopTime() {
-      if (this.timer) {
-        clearInterval(this.timer);
-      }
-      this.timer = null;
-      this.countdown = 10;
     },
 
     onUserVideoAvailable(userId, available) {

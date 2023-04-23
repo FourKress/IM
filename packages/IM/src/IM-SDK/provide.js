@@ -58,3 +58,10 @@ export const IMSDKFileProvider = {
     uploadFile: 'uploadFile',
   },
 };
+
+export const IMSDKNetworkPhoneProvider = {
+  provider: 'getNetworkPhoneProvider',
+  events: {
+    startNetworkCall: 'startNetworkCall',
+  },
+};

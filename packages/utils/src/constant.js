@@ -128,3 +128,8 @@ export const clientType = {
   isPc: 'isPc',
   isMobile: 'isMobile',
 };
+
+export const callType = {
+  isAudio: 1,
+  isVideo: 2,
+};
