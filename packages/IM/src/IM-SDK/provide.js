@@ -10,6 +10,9 @@ export const IMSDKUserProvider = {
   provider: 'getUserProvider',
   events: {
     getUserAttribute: 'getUserAttrbute',
+    getUserProfile: 'getUserProfile',
+    setUserProfile: 'setUserProfile',
+    searchUserProfileOfPhone: 'searchUserProfileOfPhone',
   },
 };
 

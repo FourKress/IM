@@ -41,3 +41,10 @@ export const checkTimesInterval = (currentTimes, preTimes) => {
   const interval = dayjs(Number(currentTimes)).diff(Number(preTimes), 's');
   return interval >= 300;
 };
+
+export const calculateAgeByBirthday = (birthday) => {
+  if (!birthday) return;
+  const birthdayYear = dayjs(birthday).year();
+  const nowYear = dayjs().year();
+  return (nowYear - birthdayYear).toString();
+};

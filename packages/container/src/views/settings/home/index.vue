@@ -108,7 +108,7 @@ export default {
         //   icon: 'sz_gy',
         // },
       ],
-      navSelectKey: 'AccountCenter',
+      navSelectKey: 'UserInfo',
       scrollTop: 0,
       scrollView: null,
     };

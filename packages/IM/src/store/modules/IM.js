@@ -1,5 +1,6 @@
 const state = {
   userInfo: {},
+  userProfile: {},
   // 会话列表
   sessionList: [],
   // 主会话窗口
@@ -28,6 +29,7 @@ const state = {
 
 const getters = {
   userInfo: (state) => state.userInfo,
+  userProfile: (state) => state.userProfile,
   sessionList: (state) => state.sessionList,
   mainSessionWindow: (state) => state.mainSessionWindow,
   sessionWindowList: (state) => state.sessionWindowList,
@@ -46,6 +48,9 @@ const getters = {
 const mutations = {
   setUserInfo(data, value) {
     data.userInfo = value;
+  },
+  setUserProfile(data, value) {
+    data.userProfile = value;
   },
   setAllSession(data, value) {
     data.sessionList = value.map((d) => {
@@ -101,6 +106,9 @@ const mutations = {
 const actions = {
   setUserInfo({ commit }, value) {
     commit('setUserInfo', value);
+  },
+  setUserProfile({ commit }, value) {
+    commit('setUserProfile', value);
   },
   setAllSession({ commit }, value) {
     commit('setAllSession', value);

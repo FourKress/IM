@@ -20,7 +20,7 @@
           <LsIcon class="nav-icon" render-svg :icon="item.icon"></LsIcon>
           <span class="label">{{ item.label }}</span>
           <el-badge
-            v-if="index === 0"
+            v-if="index === 0 && newFriendCount"
             :value="newFriendCount"
             :max="99"
             class="count"

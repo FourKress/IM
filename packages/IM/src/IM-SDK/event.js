@@ -35,6 +35,7 @@ export const IMSDK_Init = async (loginParams) => {
   const { userId } = loginParams;
   await IMLogin(loginParams);
   await IMGetUserAttribute(userId);
+  await IMGetUserProfile(userId);
   await IMGetConvList(userId);
   await IMGetTotalUnreadMessageCount();
 };
@@ -56,6 +57,17 @@ export const IMGetUserAttribute = async (userId) => {
   renderProcess.setStore('trtcUserInfo', res.data);
   return res;
 };
+
+export const IMGetUserProfile = async (userId) => {
+  const res = await eventHOCFnc(
+    IMSDKUserProvider.provider,
+    IMSDKUserProvider.events.getUserProfile,
+    userId,
+  );
+  stareInstance.commit('IMStore/setUserProfile', res.data);
+  return res;
+};
+
 export const IMGetConvList = async (userId) => {
   const res = await eventHOCFnc(
     IMSDKConvProvider.provider,
@@ -200,4 +212,31 @@ export const IMInviteMember = async (groupId, members) =>
     IMSDKGroupProvider.events.inviteMember,
     groupId,
     members,
+  );
+
+export const IMSetUserProfile = async (
+  description,
+  sex,
+  birthday,
+  location,
+  phone,
+) => {
+  await eventHOCFnc(
+    IMSDKUserProvider.provider,
+    IMSDKUserProvider.events.setUserProfile,
+    description,
+    sex,
+    birthday,
+    location,
+    phone,
+  );
+  const userProfile = stareInstance.getters['IMStore/userProfile'];
+  await IMGetUserProfile(userProfile.userId);
+};
+
+export const IMSearchUserProfileOfPhone = async (phone) =>
+  await eventHOCFnc(
+    IMSDKUserProvider.provider,
+    IMSDKUserProvider.events.searchUserProfileOfPhone,
+    phone,
   );

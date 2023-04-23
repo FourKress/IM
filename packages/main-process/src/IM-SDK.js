@@ -105,6 +105,7 @@ export const IMSDKInit = (appId) => {
 };
 
 export const IMSDKEvent = async (provider, event, data) => {
+  console.log(event, data);
   try {
     let res;
     if (event === 'uploadFile') {

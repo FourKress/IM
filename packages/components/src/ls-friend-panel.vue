@@ -13,15 +13,15 @@
             <LsUserTag
               bgColor="#fff"
               color=""
-              age="24"
-              sex="1"
+              :age="calculateAgeByBirthday(friendInfo.birthday)"
+              :sex="friendInfo.sex"
               address="重庆渝北"
             ></LsUserTag>
           </span>
         </div>
       </div>
 
-      <div class="more-btn" v-if="!isBot">
+      <div class="more-btn" v-if="!isBot && !panelConfig.isApply">
         <el-dropdown
           trigger="click"
           placement="bottom-end"
@@ -49,7 +49,7 @@
       <div class="row">
         <span class="label sign-label">个性签名</span>
         <div class="input">
-          <div class="sign">我是个性签名，我是个性签名，我是个性 签</div>
+          <div class="sign">{{ friendInfo.description }}</div>
         </div>
       </div>
       <div class="row">
@@ -125,6 +125,7 @@
 
 <script>
 import { mapGetters } from 'vuex';
+import { calculateAgeByBirthday } from '@lanshu/utils';
 import LsAssets from './assets';
 import LsIcon from './ls-icon.vue';
 import LsUserTag from './ls-user-tag.vue';
@@ -187,6 +188,8 @@ export default {
     },
   },
   methods: {
+    calculateAgeByBirthday,
+
     handleSendAuth() {
       this.$emit('sendAuth');
     },

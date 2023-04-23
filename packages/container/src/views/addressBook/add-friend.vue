@@ -26,14 +26,16 @@
 
     <div
       class="friend-row"
-      v-if="friendInfo.nickname"
-      @click="handleOpenFriendDialog"
+      v-if="friendList.length"
+      v-for="item in friendList"
+      :key="item.userId"
+      @click="(event) => handleOpenFriendDialog(item, event)"
     >
       <div class="left">
-        <img class="img" src="" alt="" />
+        <img class="img" :src="item.avatar" alt="" />
         <div class="info">
-          <span class="name">{{ friendInfo.nickname }}</span>
-          <span class="tips">大撒大撒大撒</span>
+          <span class="name">{{ item.nickname }}</span>
+          <span class="tips">{{ item.description }}</span>
         </div>
       </div>
       <div class="right">
@@ -53,8 +55,14 @@
 </template>
 
 <script>
-import { formatPhoneNum, regexUtils, PhoneNumMixins, FriendMixins } from '@lanshu/utils';
+import {
+  formatPhoneNum,
+  regexUtils,
+  PhoneNumMixins,
+  FriendMixins,
+} from '@lanshu/utils';
 import { LsCardDialog, LsFriendPanel } from '@lanshu/components';
+import { IMSearchUserProfileOfPhone } from '@lanshu/im';
 
 export default {
   name: 'Add-friend',
@@ -67,7 +75,7 @@ export default {
     return {
       regexUtils,
       form: {
-        phoneNum: '',
+        phoneNum: '139 8888 8888',
       },
       rules: {
         phoneNum: [
@@ -80,6 +88,7 @@ export default {
           },
         ],
       },
+      friendList: [],
     };
   },
   watch: {
@@ -96,15 +105,18 @@ export default {
   methods: {
     handleSearch() {
       if (!this.validPhoneNum) return;
-      this.friendInfo = {
-        nickname: '啊实打实',
-      };
+      IMSearchUserProfileOfPhone(this.replacePhoneNum(this.form.phoneNum)).then(
+        ({ data }) => {
+          this.friendList = data;
+        },
+      );
     },
-    handleOpenFriendDialog(event) {
+    handleOpenFriendDialog(friendInfo, event) {
+      this.friendInfo = friendInfo;
       this.openFriendDialog(this.friendInfo, event);
     },
     handleSendApply() {
-      this.handleCloseDialog()
+      this.handleCloseDialog();
     },
   },
 };
@@ -145,6 +157,7 @@ export default {
             border: none;
             outline: none;
             padding: 0 30px 0 0;
+            font-weight: bold;
           }
 
           input::placeholder {

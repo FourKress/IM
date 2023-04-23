@@ -76,16 +76,17 @@
         </div>
 
         <div class="tag-wrap">
-          <LsUserTag age="24" sex="1" address="重庆渝北"></LsUserTag>
+          <LsUserTag :age="calculateAgeByBirthday(userProfile.birthday)" :sex="userProfile.sex" address="重庆渝北"></LsUserTag>
         </div>
 
         <div class="sign">
           <el-input
             type="text"
             placeholder="编辑你的个性签名…"
-            v-model="signText"
+            v-model="description"
             maxlength="50"
             show-word-limit
+            @change="handleSetSign"
           ></el-input>
         </div>
 
@@ -154,8 +155,8 @@ import {
   LsNetwork,
   LsUserTag,
 } from '@lanshu/components';
-import { ClientLogOut } from '@lanshu/im';
-import { qrcode } from '@lanshu/utils';
+import { ClientLogOut, IMSetUserProfile } from '@lanshu/im';
+import { qrcode, calculateAgeByBirthday } from '@lanshu/utils';
 
 export default {
   name: 'MainHeader',
@@ -167,7 +168,7 @@ export default {
     LsUserTag,
   },
   computed: {
-    ...mapGetters('IMStore', ['userInfo']),
+    ...mapGetters('IMStore', ['userInfo', 'userProfile']),
     ...mapGetters('globalStore', ['updateNotify', 'updateVersion']),
   },
   data() {
@@ -175,18 +176,34 @@ export default {
       showSettingsDialog: false,
       keywords: '',
       LsAssets,
-      signText: 123123,
+      description: '',
       showQrCodeDialog: false,
       qrcodeUrl: '',
     };
   },
-  mounted() {},
+  watch: {
+    userProfile: {
+      deep: true,
+      handler() {
+        this.initData();
+      }
+    }
+  },
+  mounted() {
+    this.initData();
+  },
   methods: {
     ...mapActions('routerStore', [
       'clearBreadCrumb',
       'addBreadCrumbs',
       'setHistoryMainPath',
     ]),
+    calculateAgeByBirthday,
+
+
+    initData() {
+      this.description = this.userProfile?.description;
+    },
     openDialog() {
       this.showSettingsDialog = true;
     },
@@ -265,6 +282,16 @@ export default {
       document.body.appendChild(tempLink);
       tempLink.click();
       document.body.removeChild(tempLink);
+    },
+
+    handleSetSign(val) {
+      const {
+        sex = '',
+        birthday = '',
+        location = '',
+        phone = '',
+      } = this.userProfile;
+      IMSetUserProfile(val ? val : '', sex, birthday, location, phone);
     },
   },
 };

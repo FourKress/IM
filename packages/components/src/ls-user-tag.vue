@@ -1,12 +1,13 @@
 <template>
   <div class="ls-user-tag">
-    <span class="tag" :style="{background: bgColor}">
+    <span class="tag" :style="{background: bgColor}" v-if="age || (sex && unSex)">
       <LsIcon
         render-svg
         class="tag-icon"
-        :icon="`ls-icon-${sex === '1' ? 'nan' : 'nv'}`"
+        :icon="`ls-icon-${sex === 1 ? 'nan' : 'nv'}`"
         height="13"
         width="13"
+        v-if="sex && unSex"
       ></LsIcon>
       {{ age ? `${age}岁` : '' }}
     </span>
@@ -42,6 +43,11 @@ export default {
   components: {
     LsIcon,
   },
+  computed: {
+    unSex() {
+      return this.sex !== 3
+    }
+  }
 };
 </script>
 
