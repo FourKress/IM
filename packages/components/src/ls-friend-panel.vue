@@ -125,7 +125,7 @@
 
 <script>
 import { mapGetters } from 'vuex';
-import { calculateAgeByBirthday } from '@lanshu/utils';
+import { addFriendType, calculateAgeByBirthday } from '@lanshu/utils';
 import LsAssets from './assets';
 import LsIcon from './ls-icon.vue';
 import LsUserTag from './ls-user-tag.vue';
@@ -194,7 +194,12 @@ export default {
       this.$emit('sendAuth');
     },
     handleSendApply() {
-      this.$emit('sendApply');
+      this.$emit('sendApply', {
+        message: this.friendMsg,
+        desc: this.friendTips,
+        remark: this.friendMark,
+        origin: addFriendType.isSearch,
+      });
     },
     handleSendMsg() {
       this.$emit('sendMsg');
@@ -255,7 +260,6 @@ export default {
         .img {
           width: 66px;
           height: 66px;
-          background: #ffb100;
           border-radius: 8px;
           display: block;
         }

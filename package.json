@@ -61,7 +61,10 @@
       "**/@lanshu/layout",
       "**/@lanshu/render-process",
       "**/trtc-electron-sdk",
-      "**/native-ext-loader"
+      "**/native-ext-loader",
+      "**/nock",
+      "**/aws-sdk",
+      "**/mock-aws-s3"
     ]
   }
 }

@@ -35,7 +35,6 @@ export const IMSDKCallBackEvents = {
     new Notification(NOTIFICATION_TITLE, {
       body: NOTIFICATION_BODY,
     }).onclick = () => {
-      console.log(message);
       const sessionList = stareInstance.getters['IMStore/sessionList'];
       const targetSession = sessionList.find(
         (d) => d.sessId === message.sessId,
@@ -43,6 +42,7 @@ export const IMSDKCallBackEvents = {
       if (!targetSession) return;
       stareInstance.commit('IMStore/setMainSessionWindow', targetSession);
       if (location.hash === '#/') return;
+      IMClearUnreadCount(message.sessId);
       routeInstance.push('/');
     };
 
@@ -56,6 +56,8 @@ export const IMSDKCallBackEvents = {
 
     if (!mainSessionWindow?.sessId && !sessionWindowList?.length) return;
 
+    if (mainSessionWindow.sessId !== message.sessId) return;
+
     await IMClearUnreadCount(message.sessId, [
       mainSessionWindow,
       ...sessionWindowList,
@@ -68,5 +70,12 @@ export const IMSDKCallBackEvents = {
   },
   LogOutCallBack(info) {
     console.info('日志', info);
+  },
+  FriendAddRequestUpdateListener(friendAddRequestCount) {
+    console.log('新好用：', friendAddRequestCount);
+    stareInstance.commit(
+      'IMStore/setNewFriendCount',
+      Number(friendAddRequestCount),
+    );
   },
 };

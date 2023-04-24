@@ -55,13 +55,13 @@
       <div class="close-btn" @click="handleDownload">下载</div>
     </div>
 
-    <div
-      class="card text"
-      :class="classObject"
-      v-if="msgType === checkMsgType.isTRTC"
-    >
-      {{ msgData.trtcType }}
-    </div>
+<!--    <div-->
+<!--      class="card text"-->
+<!--      :class="classObject"-->
+<!--      v-if="msgType === checkMsgType.isTRTC"-->
+<!--    >-->
+<!--      {{ msgData.trtcType }}-->
+<!--    </div>-->
   </div>
 </template>
 

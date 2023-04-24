@@ -18,9 +18,12 @@
   "dependencies": {
     "@lanshu/layout": "^0.1.22",
     "@lanshu/main-process": "^0.1.22",
+    "aws-sdk": "^2.1320.0",
     "core-js": "^3.8.3",
     "electron-screenshots": "0.5.15",
-    "lim-sdk-electron": "1.7.1-test",
+    "lim-sdk-electron": "1.8.5-test",
+    "mock-aws-s3": "^4.0.2",
+    "nock": "^13.3.0",
     "trtc-electron-sdk": "10.3.406",
     "vue": "^2.6.14",
     "vue-router": "^3.6.5",

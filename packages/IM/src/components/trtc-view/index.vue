@@ -123,14 +123,18 @@
 
 <script>
 import { LsIcon, LsAssets } from '@lanshu/components';
-import { lodash } from '@lanshu/utils';
-import { renderProcess } from '@lanshu/render-process';
-import { winActionType, windowType, callType } from '@lanshu/utils';
 import {
-  IMCreateMsg,
-  IMSDKMessageProvider,
-  IMSendMessage,
+  lodash,
+  networkCallType,
+  winActionType,
+  windowType,
+  networkCallbackType,
+} from '@lanshu/utils';
+import { renderProcess } from '@lanshu/render-process';
+import {
   IMStartNetworkCall,
+  IMStopNetworkCall,
+  IMAnswerNetworkCall,
 } from '../../IM-SDK';
 import OptBtn from './opt-btn.vue';
 import trtcCloud from '../../TRTC-SDK';
@@ -156,17 +160,20 @@ export default {
       LsAssets,
       winActionType,
       windowType,
-      callType,
+      networkCallbackType,
+      networkCallType,
       isBeInvited: false,
       toUser: '',
       toUserType: '',
       roomId: '',
       userInfo: {},
       trtcSession: {},
-      remoteUserId: '',
       isEnterRoom: false,
       isExitRoom: false,
       isVideoCall: false,
+      callType: '',
+      callTime: null,
+      callUUID: null,
       disMicStatus: false,
       disSpeStatus: false,
       disCamStatus: false,
@@ -178,6 +185,8 @@ export default {
     };
   },
   created() {
+    console.log(trtcCloud.getCameraDevicesList());
+
     this.subscribeEvents();
 
     // renderProcess.TRTCListener((event, message) => {
@@ -200,61 +209,43 @@ export default {
   },
 
   async mounted() {
-    this.debounceOptPanelVisible = lodash.debounce(
-      this.changeOptPanelVisible,
-      3000,
-    );
+    this.initMouseEvent();
 
     const userInfo = await renderProcess.getStore('trtcUserInfo');
-    // const trtcMsg = await renderProcess.getStore('trtcMsg');
     const trtcSession = await renderProcess.getStore('trtcSession');
     const trtcCallInfo = await renderProcess.getStore('trtcCallInfo');
     console.log(userInfo, trtcSession, trtcCallInfo);
-    const userId = userInfo.userId;
+
     const { toUser, toUserType } = trtcSession;
+    const { type, isBeInvited, roomId } = trtcCallInfo;
 
-    const { callType, isBeInvited } = trtcCallInfo;
-
-    await IMStartNetworkCall(
-      toUser,
-      toUserType,
-      callType,
-      {
-        roomId: '999',
-      },
-    ).then((res) => {
-      console.log('接通', res)
-    });
-
-    let remoteUserId;
-
-    remoteUserId = toUser;
     this.isBeInvited = isBeInvited;
+    this.callType = type;
+    this.isVideoCall = type === this.networkCallType.isVideo;
+
     this.toUser = toUser;
     this.toUserType = toUserType;
-    // this.roomId = roomId;
+    this.roomId = roomId;
     this.userInfo = userInfo;
     this.trtcSession = trtcSession;
-    this.remoteUserId = remoteUserId;
-    this.isVideoCall = callType === this.callType.isVideo;
 
-    this.$nextTick(() => {
-      console.log(trtcCloud.getCameraDevicesList());
+    if (this.isVideoCall) {
+      trtcCloud.startLocalPreview(this.$refs.localTrtcContainer, this.isPc);
+    }
 
-      if (this.isVideoCall) {
-        trtcCloud.startLocalPreview(this.$refs.localTrtcContainer, this.isPc);
-      }
-
-      // setTimeout(() => {
-      //   this.handleEnterRoom();
-      // }, 6000);
-
+    this.startNetworkCall();
+  },
+  methods: {
+    initMouseEvent() {
+      this.debounceOptPanelVisible = lodash.debounce(
+        this.changeOptPanelVisible,
+        3000,
+      );
       document
         .querySelector('.trtc-view')
         .addEventListener('mousemove', this.handleMouseMove);
-    });
-  },
-  methods: {
+    },
+
     getClassName(status) {
       return status ? 'disabled' : '';
     },
@@ -274,9 +265,71 @@ export default {
       }
     },
 
-    handleTRTCDestroy(trtcType) {
-      this.handleSendIMMsg(trtcType);
-      this.handleWindowChange(this.winActionType.isClose);
+    startNetworkCall() {
+      IMStartNetworkCall(this.toUser, this.toUserType, this.callType, {
+        roomId: this.roomId,
+      })
+        .then((res) => {
+          console.log('拨打回调', res);
+          let waringText;
+          const { type } = res;
+          switch (type) {
+            case this.networkCallbackType.isTimeout:
+              waringText = '对方未接听';
+              break;
+            case this.networkCallbackType.isReject:
+              waringText = '对方已拒绝';
+              break;
+            case this.networkCallbackType.isAnswered:
+              break;
+            default:
+              break;
+          }
+          if (waringText) {
+            this.tipsInfo = {
+              text: waringText,
+              visible: true,
+              className: 'waring',
+            };
+            this.handleTRTCDestroy();
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+
+    async stopNetworkCall() {
+      await IMStopNetworkCall(
+        this.callUUID,
+        this.callType,
+        this.toUser,
+        this.toUserType,
+        this.callTime,
+      )
+        .then((res) => {
+          console.log(res);
+          this.handleTRTCDestroy();
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+    async answerNetworkCall() {
+      await IMAnswerNetworkCall(this.callUUID, this.callType, this.toUser, this.toUserType)
+        .then((res) => {
+          console.log(res);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+
+    handleTRTCDestroy() {
+      this.isExitRoom = true;
+      setTimeout(() => {
+        this.handleWindowChange(this.winActionType.isClose);
+      }, 3000);
     },
 
     async handleWindowChange(type) {
@@ -324,55 +377,50 @@ export default {
           this.isVideoCall ? 'audio' : 'video',
         )
         .then(() => {
-          trtcCloud.muteRemoteAudio(this.remoteUserId, false);
+          trtcCloud.muteRemoteAudio(this.toUser, false);
           if (this.isVideoCall) {
             trtcCloud.startRemoteView(
               this.isPc,
-              this.remoteUserId,
+              this.toUser,
               this.$refs.remoteTrtcContainer,
             );
           }
         });
     },
 
-    async handleSendIMMsg(trtcType) {
-      console.log('handleSendIMMsg', trtcType);
-
-      const msgData = [
-        this.toUser, //消息接收方，为会话列表中的toUser
-        this.toUserType, //消息接收方类型，为会话列表中的toUserType];
-        100,
-        {
-          trtcType,
-          roomId: 999,
-        },
-      ];
-      const msg = await IMCreateMsg(
-        IMSDKMessageProvider.events.createCustomMessage,
-        msgData,
-      );
-
-      await IMSendMessage(msg);
-    },
-
     async handleReject() {
-      await this.handleTRTCDestroy(1002);
+      this.tipsInfo = {
+        text: '已拒绝通话',
+        visible: true,
+        className: 'waring',
+      };
+      await this.stopNetworkCall();
     },
 
     async handleResolve() {
-      await this.handleSendIMMsg(1001);
+      await this.answerNetworkCall();
       this.handleEnterRoom();
     },
 
     async handleCancel() {
-      await this.handleTRTCDestroy(1005);
+      this.tipsInfo = {
+        text: '已取消通话',
+        visible: true,
+        className: 'waring',
+      };
+      await this.stopNetworkCall();
     },
 
     async handleCallEnd() {
       await trtcCloud.exitRoom().then(() => {
         this.isExitRoom = true;
       });
-      await this.handleTRTCDestroy(1006);
+      this.tipsInfo = {
+        text: '已挂断通话',
+        visible: true,
+        className: 'waring',
+      };
+      await this.stopNetworkCall();
     },
 
     async handleMicrophone() {
@@ -382,7 +430,7 @@ export default {
 
     async handleSpeaker() {
       this.disSpeStatus = !this.disSpeStatus;
-      trtcCloud.muteRemoteAudio(this.remoteUserId, this.disSpeStatus);
+      trtcCloud.muteRemoteAudio(this.toUser, this.disSpeStatus);
     },
 
     async handleCamera() {
@@ -401,11 +449,11 @@ export default {
       if (available === 1) {
         trtcCloud.startRemoteView(
           this.isPc,
-          this.remoteUserId,
+          userId,
           this.$refs.remoteTrtcContainer,
         );
       } else {
-        trtcCloud.stopRemoteView(this.remoteUserId);
+        trtcCloud.stopRemoteView(userId);
       }
     },
 
@@ -414,9 +462,9 @@ export default {
         `onUserAudioAvailable: userId: ${userId}, available: ${available}`,
       );
       if (available) {
-        trtcCloud.muteRemoteAudio(this.remoteUserId, false);
+        trtcCloud.muteRemoteAudio(userId, false);
       } else {
-        trtcCloud.muteRemoteAudio(this.remoteUserId, true);
+        trtcCloud.muteRemoteAudio(userId, true);
       }
     },
 
@@ -449,22 +497,12 @@ export default {
       }
     },
 
-    onRemoteUserLeaveRoom() {
-      this.tipsInfo = {
-        text: '对方已挂断',
-        visible: true,
-        className: 'waring',
-      };
-      this.handleWindowChange(this.winActionType.isClose);
-    },
-
     subscribeEvents() {
       trtcCloud.TRTC.on('onError', this.onError);
       trtcCloud.TRTC.on('onFirstVideoFrame', this.onFirstVideoFrame);
       trtcCloud.TRTC.on('onUserVideoAvailable', this.onUserVideoAvailable);
       trtcCloud.TRTC.on('onUserAudioAvailable', this.onUserAudioAvailable);
       trtcCloud.TRTC.on('onNetworkQuality', this.onNetworkQuality);
-      trtcCloud.TRTC.on('onRemoteUserLeaveRoom', this.onRemoteUserLeaveRoom);
     },
 
     unsubscribeEvents() {
@@ -473,7 +511,6 @@ export default {
       trtcCloud.TRTC.off('onUserVideoAvailable', this.onUserVideoAvailable);
       trtcCloud.TRTC.off('onUserAudioAvailable', this.onUserAudioAvailable);
       trtcCloud.TRTC.off('onNetworkQuality', this.onNetworkQuality);
-      trtcCloud.TRTC.off('onRemoteUserLeaveRoom', this.onRemoteUserLeaveRoom);
     },
   },
   destroyed() {
@@ -751,6 +788,7 @@ export default {
     position: absolute;
     left: 50%;
     top: 50%;
+    z-index: 5;
     transform: translate(-50%, -50%);
     height: 36px;
     line-height: 36px;

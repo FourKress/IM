@@ -17,14 +17,14 @@
         <LsIcon
           render-svg
           icon="a-icon_sp2x"
-          @click="handleStartTrtc(callType.isVideo)"
+          @click="handleStartTrtc(networkCallType.isVideo)"
         ></LsIcon>
       </div>
       <div class="btn">
         <LsIcon
           render-svg
           icon="a-icon_yy2x"
-          @click="handleStartTrtc(callType.isAudio)"
+          @click="handleStartTrtc(networkCallType.isAudio)"
         ></LsIcon>
       </div>
       <div class="btn">
@@ -67,7 +67,7 @@
 <script>
 import { mapActions, mapGetters } from 'vuex';
 import { LsIcon } from '@lanshu/components';
-import { IMHeaderMoreBtnKey, sessionUserType, clientType, callType } from '@lanshu/utils';
+import { IMHeaderMoreBtnKey, sessionUserType, clientType, networkCallType } from '@lanshu/utils';
 import { renderProcess } from '@lanshu/render-process';
 
 export default {
@@ -78,7 +78,7 @@ export default {
   data() {
     return {
       IMHeaderMoreBtnKey,
-      callType,
+      networkCallType,
     };
   },
   computed: {
@@ -104,28 +104,10 @@ export default {
       });
     },
 
-    async handleStartTrtc(callType) {
-      // const msgData = [
-      //   this.session.toUser, //消息接收方，为会话列表中的toUser
-      //   this.session.toUserType, //消息接收方类型，为会话列表中的toUserType];
-      //   msgType,
-      //   {
-      //     trtcType: 1000,
-      //     roomId: 999,
-      //   },
-      // ];
-      // const msg = await IMCreateMsg(
-      //   IMSDKMessageProvider.events.createCustomMessage,
-      //   msgData,
-      // );
-      //
-      // await IMSendMessage(msg);
-      //
-      // await renderProcess.setStore('trtcMsg', msg);
-
+    async handleStartTrtc(networkCallType) {
       await renderProcess.setStore('trtcSession', this.session);
       await renderProcess.setStore('trtcCallInfo', {
-        callType,
+        type: networkCallType,
         isBeInvited: false,
       });
 

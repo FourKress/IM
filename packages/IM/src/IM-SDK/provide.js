@@ -63,5 +63,21 @@ export const IMSDKNetworkPhoneProvider = {
   provider: 'getNetworkPhoneProvider',
   events: {
     startNetworkCall: 'startNetworkCall',
+    stopNetworkCall: 'stopNetworkCall',
+    answerNetworkCall: 'answerNetworkCall',
+  },
+};
+
+export const IMSDKFriendProvider = {
+  provider: 'getFriendProvider',
+  events: {
+    getAllFriendList: 'getAllFriendList',
+    friendAddRequest: 'friendAddRequest',
+    agreeFriendAddRequest: 'agreeFriendAddRequest',
+    delFriendOneWay: 'delFriendOneWay',
+    searchFriends: 'searchFriends',
+    queryFriendRequestNotice: 'queryFriendRequestNotice',
+    getFriendRequestNoticeUnreadCount: 'getFriendRequestNoticeUnreadCount',
+    clearFriendRequestNoticeUnreadCount: 'clearFriendRequestNoticeUnreadCount',
   },
 };

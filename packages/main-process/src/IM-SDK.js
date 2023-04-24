@@ -4,7 +4,7 @@ import electronLog from './log';
 import { openTRTCWindow } from './window';
 import { clientType } from './utils';
 
-const { LimMain, LogLevel } = require('lim-sdk-electron');
+const { LimMain, LogLevel, ModelUtil } = require('lim-sdk-electron');
 
 export const IMSDKInit = (appId) => {
   const limMain = new LimMain({ appId });
@@ -15,9 +15,8 @@ export const IMSDKInit = (appId) => {
   global.IMSDK = IMSDK;
 
   IMSDK.getMainProvider().setLogLevel(
-    process.env.WEBPACK_DEV_SERVER_URL ? LogLevel.INFO : LogLevel.ERROR,
+    process.env.WEBPACK_DEV_SERVER_URL ? LogLevel.INFO : LogLevel.DEBUG,
   );
-  // IMSDK.getMainProvider().setLogLevel(LogLevel.DEBUG);
 
   IMSDK.getMainProvider().setNetworkChangeCallBack((state) => {
     // state 网络状态 0：正在连接、-1：连接断开、1：连接成功
@@ -69,36 +68,37 @@ export const IMSDKInit = (appId) => {
     });
   });
 
-  IMSDK.getMainProvider().AddReceiveNewMessageCallBack(
-    async (message, silence) => {
-      console.log('AddReceiveNewMessage', { message, silence });
+  IMSDK.getMainProvider().AddReceiveNewMessageCallBack((message, silence) => {
+    global.mainWindow.webContents.send('IMSDKListener', {
+      type: 'AddReceiveNewMessage',
+      value: {
+        message,
+        silence,
+      },
+    });
+  });
 
-      const {
-        msgType,
-        data: { trtcType = 0 },
-      } = message;
+  IMSDK.getMainProvider().setNetworkCallListener(
+    async (uuid, type, userId, userType) => {
+      await global.store.set('trtcSession', {
+        toUser: userId,
+        toUserType: userType,
+      });
+      await global.store.set('trtcCallInfo', {
+        type,
+        isBeInvited: false,
+        platform: ModelUtil.getModel().platform,
+      });
+      await openTRTCWindow(clientType.isPc);
+    },
+  );
 
-      if (msgType && msgType === 100) {
-        // 收到音视频
-        if (trtcType && trtcType === 1000) {
-          await global.store.set('trtcMsg', message);
-          const convList = global.store.get('convList');
-          await global.store.set(
-            'trtcSession',
-            convList.find((d) => d.sessId === message.sessId),
-          );
-          await openTRTCWindow(clientType.isPc);
-        } else {
-          global.TRTCWindow.webContents.send('TRTCListener', message);
-        }
-      }
-
+  IMSDK.getMainProvider().setFriendAddRequestUpdateListener(
+    (friendAddRequestCount) => {
+      console.log(friendAddRequestCount, 'friendAddRequestCount');
       global.mainWindow.webContents.send('IMSDKListener', {
-        type: 'AddReceiveNewMessage',
-        value: {
-          message,
-          silence,
-        },
+        type: 'FriendAddRequestUpdateListener',
+        value: friendAddRequestCount,
       });
     },
   );
@@ -125,12 +125,10 @@ export const IMSDKEvent = async (provider, event, data) => {
 export const IMSDKNetworkCallEvent = async (event, data) => {
   console.log(event, data);
   try {
-    const res = await global.IMSDK.getNetworkPhoneProvider()[event](
-      ...data,
-      (uuid, state) => {
-        console.log('挂断回调：', uuid, state);
-      },
-    );
+    const provider = global.IMSDK.getNetworkPhoneProvider();
+    const res = await provider[event](...data, (uuid, state) => {
+      console.log('回调：', uuid, state);
+    });
     electronLog.info(JSON.stringify(res));
     return res;
   } catch (e) {

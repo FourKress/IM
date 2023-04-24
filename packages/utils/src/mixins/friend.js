@@ -16,7 +16,8 @@ export default {
     ...mapActions('IMStore', ['setMainSessionWindow']),
 
     openFriendDialog(friend, event) {
-      if (friend?.id === this.userInfo?.id) return;
+      console.log(friend);
+      if (friend?.id && friend?.id === this.userInfo?.id) return;
       this.friendInfo = friend;
       const clientWidth = document.body.clientWidth;
       // 网页宽度 - 面板宽度 = left的最大值，避免定位超出视图区

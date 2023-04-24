@@ -38,7 +38,7 @@
         <div class="right">
           <span
             class="send-btn"
-            :class="!message && 'disabled'"
+            :class="(!message || !messageText) && 'disabled'"
             @click="sendMsg"
           >
             发送
@@ -101,6 +101,7 @@ export default {
   data() {
     return {
       message: '',
+      messageText: '',
       inputClientWidth: 0,
       emojiList,
       emojiVisible: false,
@@ -209,8 +210,8 @@ export default {
         });
         return;
       }
-      console.log(element.innerHTML);
       this.message = element.innerHTML;
+      this.messageText = element.innerText.trim();
     },
     handleBlur(event) {
       this.$refs.msgInput = event.target;
@@ -342,10 +343,8 @@ export default {
     },
 
     async sendMsg() {
-      console.log(222, this.IM_Network_Status, this.SDK_READ);
       if (this.IM_Network_Status !== this.SDK_READ) return;
-      if (!this.message) return;
-      console.log(this.message);
+      if (!this.message || !this.messageText) return;
 
       const regExp = new RegExp(
         /(<img src="\S*" alt(="")?>|[a-zA-Z0-9\u4e00-\u9fa5])+/g,
@@ -398,6 +397,7 @@ export default {
     },
 
     async handleCreateMsg(params, url = '') {
+      console.log('msg', params)
       let msgEvent = null;
       let msgData = [
         this.session.toUser, //消息接收方，为会话列表中的toUser

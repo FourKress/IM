@@ -3,6 +3,7 @@ import { stareInstance, removeToken } from '@lanshu/utils';
 import {
   IMSDKConvProvider,
   IMSDKFileProvider,
+  IMSDKFriendProvider,
   IMSDKGroupProvider,
   IMSDKMainProvide,
   IMSDKMessageProvider,
@@ -35,10 +36,13 @@ const eventHOCFnc = async (...params) =>
 export const IMSDK_Init = async (loginParams) => {
   const { userId } = loginParams;
   await IMLogin(loginParams);
-  await IMGetUserAttribute(userId);
+  const res = await IMGetUserAttribute(userId);
+  stareInstance.commit('IMStore/setUserInfo', res.data);
+  renderProcess.setStore('trtcUserInfo', res.data);
   await IMGetUserProfile(userId);
   await IMGetConvList(userId);
   await IMGetTotalUnreadMessageCount();
+  await IMGetFriendRequestNoticeUnreadCount();
 };
 
 export const IMLogin = async (loginParams) =>
@@ -48,16 +52,12 @@ export const IMLogin = async (loginParams) =>
     loginParams,
   );
 
-export const IMGetUserAttribute = async (userId) => {
-  const res = await eventHOCFnc(
+export const IMGetUserAttribute = async (userId) =>
+  await eventHOCFnc(
     IMSDKUserProvider.provider,
     IMSDKUserProvider.events.getUserAttribute,
     userId,
   );
-  stareInstance.commit('IMStore/setUserInfo', res.data);
-  renderProcess.setStore('trtcUserInfo', res.data);
-  return res;
-};
 
 export const IMGetUserProfile = async (userId) => {
   const res = await eventHOCFnc(
@@ -242,23 +242,74 @@ export const IMSearchUserProfileOfPhone = async (phone) =>
     phone,
   );
 
-export const IMStartNetworkCall = async (toUserId, toUserType, type, data) => {
-  const res = await renderProcess.IMSDKNetworkCall(
-    IMSDKNetworkPhoneProvider.provider,
+export const IMStartNetworkCall = async (toUserId, toUserType, type, data) =>
+  await renderProcess.IMSDKNetworkCall(
     IMSDKNetworkPhoneProvider.events.startNetworkCall,
     toUserId,
     toUserType,
     type,
     data,
   );
-  console.log('IMSDKNetworkCall', res);
-  // await eventHOCFnc(
-  //   IMSDKUserProvider.provider,
-  //   IMSDKUserProvider.events.searchUserProfileOfPhone,
-  //   toUserId,
-  //   toUserType,
-  //   type,
-  //   data,
-  //   callback,
-  // );
+
+export const IMStopNetworkCall = async (
+  uuid,
+  type,
+  toUserId,
+  toUserType,
+  time,
+) =>
+  await renderProcess.IMSDKNetworkCall(
+    IMSDKNetworkPhoneProvider.events.stopNetworkCall,
+    uuid,
+    type,
+    toUserId,
+    toUserType,
+    time,
+  );
+
+export const IMAnswerNetworkCall = async (uuid, type, userId, userType) =>
+  await renderProcess.IMSDKNetworkCall(
+    IMSDKNetworkPhoneProvider.events.stopNetworkCall,
+    uuid,
+    type,
+    userId,
+    userType,
+  );
+
+export const IMGetAllFriendList = async () =>
+  await eventHOCFnc(
+    IMSDKFriendProvider.provider,
+    IMSDKFriendProvider.events.getAllFriendList,
+  );
+
+export const IMFriendAddRequest = async (
+  toUser,
+  remark,
+  desc,
+  message,
+  origin,
+) =>
+  await eventHOCFnc(
+    IMSDKFriendProvider.provider,
+    IMSDKFriendProvider.events.friendAddRequest,
+    toUser,
+    remark,
+    desc,
+    message,
+    origin,
+  );
+
+export const IMQueryFriendRequestNotice = async (nextSeq) =>
+  await eventHOCFnc(
+    IMSDKFriendProvider.provider,
+    IMSDKFriendProvider.events.queryFriendRequestNotice,
+    nextSeq,
+  );
+
+export const IMGetFriendRequestNoticeUnreadCount = async () => {
+  const res = await eventHOCFnc(
+    IMSDKFriendProvider.provider,
+    IMSDKFriendProvider.events.getFriendRequestNoticeUnreadCount,
+  );
+  stareInstance.commit('IMStore/setNewFriendCount', Number(res?.data || 0));
 };

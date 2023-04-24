@@ -58,6 +58,7 @@
 <script>
 import { AddressBookMixins, FriendMixins } from '@lanshu/utils';
 import { LsCardDialog, LsFriendPanel } from '@lanshu/components';
+import { IMGetAllFriendList } from '@lanshu/im';
 
 export default {
   name: 'Friend-List',
@@ -73,15 +74,22 @@ export default {
     LsFriendPanel,
   },
   data() {
-    return {
-    };
+    return {};
   },
   created() {
     this.minScrollTop = 80;
     this.maxScrollTop = 120;
   },
   mounted() {
-    this.handleRegisterScroll()
+    this.handleRegisterScroll();
+    this.getAllFriendList()
+  },
+  methods: {
+    getAllFriendList() {
+      IMGetAllFriendList().then((res) => {
+        console.log(res)
+      })
+    }
   }
 };
 </script>

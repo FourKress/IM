@@ -18,7 +18,7 @@ export default {
       const { msgType, data } = this.lastMsg;
       if (!msgType && !data) return '暂无消息';
       // 文本类型的消息直接展示
-      if (msgFormatMap[msgType].type === checkMsgType.isText) {
+      if (msgFormatMap[msgType]?.type === checkMsgType.isText) {
         return data.content;
       }
       // 其他类型消息动态处理

@@ -9,10 +9,10 @@
         @click="(event) => openFriendDialog(item, event)"
       >
         <div class="left">
-          <img class="img" src="" alt="" />
+          <img class="img" :src="item.toAvatar" alt="" />
           <div class="info">
-            <span class="name">发送大</span>
-            <span class="tips">sadjdja</span>
+            <span class="name">{{ item.toNickname }}</span>
+            <span class="tips">{{ item.message }}</span>
           </div>
         </div>
         <div class="btn" :class="item.id === 1 && 'active'">去验证</div>
@@ -37,6 +37,7 @@
 <script>
 import { LsCardDialog, LsFriendPanel } from '@lanshu/components';
 import { FriendMixins } from '@lanshu/utils';
+import { IMQueryFriendRequestNotice } from '@lanshu/im';
 
 export default {
   name: 'New-Friend',
@@ -47,11 +48,14 @@ export default {
   },
   data() {
     return {
-      friendList: [{ id: 1, nickname: '打赏' }, { id: 23 }, { id: 4345 }],
+      friendList: [],
       config: {
         isPass: true,
       },
     };
+  },
+  mounted() {
+    this.queryFriendRequestNotice();
   },
   methods: {
     handleResetApply() {
@@ -59,6 +63,13 @@ export default {
         isExpired: false,
         isApply: true,
       };
+    },
+
+    queryFriendRequestNotice() {
+      IMQueryFriendRequestNotice(0).then((res) => {
+        console.log(res);
+        this.friendList = res?.data?.data;
+      });
     },
   },
 };

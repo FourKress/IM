@@ -126,7 +126,7 @@ export const openTRTCWindow = async (type = clientType.isPc) => {
     : 'app://./index.html/#/TRTC';
 
   if (isDevelopment) {
-    // if (!process.env.IS_TEST) TRTCWindow.webContents.openDevTools();
+    if (!process.env.IS_TEST) TRTCWindow.webContents.openDevTools();
   }
   await TRTCWindow.loadURL(loadURL);
 

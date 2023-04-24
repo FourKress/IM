@@ -62,7 +62,7 @@ import {
   FriendMixins,
 } from '@lanshu/utils';
 import { LsCardDialog, LsFriendPanel } from '@lanshu/components';
-import { IMSearchUserProfileOfPhone } from '@lanshu/im';
+import { IMSearchUserProfileOfPhone, IMFriendAddRequest } from '@lanshu/im';
 
 export default {
   name: 'Add-friend',
@@ -115,8 +115,12 @@ export default {
       this.friendInfo = friendInfo;
       this.openFriendDialog(this.friendInfo, event);
     },
-    handleSendApply() {
-      this.handleCloseDialog();
+    handleSendApply(addParams) {
+      const { origin, message, desc, remark } = addParams;
+      console.log(this.friendInfo, addParams);
+      IMFriendAddRequest(this.friendInfo.userId, remark, desc, message, origin).then(() => {
+        this.handleCloseDialog();
+      });
     },
   },
 };

@@ -119,17 +119,25 @@ export const sessionUserType = {
   isBot: 9,
 };
 
-export const trtcType = {
-  isVideo: 100,
-  isAudio: 200,
-};
-
 export const clientType = {
   isPc: 'isPc',
   isMobile: 'isMobile',
 };
 
-export const callType = {
+export const networkCallType = {
   isAudio: 1,
   isVideo: 2,
+};
+
+// type – 回调类型：0、超时未接听，1、对方已接听，此时data中有对方传过来的数据（rtc地址等自定义消息）, 2 对方已拒绝
+export const networkCallbackType = {
+  isTimeout: 0,
+  isAnswered: 1,
+  isReject: 2,
+};
+
+export const addFriendType = {
+  isSearch: 1,
+  isSean: 2,
+  isShared: 3,
 };
