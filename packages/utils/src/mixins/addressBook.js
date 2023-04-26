@@ -3,35 +3,7 @@ import { groupedPy, sortedPY } from '../pinyin';
 export default {
   data() {
     return {
-      addressBookList: [
-        { nickname: '张三' },
-        { nickname: '李四' },
-        { nickname: '王五' },
-        { nickname: '2' },
-        { nickname: '3' },
-        { nickname: '4' },
-        { nickname: 'a', userId: '9999999' },
-        { nickname: 'b', userId: '8888888' },
-        { nickname: 'c' },
-        { nickname: '!' },
-        { nickname: '@' },
-        { nickname: '#' },
-        { nickname: '赵六' },
-        { nickname: '钱七' },
-        { nickname: '钱1' },
-        { nickname: '钱2' },
-        { nickname: '钱3' },
-        { nickname: '钱4' },
-        { nickname: '钱5' },
-        { nickname: '钱6' },
-        { nickname: '东7' },
-        { nickname: '东1' },
-        { nickname: '东2' },
-        { nickname: '东3' },
-        { nickname: '东4' },
-        { nickname: '东5' },
-        { nickname: '东6' },
-      ],
+      addressBookList: [],
       addressBookPYObj: [],
       pinyinKey: 'A',
       scrollView: null,
@@ -53,20 +25,25 @@ export default {
           wordArr.push(code);
         }
       }
-      return wordArr?.length ? [...wordArr, this.specialKey] : wordArr;
+      if (wordArr?.length) {
+        if (this.addressBookPYObj[this.isSpecial])
+          return [...wordArr, this.specialKey];
+        return [...wordArr];
+      }
+      return wordArr;
     },
   },
   created() {
     this.isSpecial = 'special';
     this.specialKey = '#';
   },
-  mounted() {
-    // 数据转为拼音键值对 {A:[], B: []} 类型
-    const addressBookPYObj = groupedPy(sortedPY(this.addressBookList));
-    this.pinyinKey = Object.keys(addressBookPYObj)[0];
-    this.addressBookPYObj = addressBookPYObj;
-  },
   methods: {
+    initData() {
+      // 数据转为拼音键值对 {A:[], B: []} 类型
+      const addressBookPYObj = groupedPy(sortedPY(this.addressBookList));
+      this.pinyinKey = Object.keys(addressBookPYObj)[0];
+      this.addressBookPYObj = addressBookPYObj;
+    },
     handleRegisterScroll() {
       this.$nextTick(() => {
         this.scrollView = document.querySelector('.selected-scroll-view');

@@ -27,7 +27,7 @@
             v-for="item in group"
             v-if="item.nickname"
             :key="item.nickname"
-            @click="(event) => openFriendDialog(item, event)"
+            @click="(event) => handleFriend(item, event)"
           >
             <div class="info">
               <div class="img">
@@ -50,6 +50,7 @@
         @sendMsg="handleSendMsg"
         @sendVideo="handleSendVideo"
         @sendAudio="handleSendAudio"
+        @update="getAllFriendList"
       />
     </LsCardDialog>
   </div>
@@ -58,7 +59,7 @@
 <script>
 import { AddressBookMixins, FriendMixins } from '@lanshu/utils';
 import { LsCardDialog, LsFriendPanel } from '@lanshu/components';
-import { IMGetAllFriendList } from '@lanshu/im';
+import { IMGetAllFriendList, IMGetUserProfile } from '@lanshu/im';
 
 export default {
   name: 'Friend-List',
@@ -82,15 +83,32 @@ export default {
   },
   mounted() {
     this.handleRegisterScroll();
-    this.getAllFriendList()
+    this.getAllFriendList();
   },
   methods: {
     getAllFriendList() {
+      this.handleCloseDialog();
       IMGetAllFriendList().then((res) => {
-        console.log(res)
-      })
-    }
-  }
+        console.log(res);
+        this.addressBookList = res?.data || [];
+        this.initData();
+      });
+    },
+    async handleFriend(item, event) {
+      const res = await IMGetUserProfile(item.userId);
+      const { birthday, description, sex, location } = res?.data || {};
+      this.openFriendDialog(
+        {
+          ...item,
+          birthday,
+          description,
+          sex,
+          location,
+        },
+        event,
+      );
+    },
+  },
 };
 </script>
 

@@ -26,7 +26,7 @@
         <!--        :class="checkSelf(item) ? 'self' : 'target'"-->
         <div v-if="baseMsgTypes.includes(item.msgType)" class="msg-row target">
           <div class="img" @click="(event) => openFriendDialog(checkSelf(item) ? userInfo : session, event)">
-            <img :src="checkSelf(item) ? userInfo.avatar : toAvatar" alt="" />
+            <MsgLazyAvatar :is-self="checkSelf(item)" :session="session" :message="item"></MsgLazyAvatar>
           </div>
           <div class="info">
             <MsgCard :isSelf="checkSelf(item)" :msg="item" />
@@ -88,6 +88,7 @@ import { TimesTransform } from '@lanshu/components';
 import MsgCard from './msg-view/msg-card';
 import MsgHeader from './msg-view/msg-header';
 import MsgInputAction from './msg-view/msg-input-action';
+import MsgLazyAvatar from "./msg-view/msg-lazy-avatar";
 import { LsIcon, LsAssets, LsCardDialog, LsFriendPanel } from '@lanshu/components';
 import { IMGetMessageList } from '../IM-SDK';
 
@@ -98,6 +99,7 @@ export default {
     MsgCard,
     MsgHeader,
     MsgInputAction,
+    MsgLazyAvatar,
     LsIcon,
     LsCardDialog,
     LsFriendPanel

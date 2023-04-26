@@ -265,6 +265,8 @@ export default {
     });
     this.addressBookList = addressBookList;
 
+    this.initData();
+
     this.minScrollTop = 370;
     this.maxScrollTop = 440;
 

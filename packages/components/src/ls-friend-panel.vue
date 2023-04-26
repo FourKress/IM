@@ -21,7 +21,15 @@
         </div>
       </div>
 
-      <div class="more-btn" v-if="!isBot && !panelConfig.isApply">
+      <div
+        class="more-btn"
+        v-if="
+          !isBot &&
+          !panelConfig.isApply &&
+          !panelConfig.isAuth &&
+          !panelConfig.isExpired
+        "
+      >
         <el-dropdown
           trigger="click"
           placement="bottom-end"
@@ -29,13 +37,13 @@
         >
           <LsIcon render-svg icon="a-icon_more2x"></LsIcon>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item command="share">
+            <el-dropdown-item :command="isShared">
               <div class="send-down-row">
                 <LsIcon size="14" icon="pop_cd_cjql"></LsIcon>
                 <span>转发名片</span>
               </div>
             </el-dropdown-item>
-            <el-dropdown-item command="delete">
+            <el-dropdown-item :command="isDelete">
               <div class="send-down-row">
                 <LsIcon size="14" color="red" icon="pop_cd_sz"></LsIcon>
                 <span style="color: red">删除好友</span>
@@ -61,7 +69,7 @@
             :maxlength="10"
             placeholder="输入备注"
             :disabled="panelConfig.isExpired"
-            v-model="friendMark"
+            v-model="remark"
           ></el-input>
         </div>
       </div>
@@ -75,7 +83,7 @@
             :autosize="{ minRows: 1, maxRows: 3 }"
             placeholder="输入描述"
             :disabled="panelConfig.isExpired"
-            v-model="friendTips"
+            v-model="desc"
           ></el-input>
         </div>
       </div>
@@ -89,14 +97,14 @@
             resize="none"
             :maxlength="100"
             :rows="3"
-            v-model="friendMsg"
+            v-model="message"
           ></el-input>
           <div class="msg-list" v-else>
+            <!--            <div class="item">-->
+            <!--              阿萨打撒十大打算鲁大师鲁大师-->
+            <!--            </div>-->
             <div class="item">
-              阿萨打撒十大打算鲁大师鲁大师lads拉萨大大倒萨阿斯顿
-            </div>
-            <div class="item">
-              阿萨打撒十大打算鲁大师鲁大师lads拉萨大大倒萨阿斯顿
+              {{ friendInfo.message }}
             </div>
           </div>
         </div>
@@ -104,7 +112,7 @@
       <div class="btn" v-if="panelConfig.isApply" @click="handleSendApply">
         发送申请
       </div>
-      <div class="btn auth" v-if="panelConfig.isAuth" @click="handleSendAuth">
+      <div class="btn" v-if="panelConfig.isAuth" @click="handleSendAuth">
         通过验证
       </div>
       <template v-if="panelConfig.isExpired">
@@ -126,6 +134,7 @@
 <script>
 import { mapGetters } from 'vuex';
 import { addFriendType, calculateAgeByBirthday } from '@lanshu/utils';
+import { IMDelFriendOneWay } from '@lanshu/im';
 import LsAssets from './assets';
 import LsIcon from './ls-icon.vue';
 import LsUserTag from './ls-user-tag.vue';
@@ -162,15 +171,18 @@ export default {
   data() {
     return {
       LsAssets,
-      friendMsg: '',
-      friendTips: '',
-      friendMark: '',
+      message: '',
+      desc: '',
+      remark: '',
       defaultConfig: {
         isExpired: false,
         isApply: false,
         isAuth: false,
         isPass: false,
+        isDetails: false,
       },
+      isDelete: 'delete',
+      isShared: 'shared',
     };
   },
   components: {
@@ -187,19 +199,34 @@ export default {
       };
     },
   },
+  mounted() {
+    if (this.panelConfig.isApply) {
+      this.message = `我是${this.userInfo.nickname}`;
+    }
+    if (this.panelConfig.isDetails || this.panelConfig.isPass) {
+      const { remark = '', desc = '' } = this.friendInfo;
+      this.remark = remark;
+      this.desc = desc;
+    }
+  },
   methods: {
     calculateAgeByBirthday,
 
     handleSendAuth() {
-      this.$emit('sendAuth');
+      this.$emit('sendAuth', [
+        this.friendInfo.noticeId,
+        this.remark,
+        this.desc,
+      ]);
     },
     handleSendApply() {
-      this.$emit('sendApply', {
-        message: this.friendMsg,
-        desc: this.friendTips,
-        remark: this.friendMark,
-        origin: addFriendType.isSearch,
-      });
+      this.$emit('sendApply', [
+        this.friendInfo.userId,
+        this.message,
+        this.desc,
+        this.remark,
+        addFriendType.isSearch,
+      ]);
     },
     handleSendMsg() {
       this.$emit('sendMsg');
@@ -215,6 +242,12 @@ export default {
     },
     handleCommand(command) {
       console.log(command);
+      if (command === this.isDelete) {
+        IMDelFriendOneWay(this.friendInfo.userId).then(() => {
+          this.$message.success('好友删除成功');
+          this.$emit('update');
+        });
+      }
     },
   },
 };
@@ -336,6 +369,9 @@ export default {
         align-items: flex-end;
 
         .msg-list {
+          width: 100%;
+          min-height: 54px;
+
           .item {
             background: $bg-hover-grey-color;
             border-radius: 4px;
@@ -371,10 +407,6 @@ export default {
       color: $bg-white-color;
       text-align: center;
       margin: 52px 0 34px 0;
-
-      &.auth {
-        background: $minor-color;
-      }
 
       &.expired {
         background: #87a1cd;

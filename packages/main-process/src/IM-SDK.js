@@ -15,7 +15,7 @@ export const IMSDKInit = (appId) => {
   global.IMSDK = IMSDK;
 
   IMSDK.getMainProvider().setLogLevel(
-    process.env.WEBPACK_DEV_SERVER_URL ? LogLevel.INFO : LogLevel.DEBUG,
+    process.env.WEBPACK_DEV_SERVER_URL ? LogLevel.DEBUG : LogLevel.INFO,
   );
 
   IMSDK.getMainProvider().setNetworkChangeCallBack((state) => {
@@ -109,8 +109,23 @@ export const IMSDKEvent = async (provider, event, data) => {
   try {
     let res;
     if (event === 'uploadFile') {
-      const file = fs.createReadStream(data[0]);
+      let filePath = data[0];
+      const isBase64 = filePath.includes('base64,');
+      if (isBase64) {
+        const writePath = `${app.getPath(
+          'userData',
+        )}\\temp_image_${Date.now()}.png`;
+        const base64 = filePath.replace(/^data:image\/\w+;base64,/, '');
+        const dataBuffer = Buffer.from(base64, 'base64');
+        await fs.writeFileSync(writePath, dataBuffer);
+        filePath = writePath;
+      }
+      console.log(filePath);
+      const file = fs.createReadStream(filePath);
       res = await global.IMSDK[provider]()[event](file);
+      if (isBase64) {
+        fs.unlinkSync(filePath);
+      }
     } else {
       res = await global.IMSDK[provider]()[event](...data);
     }

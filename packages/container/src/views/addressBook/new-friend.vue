@@ -3,10 +3,9 @@
     <div class="friend-list">
       <div
         class="item"
-        :class="item.id === 1 && 'active'"
         v-for="item in friendList"
         :key="item.id"
-        @click="(event) => openFriendDialog(item, event)"
+        @click="(event) => handleFriend(item, event)"
       >
         <div class="left">
           <img class="img" :src="item.toAvatar" alt="" />
@@ -15,7 +14,18 @@
             <span class="tips">{{ item.message }}</span>
           </div>
         </div>
-        <div class="btn" :class="item.id === 1 && 'active'">去验证</div>
+        <div
+          class="btn"
+          :class="item.state === FRIEND_AUTH_STATE.AWAIT && 'active'"
+        >
+          {{
+            item.state === FRIEND_AUTH_STATE.AWAIT
+              ? '去验证'
+              : item.state === FRIEND_AUTH_STATE.AGREE
+              ? '已添加'
+              : '已过期'
+          }}
+        </div>
       </div>
     </div>
 
@@ -29,6 +39,7 @@
         @sendVideo="handleSendVideo"
         @sendAudio="handleSendAudio"
         @resetApply="handleResetApply"
+        @update="queryFriendRequestNotice"
       ></LsFriendPanel>
     </LsCardDialog>
   </div>
@@ -36,8 +47,14 @@
 
 <script>
 import { LsCardDialog, LsFriendPanel } from '@lanshu/components';
-import { FriendMixins } from '@lanshu/utils';
-import { IMQueryFriendRequestNotice } from '@lanshu/im';
+import { FRIEND_AUTH_STATE, FriendMixins } from '@lanshu/utils';
+import { mapGetters, mapActions } from 'vuex';
+import {
+  IMQueryFriendRequestNotice,
+  IMGetUserProfile,
+  IMGetOneFriend,
+  IMClearFriendRequestNoticeUnreadCount,
+} from '@lanshu/im';
 
 export default {
   name: 'New-Friend',
@@ -48,16 +65,25 @@ export default {
   },
   data() {
     return {
+      FRIEND_AUTH_STATE,
       friendList: [],
-      config: {
-        isPass: true,
-      },
+      config: {},
     };
+  },
+  computed: {
+    ...mapGetters('IMStore', ['newFriendCount']),
   },
   mounted() {
     this.queryFriendRequestNotice();
+    if (this.newFriendCount > 0) {
+      IMClearFriendRequestNoticeUnreadCount().then(() => {
+        this.setNewFriendCount(0);
+      });
+    }
   },
   methods: {
+    ...mapActions('IMStore', ['setNewFriendCount']),
+
     handleResetApply() {
       this.config = {
         isExpired: false,
@@ -66,10 +92,53 @@ export default {
     },
 
     queryFriendRequestNotice() {
+      this.handleCloseDialog();
       IMQueryFriendRequestNotice(0).then((res) => {
         console.log(res);
         this.friendList = res?.data?.data;
       });
+    },
+
+    getConfig(state) {
+      const configMap = {
+        [FRIEND_AUTH_STATE.AWAIT]: () => {
+          return {
+            isAuth: true,
+          };
+        },
+        [FRIEND_AUTH_STATE.AGREE]: () => {
+          return {
+            isPass: true,
+          };
+        },
+        [FRIEND_AUTH_STATE.EXPIRE]: () => {
+          return {
+            isExpired: true,
+          };
+        },
+      };
+      return configMap[state]();
+    },
+
+    async handleFriend(item, event) {
+      const { toUser, state, message, id } = item;
+      const config = this.getConfig(state);
+      this.config = config;
+      const userProfile = (await IMGetUserProfile(toUser))?.data || {};
+      let friendInfo = {}
+      if (state === FRIEND_AUTH_STATE.AGREE) {
+        friendInfo = (await IMGetOneFriend(toUser))?.data || {}
+      }
+      const {remark, desc} = friendInfo;
+      this.openFriendDialog(
+        {
+          ...userProfile,
+          remark, desc,
+          message,
+          noticeId: id,
+        },
+        event,
+      );
     },
   },
 };
@@ -109,7 +178,7 @@ export default {
         position: absolute;
       }
 
-      &.active {
+      &:hover {
         background: $bg-hover-grey-color;
       }
 

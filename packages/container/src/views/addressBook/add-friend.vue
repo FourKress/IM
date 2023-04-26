@@ -93,6 +93,7 @@ export default {
   },
   watch: {
     'form.phoneNum': function (val, oldVal) {
+      if (!val) this.handleClearSearch();
       const phoneNum = formatPhoneNum(val, oldVal);
       if (phoneNum) {
         this.form.phoneNum = phoneNum;
@@ -116,12 +117,14 @@ export default {
       this.openFriendDialog(this.friendInfo, event);
     },
     handleSendApply(addParams) {
-      const { origin, message, desc, remark } = addParams;
       console.log(this.friendInfo, addParams);
-      IMFriendAddRequest(this.friendInfo.userId, remark, desc, message, origin).then(() => {
+      IMFriendAddRequest(...addParams).then(() => {
         this.handleCloseDialog();
       });
     },
+    handleClearSearch() {
+      this.friendList = [];
+    }
   },
 };
 </script>

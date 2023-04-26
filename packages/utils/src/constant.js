@@ -141,3 +141,9 @@ export const addFriendType = {
   isSean: 2,
   isShared: 3,
 };
+
+export const FRIEND_AUTH_STATE = {
+  AWAIT: 1,
+  AGREE: 2,
+  EXPIRE: 7,
+};

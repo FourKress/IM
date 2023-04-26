@@ -28,8 +28,12 @@ export const groupedPy = (sortedPYArr) => {
     return groups;
   }, {});
   const { special, ...other } = groups;
+  if (special)
+    return {
+      ...other,
+      special,
+    };
   return {
     ...other,
-    special,
   };
 };

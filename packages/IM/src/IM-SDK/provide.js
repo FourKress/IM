@@ -72,6 +72,7 @@ export const IMSDKFriendProvider = {
   provider: 'getFriendProvider',
   events: {
     getAllFriendList: 'getAllFriendList',
+    getOneFriend: 'getOneFriend',
     friendAddRequest: 'friendAddRequest',
     agreeFriendAddRequest: 'agreeFriendAddRequest',
     delFriendOneWay: 'delFriendOneWay',

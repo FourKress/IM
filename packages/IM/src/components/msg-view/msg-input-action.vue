@@ -38,7 +38,7 @@
         <div class="right">
           <span
             class="send-btn"
-            :class="(!message || !messageText) && 'disabled'"
+            :class="disabledSendMsg && 'disabled'"
             @click="sendMsg"
           >
             发送
@@ -122,6 +122,9 @@ export default {
     placeholder() {
       return `发送给 ${this.session.nickname || ''}...`;
     },
+    disabledSendMsg() {
+      return !this.message || (!this.messageText && !this.message.includes('<img'));
+    }
   },
   async mounted() {
     this.$nextTick(() => {
@@ -322,14 +325,17 @@ export default {
     },
 
     async handleIMSendMsg(msg, cb) {
-      await IMSendMessage(msg).then((res) => {
-        console.log('消息发送成功', res);
-      }).catch(() => {
-        this.$message.error('消息发送失败')
-      }).finally(() => {
-        this.$emit('refreshMsg');
-        cb && cb();
-      });
+      await IMSendMessage(msg)
+        .then((res) => {
+          console.log('消息发送成功', res);
+        })
+        .catch(() => {
+          this.$message.error('消息发送失败');
+        })
+        .finally(() => {
+          this.$emit('refreshMsg');
+          cb && cb();
+        });
     },
 
     async getImageSize(url) {
@@ -344,16 +350,19 @@ export default {
 
     async sendMsg() {
       if (this.IM_Network_Status !== this.SDK_READ) return;
-      if (!this.message || !this.messageText) return;
+      if (this.disabledSendMsg) return;
 
       const regExp = new RegExp(
         /(<img src="\S*" alt(="")?>|[a-zA-Z0-9\u4e00-\u9fa5])+/g,
         'g',
       );
-      const msgArr = this.message
-        .replace(/<span|div>|<\/span|div>/g, '<br>')
-        .match(regExp)
-        ?.filter((d) => d !== 'br') || [this.message];
+      const realMessage = this.message.replace(
+        /<span|div>|<\/span|div>/g,
+        '<br>',
+      );
+      const msgArr = realMessage.includes('<img')
+        ? realMessage.match(regExp)?.filter((d) => d !== 'br') || [realMessage]
+        : [realMessage];
 
       const sendMsgArr = await Promise.all(
         msgArr
@@ -363,27 +372,26 @@ export default {
               const b64 = d.replace(/(<img src=")(\S+)(" \S*)/, '$2');
               const file = this.dataURLtoFile(b64);
               const { name, size, type } = file;
-
-              const url = await this.handleFileUpload(file);
+              const url = await this.handleFileUpload(b64);
               if (!url) return;
 
               const { width, height } = await this.getImageSize(url);
-              msg = await this.handleCreateMsg(
-                {
-                  name,
-                  type: type.replace(/\/[a-z]+/g, ''),
-                  rawType: type,
-                  size,
-                  height,
-                  width,
-                },
-                url,
-              );
+              // msg = await this.handleCreateMsg(
+              //   {
+              //     name,
+              //     type: type.replace(/\/[a-z]+/g, ''),
+              //     rawType: type,
+              //     size,
+              //     height,
+              //     width,
+              //   },
+              //   url,
+              // );
             } else {
-              msg = await this.handleCreateMsg({
-                type: this.checkMsgType.isText,
-                message: d,
-              });
+              // msg = await this.handleCreateMsg({
+              //   type: this.checkMsgType.isText,
+              //   message: d,
+              // });
             }
 
             return msg;
@@ -391,13 +399,13 @@ export default {
           .filter((msg) => msg),
       );
 
-      sendMsgArr.forEach((d) => {
-        this.handleIMSendMsg(d, this.clearInput);
-      });
+      // sendMsgArr.forEach((d) => {
+      //   this.handleIMSendMsg(d, this.clearInput);
+      // });
     },
 
     async handleCreateMsg(params, url = '') {
-      console.log('msg', params)
+      console.log('msg', params);
       let msgEvent = null;
       let msgData = [
         this.session.toUser, //消息接收方，为会话列表中的toUser
@@ -470,6 +478,7 @@ export default {
 
     async handleFileUpload(filePath) {
       return new Promise(async (resolve) => {
+        console.log(filePath)
         await IMUploadFile(filePath)
           .then((res) => {
             resolve(res.data.url);

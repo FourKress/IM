@@ -1,5 +1,5 @@
 import { mapGetters, mapActions } from 'vuex';
-import { IMGetByUserId } from '@lanshu/im';
+import { IMGetByUserId, IMAgreeFriendAddRequest } from '@lanshu/im';
 
 export default {
   data() {
@@ -17,7 +17,6 @@ export default {
 
     openFriendDialog(friend, event) {
       console.log(friend);
-      if (friend?.id && friend?.id === this.userInfo?.id) return;
       this.friendInfo = friend;
       const clientWidth = document.body.clientWidth;
       // 网页宽度 - 面板宽度 = left的最大值，避免定位超出视图区
@@ -32,6 +31,7 @@ export default {
 
     handleCloseDialog() {
       this.showFriendDialog = false;
+      this.friendInfo = {};
     },
     handleJumIMPage(fnc) {
       this.$nextTick(() => {
@@ -40,9 +40,9 @@ export default {
       });
     },
 
-    handleSendAuth() {
-      this.handleCloseDialog();
-      this.handleJumIMPage();
+    async handleSendAuth(authParams) {
+      await IMAgreeFriendAddRequest(...authParams);
+      await this.handleSendMsg();
     },
     async handleSendMsg() {
       const res = await IMGetByUserId(this.friendInfo.userId);

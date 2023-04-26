@@ -282,6 +282,13 @@ export const IMGetAllFriendList = async () =>
     IMSDKFriendProvider.events.getAllFriendList,
   );
 
+export const IMGetOneFriend = async (toUser) =>
+  await eventHOCFnc(
+    IMSDKFriendProvider.provider,
+    IMSDKFriendProvider.events.getOneFriend,
+    toUser,
+  );
+
 export const IMFriendAddRequest = async (
   toUser,
   remark,
@@ -313,3 +320,32 @@ export const IMGetFriendRequestNoticeUnreadCount = async () => {
   );
   stareInstance.commit('IMStore/setNewFriendCount', Number(res?.data || 0));
 };
+
+export const IMAgreeFriendAddRequest = async (noticeId, remark, desc) =>
+  await eventHOCFnc(
+    IMSDKFriendProvider.provider,
+    IMSDKFriendProvider.events.agreeFriendAddRequest,
+    noticeId,
+    remark,
+    desc,
+  );
+
+export const IMClearFriendRequestNoticeUnreadCount = async (
+  noticeId,
+  remark,
+  desc,
+) =>
+  await eventHOCFnc(
+    IMSDKFriendProvider.provider,
+    IMSDKFriendProvider.events.clearFriendRequestNoticeUnreadCount,
+    noticeId,
+    remark,
+    desc,
+  );
+
+export const IMDelFriendOneWay = async (toUser) =>
+  await eventHOCFnc(
+    IMSDKFriendProvider.provider,
+    IMSDKFriendProvider.events.delFriendOneWay,
+    toUser,
+  );
