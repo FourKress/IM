@@ -69,6 +69,7 @@
             :maxlength="10"
             placeholder="输入备注"
             :disabled="panelConfig.isExpired"
+            @change="handleSetRemarkOrDesc"
             v-model="remark"
           ></el-input>
         </div>
@@ -83,6 +84,7 @@
             :autosize="{ minRows: 1, maxRows: 3 }"
             placeholder="输入描述"
             :disabled="panelConfig.isExpired"
+            @change="handleSetRemarkOrDesc"
             v-model="desc"
           ></el-input>
         </div>
@@ -134,7 +136,7 @@
 <script>
 import { mapGetters } from 'vuex';
 import { addFriendType, calculateAgeByBirthday } from '@lanshu/utils';
-import { IMDelFriendOneWay } from '@lanshu/im';
+import { IMDelFriendOneWay, IMSetRemarkOrDesc } from '@lanshu/im';
 import LsAssets from './assets';
 import LsIcon from './ls-icon.vue';
 import LsUserTag from './ls-user-tag.vue';
@@ -249,6 +251,11 @@ export default {
         });
       }
     },
+    async handleSetRemarkOrDesc() {
+      if (!this.panelConfig.isPass) return;
+      await IMSetRemarkOrDesc(this.friendInfo.userId, this.remark, this.desc);
+      this.$emit('update')
+    }
   },
 };
 </script>

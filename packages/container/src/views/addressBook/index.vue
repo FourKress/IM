@@ -30,7 +30,7 @@
       </div>
     </div>
     <div class="right">
-      <div class="top">
+      <div class="top" v-if="componentConfig.key">
         {{ componentConfig.label }}
         <span class="create-group" v-if="componentConfig.key === 'GroupFriend'">
           <LsIcon
@@ -44,6 +44,14 @@
         </span>
       </div>
       <div class="main-warp">
+        <div class="empty-bg" v-if="!componentConfig.key">
+          <LsIcon
+            icon="ls-icon-logo"
+            width="168"
+            height="168"
+            render-svg
+          ></LsIcon>
+        </div>
         <component
           :is="componentConfig.component"
           :key="componentConfig.key"
@@ -261,6 +269,13 @@ export default {
       flex: 1;
       overflow: hidden;
       position: relative;
+
+      .empty-bg {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+      }
     }
   }
 }

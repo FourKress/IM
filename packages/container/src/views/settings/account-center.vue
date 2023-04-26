@@ -8,16 +8,16 @@
           @callback="handleCallback(info)"
         >
           <template slot="tag" v-if="info.key === 'authentication'">
-            <span class="auth-tag">
-              <LsIcon
-                render-svg
-                class='tag-icon'
-                icon="a-icon_yzcg2x"
-                height="12"
-                width="12"
-              ></LsIcon>
-              <span>已实名</span>
-            </span>
+<!--            <span class="auth-tag">-->
+<!--              <LsIcon-->
+<!--                render-svg-->
+<!--                class='tag-icon'-->
+<!--                icon="a-icon_yzcg2x"-->
+<!--                height="12"-->
+<!--                width="12"-->
+<!--              ></LsIcon>-->
+<!--              <span>已实名</span>-->
+<!--            </span>-->
           </template>
         </InfoBlock>
       </template>

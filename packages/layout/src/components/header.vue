@@ -53,16 +53,16 @@
           </div>
           <div class="sub-info">
             <div class="nickname">{{ userInfo.nickname }}</div>
-            <span class="auth-tag">
-              <LsIcon
-                render-svg
-                class="tag-icon"
-                icon="a-icon_yzcg2x"
-                height="12"
-                width="12"
-              ></LsIcon>
-              <span>已实名</span>
-            </span>
+<!--            <span class="auth-tag">-->
+<!--              <LsIcon-->
+<!--                render-svg-->
+<!--                class="tag-icon"-->
+<!--                icon="a-icon_yzcg2x"-->
+<!--                height="12"-->
+<!--                width="12"-->
+<!--              ></LsIcon>-->
+<!--              <span>已实名</span>-->
+<!--            </span>-->
           </div>
           <div class="more">
             <LsIcon

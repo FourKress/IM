@@ -1,5 +1,9 @@
 <template>
   <div id="client-im">
+    <div class="empty-bg" v-if="!mainSessionWindow.sessId">
+      <img :src="LsAssets.emptyData" alt="">
+    </div>
+
     <ImView
       v-if="mainSessionWindow.sessId"
       :key="mainSessionWindow.sessId"
@@ -42,7 +46,7 @@ import ImView from './im-view';
 import Settings from './base-settings/settings';
 import GroupMemberChat from './base-settings/group-member-chat';
 import GroupPanel from './group-panel/index';
-import { LsCardDialog } from '@lanshu/components';
+import { LsCardDialog, LsAssets } from '@lanshu/components';
 import { IMHeaderMoreBtnKey, IMGroupMemberPanelType } from '@lanshu/utils';
 
 export default {
@@ -56,6 +60,7 @@ export default {
   },
   data() {
     return {
+      LsAssets,
       recordrtc: null,
       IMHeaderMoreBtnKey,
       IMGroupMemberPanelType,
@@ -156,5 +161,24 @@ export default {
   transform: translate3d(0, 0, 0);
 
   border-radius: 0 10px 0 0;
+  position: relative;
+
+  .empty-bg {
+    width: 100%;
+    height: 100%;
+    background: $bg-IM-color;
+    position: absolute;
+    z-index: -1;
+
+    img {
+      display: block;
+      width: 200px;
+      height: 200px;
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+    }
+  }
 }
 </style>

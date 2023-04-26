@@ -47,11 +47,13 @@
 
 <script>
 import { LsIcon } from '@lanshu/components';
+import { IMGetUserProfile } from '../../IM-SDK';
 import RowChat from './row-chat';
 import Manager from './manager';
 import Record from './record';
 import GroupTransfer from './group-transfer';
 import MsgTopAndSilence from '../base-settings/msgTopAndSilence';
+import { mapGetters } from "vuex";
 
 export default {
   name: 'Group-settings',
@@ -70,7 +72,17 @@ export default {
       visibleGroupTransfer: false,
     };
   },
+  computed: {
+    ...mapGetters('IMStore', ['actionWindow']),
+  },
+  mounted() {
+    this.getGroupInfo()
+  },
   methods: {
+    getGroupInfo() {
+      console.log(this.actionWindow)
+      IMGetUserProfile(this.actionWindow.toUser)
+    },
     createGroup() {
       this.$emit('createGroup');
     },

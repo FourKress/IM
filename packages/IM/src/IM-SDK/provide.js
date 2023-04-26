@@ -80,5 +80,6 @@ export const IMSDKFriendProvider = {
     queryFriendRequestNotice: 'queryFriendRequestNotice',
     getFriendRequestNoticeUnreadCount: 'getFriendRequestNoticeUnreadCount',
     clearFriendRequestNoticeUnreadCount: 'clearFriendRequestNoticeUnreadCount',
+    setRemarkOrDesc: 'setRemarkOrDesc',
   },
 };

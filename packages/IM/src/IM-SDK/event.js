@@ -330,17 +330,10 @@ export const IMAgreeFriendAddRequest = async (noticeId, remark, desc) =>
     desc,
   );
 
-export const IMClearFriendRequestNoticeUnreadCount = async (
-  noticeId,
-  remark,
-  desc,
-) =>
+export const IMClearFriendRequestNoticeUnreadCount = async () =>
   await eventHOCFnc(
     IMSDKFriendProvider.provider,
     IMSDKFriendProvider.events.clearFriendRequestNoticeUnreadCount,
-    noticeId,
-    remark,
-    desc,
   );
 
 export const IMDelFriendOneWay = async (toUser) =>
@@ -348,4 +341,13 @@ export const IMDelFriendOneWay = async (toUser) =>
     IMSDKFriendProvider.provider,
     IMSDKFriendProvider.events.delFriendOneWay,
     toUser,
+  );
+
+export const IMSetRemarkOrDesc = async (toUser, remark, desc) =>
+  await eventHOCFnc(
+    IMSDKFriendProvider.provider,
+    IMSDKFriendProvider.events.setRemarkOrDesc,
+    toUser,
+    remark,
+    desc,
   );

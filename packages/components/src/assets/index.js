@@ -6,6 +6,8 @@ const trtcMePc = require('./images/trtc-me-pc.png');
 const trtcMeMobile = require('./images/trtc-me-mobile.png');
 const updateBg = require('./images/update-bg.png');
 const updateBgSmall = require('./images/update-bg-small.png');
+const emptyData = require('./images/empty-data.png');
+const logo = require('./images/logo.png');
 
 // 统一导出静态资源
 export default {
@@ -17,4 +19,6 @@ export default {
   trtcMeMobile,
   updateBg,
   updateBgSmall,
+  emptyData,
+  logo,
 };

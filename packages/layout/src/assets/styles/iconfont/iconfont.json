@@ -6,6 +6,13 @@
   "description": "IM、政务通用",
   "glyphs": [
     {
+      "icon_id": "35255602",
+      "name": "logo",
+      "font_class": "logo1",
+      "unicode": "e728",
+      "unicode_decimal": 59176
+    },
+    {
       "icon_id": "34934869",
       "name": "icon_gerenxinxi",
       "font_class": "icon_gerenxinxi",

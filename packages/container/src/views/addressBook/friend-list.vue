@@ -183,15 +183,11 @@ export default {
         justify-content: flex-start;
         box-sizing: border-box;
         cursor: pointer;
-        padding-left: 24px;
-        margin-bottom: 18px;
+        padding: 0 24px;
+        margin-bottom: 24px;
 
         &:last-child {
           margin-bottom: 20px;
-        }
-
-        &:hover {
-          background-color: $bg-hover-grey-color;
         }
 
         .info {
@@ -199,6 +195,12 @@ export default {
           display: flex;
           align-items: center;
           justify-content: flex-start;
+          padding: 9px;
+          border-radius: 6px;
+
+          &:hover {
+            background-color: $bg-hover-grey-color;
+          }
 
           .img {
             width: 46px;

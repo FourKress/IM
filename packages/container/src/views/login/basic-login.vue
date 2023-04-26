@@ -1,6 +1,8 @@
 <template>
   <div class="basic-login">
-    <div class="logo"></div>
+    <div class="logo">
+      <img :src="LsAssets.logo" alt="">
+    </div>
 
     <div class="title" v-if="isWechatLogin">请使用微信扫码登录</div>
     <div class="title" v-else>
@@ -17,12 +19,7 @@
 
     <template v-if="isAccountLogin && !isWechatLogin">
       <div class="input-panel">
-        <el-form
-          :model="form"
-          :rules="rules"
-          ref="loginForm"
-          label-width="0px"
-        >
+        <el-form :model="form" :rules="rules" ref="loginForm" label-width="0px">
           <div class="phone">
             <el-form-item label="" prop="phoneNum">
               <el-input
@@ -76,6 +73,7 @@
 import { renderProcess } from '@lanshu/render-process';
 import OtherLogin from './other-login';
 import { formatPhoneNum, PhoneNumMixins } from '@lanshu/utils';
+import { LsAssets } from '@lanshu/components';
 
 export default {
   name: 'Basic-login',
@@ -91,6 +89,7 @@ export default {
   },
   data() {
     return {
+      LsAssets,
       isWechatLogin: false,
       form: {
         phoneNum: '',
@@ -185,8 +184,19 @@ export default {
 .logo {
   width: 60px;
   height: 60px;
-  background: #333;
   border-radius: 12px;
+  background: $bg-IM-color;
+  border: 1px solid $split-line-color;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  img {
+    display: block;
+    width: 40px;
+    height: 40px;
+  }
 }
 
 .title {
