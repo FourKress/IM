@@ -265,8 +265,6 @@ export default {
     });
     this.addressBookList = addressBookList;
 
-    this.initData();
-
     this.minScrollTop = 370;
     this.maxScrollTop = 440;
 
@@ -342,7 +340,9 @@ export default {
       this.tabType = type;
       if (type === this.isAddress && !this.scrollView) {
         // 注册滚动事件的处理
+        console.log(1231)
         this.handleRegisterScroll()
+        this.getFriendListData();
       }
     },
 

@@ -222,9 +222,9 @@ export default {
     handleSendApply() {
       this.$emit('sendApply', [
         this.friendInfo.userId,
-        this.message,
-        this.desc,
         this.remark,
+        this.desc,
+        this.message,
         addFriendType.isSearch,
       ]);
     },

@@ -35,8 +35,8 @@ async function createWindow() {
   global.mainWindow = win;
 
   win.on('close', (event) => {
-    const hasGlobalWindow = !!global.TRTCWindow;
-    if (hasGlobalWindow) {
+    const hasGlobalWindow = global.TRTCWindow;
+    if (!!hasGlobalWindow) {
       event.preventDefault();
       win.webContents.send('mainProcessError', '请先结束当前通话');
       return;

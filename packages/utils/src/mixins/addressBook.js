@@ -1,4 +1,5 @@
 import { groupedPy, sortedPY } from '../pinyin';
+import { IMGetAllFriendList } from '@lanshu/im';
 
 export default {
   data() {
@@ -38,7 +39,13 @@ export default {
     this.specialKey = '#';
   },
   methods: {
-    initData() {
+    getFriendListData() {
+      IMGetAllFriendList().then((res) => {
+        this.addressBookList = res?.data || [];
+        this.initPinYin();
+      });
+    },
+    initPinYin() {
       // 数据转为拼音键值对 {A:[], B: []} 类型
       const addressBookPYObj = groupedPy(sortedPY(this.addressBookList));
       this.pinyinKey = Object.keys(addressBookPYObj)[0];

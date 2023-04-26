@@ -50,7 +50,7 @@
         @sendMsg="handleSendMsg"
         @sendVideo="handleSendVideo"
         @sendAudio="handleSendAudio"
-        @update="getAllFriendList"
+        @update="handleUpdate"
       />
     </LsCardDialog>
   </div>
@@ -59,7 +59,7 @@
 <script>
 import { AddressBookMixins, FriendMixins } from '@lanshu/utils';
 import { LsCardDialog, LsFriendPanel } from '@lanshu/components';
-import { IMGetAllFriendList, IMGetUserProfile } from '@lanshu/im';
+import { IMGetUserProfile } from '@lanshu/im';
 
 export default {
   name: 'Friend-List',
@@ -83,16 +83,12 @@ export default {
   },
   mounted() {
     this.handleRegisterScroll();
-    this.getAllFriendList();
+    this.getFriendListData();
   },
   methods: {
-    getAllFriendList() {
+    handleUpdate() {
       this.handleCloseDialog();
-      IMGetAllFriendList().then((res) => {
-        console.log(res);
-        this.addressBookList = res?.data || [];
-        this.initData();
-      });
+      this.getFriendListData();
     },
     async handleFriend(item, event) {
       const res = await IMGetUserProfile(item.userId);
@@ -210,7 +206,6 @@ export default {
             margin-right: 8px;
             border-radius: 6px;
             overflow: hidden;
-            background-color: #333333;
 
             img {
               width: 100%;
