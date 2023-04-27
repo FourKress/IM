@@ -75,7 +75,7 @@ export default {
     return {
       regexUtils,
       form: {
-        phoneNum: '139 8888 8888',
+        phoneNum: '',
       },
       rules: {
         phoneNum: [

@@ -53,16 +53,16 @@
           </div>
           <div class="sub-info">
             <div class="nickname">{{ userInfo.nickname }}</div>
-<!--            <span class="auth-tag">-->
-<!--              <LsIcon-->
-<!--                render-svg-->
-<!--                class="tag-icon"-->
-<!--                icon="a-icon_yzcg2x"-->
-<!--                height="12"-->
-<!--                width="12"-->
-<!--              ></LsIcon>-->
-<!--              <span>已实名</span>-->
-<!--            </span>-->
+            <!--            <span class="auth-tag">-->
+            <!--              <LsIcon-->
+            <!--                render-svg-->
+            <!--                class="tag-icon"-->
+            <!--                icon="a-icon_yzcg2x"-->
+            <!--                height="12"-->
+            <!--                width="12"-->
+            <!--              ></LsIcon>-->
+            <!--              <span>已实名</span>-->
+            <!--            </span>-->
           </div>
           <div class="more">
             <LsIcon
@@ -76,7 +76,11 @@
         </div>
 
         <div class="tag-wrap">
-          <LsUserTag :age="calculateAgeByBirthday(userProfile.birthday)" :sex="userProfile.sex" address="重庆渝北"></LsUserTag>
+          <LsUserTag
+            :age="calculateAgeByBirthday(userProfile.birthday)"
+            :sex="userProfile.sex"
+            address="重庆渝北"
+          ></LsUserTag>
         </div>
 
         <div class="sign">
@@ -186,8 +190,8 @@ export default {
       deep: true,
       handler() {
         this.initData();
-      }
-    }
+      },
+    },
   },
   mounted() {
     this.initData();
@@ -199,7 +203,6 @@ export default {
       'setHistoryMainPath',
     ]),
     calculateAgeByBirthday,
-
 
     initData() {
       this.description = this.userProfile?.description;
@@ -231,7 +234,7 @@ export default {
       this.showQrCodeDialog = true;
       this.$nextTick(() => {
         qrcode.toDataURL(
-          'asdaddassd',
+          `app://share/${this.userInfo.userId}`,
           {
             errorCorrectionLevel: 'H',
             width: 160,

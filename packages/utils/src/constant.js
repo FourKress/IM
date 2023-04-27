@@ -25,7 +25,7 @@ const getNetworkCallLabel = (data) => {
   );
 };
 
-export const baseMsgTypes = [1, 2, 3, 4, 5, 6, 672, 673, 674];
+export const baseMsgTypes = [1, 2, 3, 4, 5, 6, 671, 672, 673, 674];
 
 export const msgFormatMap = {
   1: {
@@ -61,6 +61,10 @@ export const msgFormatMap = {
       );
     },
     type: checkMsgType.isCreateGroup,
+  },
+  671: {
+    label: (data) => getNetworkCallLabel(data),
+    type: checkMsgType.isTRTC,
   },
   672: {
     label: (data) => getNetworkCallLabel(data),
@@ -157,4 +161,9 @@ export const FRIEND_AUTH_STATE = {
   AWAIT: 1,
   AGREE: 2,
   EXPIRE: 7,
+};
+
+export const SESSION_BUBBLE_MODEL = {
+  LEFT: 1,
+  BETWEEN: 2,
 };

@@ -37,12 +37,12 @@
         >
           <LsIcon render-svg icon="a-icon_more2x"></LsIcon>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item :command="isShared">
-              <div class="send-down-row">
-                <LsIcon size="14" icon="pop_cd_cjql"></LsIcon>
-                <span>转发名片</span>
-              </div>
-            </el-dropdown-item>
+<!--            <el-dropdown-item :command="isShared">-->
+<!--              <div class="send-down-row">-->
+<!--                <LsIcon size="14" icon="pop_cd_cjql"></LsIcon>-->
+<!--                <span>转发名片</span>-->
+<!--              </div>-->
+<!--            </el-dropdown-item>-->
             <el-dropdown-item :command="isDelete">
               <div class="send-down-row">
                 <LsIcon size="14" color="red" icon="pop_cd_sz"></LsIcon>

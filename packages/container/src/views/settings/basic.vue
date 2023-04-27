@@ -1,5 +1,5 @@
 <template>
-  <Card id='Basic-Card' title="通用">
+  <Card id="Basic-Card" title="通用">
     <InfoBlock :info="{ title: '启动' }">
       <div class="row">
         <el-checkbox v-model="autoStartChecked">开机自动启动北象</el-checkbox>
@@ -8,16 +8,20 @@
 
     <InfoBlock :info="{ title: '会话气泡显示模式' }">
       <div class="row">
-        <el-radio v-model="sessionBubbleModel" label='left'>左对齐模式</el-radio>
-        <el-radio v-model="sessionBubbleModel" label='between'>左右对话模式</el-radio>
+        <el-radio-group v-model="bubbleModel" @change="handleChange">
+          <el-radio :label="SESSION_BUBBLE_MODEL.LEFT">左对齐模式</el-radio>
+          <el-radio :label="SESSION_BUBBLE_MODEL.BETWEEN">左右对话模式</el-radio>
+        </el-radio-group>
       </div>
     </InfoBlock>
   </Card>
 </template>
 
 <script>
+import { renderProcess } from '@lanshu/render-process';
 import Card from './card';
 import InfoBlock from './info-block';
+import { SESSION_BUBBLE_MODEL } from '@lanshu/utils';
 
 export default {
   name: 'Basic-Card',
@@ -27,10 +31,19 @@ export default {
   },
   data() {
     return {
+      SESSION_BUBBLE_MODEL,
       autoStartChecked: false,
-      sessionBubbleModel: 'between',
-    }
-  }
+      bubbleModel: SESSION_BUBBLE_MODEL.BETWEEN,
+    };
+  },
+  async mounted() {
+    this.bubbleModel = await renderProcess.getStore('SESSION_BUBBLE_MODEL')
+  },
+  methods: {
+    handleChange(val) {
+      renderProcess.setStore('SESSION_BUBBLE_MODEL', val);
+    },
+  },
 };
 </script>
 

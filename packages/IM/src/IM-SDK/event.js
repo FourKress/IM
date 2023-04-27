@@ -267,13 +267,14 @@ export const IMStopNetworkCall = async (
     time,
   );
 
-export const IMAnswerNetworkCall = async (uuid, type, userId, userType) =>
+export const IMAnswerNetworkCall = async (uuid, type, userId, userType, data) =>
   await renderProcess.IMSDKNetworkCall(
-    IMSDKNetworkPhoneProvider.events.stopNetworkCall,
+    IMSDKNetworkPhoneProvider.events.answerNetworkCall,
     uuid,
     type,
     userId,
     userType,
+    data,
   );
 
 export const IMGetAllFriendList = async () =>
@@ -350,4 +351,10 @@ export const IMSetRemarkOrDesc = async (toUser, remark, desc) =>
     toUser,
     remark,
     desc,
+  );
+
+export const IMGetGroupList = async () =>
+  await eventHOCFnc(
+    IMSDKGroupProvider.provider,
+    IMSDKGroupProvider.events.getGroupList,
   );

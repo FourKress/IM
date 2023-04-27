@@ -22,7 +22,7 @@
         <AccountCenter></AccountCenter>
 <!--        <Notify></Notify>-->
         <File></File>
-<!--        <Basic></Basic>-->
+        <Basic></Basic>
         <Privacy></Privacy>
         <HotKey></HotKey>
         <Update></Update>

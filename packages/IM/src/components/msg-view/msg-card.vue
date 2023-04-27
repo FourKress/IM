@@ -61,7 +61,7 @@
       v-if="msgType === checkMsgType.isTRTC"
     >
       <LsIcon
-        v-if="!isSelf"
+        v-if="!isSelf || (bubbleModel === SESSION_BUBBLE_MODEL.LEFT)"
         class="trtc-icon target"
         :class="classObject"
         :icon="`${
@@ -69,13 +69,12 @@
             ? 'ls-icon-icon_shipin_duifang'
             : 'ls-icon-icon_duihuakuang_yuyin'
         }`"
-        render-svg
         width="18"
         height="18"
       ></LsIcon>
       {{ trtcMsgTips }}
       <LsIcon
-        v-if="isSelf"
+        v-if="isSelf && (bubbleModel === SESSION_BUBBLE_MODEL.BETWEEN)"
         class="trtc-icon self"
         :icon="`${
           msgData.type === networkCallType.isVideo
@@ -96,6 +95,7 @@ import {
   getFileSize,
   downloadFile,
   networkCallType,
+  SESSION_BUBBLE_MODEL,
 } from '@lanshu/utils';
 import { LsIcon } from '@lanshu/components';
 
@@ -112,12 +112,17 @@ export default {
       required: true,
       default: true,
     },
+    bubbleModel: {
+      type: Number,
+      default: SESSION_BUBBLE_MODEL.BETWEEN,
+    }
   },
   components: {
     LsIcon,
   },
   data() {
     return {
+      SESSION_BUBBLE_MODEL,
       msgFormatMap,
       checkMsgType,
     };
@@ -172,7 +177,7 @@ export default {
     trtcMsgTips() {
       const msgType = this.msg?.msgType;
       const tipsMap = {
-        671: `通话结束 ${this.msgData?.time}`,
+        671: `通话结束 ${this.secondToDate(this.msgData?.time)}`,
         672: `${this.isSelf ? '' : '对方'}已拒绝`,
         673: `${this.isSelf ? '' : '对方'}已取消`,
         674: `${this.isSelf ? '对方无' : '未'}应答`,
@@ -185,6 +190,22 @@ export default {
     getFileSize,
     handleDownload() {
       downloadFile(this.assetsPath, this.msgData.name);
+    },
+    //秒转化成 时分秒
+    secondToDate(time) {
+      if (!time) return '';
+      const h = Math.floor(time / 3600);
+      const m = Math.floor((time / 60) % 60);
+      const s = Math.floor(time % 60);
+      if (h) {
+        return `${this.formatTime(h)}:${this.formatTime(m)}:${this.formatTime(
+          s,
+        )}`;
+      }
+      return `${this.formatTime(m)}:${this.formatTime(s)}`;
+    },
+    formatTime(time) {
+      return time < 10 ? `0${time}` : time;
     },
   },
 };
@@ -201,13 +222,11 @@ export default {
     padding: 15px;
 
     &.self {
-      background-color: #4795ff;
-      color: $bg-white-color;
+      background-color: $bubble-IM-color;
     }
 
     &.target {
-      background-color: #e7eaf3;
-      color: $main-text-color;
+      background-color: $bg-white-color;
     }
 
     &.text {

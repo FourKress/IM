@@ -109,6 +109,7 @@ export default {
       await renderProcess.setStore('trtcSession', this.session);
       await renderProcess.setStore('trtcCallInfo', {
         type: networkCallType,
+        roomId: Date.now(),
         isBeInvited: false,
         platform
       });

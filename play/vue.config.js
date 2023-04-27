@@ -28,15 +28,19 @@ module.exports = defineConfig({
           .options({
             emit: true,
             rewritePath: 'node_modules/trtc-electron-sdk/build/Release',
-            // rewritePath: '../Resources',
           });
+
+        config.plugin('html').tap((args) => {
+          args[0].title = '蓝数IM';
+          return args;
+        });
 
         return config;
       },
 
       builderOptions: {
         appId: 'com.lanshu.app',
-        productName: 'Lanshu', //项目名，也是生成的安装文件名，即aDemo.exe
+        productName: '蓝数IM', //项目名，也是生成的安装文件名，即aDemo.exe
         copyright: 'Copyright © 2023', //版权信息
         directories: {
           output: 'build', //输出文件路径
@@ -67,7 +71,7 @@ module.exports = defineConfig({
           installerHeaderIcon: './icons/icon.ico', // 安装时头部图标
           createDesktopShortcut: true, // 是否创建桌面图标
           createStartMenuShortcut: true, // 是否创建开始菜单图标
-          shortcutName: 'Lanshu', // 快捷方式名称
+          shortcutName: '蓝数IM', // 快捷方式名称
           runAfterFinish: true, //是否安装完成后运行
         },
         win: {

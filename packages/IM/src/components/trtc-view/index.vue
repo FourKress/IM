@@ -184,6 +184,7 @@ export default {
       optPanelVisible: true,
       tipsInfo: {},
       isFull: false,
+      timer: null,
     };
   },
   created() {
@@ -292,7 +293,7 @@ export default {
         .then((res) => {
           console.log('拨打回调', res);
           let waringText;
-          const { type, uuid, data } = res;
+          const { type, uuid } = res;
           this.callUUID = uuid;
           switch (type) {
             case this.networkCallbackType.isTimeout:
@@ -302,6 +303,7 @@ export default {
               waringText = '对方已拒绝';
               break;
             case this.networkCallbackType.isAnswered:
+              this.handleEnterRoom();
               this.startTime();
               break;
             default:
@@ -332,6 +334,7 @@ export default {
       )
         .then((res) => {
           console.log(res);
+          renderProcess.IMSDKNetworkCallRefresh(this.trtcSession.sessId);
           this.handleTRTCDestroy();
         })
         .catch((err) => {
@@ -344,9 +347,18 @@ export default {
         this.callType,
         this.toUser,
         this.toUserType,
+        {
+          platform: this.platform,
+        },
       )
         .then((res) => {
           console.log(res);
+          const { data = {} } = res;
+          const { platform = clientType.isPc, roomId } = data;
+          this.isPc = platform === clientType.isPc;
+          this.roomId = roomId;
+          this.handleEnterRoom();
+          this.startTime();
         })
         .catch((err) => {
           console.log(err);
@@ -423,12 +435,10 @@ export default {
         className: 'waring',
       };
       await this.stopNetworkCall();
-      renderProcess.IMSDKNetworkCallRefresh(this.trtcSession.sessId);
     },
 
     async handleResolve() {
       await this.answerNetworkCall();
-      this.handleEnterRoom();
     },
 
     async handleCancel() {
@@ -438,7 +448,6 @@ export default {
         className: 'waring',
       };
       await this.stopNetworkCall();
-      renderProcess.IMSDKNetworkCallRefresh(this.trtcSession.sessId);
     },
 
     async handleCallEnd() {
@@ -450,6 +459,7 @@ export default {
         visible: true,
         className: 'waring',
       };
+      clearTimeout(this.timer)
       await this.stopNetworkCall();
     },
 
@@ -476,7 +486,7 @@ export default {
 
     startTime() {
       this.timer = setInterval(() => {
-        this.callTime++;
+        this.callTime += 1000;
       }, 1000);
     },
 

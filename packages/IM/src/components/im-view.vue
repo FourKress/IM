@@ -23,13 +23,37 @@
           </span>
         </div>
 
-        <div v-if="baseMsgTypes.includes(item.msgType)" class="msg-row" :class="checkSelf(item) ? 'self' : 'target'">
-          <div class="img" @click="(event) => openFriendDialog(checkSelf(item) ? userInfo : session, event)">
-            <MsgLazyAvatar :is-self="checkSelf(item)" :session="session" :message="item"></MsgLazyAvatar>
+        <div
+          v-if="baseMsgTypes.includes(item.msgType)"
+          class="msg-row"
+          :class="
+            checkSelf(item) && bubbleModel === SESSION_BUBBLE_MODEL.BETWEEN
+              ? 'self'
+              : 'target'
+          "
+        >
+          <div class="img" @click="(event) => handleFriend(item, event)">
+            <MsgLazyAvatar
+              :is-self="checkSelf(item)"
+              :session="session"
+              :message="item"
+            ></MsgLazyAvatar>
           </div>
           <div class="info">
-            <MsgCard :isSelf="checkSelf(item)" :msg="item" />
-            <div class="send-tips" v-if="item.sendState !== 1">
+            <MsgCard
+              :isSelf="checkSelf(item)"
+              :bubbleModel="bubbleModel"
+              :msg="item"
+            />
+            <div
+              class="send-tips"
+              :class="
+                checkSelf(item) && bubbleModel === SESSION_BUBBLE_MODEL.BETWEEN
+                  ? 'self'
+                  : 'target'
+              "
+              v-if="item.sendState !== 1"
+            >
               <img
                 class="loading-icon"
                 v-if="item.sendState === 0"
@@ -82,14 +106,22 @@ import {
   baseMsgTypes,
   msgFormatMap,
   FriendMixins,
+  SESSION_BUBBLE_MODEL,
+  FRIEND_AUTH_STATE,
 } from '@lanshu/utils';
 import { TimesTransform } from '@lanshu/components';
 import MsgCard from './msg-view/msg-card';
 import MsgHeader from './msg-view/msg-header';
 import MsgInputAction from './msg-view/msg-input-action';
-import MsgLazyAvatar from "./msg-view/msg-lazy-avatar";
-import { LsIcon, LsAssets, LsCardDialog, LsFriendPanel } from '@lanshu/components';
-import { IMGetMessageList } from '../IM-SDK';
+import MsgLazyAvatar from './msg-view/msg-lazy-avatar';
+import {
+  LsIcon,
+  LsAssets,
+  LsCardDialog,
+  LsFriendPanel,
+} from '@lanshu/components';
+import { renderProcess } from '@lanshu/render-process';
+import { IMGetMessageList, IMGetOneFriend, IMGetUserProfile } from '../IM-SDK';
 
 export default {
   name: 'ImView',
@@ -101,7 +133,7 @@ export default {
     MsgLazyAvatar,
     LsIcon,
     LsCardDialog,
-    LsFriendPanel
+    LsFriendPanel,
   },
   mixins: [FriendMixins],
   props: {
@@ -122,6 +154,8 @@ export default {
   },
   data() {
     return {
+      SESSION_BUBBLE_MODEL,
+
       messageList: [],
       hasNext: true,
       nextSeq: 0,
@@ -133,6 +167,7 @@ export default {
       msgFormatMap,
       LsAssets,
       showFriendDialog: false,
+      bubbleModel: SESSION_BUBBLE_MODEL.BETWEEN,
     };
   },
   watch: {
@@ -152,7 +187,7 @@ export default {
         if (!this?.session?.sessId) return;
         if (msg?.sessId === this?.session?.sessId) {
           this.getMessageList();
-          this.setCurrentMsg({})
+          this.setCurrentMsg({});
         }
       },
     },
@@ -171,6 +206,7 @@ export default {
   },
   async mounted() {
     // this.initData();
+    this.bubbleModel = await renderProcess.getStore('SESSION_BUBBLE_MODEL');
     this.throttleGetMessageList = lodash.throttle(this.getMessageList, 20, {
       leading: true,
       trailing: false,
@@ -199,7 +235,11 @@ export default {
     });
   },
   methods: {
-    ...mapActions('IMStore', ['setRefreshMsg', 'setDragFileList', 'setCurrentMsg']),
+    ...mapActions('IMStore', [
+      'setRefreshMsg',
+      'setDragFileList',
+      'setCurrentMsg',
+    ]),
 
     checkTimesInterval,
     initData() {
@@ -248,6 +288,25 @@ export default {
         this.scrollTop = scrollTop;
         this.throttleGetMessageList(true);
       }
+    },
+
+    async handleFriend(item, event) {
+      const isSelf = this.checkSelf(item);
+      if (isSelf) return;
+      const { fromUser } = item;
+      const userProfile = (await IMGetUserProfile(fromUser))?.data || {};
+      let friendInfo = {};
+      friendInfo = (await IMGetOneFriend(fromUser))?.data || {};
+      const { remark, desc } = friendInfo;
+      this.openFriendDialog(
+        {
+          ...userProfile,
+          remark,
+          desc,
+        },
+        event,
+      );
+
     },
 
     handleRefreshMsg() {
@@ -360,7 +419,14 @@ export default {
           .send-tips {
             position: absolute;
             bottom: 0;
-            right: -25px;
+
+            &.self {
+              left: -25px;
+            }
+
+            &.target {
+              right: -25px;
+            }
 
             .loading-icon {
               display: block;

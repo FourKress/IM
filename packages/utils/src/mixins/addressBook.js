@@ -39,9 +39,15 @@ export default {
     this.specialKey = '#';
   },
   methods: {
-    getFriendListData() {
-      IMGetAllFriendList().then((res) => {
-        this.addressBookList = res?.data || [];
+    async getFriendListData() {
+      await IMGetAllFriendList().then((res) => {
+        this.addressBookList = (res?.data || []).map((d) => {
+          return {
+            ...d,
+            checked: false,
+            isDefault: false,
+          };
+        });
         this.initPinYin();
       });
     },

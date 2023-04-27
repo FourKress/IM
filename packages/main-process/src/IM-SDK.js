@@ -71,8 +71,8 @@ export const IMSDKInit = (appId) => {
   IMSDK.getMainProvider().AddReceiveNewMessageCallBack((message, silence) => {
     const { msgType, sessId } = message;
 
-    // 通话取消、超时未接听或者拒绝
-    if ([672, 673, 674].includes(msgType)) {
+    // 通话结束、取消、超时未接听或者拒绝
+    if ([671, 672, 673, 674].includes(msgType)) {
       global.mainWindow.webContents.send('IMSDKListener', {
         type: 'RefreshMsg',
         value: sessId,

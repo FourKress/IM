@@ -108,6 +108,7 @@
               >
                 <el-checkbox
                   v-model="item.checked"
+                  :disabled="item.isDefault"
                   @change="(val) => handleSelect(val, item)"
                 >
                   <div class="info">
@@ -260,10 +261,6 @@ export default {
       .map((d) => {
         return this.getCheckedStatus(d);
       });
-    const addressBookList = this.addressBookList.map((d) => {
-      return this.getCheckedStatus(d);
-    });
-    this.addressBookList = addressBookList;
 
     this.minScrollTop = 370;
     this.maxScrollTop = 440;
@@ -335,14 +332,19 @@ export default {
       );
     },
 
-    handleClick(type) {
+    async handleClick(type) {
       this.staffName = '';
       this.tabType = type;
       if (type === this.isAddress && !this.scrollView) {
         // 注册滚动事件的处理
-        console.log(1231)
         this.handleRegisterScroll()
-        this.getFriendListData();
+        await this.getFriendListData();
+        const addressBookList = this.addressBookList.map((d) => {
+          d.toUser = d.userId;
+          return this.getCheckedStatus(d);
+        });
+        this.addressBookList = addressBookList;
+        this.initPinYin()
       }
     },
 
