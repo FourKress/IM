@@ -14,6 +14,7 @@ export const setStore = electronAPI?.setStore;
 export const updateClient = electronAPI?.updateClient;
 export const IMSDKIPC = electronAPI?.IMSDKIPC;
 export const IMSDKNetworkCall = electronAPI?.IMSDKNetworkCall;
+export const IMSDKNetworkCallRefresh = electronAPI?.IMSDKNetworkCallRefresh;
 export const IMSDKListener = electronAPI?.IMSDKListener;
 export const openTRTCWindow = electronAPI?.openTRTCWindow;
 export const TRTCListener = electronAPI?.TRTCListener;

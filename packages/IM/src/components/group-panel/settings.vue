@@ -4,16 +4,16 @@
       <RowChat title="群名称" @click="createGroup">
         <el-input placeholder="请输入" size="small"></el-input>
       </RowChat>
-      <RowChat title="群公告" @click="createGroup">
-        <el-input placeholder="请输入" size="small"></el-input>
-      </RowChat>
+<!--      <RowChat title="群公告" @click="createGroup">-->
+<!--        <el-input placeholder="请输入" size="small"></el-input>-->
+<!--      </RowChat>-->
       <RowChat label="群二维码" @click="createGroup" show-right-btn />
     </div>
 
     <div class="row">
-      <RowChat title="我的群备注" @click="createGroup">
-        <el-input placeholder="请输入" size="small"></el-input>
-      </RowChat>
+<!--      <RowChat title="我的群备注" @click="createGroup">-->
+<!--        <el-input placeholder="请输入" size="small"></el-input>-->
+<!--      </RowChat>-->
       <RowChat title="我的群昵称" @click="createGroup">
         <el-input placeholder="请输入" size="small"></el-input>
       </RowChat>

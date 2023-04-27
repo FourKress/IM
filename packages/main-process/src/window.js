@@ -1,6 +1,6 @@
 import { BrowserWindow } from 'electron';
 import path from 'path';
-import { isMac, clientType } from './utils';
+import { isMac, CLIENT_TYPE } from './utils';
 import log from './log';
 import checkDevices from './checkDevices';
 
@@ -87,11 +87,11 @@ export const defaultWindowConfig = {
   icon: './icons/icon.ico',
 };
 
-export const openTRTCWindow = async (type = clientType.isPc) => {
+export const openTRTCWindow = async (type = CLIENT_TYPE.IS_PC) => {
   await checkDevices();
 
   const configMap = {
-    [clientType.isPc]: {
+    [CLIENT_TYPE.IS_PC]: {
       size: {
         width: 640,
         height: 360,
@@ -100,7 +100,7 @@ export const openTRTCWindow = async (type = clientType.isPc) => {
       },
       ratio: 16 / 9,
     },
-    [clientType.isMobile]: {
+    [CLIENT_TYPE.IS_MOBILE]: {
       size: {
         width: 368,
         height: 640,

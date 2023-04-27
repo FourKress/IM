@@ -40,8 +40,14 @@
         </div>
       </div>
 
-      <div class="data-sync-status" :style="{height: IM_DataSync_Status && IM_DataSync_Status.value !== 2 ? '42px' : '0'}">
-        <img class="loading-icon" :src="LsAssets.loadingIcon" alt="">
+      <div
+        class="data-sync-status"
+        :style="{
+          height:
+            IM_DataSync_Status && IM_DataSync_Status.value !== 2 ? '42px' : '0',
+        }"
+      >
+        <img class="loading-icon" :src="LsAssets.loadingIcon" alt="" />
         <span v-if="IM_DataSync_Status">{{ IM_DataSync_Status.label }}</span>
       </div>
 
@@ -88,7 +94,12 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex';
-import { MsgTextType, TimesTransform, LsIcon, LsAssets } from '@lanshu/components';
+import {
+  MsgTextType,
+  TimesTransform,
+  LsIcon,
+  LsAssets,
+} from '@lanshu/components';
 import { IMClearUnreadCount } from '@lanshu/im';
 
 const isAll = true;
@@ -108,7 +119,7 @@ export default {
   components: {
     MsgTextType,
     TimesTransform,
-    LsIcon
+    LsIcon,
   },
   computed: {
     ...mapGetters('IMStore', [
@@ -126,33 +137,29 @@ export default {
     sessionList: {
       deep: true,
       handler(val) {
+        console.log('sessionList', val)
         this.selfSessionList = val;
-        // this._setMainSessionWindow(val);
       },
     },
     mainSessionWindow: {
       deep: true,
       handler(val) {
-        console.log(val, 'mainSessionWindow')
+        console.log(val, 'mainSessionWindow');
         if (this.isScroll) {
           this.$refs.sidebarMenu.scrollTop = 0;
         }
         this.isScroll = true;
         this.currentSession = val?.sessId;
-      }
-    }
+      },
+    },
   },
   mounted() {
     this.selfSessionList = this.sessionList;
-    if (this.mainSessionWindow?.sessId) {
-      this.currentSession = this.mainSessionWindow.sessId;
-    }
-    // this._setMainSessionWindow(this.sessionList);
+    this._setMainSessionWindow();
   },
   methods: {
     ...mapActions('IMStore', [
       'setMainSessionWindow',
-      'addSessionWindowList',
       'setAllSession',
     ]),
     handleChooseTab(isAll) {
@@ -164,31 +171,25 @@ export default {
       }
     },
     handleSetSessionWindow(sessId, mainSessionWindow) {
-      const sessionWindowList = [
-        this.mainSessionWindow,
-        ...this.sessionWindowList,
-      ];
-      if (sessionWindowList.some((d) => d.sessId === sessId)) return;
       this.isScroll = false;
       this.setMainSessionWindow(mainSessionWindow);
       if (mainSessionWindow?.unreadCount > 0) {
         IMClearUnreadCount(sessId);
       }
     },
-    _setMainSessionWindow(sessionList) {
+    _setMainSessionWindow() {
+      const sessionList = this.selfSessionList;
       if (!sessionList?.length) return;
-      if (this.mainSessionWindow?.sessId) {
-        this.currentSession = this.mainSessionWindow.sessId;
-      } else {
-        const mainSessionWindow = sessionList[0];
-        const { sessId } = mainSessionWindow;
-        this.handleSetSessionWindow(sessId, mainSessionWindow);
+      const currentSession = this.mainSessionWindow?.sessId;
+      if (currentSession) {
+        this.currentSession = currentSession;
+        const targetSession = sessionList.find(d => d.sessId === currentSession);
+        this.handleSetSessionWindow(currentSession, targetSession);
       }
     },
     handleMenuClick(session) {
       const sessId = session.sessId;
       this.handleSetSessionWindow(sessId, session);
-      // this.addSessionWindowList(session)
     },
   },
 };
@@ -305,7 +306,7 @@ export default {
       font-size: 14px;
       font-weight: normal;
       color: $minor-text-color;
-      transition: all .2s;
+      transition: all 0.2s;
       overflow: hidden;
       margin: -13px 0 12px 0;
 

@@ -72,10 +72,14 @@ export const IMSDKCallBackEvents = {
     console.info('日志', info);
   },
   FriendAddRequestUpdateListener(friendAddRequestCount) {
-    console.log('新好用：', friendAddRequestCount);
+    console.log('新好友：', friendAddRequestCount);
     stareInstance.commit(
       'IMStore/setNewFriendCount',
       Number(friendAddRequestCount),
     );
+  },
+  RefreshMsg(sessId) {
+    console.log('RefreshMsg', sessId);
+    stareInstance.commit('IMStore/setRefreshMsg', true);
   },
 };

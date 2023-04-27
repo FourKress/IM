@@ -376,22 +376,22 @@ export default {
               if (!url) return;
 
               const { width, height } = await this.getImageSize(url);
-              // msg = await this.handleCreateMsg(
-              //   {
-              //     name,
-              //     type: type.replace(/\/[a-z]+/g, ''),
-              //     rawType: type,
-              //     size,
-              //     height,
-              //     width,
-              //   },
-              //   url,
-              // );
+              msg = await this.handleCreateMsg(
+                {
+                  name,
+                  type: type.replace(/\/[a-z]+/g, ''),
+                  rawType: type,
+                  size,
+                  height,
+                  width,
+                },
+                url,
+              );
             } else {
-              // msg = await this.handleCreateMsg({
-              //   type: this.checkMsgType.isText,
-              //   message: d,
-              // });
+              msg = await this.handleCreateMsg({
+                type: this.checkMsgType.isText,
+                message: d,
+              });
             }
 
             return msg;
@@ -399,9 +399,9 @@ export default {
           .filter((msg) => msg),
       );
 
-      // sendMsgArr.forEach((d) => {
-      //   this.handleIMSendMsg(d, this.clearInput);
-      // });
+      sendMsgArr.forEach((d) => {
+        this.handleIMSendMsg(d, this.clearInput);
+      });
     },
 
     async handleCreateMsg(params, url = '') {

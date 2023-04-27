@@ -88,7 +88,7 @@ export const deleteFile = (path) => {
 
 export const isMac = process.platform === 'darwin';
 
-export const clientType = {
-  isPc: 'isPc',
-  isMobile: 'isMobile',
+export const CLIENT_TYPE = {
+  IS_PC: 1,
+  IS_MOBILE: 2,
 };

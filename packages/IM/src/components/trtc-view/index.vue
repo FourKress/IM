@@ -36,7 +36,7 @@
           @action="handleResolve"
         />
         <OptBtn
-          tooltip="挂断"
+          tooltip="拒绝"
           icon="ls-icon-icon_guaduan"
           className="reject"
           @action="handleReject"
@@ -45,7 +45,7 @@
       <!--  拨打方未进入房间  -->
       <div v-if="!isBeInvited && !isEnterRoom" class="btn-list-await">
         <OptBtn
-          tooltip="挂断"
+          tooltip="取消"
           icon="ls-icon-icon_guaduan"
           className="reject"
           @action="handleCancel"
@@ -129,6 +129,7 @@ import {
   winActionType,
   windowType,
   networkCallbackType,
+  clientType,
 } from '@lanshu/utils';
 import { renderProcess } from '@lanshu/render-process';
 import {
@@ -172,12 +173,13 @@ export default {
       isExitRoom: false,
       isVideoCall: false,
       callType: '',
-      callTime: null,
+      callTime: 0,
       callUUID: null,
       disMicStatus: false,
       disSpeStatus: false,
       disCamStatus: false,
       isPc: true,
+      platform: clientType.isPc,
       debounceOptPanelVisible: null,
       optPanelVisible: true,
       tipsInfo: {},
@@ -189,23 +191,27 @@ export default {
 
     this.subscribeEvents();
 
-    // renderProcess.TRTCListener((event, message) => {
-    //   console.log('message', message);
-    //   this.stopTime();
-    //   const {
-    //     data: { trtcType },
-    //   } = message;
-    //   switch (true) {
-    //     case trtcType === 1001:
-    //       this.handleEnterRoom();
-    //       break;
-    //     case [1002, 1004, 1006].includes(trtcType):
-    //       this.handleWindowChange('close');
-    //       break;
-    //     default:
-    //       break;
-    //   }
-    // });
+    renderProcess.TRTCListener((event, message) => {
+      console.log('TRTCListener', message);
+      const { type, value } = message;
+      switch (true) {
+        case type === 'Close':
+          const tipsMap = {
+            672: '对方已拒绝',
+            673: '对方已取消',
+            674: '未应答',
+          };
+          this.tipsInfo = {
+            text: tipsMap[value],
+            visible: true,
+            className: 'waring',
+          };
+          this.handleTRTCDestroy();
+          break;
+        default:
+          break;
+      }
+    });
   },
 
   async mounted() {
@@ -217,8 +223,19 @@ export default {
     console.log(userInfo, trtcSession, trtcCallInfo);
 
     const { toUser, toUserType } = trtcSession;
-    const { type, isBeInvited, roomId } = trtcCallInfo;
+    const {
+      type,
+      isBeInvited,
+      roomId,
+      platform = clientType.isPc,
+      uuid,
+    } = trtcCallInfo;
 
+    if (uuid) {
+      this.callUUID = uuid;
+    }
+    this.platform = platform;
+    this.isPc = platform === clientType.isPc;
     this.isBeInvited = isBeInvited;
     this.callType = type;
     this.isVideoCall = type === this.networkCallType.isVideo;
@@ -233,7 +250,9 @@ export default {
       trtcCloud.startLocalPreview(this.$refs.localTrtcContainer, this.isPc);
     }
 
-    this.startNetworkCall();
+    if (!isBeInvited) {
+      this.startNetworkCall();
+    }
   },
   methods: {
     initMouseEvent() {
@@ -268,19 +287,22 @@ export default {
     startNetworkCall() {
       IMStartNetworkCall(this.toUser, this.toUserType, this.callType, {
         roomId: this.roomId,
+        platform: this.platform,
       })
         .then((res) => {
           console.log('拨打回调', res);
           let waringText;
-          const { type } = res;
+          const { type, uuid, data } = res;
+          this.callUUID = uuid;
           switch (type) {
             case this.networkCallbackType.isTimeout:
-              waringText = '对方未接听';
+              waringText = '对方未应答';
               break;
             case this.networkCallbackType.isReject:
               waringText = '对方已拒绝';
               break;
             case this.networkCallbackType.isAnswered:
+              this.startTime();
               break;
             default:
               break;
@@ -291,6 +313,7 @@ export default {
               visible: true,
               className: 'waring',
             };
+            renderProcess.IMSDKNetworkCallRefresh(this.trtcSession.sessId);
             this.handleTRTCDestroy();
           }
         })
@@ -316,7 +339,12 @@ export default {
         });
     },
     async answerNetworkCall() {
-      await IMAnswerNetworkCall(this.callUUID, this.callType, this.toUser, this.toUserType)
+      await IMAnswerNetworkCall(
+        this.callUUID,
+        this.callType,
+        this.toUser,
+        this.toUserType,
+      )
         .then((res) => {
           console.log(res);
         })
@@ -329,7 +357,7 @@ export default {
       this.isExitRoom = true;
       setTimeout(() => {
         this.handleWindowChange(this.winActionType.isClose);
-      }, 3000);
+      }, 2000);
     },
 
     async handleWindowChange(type) {
@@ -343,7 +371,7 @@ export default {
       }
 
       if (this.isExitRoom) {
-        await renderProcess.setStore('trtcCanBeClosed', 'true');
+        await renderProcess.setStore('trtcCanBeClosed', true);
         trtcCloud.stopLocalPreview();
         trtcCloud.stopLocalAudio();
         renderProcess.changeWindow(type, this.windowType.isTrtc);
@@ -390,11 +418,12 @@ export default {
 
     async handleReject() {
       this.tipsInfo = {
-        text: '已拒绝通话',
+        text: '通话已拒绝',
         visible: true,
         className: 'waring',
       };
       await this.stopNetworkCall();
+      renderProcess.IMSDKNetworkCallRefresh(this.trtcSession.sessId);
     },
 
     async handleResolve() {
@@ -404,11 +433,12 @@ export default {
 
     async handleCancel() {
       this.tipsInfo = {
-        text: '已取消通话',
+        text: '通话已取消',
         visible: true,
         className: 'waring',
       };
       await this.stopNetworkCall();
+      renderProcess.IMSDKNetworkCallRefresh(this.trtcSession.sessId);
     },
 
     async handleCallEnd() {
@@ -416,7 +446,7 @@ export default {
         this.isExitRoom = true;
       });
       this.tipsInfo = {
-        text: '已挂断通话',
+        text: '通话已挂断',
         visible: true,
         className: 'waring',
       };
@@ -442,6 +472,12 @@ export default {
         trtcCloud.startLocalPreview(this.$refs.localTrtcContainer, this.isPc);
       }
       trtcCloud.muteLocalVideo(this.disCamStatus);
+    },
+
+    startTime() {
+      this.timer = setInterval(() => {
+        this.callTime++;
+      }, 1000);
     },
 
     onUserVideoAvailable(userId, available) {

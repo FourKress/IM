@@ -2,9 +2,9 @@ import { app } from 'electron';
 import fs from 'fs';
 import electronLog from './log';
 import { openTRTCWindow } from './window';
-import { clientType } from './utils';
+import { CLIENT_TYPE } from './utils';
 
-const { LimMain, LogLevel, ModelUtil } = require('lim-sdk-electron');
+const { LimMain, LogLevel } = require('lim-sdk-electron');
 
 export const IMSDKInit = (appId) => {
   const limMain = new LimMain({ appId });
@@ -15,7 +15,7 @@ export const IMSDKInit = (appId) => {
   global.IMSDK = IMSDK;
 
   IMSDK.getMainProvider().setLogLevel(
-    process.env.WEBPACK_DEV_SERVER_URL ? LogLevel.DEBUG : LogLevel.INFO,
+    process.env.WEBPACK_DEV_SERVER_URL ? LogLevel.INFO : LogLevel.INFO,
   );
 
   IMSDK.getMainProvider().setNetworkChangeCallBack((state) => {
@@ -69,6 +69,21 @@ export const IMSDKInit = (appId) => {
   });
 
   IMSDK.getMainProvider().AddReceiveNewMessageCallBack((message, silence) => {
+    const { msgType, sessId } = message;
+
+    // 通话取消、超时未接听或者拒绝
+    if ([672, 673, 674].includes(msgType)) {
+      global.mainWindow.webContents.send('IMSDKListener', {
+        type: 'RefreshMsg',
+        value: sessId,
+      });
+      const TRTCWindow = global.TRTCWindow;
+      if (!TRTCWindow) return;
+      TRTCWindow.webContents.send('TRTCListener', {
+        type: 'Close',
+        value: msgType,
+      });
+    }
     global.mainWindow.webContents.send('IMSDKListener', {
       type: 'AddReceiveNewMessage',
       value: {
@@ -79,17 +94,29 @@ export const IMSDKInit = (appId) => {
   });
 
   IMSDK.getMainProvider().setNetworkCallListener(
-    async (uuid, type, userId, userType) => {
+    async (uuid, type, data, userId, userType) => {
+      if (global.store.get('networkCallUUID') === uuid) return;
+      global.store.set('networkCallUUID', uuid);
+      console.log('setNetworkCallListener', uuid, type, data, userId, userType);
+      const userInfo = await IMSDK.getUserProvider().getUserAttrbute(userId);
+      const { avatar, nickname } = userInfo.data || {};
       await global.store.set('trtcSession', {
         toUser: userId,
         toUserType: userType,
+        userId,
+        avatar,
+        nickname,
       });
+      const { platform = CLIENT_TYPE.IS_PC, roomId } = data || {};
       await global.store.set('trtcCallInfo', {
         type,
-        isBeInvited: false,
-        platform: ModelUtil.getModel().platform,
+        isBeInvited: true,
+        platform,
+        roomId,
+        uuid,
       });
-      await openTRTCWindow(clientType.isPc);
+      console.log('openTRTCWindow');
+      await openTRTCWindow(platform);
     },
   );
 
@@ -150,6 +177,15 @@ export const IMSDKNetworkCallEvent = async (event, data) => {
     electronLog.info(JSON.stringify(e));
     return e;
   }
+};
+
+export const IMSDKNetworkCallRefresh = (sessId) => {
+  setTimeout(() => {
+    global.mainWindow.webContents.send('IMSDKListener', {
+      type: 'RefreshMsg',
+      value: sessId,
+    });
+  }, 500);
 };
 
 export const IMSDK_Destroy = async () => {

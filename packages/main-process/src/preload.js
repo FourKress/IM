@@ -37,9 +37,10 @@ window.electronAPI = {
     ipcRenderer.invoke('IMSDKIPC', provider, event, data),
   IMSDKNetworkCall: (event, ...data) =>
     ipcRenderer.invoke('IMSDKNetworkCall', event, data),
+  IMSDKNetworkCallRefresh: (data) =>
+    ipcRenderer.send('IMSDKNetworkCallRefresh', data),
   IMSDKListener: (callback) => ipcRenderer.on('IMSDKListener', callback),
-  openTRTCWindow: (clientType) =>
-    ipcRenderer.send('openTRTCWindow', clientType),
+  openTRTCWindow: (type) => ipcRenderer.send('openTRTCWindow', type),
   TRTCListener: (callback) => ipcRenderer.on('TRTCListener', callback),
   hasWindow: (win) => ipcRenderer.invoke('hasWindow', win),
   mainProcessError: (callback) => ipcRenderer.on('mainProcessError', callback),

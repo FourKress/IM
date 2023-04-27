@@ -55,18 +55,48 @@
       <div class="close-btn" @click="handleDownload">下载</div>
     </div>
 
-<!--    <div-->
-<!--      class="card text"-->
-<!--      :class="classObject"-->
-<!--      v-if="msgType === checkMsgType.isTRTC"-->
-<!--    >-->
-<!--      {{ msgData.trtcType }}-->
-<!--    </div>-->
+    <div
+      class="card text"
+      :class="classObject"
+      v-if="msgType === checkMsgType.isTRTC"
+    >
+      <LsIcon
+        v-if="!isSelf"
+        class="trtc-icon target"
+        :class="classObject"
+        :icon="`${
+          msgData.type === networkCallType.isVideo
+            ? 'ls-icon-icon_shipin_duifang'
+            : 'ls-icon-icon_duihuakuang_yuyin'
+        }`"
+        render-svg
+        width="18"
+        height="18"
+      ></LsIcon>
+      {{ trtcMsgTips }}
+      <LsIcon
+        v-if="isSelf"
+        class="trtc-icon self"
+        :icon="`${
+          msgData.type === networkCallType.isVideo
+            ? 'ls-icon-icon_shipin_wo'
+            : 'ls-icon-icon_duihuakuang_yuyin'
+        }`"
+        width="18"
+        height="18"
+      ></LsIcon>
+    </div>
   </div>
 </template>
 
 <script>
-import { msgFormatMap, checkMsgType, getFileSize, downloadFile } from '@lanshu/utils';
+import {
+  msgFormatMap,
+  checkMsgType,
+  getFileSize,
+  downloadFile,
+  networkCallType,
+} from '@lanshu/utils';
 import { LsIcon } from '@lanshu/components';
 
 export default {
@@ -93,6 +123,9 @@ export default {
     };
   },
   computed: {
+    networkCallType() {
+      return networkCallType;
+    },
     msgType() {
       const msgType = this.msg?.msgType;
       return this.msgFormatMap[msgType].type;
@@ -136,12 +169,22 @@ export default {
         target: !this.isSelf,
       };
     },
+    trtcMsgTips() {
+      const msgType = this.msg?.msgType;
+      const tipsMap = {
+        671: `通话结束 ${this.msgData?.time}`,
+        672: `${this.isSelf ? '' : '对方'}已拒绝`,
+        673: `${this.isSelf ? '' : '对方'}已取消`,
+        674: `${this.isSelf ? '对方无' : '未'}应答`,
+      };
+      return tipsMap[msgType];
+    },
   },
   mounted() {},
   methods: {
     getFileSize,
     handleDownload() {
-      downloadFile(this.assetsPath, this.msgData.name)
+      downloadFile(this.assetsPath, this.msgData.name);
     },
   },
 };
@@ -158,16 +201,30 @@ export default {
     padding: 15px;
 
     &.self {
-      background-color: $bubble-IM-color;
+      background-color: #4795ff;
+      color: $bg-white-color;
     }
 
     &.target {
-      background-color: $bg-white-color;
+      background-color: #e7eaf3;
+      color: $main-text-color;
     }
 
     &.text {
       user-select: text;
       word-break: break-all;
+      display: flex;
+      align-items: center;
+
+      .trtc-icon {
+        &.self {
+          margin-left: 9px;
+        }
+
+        &.target {
+          margin-right: 9px;
+        }
+      }
     }
   }
 

@@ -23,8 +23,7 @@
           </span>
         </div>
 
-        <!--        :class="checkSelf(item) ? 'self' : 'target'"-->
-        <div v-if="baseMsgTypes.includes(item.msgType)" class="msg-row target">
+        <div v-if="baseMsgTypes.includes(item.msgType)" class="msg-row" :class="checkSelf(item) ? 'self' : 'target'">
           <div class="img" @click="(event) => openFriendDialog(checkSelf(item) ? userInfo : session, event)">
             <MsgLazyAvatar :is-self="checkSelf(item)" :session="session" :message="item"></MsgLazyAvatar>
           </div>
@@ -153,12 +152,12 @@ export default {
         if (!this?.session?.sessId) return;
         if (msg?.sessId === this?.session?.sessId) {
           this.getMessageList();
+          this.setCurrentMsg({})
         }
       },
     },
     refreshMsg(val) {
       if (val) {
-        console.log('12312312123312123');
         this.setRefreshMsg(false);
         this.getMessageList();
       }
@@ -200,7 +199,7 @@ export default {
     });
   },
   methods: {
-    ...mapActions('IMStore', ['setRefreshMsg', 'setDragFileList']),
+    ...mapActions('IMStore', ['setRefreshMsg', 'setDragFileList', 'setCurrentMsg']),
 
     checkTimesInterval,
     initData() {

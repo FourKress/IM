@@ -30,20 +30,20 @@ export default {
     this.hasPlugin = JSON.parse(localStorage.getItem('hasPlugin') || 'false');
   },
   mounted() {
-    this.$nextTick(() => {
-      startQiankun(microAppConfigs, {
-        beforeLoadHandler: (app) => {
-          console.log('主应用 beforeLoadHandler')
-        },
-        afterMountHandler: () => {
-          console.log('主应用 afterMountHandler')
-        },
-        globalErrorHandler: () => {
-          window.ClientMessage.error('微应用加载失败，请检查应用是否可运行');
-          console.log('主应用 globalErrorHandler')
-        },
-      });
-    });
+    // this.$nextTick(() => {
+    //   startQiankun(microAppConfigs, {
+    //     beforeLoadHandler: (app) => {
+    //       console.log('主应用 beforeLoadHandler')
+    //     },
+    //     afterMountHandler: () => {
+    //       console.log('主应用 afterMountHandler')
+    //     },
+    //     globalErrorHandler: () => {
+    //       window.ClientMessage.error('微应用加载失败，请检查应用是否可运行');
+    //       console.log('主应用 globalErrorHandler')
+    //     },
+    //   });
+    // });
   },
 };
 </script>

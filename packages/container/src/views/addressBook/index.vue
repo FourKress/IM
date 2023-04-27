@@ -34,7 +34,7 @@
         {{ componentConfig.label }}
         <span class="create-group" v-if="componentConfig.key === 'GroupFriend'">
           <LsIcon
-            icon="icon_tianjiahaoyou"
+            icon="ls-icon-icon_cjql"
             width="14"
             height="14"
             class="top-btn"

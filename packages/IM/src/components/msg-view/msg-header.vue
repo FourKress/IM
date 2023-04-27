@@ -105,13 +105,15 @@ export default {
     },
 
     async handleStartTrtc(networkCallType) {
+      const platform = clientType.isPc;
       await renderProcess.setStore('trtcSession', this.session);
       await renderProcess.setStore('trtcCallInfo', {
         type: networkCallType,
         isBeInvited: false,
+        platform
       });
 
-      renderProcess.openTRTCWindow(clientType.isPc);
+      renderProcess.openTRTCWindow(platform);
     },
 
     handleCloseSession() {

@@ -1,5 +1,7 @@
 import { mapGetters, mapActions } from 'vuex';
 import { IMGetByUserId, IMAgreeFriendAddRequest } from '@lanshu/im';
+import { renderProcess } from '@lanshu/render-process';
+import { clientType, networkCallType } from '../constant';
 
 export default {
   data() {
@@ -33,11 +35,30 @@ export default {
       this.showFriendDialog = false;
       this.friendInfo = {};
     },
-    handleJumIMPage(fnc) {
+    async handleJumIMPage(fnc) {
+      const { userId } = this.friendInfo;
+      this.handleCloseDialog();
+      const session = await this.startSession(userId);
       this.$nextTick(() => {
         this.$router.push('/');
-        fnc && fnc();
+        fnc && fnc(session);
       });
+    },
+    async startSession(userId) {
+      const res = await IMGetByUserId(userId);
+      if (!res?.data) return;
+      const session = res.data;
+      await this.setMainSessionWindow(session);
+      return session;
+    },
+    async startTrtc(session, networkCallType) {
+      await renderProcess.setStore('trtcSession', session);
+      await renderProcess.setStore('trtcCallInfo', {
+        type: networkCallType,
+        isBeInvited: false,
+      });
+
+      renderProcess.openTRTCWindow(clientType.isPc);
     },
 
     async handleSendAuth(authParams) {
@@ -45,21 +66,17 @@ export default {
       await this.handleSendMsg();
     },
     async handleSendMsg() {
-      const res = await IMGetByUserId(this.friendInfo.userId);
-      if (!res?.data) return;
-      const session = res.data;
-      this.handleCloseDialog();
-      this.handleJumIMPage(() => {
-        this.setMainSessionWindow(session);
+      await this.handleJumIMPage();
+    },
+    async handleSendVideo() {
+      await this.handleJumIMPage(async (session) => {
+        await this.startTrtc(session, networkCallType.isVideo);
       });
     },
-    handleSendVideo() {
-      this.handleCloseDialog();
-      this.handleJumIMPage();
-    },
-    handleSendAudio() {
-      this.handleCloseDialog();
-      this.handleJumIMPage();
+    async handleSendAudio() {
+      await this.handleJumIMPage(async (session) => {
+        await this.startTrtc(session, networkCallType.isAudio);
+      });
     },
   },
 };

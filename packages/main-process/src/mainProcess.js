@@ -8,7 +8,12 @@ import {
   openTRTCWindow,
 } from './window';
 import { unregisterHotKeyAll, initHotKeys, handleHotKey } from './hotKey';
-import { IMSDKEvent, IMSDK_Destroy, IMSDKNetworkCallEvent } from './IM-SDK';
+import {
+  IMSDKEvent,
+  IMSDK_Destroy,
+  IMSDKNetworkCallEvent,
+  IMSDKNetworkCallRefresh,
+} from './IM-SDK';
 import electronLog from 'electron-log';
 import increment from './increment';
 
@@ -39,6 +44,10 @@ const initIpcMain = () => {
 
     ipcMain.handle('IMSDKNetworkCall', (_event, event, data) =>
       IMSDKNetworkCallEvent(event, data),
+    );
+
+    ipcMain.on('IMSDKNetworkCallRefresh', (_event, data) =>
+      IMSDKNetworkCallRefresh(data),
     );
 
     ipcMain.on('showMainWindow', (_event, config) => {
@@ -77,7 +86,7 @@ const initIpcMain = () => {
 
     ipcMain.on(
       'openTRTCWindow',
-      async (_event, clientType) => await openTRTCWindow(clientType),
+      async (_event, type) => await openTRTCWindow(type),
     );
 
     ipcMain.handle('hasWindow', (_event, win) => {

@@ -18,7 +18,14 @@ const formatMsgType = (val, isBaseType = true) => {
   return isBaseType ? `[${val}]` : val;
 };
 
-export const baseMsgTypes = [1, 2, 3, 4, 5, 6, 100, 200];
+const getNetworkCallLabel = (data) => {
+  const { type } = data;
+  return formatMsgType(
+    `${type === networkCallType.isVideo ? '视频' : '语音'}通话`,
+  );
+};
+
+export const baseMsgTypes = [1, 2, 3, 4, 5, 6, 672, 673, 674];
 
 export const msgFormatMap = {
   1: {
@@ -55,12 +62,16 @@ export const msgFormatMap = {
     },
     type: checkMsgType.isCreateGroup,
   },
-  100: {
-    label: () => formatMsgType('视频'),
+  672: {
+    label: (data) => getNetworkCallLabel(data),
     type: checkMsgType.isTRTC,
   },
-  200: {
-    label: () => formatMsgType('语音'),
+  673: {
+    label: (data) => getNetworkCallLabel(data),
+    type: checkMsgType.isTRTC,
+  },
+  674: {
+    label: (data) => getNetworkCallLabel(data),
     type: checkMsgType.isTRTC,
   },
 };
@@ -120,8 +131,8 @@ export const sessionUserType = {
 };
 
 export const clientType = {
-  isPc: 'isPc',
-  isMobile: 'isMobile',
+  isPc: 1,
+  isMobile: 2,
 };
 
 export const networkCallType = {
