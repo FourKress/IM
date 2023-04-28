@@ -60,6 +60,7 @@
 import { AddressBookMixins, FriendMixins } from '@lanshu/utils';
 import { LsCardDialog, LsFriendPanel } from '@lanshu/components';
 import { IMGetUserProfile } from '@lanshu/im';
+import { mapGetters, mapActions } from 'vuex';
 
 export default {
   name: 'Friend-List',
@@ -74,6 +75,17 @@ export default {
     LsCardDialog,
     LsFriendPanel,
   },
+  computed: {
+    ...mapGetters('IMStore', ['refreshAddressBook']),
+  },
+  watch: {
+    refreshAddressBook(val) {
+      if (val) {
+        this.handleUpdate()
+        this.setRefreshAddressBook(true)
+      }
+    },
+  },
   data() {
     return {};
   },
@@ -86,6 +98,8 @@ export default {
     this.getFriendListData();
   },
   methods: {
+    ...mapActions('IMStore', ['setRefreshAddressBook']),
+
     handleUpdate() {
       this.handleCloseDialog();
       this.getFriendListData();

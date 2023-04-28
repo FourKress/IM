@@ -50,6 +50,10 @@ export const IMSDKGroupProvider = {
     getGroupMemberList: 'getGroupMemberList',
     inviteMember: 'inviteMember',
     getGroupList: 'getGroupList',
+    getGroupAttribute: 'getGroupAttribute',
+    setGroupAttribute: 'setGroupAttribute',
+    setGroupAlias: 'setGroupAlias',
+    getGroupMemberInfo: 'getGroupMemberInfo',
   },
 };
 

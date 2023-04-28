@@ -358,3 +358,35 @@ export const IMGetGroupList = async () =>
     IMSDKGroupProvider.provider,
     IMSDKGroupProvider.events.getGroupList,
   );
+
+export const IMGetGroupAttribute = async (groupId) =>
+  await eventHOCFnc(
+    IMSDKGroupProvider.provider,
+    IMSDKGroupProvider.events.getGroupAttribute,
+    groupId,
+  );
+
+export const IMSetGroupAttribute = async (groupId, nickname, avatar) =>
+  await eventHOCFnc(
+    IMSDKGroupProvider.provider,
+    IMSDKGroupProvider.events.setGroupAttribute,
+    groupId,
+    nickname,
+    avatar,
+  );
+
+export const IMSetGroupAlias = async (groupId, alias) =>
+  await eventHOCFnc(
+    IMSDKGroupProvider.provider,
+    IMSDKGroupProvider.events.setGroupAlias,
+    groupId,
+    alias,
+  );
+
+export const IMGetGroupMemberInfo = async (groupId, userId) =>
+  await eventHOCFnc(
+    IMSDKGroupProvider.provider,
+    IMSDKGroupProvider.events.getGroupMemberInfo,
+    groupId,
+    userId,
+  );

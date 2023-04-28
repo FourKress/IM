@@ -1,5 +1,7 @@
 const state = {
+  // 用户基本信息
   userInfo: {},
+  // 用户资料
   userProfile: {},
   // 会话列表
   sessionList: [],
@@ -23,8 +25,14 @@ const state = {
   actionWindow: {},
   // 刷新群成员
   refreshMembers: '',
+  // 文件拖拽列表
   dragFileList: [],
+  // 新好友申请数
   newFriendCount: 0,
+  // 刷新联系人列表
+  refreshAddressBook: false,
+  // 群属性变更
+  groupAttributeChanged: {},
 };
 
 const getters = {
@@ -43,6 +51,8 @@ const getters = {
   refreshMembers: (state) => state.refreshMembers,
   dragFileList: (state) => state.dragFileList,
   newFriendCount: (state) => state.newFriendCount,
+  refreshAddressBook: (state) => state.refreshAddressBook,
+  groupAttributeChanged: (state) => state.groupAttributeChanged,
 };
 
 const mutations = {
@@ -101,6 +111,12 @@ const mutations = {
   setNewFriendCount(data, value) {
     data.newFriendCount = value;
   },
+  setRefreshAddressBook(data, value) {
+    data.refreshAddressBook = value;
+  },
+  setGroupAttributeChanged(data, value) {
+    data.groupAttributeChanged = value;
+  },
 };
 
 const actions = {
@@ -148,6 +164,12 @@ const actions = {
   },
   setNewFriendCount({ commit }, value) {
     commit('setNewFriendCount', value);
+  },
+  setRefreshAddressBook({ commit }, value) {
+    commit('setRefreshAddressBook', value);
+  },
+  setGroupAttributeChanged({ commit }, value) {
+    commit('setGroupAttributeChanged', value);
   },
 };
 

@@ -31,6 +31,7 @@
               ? 'self'
               : 'target'
           "
+          :style="{minHeight: !checkSelf(item) && isGroup ? '68px' : '50px'}"
         >
           <div class="img" @click="(event) => handleFriend(item, event)">
             <MsgLazyAvatar
@@ -39,7 +40,10 @@
               :message="item"
             ></MsgLazyAvatar>
           </div>
-          <div class="info">
+          <div class="nickname" v-if="!checkSelf(item) && isGroup">
+            <MsgLazyNickname :message="item" />
+          </div>
+          <div class="info" :style="{marginTop: !checkSelf(item) && isGroup ? '18px' : 0}">
             <MsgCard
               :isSelf="checkSelf(item)"
               :bubbleModel="bubbleModel"
@@ -107,13 +111,8 @@ import {
   msgFormatMap,
   FriendMixins,
   SESSION_BUBBLE_MODEL,
-  FRIEND_AUTH_STATE,
+  sessionUserType,
 } from '@lanshu/utils';
-import { TimesTransform } from '@lanshu/components';
-import MsgCard from './msg-view/msg-card';
-import MsgHeader from './msg-view/msg-header';
-import MsgInputAction from './msg-view/msg-input-action';
-import MsgLazyAvatar from './msg-view/msg-lazy-avatar';
 import {
   LsIcon,
   LsAssets,
@@ -121,6 +120,13 @@ import {
   LsFriendPanel,
 } from '@lanshu/components';
 import { renderProcess } from '@lanshu/render-process';
+import { TimesTransform } from '@lanshu/components';
+import MsgCard from './msg-view/msg-card';
+import MsgHeader from './msg-view/msg-header';
+import MsgInputAction from './msg-view/msg-input-action';
+import MsgLazyAvatar from './msg-view/msg-lazy-avatar';
+import MsgLazyNickname from "./msg-view/msg-lazy-nickname";
+
 import { IMGetMessageList, IMGetOneFriend, IMGetUserProfile } from '../IM-SDK';
 
 export default {
@@ -131,6 +137,7 @@ export default {
     MsgHeader,
     MsgInputAction,
     MsgLazyAvatar,
+    MsgLazyNickname,
     LsIcon,
     LsCardDialog,
     LsFriendPanel,
@@ -155,7 +162,9 @@ export default {
   data() {
     return {
       SESSION_BUBBLE_MODEL,
-
+      baseMsgTypes,
+      msgFormatMap,
+      LsAssets,
       messageList: [],
       hasNext: true,
       nextSeq: 0,
@@ -163,9 +172,7 @@ export default {
 
       scrollTop: 0,
       accept: '',
-      baseMsgTypes,
-      msgFormatMap,
-      LsAssets,
+
       showFriendDialog: false,
       bubbleModel: SESSION_BUBBLE_MODEL.BETWEEN,
     };
@@ -202,6 +209,9 @@ export default {
     ...mapGetters('IMStore', ['userInfo', 'currentMsg', 'refreshMsg']),
     toAvatar() {
       return this.session.avatar;
+    },
+    isGroup() {
+      return this.session.toUserType === sessionUserType.isGroup;
     },
   },
   async mounted() {
@@ -306,7 +316,6 @@ export default {
         },
         event,
       );
-
     },
 
     handleRefreshMsg() {
@@ -372,6 +381,7 @@ export default {
         align-items: flex-start;
         justify-content: flex-start;
         transform: translate3d(0, 0, 0);
+        position: relative;
 
         &.self {
           padding-left: 60px;
@@ -402,6 +412,15 @@ export default {
             width: 100%;
             height: 100%;
           }
+        }
+
+        .nickname {
+          font-size: 12px;
+          color: $tips-text-color;
+          position: absolute;
+          left: 60px;
+          top: -3px;
+          z-index: 2;
         }
 
         .info {

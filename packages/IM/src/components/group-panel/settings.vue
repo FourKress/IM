@@ -1,21 +1,31 @@
 <template>
   <div class="group-panel-settings">
     <div class="row">
-      <RowChat title="群名称" @click="createGroup">
-        <el-input placeholder="请输入" size="small"></el-input>
+      <RowChat title="群名称">
+        <el-input
+          placeholder="请输入"
+          size="small"
+          v-model="groupInfo.nickname"
+          @change="handleChangeGroupName"
+        ></el-input>
       </RowChat>
-<!--      <RowChat title="群公告" @click="createGroup">-->
-<!--        <el-input placeholder="请输入" size="small"></el-input>-->
-<!--      </RowChat>-->
+      <!--      <RowChat title="群公告" @click="createGroup">-->
+      <!--        <el-input placeholder="请输入" size="small"></el-input>-->
+      <!--      </RowChat>-->
       <RowChat label="群二维码" @click="createGroup" show-right-btn />
     </div>
 
     <div class="row">
-<!--      <RowChat title="我的群备注" @click="createGroup">-->
-<!--        <el-input placeholder="请输入" size="small"></el-input>-->
-<!--      </RowChat>-->
-      <RowChat title="我的群昵称" @click="createGroup">
-        <el-input placeholder="请输入" size="small"></el-input>
+      <!--      <RowChat title="我的群备注" @click="createGroup">-->
+      <!--        <el-input placeholder="请输入" size="small"></el-input>-->
+      <!--      </RowChat>-->
+      <RowChat title="我的群昵称">
+        <el-input
+          placeholder="请输入"
+          size="small"
+          v-model="groupInfo.alias"
+          @change="handleChangeAlias"
+        ></el-input>
       </RowChat>
     </div>
 
@@ -47,13 +57,17 @@
 
 <script>
 import { LsIcon } from '@lanshu/components';
-import { IMGetUserProfile } from '../../IM-SDK';
+import {
+  IMGetGroupAttribute,
+  IMSetGroupAttribute,
+  IMSetGroupAlias,
+} from '../../IM-SDK';
 import RowChat from './row-chat';
 import Manager from './manager';
 import Record from './record';
 import GroupTransfer from './group-transfer';
 import MsgTopAndSilence from '../base-settings/msgTopAndSilence';
-import { mapGetters } from "vuex";
+import { mapGetters } from 'vuex';
 
 export default {
   name: 'Group-settings',
@@ -70,22 +84,33 @@ export default {
       visibleDrawer: false,
       visibleRecord: false,
       visibleGroupTransfer: false,
+      groupInfo: {},
     };
   },
   computed: {
     ...mapGetters('IMStore', ['actionWindow']),
   },
   mounted() {
-    this.getGroupInfo()
+    this.getGroupInfo();
   },
   methods: {
-    getGroupInfo() {
-      console.log(this.actionWindow)
-      IMGetUserProfile(this.actionWindow.toUser)
+    async getGroupInfo() {
+      const res = await IMGetGroupAttribute(this.actionWindow.toUser);
+      const { nickname, avatar, groupId } = res?.data || {};
+      this.groupInfo = { nickname, avatar, groupId };
     },
     createGroup() {
       this.$emit('createGroup');
     },
+
+    handleChangeGroupName(val) {
+      IMSetGroupAttribute(this.groupInfo.groupId, val, this.groupInfo.avatar);
+    },
+
+    handleChangeAlias(val) {
+      IMSetGroupAlias(this.groupInfo.groupId, val);
+    },
+
     handleDeleteHistoryMsg() {
       this.$Lconfirm({
         title: '确定清空聊天记录？',

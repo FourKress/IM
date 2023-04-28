@@ -51,7 +51,7 @@ export default {
     renderProcess.IMSDKListener((event, data) => {
       const { type, value } = data;
       console.log(type, value);
-      IMSDKCallBackEvents[type](value);
+      IMSDKCallBackEvents[type](this, value);
     });
     renderProcess.mainProcessError((event, msg) => {
       this.$message.warning(msg);

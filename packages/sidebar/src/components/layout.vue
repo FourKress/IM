@@ -128,6 +128,7 @@ export default {
       'sessionWindowList',
       'allUnreadCount',
       'IM_DataSync_Status',
+      'groupAttributeChanged',
     ]),
     topSessionList() {
       return this.selfSessionList.filter((d) => d.topState === 1);
@@ -152,6 +153,12 @@ export default {
         this.currentSession = val?.sessId;
       },
     },
+    groupAttributeChanged: {
+      deep: true,
+      handler(val) {
+        console.log('groupAttributeChanged', val)
+      },
+    }
   },
   mounted() {
     this.selfSessionList = this.sessionList;

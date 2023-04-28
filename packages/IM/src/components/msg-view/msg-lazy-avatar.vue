@@ -35,7 +35,7 @@ export default {
   },
   mounted() {
     // TODO 缓存已查询到的头像
-    if (this.session.toUserType === sessionUserType.isGroup) {
+    if (this.message.toUserType === sessionUserType.isGroup) {
       IMGetUserAttribute(this.message.fromUser).then((res) => {
         this.toAvatar = res?.data?.avatar;
       })

@@ -129,6 +129,38 @@ export const IMSDKInit = (appId) => {
       });
     },
   );
+
+  IMSDK.getMainProvider().setFriendDelListener((userId, delUerId) => {
+    console.log(userId, delUerId, 'FriendDelListener');
+    global.mainWindow.webContents.send('IMSDKListener', {
+      type: 'FriendDelListener',
+      value: {
+        userId,
+        delUerId,
+      },
+    });
+  });
+
+  IMSDK.getMainProvider().setUserTokenExpiredCallBack(() => {
+    console.log('UserTokenExpiredCallBack');
+    global.mainWindow.webContents.send('IMSDKListener', {
+      type: 'UserTokenExpiredCallBack',
+      value: '',
+    });
+  });
+
+  IMSDK.getMainProvider().setGroupAttributeChangedCallBack(
+    (groupId, groupAttribute) => {
+      console.log('GroupAttributeChangedCallBack');
+      global.mainWindow.webContents.send('IMSDKListener', {
+        type: 'UserTokenExpiredCallBack',
+        value: {
+          groupId,
+          groupAttribute,
+        },
+      });
+    },
+  );
 };
 
 export const IMSDKEvent = async (provider, event, data) => {
