@@ -9,7 +9,7 @@ export const unregisterHotKeyAll = () => {
 };
 
 export const initHotKeys = () => {
-  let hotKeys = global.store.get('hotKeys');
+  let hotKeys = global.store.get('HOT_KEYS');
   const defaultKeys = {
     sendMsg: {
       defaultKey: Enter,
@@ -29,7 +29,7 @@ export const initHotKeys = () => {
     },
   };
   if (!hotKeys) {
-    global.store.set('hotKeys', defaultKeys);
+    global.store.set('HOT_KEYS', defaultKeys);
     hotKeys = defaultKeys;
   }
 

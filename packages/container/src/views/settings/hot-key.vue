@@ -73,7 +73,7 @@
 import Card from './card';
 import InfoBlock from './info-block';
 import { renderProcess } from '@lanshu/render-process';
-import { keyCode, isMacPlatform } from '@lanshu/utils';
+import { KEY_CODE, IS_MAC_PLATFORM } from '@lanshu/utils';
 
 export default {
   name: 'HotKey-Card',
@@ -84,15 +84,15 @@ export default {
   data() {
     return {
       msgHotKey: '',
-      keyCode,
+      KEY_CODE,
       options: [
         {
-          value: keyCode.isEnter,
-          label: keyCode.isEnter,
+          value: KEY_CODE.IS_ENTER,
+          label: KEY_CODE.IS_ENTER,
         },
         {
-          value: keyCode.isCtrlEnter,
-          label: `${keyCode.viewCharacter} + ${keyCode.isEnter}`,
+          value: KEY_CODE.IS_CTRL_ENTER,
+          label: `${KEY_CODE.VIEW_CHARACTER} + ${KEY_CODE.IS_ENTER}`,
         },
       ],
       hotKeyInfo: {
@@ -139,20 +139,20 @@ export default {
   },
   methods: {
     async init() {
-      const hotKeyDB = await renderProcess.getStore('hotKeys');
+      const hotKeyDB = await renderProcess.getStore('HOT_KEYS');
       this.msgHotKey = hotKeyDB.sendMsg.currentKey;
       Object.keys(this.hotKeyInfo).map(async (k) => {
         const { currentKey, defaultKey } = hotKeyDB[k];
         if (currentKey) {
           this.hotKeyInfo[k].currentKey = currentKey.replace(
-            this.keyCode.realCharacter,
-            this.keyCode.viewCharacter,
+            this.KEY_CODE.REAL_CHARACTER,
+            this.KEY_CODE.VIEW_CHARACTER,
           );
           this.hotKeyInfo[k].oldKey = currentKey;
         } else {
           this.hotKeyInfo[k].currentKey = defaultKey.replace(
-            this.keyCode.realCharacter,
-            this.keyCode.viewCharacter,
+            this.KEY_CODE.REAL_CHARACTER,
+            this.KEY_CODE.VIEW_CHARACTER,
           );
         }
 
@@ -163,8 +163,8 @@ export default {
     async inputBlur(key) {
       this.hotKeyInfo[key].placeholder = '点击设置快捷键';
       const formatKey = this.hotKeyInfo[key].currentKey.replace(
-        this.keyCode.viewCharacter,
-        this.keyCode.realCharacter,
+        this.KEY_CODE.VIEW_CHARACTER,
+        this.KEY_CODE.REAL_CHARACTER,
       );
       const keyArr = formatKey.split('+');
       const oldKey = this.hotKeyInfo[key].oldKey;
@@ -185,8 +185,8 @@ export default {
         oldKey,
         type: key,
       });
-      const hotKeyDB = (await renderProcess.getStore('hotKeys')) || {};
-      await renderProcess.setStore('hotKeys', {
+      const hotKeyDB = (await renderProcess.getStore('HOT_KEYS')) || {};
+      await renderProcess.setStore('HOT_KEYS', {
         ...hotKeyDB,
         [key]: {
           ...hotKeyDB[key],
@@ -197,11 +197,11 @@ export default {
 
     async handleSendMsgChange(val) {
       const msgHotKey = val.replace(
-        this.keyCode.viewCharacter,
-        this.keyCode.realCharacter,
+        this.KEY_CODE.VIEW_CHARACTER,
+        this.KEY_CODE.REAL_CHARACTER,
       );
-      const hotKeyDB = (await renderProcess.getStore('hotKeys')) || {};
-      await renderProcess.setStore('hotKeys', {
+      const hotKeyDB = (await renderProcess.getStore('HOT_KEYS')) || {};
+      await renderProcess.setStore('HOT_KEYS', {
         ...hotKeyDB,
         sendMsg: {
           defaultKey: msgHotKey,
@@ -226,7 +226,7 @@ export default {
       // mac下禁止使用快捷键option
       let publicKey =
         someKeys.indexOf(e.key) < 0 ? e.key.toLocaleUpperCase() : '';
-      if (isMacPlatform && e.altKey) {
+      if (IS_MAC_PLATFORM && e.altKey) {
         publicKey = '';
       }
       if (auxiliaryKey.length) {
@@ -251,9 +251,9 @@ export default {
     },
 
     async handleReset() {
-      this.msgHotKey = this.keyCode.isEnter;
+      this.msgHotKey = this.KEY_CODE.IS_ENTER;
 
-      const hotKeyDB = await renderProcess.getStore('hotKeys');
+      const hotKeyDB = await renderProcess.getStore('HOT_KEYS');
       Object.keys(this.hotKeyInfo).map(async (k) => {
         const { defaultKey } = hotKeyDB[k];
         hotKeyDB[k].currentKey = defaultKey;
@@ -261,25 +261,25 @@ export default {
         renderProcess.setHotKey({
           newKey: defaultKey,
           oldKey: this.hotKeyInfo[k].currentKey.replace(
-            this.keyCode.viewCharacter,
-            this.keyCode.realCharacter,
+            this.KEY_CODE.VIEW_CHARACTER,
+            this.KEY_CODE.REAL_CHARACTER,
           ),
           type: k,
         });
 
         this.hotKeyInfo[k].currentKey = defaultKey.replace(
-          this.keyCode.realCharacter,
-          this.keyCode.viewCharacter,
+          this.KEY_CODE.REAL_CHARACTER,
+          this.KEY_CODE.VIEW_CHARACTER,
         );
         this.hotKeyInfo[k].oldKey = defaultKey;
         this.hotKeyInfo[k].placeholder = '点击设置快捷键';
         this.hotKeyInfo[k].activeHotKey = false;
       });
-      await renderProcess.setStore('hotKeys', {
+      await renderProcess.setStore('HOT_KEYS', {
         ...hotKeyDB,
         sendMsg: {
-          defaultKey: this.keyCode.isEnter,
-          currentKey: this.keyCode.isEnter,
+          defaultKey: this.KEY_CODE.IS_ENTER,
+          currentKey: this.KEY_CODE.IS_ENTER,
         },
       });
     },

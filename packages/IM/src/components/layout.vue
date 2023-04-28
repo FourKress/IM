@@ -47,7 +47,7 @@ import Settings from './base-settings/settings';
 import GroupMemberChat from './base-settings/group-member-chat';
 import GroupPanel from './group-panel/index';
 import { LsCardDialog, LsAssets } from '@lanshu/components';
-import { IMHeaderMoreBtnKey, IMGroupMemberPanelType } from '@lanshu/utils';
+import { IM_HEADER_MORE_BTN_KEY, IM_GROUP_MEMBER_PANEL_TYPE } from '@lanshu/utils';
 
 export default {
   name: 'MainIM',
@@ -62,13 +62,13 @@ export default {
     return {
       LsAssets,
       recordrtc: null,
-      IMHeaderMoreBtnKey,
-      IMGroupMemberPanelType,
+      IM_HEADER_MORE_BTN_KEY,
+      IM_GROUP_MEMBER_PANEL_TYPE,
       isMember: false,
       visibleSettings: false,
       visibleGroupMember: false,
       visibleGroupSettings: false,
-      groupMemberPanelType: IMGroupMemberPanelType.isCreate,
+      groupMemberPanelType: IM_GROUP_MEMBER_PANEL_TYPE.IS_CREATE,
       defaultMembers: [],
       defaultGroup: null,
     };
@@ -97,16 +97,16 @@ export default {
       this.setActionWindow(session);
       this.defaultMembers = [session];
       switch (command) {
-        case this.IMHeaderMoreBtnKey.isOpenSet:
+        case this.IM_HEADER_MORE_BTN_KEY.IS_OPEN_SET:
           this.visibleSettings = true;
           break;
-        case this.IMHeaderMoreBtnKey.isCreateGroup:
+        case this.IM_HEADER_MORE_BTN_KEY.IS_CREATE_GROUP:
           this.handleCreateGroup();
           break;
-        case this.IMHeaderMoreBtnKey.isOpenGroupMember:
+        case this.IM_HEADER_MORE_BTN_KEY.IS_OPEN_GROUP_MEMBER:
           this.handleOpenGroupSet(true);
           break;
-        case this.IMHeaderMoreBtnKey.isOpenGroupSet:
+        case this.IM_HEADER_MORE_BTN_KEY.IS_OPEN_GROUP_SET:
           this.handleOpenGroupSet(false);
           break;
         default:
@@ -124,7 +124,7 @@ export default {
     },
 
     handleCreateGroup() {
-      this.groupMemberPanelType = this.IMGroupMemberPanelType.isCreate;
+      this.groupMemberPanelType = this.IM_GROUP_MEMBER_PANEL_TYPE.IS_CREATE;
       this.visibleGroupMember = true;
     },
     handleOpenGroupSet(isMember) {

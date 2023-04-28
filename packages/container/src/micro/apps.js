@@ -1,6 +1,6 @@
-import { microKeyMap, microContainer } from '@lanshu/utils';
+import { MICRO_KEY_MAP, MICRO_CONTAINER } from '@lanshu/utils';
 
-const container = `#${microContainer}`;
+const container = `#${MICRO_CONTAINER}`;
 
 const microAppConfigs = [
   /**
@@ -10,12 +10,12 @@ const microAppConfigs = [
    * activeRule: 微应用触发的路由规则 - 触发路由规则后将加载该微应用
    */
   {
-    name: microKeyMap.System,
+    name: MICRO_KEY_MAP.IS_SYSTEM,
     entry: '//localhost:5000/',
     container,
   },
   {
-    name: microKeyMap.KnowledgeBase,
+    name: MICRO_KEY_MAP.IS_KNOWLEDGE_BASE,
     entry: '//localhost:7777/',
     container,
   },

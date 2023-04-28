@@ -4,7 +4,7 @@
 
 <script>
 import { mapGetters } from 'vuex';
-import { sessionUserType } from '@lanshu/utils';
+import { SESSION_USER_TYPE } from '@lanshu/utils';
 import { IMGetUserAttribute } from '../../IM-SDK';
 
 export default {
@@ -35,7 +35,7 @@ export default {
   },
   mounted() {
     // TODO 缓存已查询到的头像
-    if (this.message.toUserType === sessionUserType.isGroup) {
+    if (this.message.toUserType === SESSION_USER_TYPE.IS_GROUP) {
       IMGetUserAttribute(this.message.fromUser).then((res) => {
         this.toAvatar = res?.data?.avatar;
       })

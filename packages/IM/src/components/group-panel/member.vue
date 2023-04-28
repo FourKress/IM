@@ -11,10 +11,10 @@
     <div class="tips">共{{ members.length }}位成员</div>
 
     <div class="action">
-      <span class="add btn" @click="changeMember(IMGroupMemberPanelType.isAdd)">
+      <span class="add btn" @click="changeMember(IM_GROUP_MEMBER_PANEL_TYPE.IS_ADD)">
         <LsIcon render-svg width="14" height="14" icon="navi_ss_add"></LsIcon>
       </span>
-      <span class="del btn" @click="changeMember(IMGroupMemberPanelType.isDel)">
+      <span class="del btn" @click="changeMember(IM_GROUP_MEMBER_PANEL_TYPE.IS_DEL)">
         <LsIcon
           render-svg
           width="14"
@@ -43,7 +43,7 @@
             :class="memberClass(item.role)"
             v-if="[2, 3].includes(item.role)"
           >
-            <span>{{ groupMemberTypeMap[item.role] }}</span>
+            <span>{{ GROUP_MEMBER_TYPE_MAP[item.role] }}</span>
           </div>
         </div>
       </div>
@@ -54,7 +54,7 @@
 <script>
 import { LsIcon } from '@lanshu/components';
 import { mapGetters } from 'vuex';
-import { IMGroupMemberPanelType, groupMemberTypeMap, groupRoleType } from '@lanshu/utils';
+import { IM_GROUP_MEMBER_PANEL_TYPE, GROUP_MEMBER_TYPE_MAP, GROUP_ROLE_TYPE } from '@lanshu/utils';
 import { IMGetGroupMemberList } from '../../IM-SDK';
 
 export default {
@@ -64,12 +64,12 @@ export default {
   },
   data() {
     return {
-      IMGroupMemberPanelType,
+      IM_GROUP_MEMBER_PANEL_TYPE,
       memberName: '',
       isAdd: false,
       nextSeq: 0,
       members: [],
-      groupMemberTypeMap,
+      GROUP_MEMBER_TYPE_MAP,
     };
   },
   computed: {
@@ -103,7 +103,7 @@ export default {
       );
     },
     memberClass(role) {
-      return role === groupRoleType.isOwner ? 'owner' : role === groupRoleType.isManage ? 'manage' : '';
+      return role === GROUP_ROLE_TYPE.IS_OWNER ? 'owner' : role === GROUP_ROLE_TYPE.IS_MANAGE ? 'manage' : '';
     },
   },
   mounted() {

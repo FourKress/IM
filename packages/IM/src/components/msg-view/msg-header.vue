@@ -17,27 +17,27 @@
         <LsIcon
           render-svg
           icon="a-icon_sp2x"
-          @click="handleStartTrtc(networkCallType.isVideo)"
+          @click="handleStartTrtc(NETWORK_CALL_TYPE.IS_VIDEO)"
         ></LsIcon>
       </div>
       <div class="btn">
         <LsIcon
           render-svg
           icon="a-icon_yy2x"
-          @click="handleStartTrtc(networkCallType.isAudio)"
+          @click="handleStartTrtc(NETWORK_CALL_TYPE.IS_AUDIO)"
         ></LsIcon>
       </div>
       <div class="btn">
         <el-dropdown trigger="click" @command="handleCommand">
           <LsIcon render-svg icon="a-icon_more2x"></LsIcon>
           <el-dropdown-menu slot="dropdown" v-if="isGroup">
-            <el-dropdown-item :command="IMHeaderMoreBtnKey.isOpenGroupMember">
+            <el-dropdown-item :command="IM_HEADER_MORE_BTN_KEY.IS_OPEN_GROUP_MEMBER">
               <div class="send-down-row">
                 <LsIcon render-svg icon="pop_cd_cjql"></LsIcon>
                 <span>群成员</span>
               </div>
             </el-dropdown-item>
-            <el-dropdown-item :command="IMHeaderMoreBtnKey.isOpenGroupSet">
+            <el-dropdown-item :command="IM_HEADER_MORE_BTN_KEY.IS_OPEN_GROUP_SET">
               <div class="send-down-row">
                 <LsIcon render-svg icon="pop_cd_sz"></LsIcon>
                 <span>群设置</span>
@@ -45,13 +45,13 @@
             </el-dropdown-item>
           </el-dropdown-menu>
           <el-dropdown-menu slot="dropdown" v-else>
-            <el-dropdown-item :command="IMHeaderMoreBtnKey.isCreateGroup">
+            <el-dropdown-item :command="IM_HEADER_MORE_BTN_KEY.IS_CREATE_GROUP">
               <div class="send-down-row">
                 <LsIcon render-svg icon="pop_cd_cjql"></LsIcon>
                 <span>创建群聊</span>
               </div>
             </el-dropdown-item>
-            <el-dropdown-item :command="IMHeaderMoreBtnKey.isOpenSet">
+            <el-dropdown-item :command="IM_HEADER_MORE_BTN_KEY.IS_OPEN_SET">
               <div class="send-down-row">
                 <LsIcon render-svg icon="pop_cd_sz"></LsIcon>
                 <span>设置</span>
@@ -67,7 +67,12 @@
 <script>
 import { mapActions, mapGetters } from 'vuex';
 import { LsIcon } from '@lanshu/components';
-import { IMHeaderMoreBtnKey, sessionUserType, clientType, networkCallType } from '@lanshu/utils';
+import {
+  IM_HEADER_MORE_BTN_KEY,
+  SESSION_USER_TYPE,
+  CLIENT_TYPE,
+  NETWORK_CALL_TYPE,
+} from '@lanshu/utils';
 import { renderProcess } from '@lanshu/render-process';
 
 export default {
@@ -77,8 +82,8 @@ export default {
   },
   data() {
     return {
-      IMHeaderMoreBtnKey,
-      networkCallType,
+      IM_HEADER_MORE_BTN_KEY,
+      NETWORK_CALL_TYPE,
     };
   },
   computed: {
@@ -91,7 +96,7 @@ export default {
       return this.session.avatar;
     },
     isGroup() {
-      return this.session?.toUserType === sessionUserType.isGroup;
+      return this.session?.toUserType === SESSION_USER_TYPE.IS_GROUP;
     },
   },
   methods: {
@@ -104,11 +109,11 @@ export default {
       });
     },
 
-    async handleStartTrtc(networkCallType) {
-      const platform = clientType.isPc;
-      await renderProcess.setStore('trtcSession', this.session);
-      await renderProcess.setStore('trtcCallInfo', {
-        type: networkCallType,
+    async handleStartTrtc(NETWORK_CALL_TYPE) {
+      const platform = CLIENT_TYPE.IS_PC;
+      await renderProcess.setStore('TRTC_SESSION', this.session);
+      await renderProcess.setStore('TRTC_CALL_INFO', {
+        type: NETWORK_CALL_TYPE,
         roomId: Date.now(),
         isBeInvited: false,
         platform

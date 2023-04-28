@@ -1,7 +1,7 @@
 import { mapGetters, mapActions } from 'vuex';
 import { IMGetByUserId, IMAgreeFriendAddRequest } from '@lanshu/im';
 import { renderProcess } from '@lanshu/render-process';
-import { clientType, networkCallType } from '../constant';
+import { CLIENT_TYPE, NETWORK_CALL_TYPE } from '../constant';
 
 export default {
   data() {
@@ -51,14 +51,14 @@ export default {
       await this.setMainSessionWindow(session);
       return session;
     },
-    async startTrtc(session, networkCallType) {
-      await renderProcess.setStore('trtcSession', session);
-      await renderProcess.setStore('trtcCallInfo', {
-        type: networkCallType,
+    async startTrtc(session, NETWORK_CALL_TYPE) {
+      await renderProcess.setStore('TRTC_SESSION', session);
+      await renderProcess.setStore('TRTC_CALL_INFO', {
+        type: NETWORK_CALL_TYPE,
         isBeInvited: false,
       });
 
-      renderProcess.openTRTCWindow(clientType.isPc);
+      renderProcess.openTRTCWindow(CLIENT_TYPE.IS_PC);
     },
 
     async handleSendAuth(authParams) {
@@ -70,12 +70,12 @@ export default {
     },
     async handleSendVideo() {
       await this.handleJumIMPage(async (session) => {
-        await this.startTrtc(session, networkCallType.isVideo);
+        await this.startTrtc(session, NETWORK_CALL_TYPE.IS_VIDEO);
       });
     },
     async handleSendAudio() {
       await this.handleJumIMPage(async (session) => {
-        await this.startTrtc(session, networkCallType.isAudio);
+        await this.startTrtc(session, NETWORK_CALL_TYPE.IS_AUDIO);
       });
     },
   },

@@ -16,12 +16,12 @@
         </div>
         <div
           class="btn"
-          :class="item.state === FRIEND_AUTH_STATE.AWAIT && 'active'"
+          :class="item.state === FRIEND_AUTH_STATE.IS_AWAIT && 'active'"
         >
           {{
-            item.state === FRIEND_AUTH_STATE.AWAIT
+            item.state === FRIEND_AUTH_STATE.IS_AWAIT
               ? '去验证'
-              : item.state === FRIEND_AUTH_STATE.AGREE
+              : item.state === FRIEND_AUTH_STATE.IS_AGREE
               ? '已添加'
               : '已过期'
           }}
@@ -101,17 +101,17 @@ export default {
 
     getConfig(state) {
       const configMap = {
-        [FRIEND_AUTH_STATE.AWAIT]: () => {
+        [FRIEND_AUTH_STATE.IS_AWAIT]: () => {
           return {
             isAuth: true,
           };
         },
-        [FRIEND_AUTH_STATE.AGREE]: () => {
+        [FRIEND_AUTH_STATE.IS_AGREE]: () => {
           return {
             isPass: true,
           };
         },
-        [FRIEND_AUTH_STATE.EXPIRE]: () => {
+        [FRIEND_AUTH_STATE.IS_EXPIRE]: () => {
           return {
             isExpired: true,
           };
@@ -126,7 +126,7 @@ export default {
       this.config = config;
       const userProfile = (await IMGetUserProfile(toUser))?.data || {};
       let friendInfo = {}
-      if (state === FRIEND_AUTH_STATE.AGREE) {
+      if (state === FRIEND_AUTH_STATE.IS_AGREE) {
         friendInfo = (await IMGetOneFriend(toUser))?.data || {}
       }
       const {remark, desc} = friendInfo;

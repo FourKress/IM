@@ -62,7 +62,7 @@
 
     <LsCardDialog :visible.sync="visibleGroupMember" :isModalClose="false">
       <GroupMemberChat
-        :panelType="IMGroupMemberPanelType.isCreate"
+        :panelType="IM_GROUP_MEMBER_PANEL_TYPE.IS_CREATE"
         @close="handleGroupClose"
         @confirm="handleCroupConfirm"
       ></GroupMemberChat>
@@ -77,7 +77,7 @@ import AddFriend from './add-friend.vue';
 import NewFriend from './new-friend.vue';
 import GroupFriend from './group-friend.vue';
 import FriendList from './friend-list.vue';
-import { IMGroupMemberPanelType } from '@lanshu/utils';
+import { IM_GROUP_MEMBER_PANEL_TYPE } from '@lanshu/utils';
 import { GroupMemberChat } from '@lanshu/im';
 
 export default {
@@ -127,7 +127,7 @@ export default {
       },
       componentConfig: {},
       visibleGroupMember: false,
-      IMGroupMemberPanelType,
+      IM_GROUP_MEMBER_PANEL_TYPE,
     };
   },
   computed: {

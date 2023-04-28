@@ -52,7 +52,7 @@
 <script>
 import { LsCardDialog, LsIcon } from '@lanshu/components';
 import FileDialog from './file-dialog';
-import { checkMsgType } from '@lanshu/utils';
+import { CHECK_MSG_TYPE } from '@lanshu/utils';
 import {mapActions, mapGetters} from 'vuex';
 
 export default {
@@ -108,7 +108,7 @@ export default {
       this.visibleFileDialog = false;
       this.$emit('actionComplete', {
         value: fileList,
-        type: checkMsgType.isSendFile,
+        type: CHECK_MSG_TYPE.IS_SEND_FILE,
       });
     },
   },

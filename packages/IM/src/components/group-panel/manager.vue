@@ -7,7 +7,7 @@
         <div class="action">
           <span
             class="add btn"
-            @click="changeMember(IMGroupMemberPanelType.isAdd)"
+            @click="changeMember(IM_GROUP_MEMBER_PANEL_TYPE.IS_ADD)"
           >
             <LsIcon
               render-svg
@@ -18,7 +18,7 @@
           </span>
           <span
             class="add btn"
-            @click="changeMember(IMGroupMemberPanelType.isAdd)"
+            @click="changeMember(IM_GROUP_MEMBER_PANEL_TYPE.IS_ADD)"
           >
             <LsIcon
               render-svg
@@ -30,7 +30,7 @@
 
           <span
             class="add btn"
-            @click="changeMember(IMGroupMemberPanelType.isAdd)"
+            @click="changeMember(IM_GROUP_MEMBER_PANEL_TYPE.IS_ADD)"
           >
             <LsIcon
               render-svg
@@ -41,7 +41,7 @@
           </span>
           <span
             class="del btn"
-            @click="changeMember(IMGroupMemberPanelType.isDel)"
+            @click="changeMember(IM_GROUP_MEMBER_PANEL_TYPE.IS_DEL)"
           >
             <LsIcon
               render-svg
@@ -95,16 +95,6 @@
               ></el-switch>
             </span>
           </RowChat>
-          <RowChat title="允许被搜索" label="阿斯达四大大所">
-            <span slot="right-btn" class="check-btn">
-              <el-switch
-                slot="right-btn"
-                v-model="value"
-                active-color="#0066FF"
-                inactive-color="#C9CDD4"
-              ></el-switch>
-            </span>
-          </RowChat>
         </div>
 
         <div class="row">
@@ -125,7 +115,7 @@
 </template>
 
 <script>
-import { IMGroupMemberPanelType } from '@lanshu/utils';
+import { IM_GROUP_MEMBER_PANEL_TYPE } from '@lanshu/utils';
 import { LsIcon } from '@lanshu/components';
 import RowChat from './row-chat';
 import DrawerMixins from './drawer-mixins';
@@ -140,7 +130,7 @@ export default {
   data() {
     return {
       value: true,
-      IMGroupMemberPanelType,
+      IM_GROUP_MEMBER_PANEL_TYPE,
     };
   },
   methods: {

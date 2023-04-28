@@ -24,7 +24,7 @@
         <div
           class="active-row"
           v-if="
-            panelType !== IMGroupMemberPanelType.isDel &&
+            panelType !== IM_GROUP_MEMBER_PANEL_TYPE.IS_DEL &&
             !(tabType === isAddress && staffName)
           "
         >
@@ -128,7 +128,7 @@
       <div class="right">
         <div
           class="input-row"
-          v-if="panelType === IMGroupMemberPanelType.isCreate"
+          v-if="panelType === IM_GROUP_MEMBER_PANEL_TYPE.IS_CREATE"
         >
           <div class="query-icon">
             <LsIcon
@@ -151,12 +151,12 @@
           class="active-row"
           :style="{
             marginTop:
-              panelType !== IMGroupMemberPanelType.isCreate ? '10px' : '0',
+              panelType !== IM_GROUP_MEMBER_PANEL_TYPE.IS_CREATE ? '10px' : '0',
           }"
         >
           <span class="tips">
             <span>已选联系人：{{ selectList.length }}</span>
-            <span v-if="panelType !== IMGroupMemberPanelType.isDel">/500</span>
+            <span v-if="panelType !== IM_GROUP_MEMBER_PANEL_TYPE.IS_DEL">/500</span>
           </span>
         </div>
         <div class="list">
@@ -188,7 +188,7 @@
         <div class="btn-list">
           <span class="btn cancel" @click="handleClose">取消</span>
           <span class="btn confirm" @click="handleConfirm">
-            {{ panelType !== IMGroupMemberPanelType.isDel ? '确定' : '删除' }}
+            {{ panelType !== IM_GROUP_MEMBER_PANEL_TYPE.IS_DEL ? '确定' : '删除' }}
           </span>
         </div>
       </div>
@@ -200,7 +200,7 @@
 import { LsIcon } from '@lanshu/components';
 import { mapGetters, mapActions } from 'vuex';
 import _ from 'lodash';
-import { IMGroupMemberPanelType, AddressBookMixins } from '@lanshu/utils';
+import { IM_GROUP_MEMBER_PANEL_TYPE, AddressBookMixins } from '@lanshu/utils';
 import { IMCreateGroup, IMInviteMember } from '../../IM-SDK';
 
 const isAddress = false;
@@ -212,7 +212,7 @@ export default {
     panelType: {
       required: true,
       type: String,
-      default: IMGroupMemberPanelType.isCreate,
+      default: IM_GROUP_MEMBER_PANEL_TYPE.IS_CREATE,
     },
     defaultMembers: {
       type: Array,
@@ -228,7 +228,7 @@ export default {
   },
   data() {
     return {
-      IMGroupMemberPanelType,
+      IM_GROUP_MEMBER_PANEL_TYPE,
       isAddress,
       tabType: !isAddress,
       selfSessionList: [],
@@ -246,13 +246,13 @@ export default {
       if (this.isCreate) return '创建群聊';
     },
     isDel() {
-      return this.panelType === this.IMGroupMemberPanelType.isDel;
+      return this.panelType === this.IM_GROUP_MEMBER_PANEL_TYPE.IS_DEL;
     },
     isAdd() {
-      return this.panelType === this.IMGroupMemberPanelType.isAdd;
+      return this.panelType === this.IM_GROUP_MEMBER_PANEL_TYPE.IS_ADD;
     },
     isCreate() {
-      return this.panelType === this.IMGroupMemberPanelType.isCreate;
+      return this.panelType === this.IM_GROUP_MEMBER_PANEL_TYPE.IS_CREATE;
     },
   },
   mounted() {
@@ -284,15 +284,15 @@ export default {
     },
     async handleConfirm() {
       const handleMap = {
-        [this.IMGroupMemberPanelType.isDel]: {
+        [this.IM_GROUP_MEMBER_PANEL_TYPE.IS_DEL]: {
           label: '删除群成员',
           func: () => {},
         },
-        [this.IMGroupMemberPanelType.isAdd]: {
+        [this.IM_GROUP_MEMBER_PANEL_TYPE.IS_ADD]: {
           label: '添加群成员',
           func: this.handleAddGroupMember,
         },
-        [this.IMGroupMemberPanelType.isCreate]: {
+        [this.IM_GROUP_MEMBER_PANEL_TYPE.IS_CREATE]: {
           label: '创建群聊',
           func: this.handleCreateGroup,
         },

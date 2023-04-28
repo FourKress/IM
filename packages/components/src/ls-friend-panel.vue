@@ -37,13 +37,13 @@
         >
           <LsIcon render-svg icon="a-icon_more2x"></LsIcon>
           <el-dropdown-menu slot="dropdown">
-<!--            <el-dropdown-item :command="isShared">-->
+<!--            <el-dropdown-item :command="IS_SHARED">-->
 <!--              <div class="send-down-row">-->
 <!--                <LsIcon size="14" icon="pop_cd_cjql"></LsIcon>-->
 <!--                <span>转发名片</span>-->
 <!--              </div>-->
 <!--            </el-dropdown-item>-->
-            <el-dropdown-item :command="isDelete">
+            <el-dropdown-item :command="IS_DELETE">
               <div class="send-down-row">
                 <LsIcon size="14" color="red" icon="pop_cd_sz"></LsIcon>
                 <span style="color: red">删除好友</span>
@@ -135,7 +135,7 @@
 
 <script>
 import { mapGetters } from 'vuex';
-import { addFriendType, calculateAgeByBirthday } from '@lanshu/utils';
+import { ADD_FRIEND_TYPE, calculateAgeByBirthday } from '@lanshu/utils';
 import { IMDelFriendOneWay, IMSetRemarkOrDesc } from '@lanshu/im';
 import LsAssets from './assets';
 import LsIcon from './ls-icon.vue';
@@ -183,8 +183,8 @@ export default {
         isPass: false,
         isDetails: false,
       },
-      isDelete: 'delete',
-      isShared: 'shared',
+      IS_SHARED: 'IS_SHARED',
+      IS_DELETE: 'IS_DELETE',
     };
   },
   components: {
@@ -227,7 +227,7 @@ export default {
         this.remark,
         this.desc,
         this.message,
-        addFriendType.isSearch,
+        ADD_FRIEND_TYPE.IS_SEARCH,
       ]);
     },
     handleSendMsg() {
@@ -244,7 +244,7 @@ export default {
     },
     handleCommand(command) {
       console.log(command);
-      if (command === this.isDelete) {
+      if (command === this.IS_DELETE) {
         IMDelFriendOneWay(this.friendInfo.userId).then(() => {
           this.$message.success('好友删除成功');
           this.$emit('update');

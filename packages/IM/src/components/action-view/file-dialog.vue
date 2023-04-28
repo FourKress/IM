@@ -9,20 +9,20 @@
               <img
                 :ref="item.name"
                 class="tag"
-                v-if="item.type === checkMsgType.isImage"
+                v-if="item.type === CHECK_MSG_TYPE.IS_IMAGE"
                 :src="item.path"
                 alt=""
               />
               <video
                 :ref="item.name"
                 class="tag"
-                v-else-if="item.type === checkMsgType.isVideo"
+                v-else-if="item.type === CHECK_MSG_TYPE.IS_VIDEO"
                 :src="item.path"
               ></video>
 
               <div
                 class="tag audio file-icon"
-                v-else-if="item.type === checkMsgType.isAudio"
+                v-else-if="item.type === CHECK_MSG_TYPE.IS_AUDIO"
               >
                 <audio
                   :ref="item.name"
@@ -78,7 +78,7 @@
 <script>
 import { LsIcon } from '@lanshu/components';
 import { mapGetters } from 'vuex';
-import { getFileSize, getObjectURL, checkMsgType } from '@lanshu/utils';
+import {getFileSize, getObjectURL, CHECK_MSG_TYPE} from '@lanshu/utils';
 
 export default {
   name: 'File-dialog',
@@ -95,7 +95,7 @@ export default {
   data() {
     return {
       fileList: [],
-      checkMsgType,
+      CHECK_MSG_TYPE,
     };
   },
   computed: {
@@ -124,7 +124,7 @@ export default {
       const fileList = await Promise.all(
         this.fileList.map(async (d) => {
           switch (d.type) {
-            case this.checkMsgType.isImage:
+            case this.CHECK_MSG_TYPE.IS_IMAGE:
               const image = this.$refs[d.name][0];
               return {
                 ...d,
@@ -132,14 +132,14 @@ export default {
                 height: image.naturalHeight,
               };
               break;
-            case this.checkMsgType.isVideo:
+            case this.CHECK_MSG_TYPE.IS_VIDEO:
               const video = this.$refs[d.name][0];
               return {
                 ...d,
                 time: video.duration,
               };
               break;
-            case this.checkMsgType.isAudio:
+            case this.CHECK_MSG_TYPE.IS_AUDIO:
               const audio = this.$refs[d.name][0];
               const time = await this.countAudioTime(audio);
               return {

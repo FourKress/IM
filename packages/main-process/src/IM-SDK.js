@@ -35,7 +35,6 @@ export const IMSDKInit = (appId) => {
   });
 
   IMSDK.getMainProvider().setConvEventCallBack(async (convList) => {
-    await global.store.set('convList', convList);
     global.mainWindow.webContents.send('IMSDKListener', {
       type: 'UpdateConvList',
       value: convList,
@@ -95,12 +94,12 @@ export const IMSDKInit = (appId) => {
 
   IMSDK.getMainProvider().setNetworkCallListener(
     async (uuid, type, data, userId, userType) => {
-      if (global.store.get('networkCallUUID') === uuid) return;
-      global.store.set('networkCallUUID', uuid);
+      if (global.store.get('NETWORK_CALL_UUID') === uuid) return;
+      global.store.set('NETWORK_CALL_UUID', uuid);
       console.log('setNetworkCallListener', uuid, type, data, userId, userType);
       const userInfo = await IMSDK.getUserProvider().getUserAttrbute(userId);
       const { avatar, nickname } = userInfo.data || {};
-      await global.store.set('trtcSession', {
+      await global.store.set('TRTC_SESSION', {
         toUser: userId,
         toUserType: userType,
         userId,
@@ -108,7 +107,7 @@ export const IMSDKInit = (appId) => {
         nickname,
       });
       const { platform = CLIENT_TYPE.IS_PC, roomId } = data || {};
-      await global.store.set('trtcCallInfo', {
+      await global.store.set('TRTC_CALL_INFO', {
         type,
         isBeInvited: true,
         platform,

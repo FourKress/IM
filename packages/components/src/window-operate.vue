@@ -1,16 +1,16 @@
 <template>
   <div class="window-action">
-    <span class="btn" @click="handleWindowChange(winActionType.isMin)">
+    <span class="btn" @click="handleWindowChange(WIN_ACTION_TYPE.IS_MIN)">
       <LsIcon icon="navi_zxh_icon" render-svg></LsIcon>
     </span>
     <span
       class="btn"
       :class="isLogin && 'disable'"
-      @click="handleWindowChange(winActionType.isMax)"
+      @click="handleWindowChange(WIN_ACTION_TYPE.IS_MAX)"
     >
       <LsIcon icon="navi_sx_icon" render-svg></LsIcon>
     </span>
-    <span class="btn" @click="handleWindowChange(winActionType.isClose)">
+    <span class="btn" @click="handleWindowChange(WIN_ACTION_TYPE.IS_CLOSE)">
       <LsIcon icon="navi_gb_icon" render-svg></LsIcon>
     </span>
   </div>
@@ -19,7 +19,7 @@
 <script>
 import { renderProcess } from '@lanshu/render-process';
 import LsIcon from './ls-icon';
-import { windowType, winActionType } from '@lanshu/utils';
+import { WINDOW_TYPE, WIN_ACTION_TYPE } from '@lanshu/utils';
 
 export default {
   name: 'Window-action',
@@ -34,14 +34,14 @@ export default {
   },
   data() {
     return {
-      winActionType,
+      WIN_ACTION_TYPE,
     };
   },
   methods: {
     handleWindowChange(type) {
-      if (type === this.winActionType.isMax && this.isLogin) return;
+      if (type === this.WIN_ACTION_TYPE.IS_MAX && this.isLogin) return;
       // isMain => 主窗口标识
-      renderProcess.changeWindow(type, windowType.isMain);
+      renderProcess.changeWindow(type, WINDOW_TYPE.IS_MAIN);
     },
   },
 };

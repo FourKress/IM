@@ -18,16 +18,16 @@
             "
             :timestamp="item.timestamp"
           />
-          <span v-if="!baseMsgTypes.includes(item.msgType)">
-            {{ msgFormatMap[item.msgType]?.label(item.data) }}
+          <span v-if="!BASE_MSG_TYPES.includes(item.msgType)">
+            {{ MSG_FORMAT_MAP[item.msgType]?.label(item.data) }}
           </span>
         </div>
 
         <div
-          v-if="baseMsgTypes.includes(item.msgType)"
+          v-if="BASE_MSG_TYPES.includes(item.msgType)"
           class="msg-row"
           :class="
-            checkSelf(item) && bubbleModel === SESSION_BUBBLE_MODEL.BETWEEN
+            checkSelf(item) && bubbleModel === SESSION_BUBBLE_MODEL.IS_BETWEEN
               ? 'self'
               : 'target'
           "
@@ -52,7 +52,7 @@
             <div
               class="send-tips"
               :class="
-                checkSelf(item) && bubbleModel === SESSION_BUBBLE_MODEL.BETWEEN
+                checkSelf(item) && bubbleModel === SESSION_BUBBLE_MODEL.IS_BETWEEN
                   ? 'self'
                   : 'target'
               "
@@ -107,11 +107,11 @@ import { mapGetters, mapActions } from 'vuex';
 import {
   lodash,
   checkTimesInterval,
-  baseMsgTypes,
-  msgFormatMap,
+  BASE_MSG_TYPES,
+  MSG_FORMAT_MAP,
   FriendMixins,
   SESSION_BUBBLE_MODEL,
-  sessionUserType,
+  SESSION_USER_TYPE,
 } from '@lanshu/utils';
 import {
   LsIcon,
@@ -162,8 +162,8 @@ export default {
   data() {
     return {
       SESSION_BUBBLE_MODEL,
-      baseMsgTypes,
-      msgFormatMap,
+      BASE_MSG_TYPES,
+      MSG_FORMAT_MAP,
       LsAssets,
       messageList: [],
       hasNext: true,
@@ -174,7 +174,7 @@ export default {
       accept: '',
 
       showFriendDialog: false,
-      bubbleModel: SESSION_BUBBLE_MODEL.BETWEEN,
+      bubbleModel: SESSION_BUBBLE_MODEL.IS_BETWEEN,
     };
   },
   watch: {
@@ -211,7 +211,7 @@ export default {
       return this.session.avatar;
     },
     isGroup() {
-      return this.session.toUserType === sessionUserType.isGroup;
+      return this.session.toUserType === SESSION_USER_TYPE.IS_GROUP;
     },
   },
   async mounted() {

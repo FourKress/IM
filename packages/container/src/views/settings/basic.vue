@@ -9,8 +9,8 @@
     <InfoBlock :info="{ title: '会话气泡显示模式' }">
       <div class="row">
         <el-radio-group v-model="bubbleModel" @change="handleChange">
-          <el-radio :label="SESSION_BUBBLE_MODEL.LEFT">左对齐模式</el-radio>
-          <el-radio :label="SESSION_BUBBLE_MODEL.BETWEEN">左右对话模式</el-radio>
+          <el-radio :label="SESSION_BUBBLE_MODEL.IS_LEFT">左对齐模式</el-radio>
+          <el-radio :label="SESSION_BUBBLE_MODEL.IS_BETWEEN">左右对话模式</el-radio>
         </el-radio-group>
       </div>
     </InfoBlock>
@@ -33,7 +33,7 @@ export default {
     return {
       SESSION_BUBBLE_MODEL,
       autoStartChecked: false,
-      bubbleModel: SESSION_BUBBLE_MODEL.BETWEEN,
+      bubbleModel: SESSION_BUBBLE_MODEL.IS_BETWEEN,
     };
   },
   async mounted() {

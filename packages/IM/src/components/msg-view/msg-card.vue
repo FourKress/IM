@@ -3,7 +3,7 @@
     <div
       class="card text"
       :class="classObject"
-      v-if="msgType === checkMsgType.isText"
+      v-if="msgType === CHECK_MSG_TYPE.IS_TEXT"
     >
       {{ text }}
     </div>
@@ -16,7 +16,7 @@
     />
     <video
       class="wrap"
-      v-if="msgType === checkMsgType.isVideo"
+      v-if="msgType === CHECK_MSG_TYPE.IS_VIDEO"
       playsinline
       controls
       preload="auto"
@@ -26,7 +26,7 @@
 
     <audio
       class="wrap"
-      v-if="msgType === checkMsgType.isAudio"
+      v-if="msgType === CHECK_MSG_TYPE.IS_AUDIO"
       controls
       preload="auto"
       width="300"
@@ -37,7 +37,7 @@
     <div
       class="wrap file card"
       :class="classObject"
-      v-if="msgType === checkMsgType.isFile"
+      v-if="msgType === CHECK_MSG_TYPE.IS_FILE"
     >
       <div class="view">
         <LsIcon
@@ -58,14 +58,14 @@
     <div
       class="card text"
       :class="classObject"
-      v-if="msgType === checkMsgType.isTRTC"
+      v-if="msgType === CHECK_MSG_TYPE.IS_TRTC"
     >
       <LsIcon
-        v-if="!isSelf || (bubbleModel === SESSION_BUBBLE_MODEL.LEFT)"
+        v-if="!isSelf || (bubbleModel === SESSION_BUBBLE_MODEL.IS_LEFT)"
         class="trtc-icon target"
         :class="classObject"
         :icon="`${
-          msgData.type === networkCallType.isVideo
+          msgData.type === NETWORK_CALL_TYPE.IS_VIDEO
             ? 'ls-icon-icon_shipin_duifang'
             : 'ls-icon-icon_duihuakuang_yuyin'
         }`"
@@ -74,10 +74,10 @@
       ></LsIcon>
       {{ trtcMsgTips }}
       <LsIcon
-        v-if="isSelf && (bubbleModel === SESSION_BUBBLE_MODEL.BETWEEN)"
+        v-if="isSelf && (bubbleModel === SESSION_BUBBLE_MODEL.IS_BETWEEN)"
         class="trtc-icon self"
         :icon="`${
-          msgData.type === networkCallType.isVideo
+          msgData.type === NETWORK_CALL_TYPE.IS_VIDEO
             ? 'ls-icon-icon_shipin_wo'
             : 'ls-icon-icon_duihuakuang_yuyin'
         }`"
@@ -90,11 +90,11 @@
 
 <script>
 import {
-  msgFormatMap,
-  checkMsgType,
+  MSG_FORMAT_MAP,
+  CHECK_MSG_TYPE,
   getFileSize,
   downloadFile,
-  networkCallType,
+  NETWORK_CALL_TYPE,
   SESSION_BUBBLE_MODEL,
 } from '@lanshu/utils';
 import { LsIcon } from '@lanshu/components';
@@ -114,7 +114,7 @@ export default {
     },
     bubbleModel: {
       type: Number,
-      default: SESSION_BUBBLE_MODEL.BETWEEN,
+      default: SESSION_BUBBLE_MODEL.IS_BETWEEN,
     }
   },
   components: {
@@ -122,18 +122,16 @@ export default {
   },
   data() {
     return {
+      NETWORK_CALL_TYPE,
       SESSION_BUBBLE_MODEL,
-      msgFormatMap,
-      checkMsgType,
+      MSG_FORMAT_MAP,
+      CHECK_MSG_TYPE,
     };
   },
   computed: {
-    networkCallType() {
-      return networkCallType;
-    },
     msgType() {
       const msgType = this.msg?.msgType;
-      return this.msgFormatMap[msgType].type;
+      return this.MSG_FORMAT_MAP[msgType].type;
     },
     msgData() {
       return this.msg?.data || {};
@@ -143,7 +141,7 @@ export default {
       return this.msgData?.content;
     },
     isImage() {
-      return this.msgType === this.checkMsgType.isImage;
+      return this.msgType === this.CHECK_MSG_TYPE.IS_IMAGE;
     },
     assetsPath() {
       return this.msgData?.url || this.msgData?.videoUrl;

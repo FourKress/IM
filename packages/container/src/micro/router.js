@@ -1,8 +1,8 @@
-import { microKeyMap } from '@lanshu/utils';
+import { MICRO_KEY_MAP } from '@lanshu/utils';
 
 const microRoutes = [
   // {
-  //   key: microKeyMap.System,
+  //   key: MICRO_KEY_MAP.IS_SYSTEM,
   //   meta: {
   //     isMenu: true,
   //     name: '后台',
@@ -11,7 +11,7 @@ const microRoutes = [
   //   },
   // },
   // {
-  //   key: microKeyMap.KnowledgeBase,
+  //   key: MICRO_KEY_MAP.IS_KNOWLEDGE_BASE,
   //   meta: {
   //     isMenu: true,
   //     name: '知识库',

@@ -38,7 +38,7 @@ export const IMSDK_Init = async (loginParams) => {
   await IMLogin(loginParams);
   const res = await IMGetUserAttribute(userId);
   stareInstance.commit('IMStore/setUserInfo', res.data);
-  renderProcess.setStore('trtcUserInfo', res.data);
+  renderProcess.setStore('TRTC_USER_INFO', res.data);
   await IMGetUserProfile(userId);
   await IMGetConvList(userId);
   await IMGetTotalUnreadMessageCount();

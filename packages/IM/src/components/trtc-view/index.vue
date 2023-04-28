@@ -1,16 +1,16 @@
 <template>
   <div class="trtc-view">
     <div class="top">
-      <span class="btn" @click="handleWindowChange(winActionType.isMin)">
+      <span class="btn" @click="handleWindowChange(WIN_ACTION_TYPE.IS_MIN)">
         <LsIcon icon="ls-icon-icon_zuixiaohua" size="14"></LsIcon>
       </span>
-      <span class="btn" @click="handleWindowChange(winActionType.isMax)">
+      <span class="btn" @click="handleWindowChange(WIN_ACTION_TYPE.IS_MAX)">
         <LsIcon
           :icon="`ls-icon-icon_${isFull ? 'quanpin' : 'suoxiao'}`"
           size="14"
         ></LsIcon>
       </span>
-      <span class="btn" @click="handleWindowChange(winActionType.isClose)">
+      <span class="btn" @click="handleWindowChange(WIN_ACTION_TYPE.IS_CLOSE)">
         <LsIcon icon="ls-icon-icon_guanbi" size="14"></LsIcon>
       </span>
     </div>
@@ -125,11 +125,11 @@
 import { LsIcon, LsAssets } from '@lanshu/components';
 import {
   lodash,
-  networkCallType,
-  winActionType,
-  windowType,
-  networkCallbackType,
-  clientType,
+  NETWORK_CALL_TYPE,
+  WIN_ACTION_TYPE,
+  WINDOW_TYPE,
+  NETWORK_CALLBACK_TYPE,
+  CLIENT_TYPE,
 } from '@lanshu/utils';
 import { renderProcess } from '@lanshu/render-process';
 import {
@@ -147,6 +147,9 @@ export default {
     OptBtn,
   },
   computed: {
+    WIN_ACTION_TYPE() {
+      return WIN_ACTION_TYPE
+    },
     callTypeLabel() {
       return this.isVideoCall ? '视频' : '语音';
     },
@@ -159,10 +162,10 @@ export default {
   data() {
     return {
       LsAssets,
-      winActionType,
-      windowType,
-      networkCallbackType,
-      networkCallType,
+      WIN_ACTION_TYPE,
+      WINDOW_TYPE,
+      NETWORK_CALLBACK_TYPE,
+      NETWORK_CALL_TYPE,
       isBeInvited: false,
       toUser: '',
       toUserType: '',
@@ -179,7 +182,7 @@ export default {
       disSpeStatus: false,
       disCamStatus: false,
       isPc: true,
-      platform: clientType.isPc,
+      platform: CLIENT_TYPE.IS_PC,
       debounceOptPanelVisible: null,
       optPanelVisible: true,
       tipsInfo: {},
@@ -218,9 +221,9 @@ export default {
   async mounted() {
     this.initMouseEvent();
 
-    const userInfo = await renderProcess.getStore('trtcUserInfo');
-    const trtcSession = await renderProcess.getStore('trtcSession');
-    const trtcCallInfo = await renderProcess.getStore('trtcCallInfo');
+    const userInfo = await renderProcess.getStore('TRTC_USER_INFO');
+    const trtcSession = await renderProcess.getStore('TRTC_SESSION');
+    const trtcCallInfo = await renderProcess.getStore('TRTC_CALL_INFO');
     console.log(userInfo, trtcSession, trtcCallInfo);
 
     const { toUser, toUserType } = trtcSession;
@@ -228,7 +231,7 @@ export default {
       type,
       isBeInvited,
       roomId,
-      platform = clientType.isPc,
+      platform = CLIENT_TYPE.IS_PC,
       uuid,
     } = trtcCallInfo;
 
@@ -236,10 +239,10 @@ export default {
       this.callUUID = uuid;
     }
     this.platform = platform;
-    this.isPc = platform === clientType.isPc;
+    this.isPc = platform === CLIENT_TYPE.IS_PC;
     this.isBeInvited = isBeInvited;
     this.callType = type;
-    this.isVideoCall = type === this.networkCallType.isVideo;
+    this.isVideoCall = type === this.NETWORK_CALL_TYPE.IS_VIDEO;
 
     this.toUser = toUser;
     this.toUserType = toUserType;
@@ -296,13 +299,13 @@ export default {
           const { type, uuid } = res;
           this.callUUID = uuid;
           switch (type) {
-            case this.networkCallbackType.isTimeout:
+            case this.NETWORK_CALLBACK_TYPE.IS_TIMEOUT:
               waringText = '对方未应答';
               break;
-            case this.networkCallbackType.isReject:
+            case this.NETWORK_CALLBACK_TYPE.IS_REJECT:
               waringText = '对方已拒绝';
               break;
-            case this.networkCallbackType.isAnswered:
+            case this.NETWORK_CALLBACK_TYPE.IS_ANSWERED:
               this.handleEnterRoom();
               this.startTime();
               break;
@@ -354,8 +357,8 @@ export default {
         .then((res) => {
           console.log(res);
           const { data = {} } = res;
-          const { platform = clientType.isPc, roomId } = data;
-          this.isPc = platform === clientType.isPc;
+          const { platform = CLIENT_TYPE.IS_PC, roomId } = data;
+          this.isPc = platform === CLIENT_TYPE.IS_PC;
           this.roomId = roomId;
           this.handleEnterRoom();
           this.startTime();
@@ -368,25 +371,25 @@ export default {
     handleTRTCDestroy() {
       this.isExitRoom = true;
       setTimeout(() => {
-        this.handleWindowChange(this.winActionType.isClose);
+        this.handleWindowChange(this.WIN_ACTION_TYPE.isClose);
       }, 2000);
     },
 
     async handleWindowChange(type) {
       console.log(type);
-      if (type !== this.winActionType.isClose) {
-        if (type === this.winActionType.isMax) {
+      if (type !== this.WIN_ACTION_TYPE.IS_CLOSE) {
+        if (type === this.WIN_ACTION_TYPE.IS_MAX) {
           this.isFull = !this.isFull;
         }
-        renderProcess.changeWindow(type, this.windowType.isTrtc);
+        renderProcess.changeWindow(type, this.WINDOW_TYPE.IS_TRTC);
         return;
       }
 
       if (this.isExitRoom) {
-        await renderProcess.setStore('trtcCanBeClosed', true);
+        await renderProcess.setStore('TRTC_CAN_BE_CLOSED', true);
         trtcCloud.stopLocalPreview();
         trtcCloud.stopLocalAudio();
-        renderProcess.changeWindow(type, this.windowType.isTrtc);
+        renderProcess.changeWindow(type, this.WINDOW_TYPE.IS_TRTC);
         return;
       }
 

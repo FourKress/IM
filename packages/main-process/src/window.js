@@ -1,7 +1,6 @@
 import { BrowserWindow } from 'electron';
 import path from 'path';
-import { isMac, CLIENT_TYPE } from './utils';
-import log from './log';
+import { IS_MAC, CLIENT_TYPE, WINDOW_TYPE } from './utils';
 import checkDevices from './checkDevices';
 
 const initLoginWindow = () => {
@@ -24,14 +23,14 @@ const initMainWindow = () => {
 
 const delayShowWindow = (initFn, delay) => {
   const mainWindow = global.mainWindow;
-  if (isMac) {
+  if (IS_MAC) {
     mainWindow.setOpacity(0);
   }
   initFn();
   // 在最小化之后修改size会无效，所以要在最小化之前修改大小
   mainWindow.minimize();
   setTimeout(() => {
-    if (isMac) {
+    if (IS_MAC) {
       mainWindow.setOpacity(1);
     }
     mainWindow.show();
@@ -53,8 +52,8 @@ export const showLoginWindow = (delay) => {
 
 export const changeWindow = (type, win) => {
   const windowMap = {
-    main: global.mainWindow,
-    trtc: global.TRTCWindow,
+    [WINDOW_TYPE.IS_MAIN]: global.mainWindow,
+    [WINDOW_TYPE.IS_TRTC]: global.TRTCWindow,
   };
   const targetWindow = windowMap[win];
   const actionFnMap = {
@@ -142,7 +141,7 @@ export const openTRTCWindow = async (type = CLIENT_TYPE.IS_PC) => {
   });
 
   TRTCWindow.on('close', (event) => {
-    const trtcCanBeClosed = global.store.get('trtcCanBeClosed');
+    const trtcCanBeClosed = global.store.get('TRTC_CAN_BE_CLOSED');
     if (!trtcCanBeClosed) {
       event.preventDefault();
       TRTCWindow.webContents.send('mainProcessError', '请先结束当前通话');
@@ -154,8 +153,7 @@ export const openTRTCWindow = async (type = CLIENT_TYPE.IS_PC) => {
     console.log('TRTCWindow Close');
     TRTCWindow = null;
     global.TRTCWindow = null;
-    global.store.delete('trtcMsg');
-    global.store.delete('trtcSession');
-    global.store.delete('trtcCanBeClosed');
+    global.store.delete('TRTC_SESSION');
+    global.store.delete('TRTC_CAN_BE_CLOSED');
   });
 };

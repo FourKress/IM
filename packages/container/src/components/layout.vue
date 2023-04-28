@@ -3,7 +3,7 @@
     <div class="container">
       <MainMenu />
       <div class="view-container">
-        <div :id="microContainer" class="micro-app" v-if="isMicro"></div>
+        <div :id="MICRO_CONTAINER" class="micro-app" v-if="isMicro"></div>
         <router-view class="router-view" v-else />
       </div>
     </div>
@@ -13,7 +13,7 @@
 <script>
 import MainMenu from './menu';
 import { MicroSharedObservable, microLoadingMixins } from '@lanshu/micro';
-import { microContainer } from '@lanshu/utils';
+import { MICRO_CONTAINER } from '@lanshu/utils';
 import { mapGetters } from 'vuex';
 
 export default {
@@ -24,7 +24,7 @@ export default {
   mixins: [microLoadingMixins],
   data() {
     return {
-      microContainer,
+      MICRO_CONTAINER,
     };
   },
   computed: {

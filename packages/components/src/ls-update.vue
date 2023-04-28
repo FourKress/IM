@@ -35,7 +35,7 @@
 <script>
 import { LsAssets } from '@lanshu/components';
 import { renderProcess } from '@lanshu/render-process';
-import { windowType, winActionType } from '@lanshu/utils';
+import { WINDOW_TYPE, WIN_ACTION_TYPE } from '@lanshu/utils';
 import { mapActions } from 'vuex';
 
 export default {
@@ -49,7 +49,7 @@ export default {
   data() {
     return {
       LsAssets,
-      winActionType,
+      WIN_ACTION_TYPE,
       downloadProgress: {},
       richText:
         'dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>',
@@ -68,11 +68,11 @@ export default {
       const hasWindow = await renderProcess.hasWindow('TRTCWindow');
       if (hasWindow) {
         renderProcess.changeWindow(
-          this.winActionType.isClose,
-          windowType.isTrtc,
+          this.WIN_ACTION_TYPE.IS_CLOSE,
+          WINDOW_TYPE.IS_TRTC,
         );
       }
-      renderProcess.changeWindow(this.winActionType.isClose, windowType.isMain);
+      renderProcess.changeWindow(this.WIN_ACTION_TYPE.IS_CLOSE, WINDOW_TYPE.IS_MAIN);
     },
     handleStartUpdate() {
       console.log(122112);

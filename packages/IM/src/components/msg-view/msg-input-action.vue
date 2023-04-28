@@ -11,7 +11,7 @@
           <div class="emoji-panel">
             <span
               class="emoji"
-              v-for="emoji in emojiList"
+              v-for="emoji in EMOJI_LIST"
               :key="emoji"
               @click="getEmoji(emoji)"
             >
@@ -80,7 +80,7 @@
 </template>
 
 <script>
-import { emojiList, keyCode, checkMsgType } from '@lanshu/utils';
+import { EMOJI_LIST, KEY_CODE, CHECK_MSG_TYPE } from '@lanshu/utils';
 import { renderProcess } from '@lanshu/render-process';
 import { LsIcon } from '@lanshu/components';
 import ActionCard from '../action-view/action-card';
@@ -103,12 +103,12 @@ export default {
       message: '',
       messageText: '',
       inputClientWidth: 0,
-      emojiList,
+      EMOJI_LIST,
       emojiVisible: false,
       windowRange: null,
       sendMsgHotKey: null,
-      keyCode,
-      checkMsgType,
+      KEY_CODE,
+      CHECK_MSG_TYPE,
     };
   },
   computed: {
@@ -123,8 +123,10 @@ export default {
       return `发送给 ${this.session.nickname || ''}...`;
     },
     disabledSendMsg() {
-      return !this.message || (!this.messageText && !this.message.includes('<img'));
-    }
+      return (
+        !this.message || (!this.messageText && !this.message.includes('<img'))
+      );
+    },
   },
   async mounted() {
     this.$nextTick(() => {
@@ -154,12 +156,12 @@ export default {
     });
 
     this.sendMsgHotKey = (
-      await renderProcess.getStore('hotKeys')
+      await renderProcess.getStore('HOT_KEYS')
     ).sendMsg.currentKey;
 
-    if (this.sendMsgHotKey === this.keyCode.isEnter) {
+    if (this.sendMsgHotKey === this.KEY_CODE.IS_ENTER) {
       document.onkeydown = (e) => {
-        if (e.key === this.keyCode.isEnter) {
+        if (e.key === this.KEY_CODE.IS_ENTER) {
           e.preventDefault(); //禁用回车的默认事件
         }
       };
@@ -184,12 +186,12 @@ export default {
     },
 
     handleEnterSend() {
-      if (this.sendMsgHotKey === this.keyCode.isEnter) {
+      if (this.sendMsgHotKey === this.KEY_CODE.IS_ENTER) {
         this.sendMsg();
       }
     },
     handleCtrlEnterSend() {
-      if (this.sendMsgHotKey === this.keyCode.isCtrlEnter) {
+      if (this.sendMsgHotKey === this.KEY_CODE.IS_CTRL_ENTER) {
         this.sendMsg();
       } else {
         this.windowRange = window.getSelection().getRangeAt(0);
@@ -389,7 +391,7 @@ export default {
               );
             } else {
               msg = await this.handleCreateMsg({
-                type: this.checkMsgType.isText,
+                type: this.CHECK_MSG_TYPE.IS_TEXT,
                 message: d,
               });
             }
@@ -422,11 +424,11 @@ export default {
         message = '',
       } = params;
       switch (type) {
-        case this.checkMsgType.isText:
+        case this.CHECK_MSG_TYPE.IS_TEXT:
           msgEvent = IMSDKMessageProvider.events.createTextMessage;
           msgData.push(message);
           break;
-        case this.checkMsgType.isImage:
+        case this.CHECK_MSG_TYPE.IS_IMAGE:
           msgEvent = IMSDKMessageProvider.events.createImgMessage;
           msgData.push({
             name,
@@ -439,7 +441,7 @@ export default {
             wide: width,
           });
           break;
-        case this.checkMsgType.isVideo:
+        case this.CHECK_MSG_TYPE.IS_VIDEO:
           msgEvent = IMSDKMessageProvider.events.createVideoMessage;
           msgData.push({
             type: rawType,
@@ -449,7 +451,7 @@ export default {
             snapshotUrl: url,
           });
           break;
-        case this.checkMsgType.isAudio:
+        case this.CHECK_MSG_TYPE.IS_AUDIO:
           msgEvent = IMSDKMessageProvider.events.createVoiceMessage;
           msgData.push({
             md5: '',
@@ -459,7 +461,7 @@ export default {
             url,
           });
           break;
-        case this.checkMsgType.isFile:
+        case this.CHECK_MSG_TYPE.IS_FILE:
           msgEvent = IMSDKMessageProvider.events.createFileMessage;
           msgData.push({
             md5: '',
@@ -478,7 +480,7 @@ export default {
 
     async handleFileUpload(filePath) {
       return new Promise(async (resolve) => {
-        console.log(filePath)
+        console.log(filePath);
         await IMUploadFile(filePath)
           .then((res) => {
             resolve(res.data.url);
@@ -493,7 +495,7 @@ export default {
 
     async handleActionComplete(data) {
       const { value, type } = data;
-      if (type === this.checkMsgType.isSendFile) {
+      if (type === this.CHECK_MSG_TYPE.IS_SEND_FILE) {
         const sendMsgArr = (
           await Promise.all(
             value.map(async (d) => {
