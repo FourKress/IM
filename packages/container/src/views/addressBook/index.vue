@@ -137,6 +137,7 @@ export default {
     ...mapActions('IMStore', ['setMainSessionWindow']),
 
     addFriend() {
+      this.activeIndex = null;
       this.setComponentConfig(this.addFriendConfig);
     },
     handleSelectNav(nav, index) {

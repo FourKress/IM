@@ -2,7 +2,9 @@
   <Card id="Basic-Card" title="通用">
     <InfoBlock :info="{ title: '启动' }">
       <div class="row">
-        <el-checkbox v-model="autoStartChecked">开机自动启动北象</el-checkbox>
+        <el-checkbox v-model="autoStartChecked" @change="handleAutoStartChange">
+          开机自动启动北象
+        </el-checkbox>
       </div>
     </InfoBlock>
 
@@ -10,7 +12,9 @@
       <div class="row">
         <el-radio-group v-model="bubbleModel" @change="handleChange">
           <el-radio :label="SESSION_BUBBLE_MODEL.IS_LEFT">左对齐模式</el-radio>
-          <el-radio :label="SESSION_BUBBLE_MODEL.IS_BETWEEN">左右对话模式</el-radio>
+          <el-radio :label="SESSION_BUBBLE_MODEL.IS_BETWEEN">
+            左右对话模式
+          </el-radio>
         </el-radio-group>
       </div>
     </InfoBlock>
@@ -32,16 +36,20 @@ export default {
   data() {
     return {
       SESSION_BUBBLE_MODEL,
-      autoStartChecked: false,
       bubbleModel: SESSION_BUBBLE_MODEL.IS_BETWEEN,
+      autoStartChecked: false,
     };
   },
   async mounted() {
-    this.bubbleModel = await renderProcess.getStore('SESSION_BUBBLE_MODEL')
+    this.bubbleModel = await renderProcess.getStore('SESSION_BUBBLE_MODEL') || SESSION_BUBBLE_MODEL.IS_BETWEEN;
+    this.autoStartChecked = await renderProcess.getStore('AUTO_START') || false;
   },
   methods: {
     handleChange(val) {
       renderProcess.setStore('SESSION_BUBBLE_MODEL', val);
+    },
+    handleAutoStartChange(val) {
+      renderProcess.setAutoStart(val);
     },
   },
 };

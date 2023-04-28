@@ -22,7 +22,7 @@
 
 <script>
 import { IMGetByUserId } from '@lanshu/im';
-import { mapActions } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 
 export default {
   name: 'Group-list',
@@ -36,13 +36,22 @@ export default {
       required: true,
     },
   },
+  computed: {
+    ...mapGetters('IMStore', ['sessionList']),
+  },
   methods: {
     ...mapActions('IMStore', ['setMainSessionWindow']),
 
     async startSession(userId) {
-      const res = await IMGetByUserId(userId);
-      if (!res?.data) return;
-      const session = res.data;
+      let session;
+      const storeSession = this.sessionList.find((d) => d.toUser === userId);
+      if (storeSession) {
+        session = storeSession;
+      } else {
+        const res = await IMGetByUserId(userId);
+        if (!res?.data) return;
+        session = res.data;
+      }
       await this.setMainSessionWindow(session);
     },
     async handleJumpGroup(group) {

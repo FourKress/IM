@@ -45,5 +45,6 @@ window.electronAPI = {
   hasWindow: (win) => ipcRenderer.invoke('hasWindow', win),
   mainProcessError: (callback) => ipcRenderer.on('mainProcessError', callback),
   downloadProgress: (callback) => ipcRenderer.on('downloadProgress', callback),
+  setAutoStart: (key, data) => ipcRenderer.send('setAutoStart', key, data),
   checkForUpdates: () => ipcRenderer.send('checkForUpdates'),
 };

@@ -93,6 +93,13 @@ const initIpcMain = () => {
       return !!global[win];
     });
 
+    ipcMain.on('setAutoStart', async (_event, isAutoStart) => {
+      global.store.set('AUTO_START', isAutoStart);
+      app.setLoginItemSettings({
+        openAtLogin: isAutoStart,
+      });
+    });
+
     // 触发检查更新并且下载
     ipcMain.on('checkForUpdates', async (_event) => {
       console.log('检查更新');

@@ -139,7 +139,7 @@ export default {
       deep: true,
       handler(val) {
         console.log('sessionList', val)
-        this.selfSessionList = val;
+        this.initData();
       },
     },
     mainSessionWindow: {
@@ -161,14 +161,17 @@ export default {
     }
   },
   mounted() {
-    this.selfSessionList = this.sessionList;
-    this._setMainSessionWindow();
+    this.initData();
   },
   methods: {
     ...mapActions('IMStore', [
       'setMainSessionWindow',
       'setAllSession',
     ]),
+    initData() {
+      this.selfSessionList = this.sessionList;
+      this._setMainSessionWindow();
+    },
     handleChooseTab(isAll) {
       this.tabType = isAll;
       if (isAll === this.isAll) {
@@ -191,6 +194,7 @@ export default {
       if (currentSession) {
         this.currentSession = currentSession;
         const targetSession = sessionList.find(d => d.sessId === currentSession);
+        if (!targetSession) return;
         this.handleSetSessionWindow(currentSession, targetSession);
       }
     },

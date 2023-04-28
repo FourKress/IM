@@ -97,6 +97,7 @@
         :friend-info="friendInfo"
         :position="position"
         :config="{ isDetails: true }"
+        @update="handleCloseDialog"
       />
     </LsCardDialog>
   </div>

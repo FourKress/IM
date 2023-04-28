@@ -12,7 +12,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters('IMStore', ['userInfo']),
+    ...mapGetters('IMStore', ['userInfo', 'sessionList']),
   },
   methods: {
     ...mapActions('IMStore', ['setMainSessionWindow']),
@@ -45,9 +45,15 @@ export default {
       });
     },
     async startSession(userId) {
-      const res = await IMGetByUserId(userId);
-      if (!res?.data) return;
-      const session = res.data;
+      let session;
+      const storeSession = this.sessionList.find((d) => d.toUser === userId);
+      if (storeSession) {
+        session = storeSession;
+      } else {
+        const res = await IMGetByUserId(userId);
+        if (!res?.data) return;
+        session = res.data;
+      }
       await this.setMainSessionWindow(session);
       return session;
     },

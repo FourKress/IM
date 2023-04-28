@@ -93,6 +93,11 @@ export const IMSDKCallBackEvents = {
   },
   FriendDelListener(ctx, info) {
     console.log('FriendDelListener', info);
+    const mainSessionWindow =
+      stareInstance.getters['IMStore/mainSessionWindow'];
+    if (mainSessionWindow.toUser === info.delUerId) {
+      stareInstance.commit('IMStore/setMainSessionWindow', {});
+    }
     stareInstance.commit('IMStore/setRefreshAddressBook', true);
   },
   UserTokenExpiredCallBack(ctx) {
