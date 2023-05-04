@@ -47,7 +47,6 @@ export const IMSDKCallBackEvents = {
     };
 
     console.log('@@@@@ AddReceiveNewMessage');
-    stareInstance.commit('IMStore/setCurrentMsg', message);
 
     const mainSessionWindow =
       stareInstance.getters['IMStore/mainSessionWindow'];
@@ -55,6 +54,8 @@ export const IMSDKCallBackEvents = {
       stareInstance.getters['IMStore/sessionWindowList'];
 
     if (!mainSessionWindow?.sessId && !sessionWindowList?.length) return;
+
+    stareInstance.commit('IMStore/setCurrentMsg', message);
 
     if (mainSessionWindow.sessId !== message.sessId) return;
 
@@ -113,8 +114,8 @@ export const IMSDKCallBackEvents = {
         await ClientLogOut();
       });
   },
-  GroupAttributeChangedCallBack(ctx, info) {
-    console.log('GroupAttributeChangedCallBack', info);
-    stareInstance.commit('IMStore/groupAttributeChanged', info);
+  UserNicknameAvatarUpdateListener(ctx, info) {
+    console.log('UserNicknameAvatarUpdateListener', info);
+    stareInstance.commit('IMStore/setGroupAttributeChanged', info);
   },
 };

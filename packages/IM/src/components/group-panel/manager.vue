@@ -117,8 +117,10 @@
 <script>
 import { IM_GROUP_MEMBER_PANEL_TYPE } from '@lanshu/utils';
 import { LsIcon } from '@lanshu/components';
+import { IMGetGroupRoleManagerList } from '../../IM-SDK';
 import RowChat from './row-chat';
 import DrawerMixins from './drawer-mixins';
+import { mapGetters } from 'vuex';
 
 export default {
   name: 'manager',
@@ -131,9 +133,24 @@ export default {
     return {
       value: true,
       IM_GROUP_MEMBER_PANEL_TYPE,
+      groupRoleManagerInfo: {},
     };
   },
+  computed: {
+    ...mapGetters('IMStore', ['actionWindow']),
+  },
+  mounted() {
+    this.getGroupRoleManagerList()
+  },
   methods: {
+    getGroupRoleManagerList() {
+      IMGetGroupRoleManagerList(this.actionWindow.toUser).then(res => {
+        console.log(res.data)
+        this.groupRoleManagerInfo = res?.data || {};
+      }).catch((err) => {
+        console.log(err)
+      });
+    },
     changeMember(type) {
       this.$emit('changeGroupMember', type);
     },

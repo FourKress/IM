@@ -147,9 +147,6 @@ export default {
     OptBtn,
   },
   computed: {
-    WIN_ACTION_TYPE() {
-      return WIN_ACTION_TYPE
-    },
     callTypeLabel() {
       return this.isVideoCall ? '视频' : '语音';
     },
@@ -187,7 +184,6 @@ export default {
       optPanelVisible: true,
       tipsInfo: {},
       isFull: false,
-      timer: null,
     };
   },
   created() {
@@ -201,6 +197,7 @@ export default {
       switch (true) {
         case type === 'Close':
           const tipsMap = {
+            671: '通话已结束',
             672: '对方已拒绝',
             673: '对方已取消',
             674: '未应答',
@@ -333,7 +330,7 @@ export default {
         this.callType,
         this.toUser,
         this.toUserType,
-        this.callTime,
+        (Date.now() - this.callTime) / 1000,
       )
         .then((res) => {
           console.log(res);
@@ -371,7 +368,7 @@ export default {
     handleTRTCDestroy() {
       this.isExitRoom = true;
       setTimeout(() => {
-        this.handleWindowChange(this.WIN_ACTION_TYPE.isClose);
+        this.handleWindowChange(this.WIN_ACTION_TYPE.IS_CLOSE);
       }, 2000);
     },
 
@@ -458,11 +455,10 @@ export default {
         this.isExitRoom = true;
       });
       this.tipsInfo = {
-        text: '通话已挂断',
+        text: '通话已结束',
         visible: true,
         className: 'waring',
       };
-      clearTimeout(this.timer)
       await this.stopNetworkCall();
     },
 
@@ -488,9 +484,7 @@ export default {
     },
 
     startTime() {
-      this.timer = setInterval(() => {
-        this.callTime += 1000;
-      }, 1000);
+      this.callTime = Date.now();
     },
 
     onUserVideoAvailable(userId, available) {

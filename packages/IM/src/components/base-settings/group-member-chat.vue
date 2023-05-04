@@ -156,7 +156,9 @@
         >
           <span class="tips">
             <span>已选联系人：{{ selectList.length }}</span>
-            <span v-if="panelType !== IM_GROUP_MEMBER_PANEL_TYPE.IS_DEL">/500</span>
+            <span v-if="panelType !== IM_GROUP_MEMBER_PANEL_TYPE.IS_DEL">
+              /500
+            </span>
           </span>
         </div>
         <div class="list">
@@ -188,7 +190,9 @@
         <div class="btn-list">
           <span class="btn cancel" @click="handleClose">取消</span>
           <span class="btn confirm" @click="handleConfirm">
-            {{ panelType !== IM_GROUP_MEMBER_PANEL_TYPE.IS_DEL ? '确定' : '删除' }}
+            {{
+              panelType !== IM_GROUP_MEMBER_PANEL_TYPE.IS_DEL ? '确定' : '删除'
+            }}
           </span>
         </div>
       </div>
@@ -201,7 +205,11 @@ import { LsIcon } from '@lanshu/components';
 import { mapGetters, mapActions } from 'vuex';
 import _ from 'lodash';
 import { IM_GROUP_MEMBER_PANEL_TYPE, AddressBookMixins } from '@lanshu/utils';
-import { IMCreateGroup, IMInviteMember } from '../../IM-SDK';
+import {
+  IMAdminDelGroupMembers,
+  IMCreateGroup,
+  IMInviteMember,
+} from '../../IM-SDK';
 
 const isAddress = false;
 
@@ -286,22 +294,28 @@ export default {
       const handleMap = {
         [this.IM_GROUP_MEMBER_PANEL_TYPE.IS_DEL]: {
           label: '删除群成员',
-          func: () => {},
+          func: this.handleDelGroupMember,
+          getList: () => {
+            return this.defaultMembers.filter((d) =>
+              this.selectList.some((s) => s.userId !== d.userId),
+            );
+          },
         },
         [this.IM_GROUP_MEMBER_PANEL_TYPE.IS_ADD]: {
           label: '添加群成员',
           func: this.handleAddGroupMember,
+          getList: () => {
+            this.selectList.filter((d) => !d.isDefault);
+          },
         },
         [this.IM_GROUP_MEMBER_PANEL_TYPE.IS_CREATE]: {
           label: '创建群聊',
           func: this.handleCreateGroup,
+          getList: () => this.selectList,
         },
       };
-      console.log(handleMap);
       const handleTarget = handleMap[this.panelType];
-      const realSelectList = this.isAdd
-        ? this.selectList.filter((d) => !d.isDefault)
-        : this.selectList;
+      const realSelectList = handleTarget.getList();
       if (realSelectList?.length < 1) {
         this.$message.error(`${handleTarget.label}至少选择1个联系人`);
         return;
@@ -310,20 +324,20 @@ export default {
         this.$message.error('请输入群聊名称');
         return;
       }
-      const members = realSelectList.map((d) => d.toUser);
+      const members = realSelectList.map((d) => d.toUser ? d.toUser : d.userId);
       const res = await handleTarget.func(members);
       this.$message.success(`${handleTarget.label}成功`);
       this.$emit('confirm', res?.data);
     },
 
     async handleCreateGroup(members) {
+      // TODO 群头像获取
       const avatar =
         'https://diy.jiuwa.net/make/ps?sktype=&fontsize=380&skwidth=3&fillcolor=022b6f&shadowtype=2&filltype=1&text=%E9%A9%AC&skcolor=999999&skopacity=1&distort=9&fontype=21';
       const groupAddType = 2;
       return await IMCreateGroup(this.groupName, avatar, groupAddType, members);
     },
     async handleAddGroupMember(members) {
-      console.log(this.defaultGroup, members);
       return await IMInviteMember(this.defaultGroup.toUser, members).then(
         () => {
           // 刷新群成员
@@ -331,20 +345,29 @@ export default {
         },
       );
     },
+    async handleDelGroupMember(members) {
+      return await IMAdminDelGroupMembers(
+        this.defaultGroup.toUser,
+        members,
+      ).then(() => {
+        // 刷新群成员
+        this.setRefreshMembers(Date.now());
+      });
+    },
 
     async handleClick(type) {
       this.staffName = '';
       this.tabType = type;
       if (type === this.isAddress && !this.scrollView) {
         // 注册滚动事件的处理
-        this.handleRegisterScroll()
+        this.handleRegisterScroll();
         await this.getFriendListData();
         const addressBookList = this.addressBookList.map((d) => {
           d.toUser = d.userId;
           return this.getCheckedStatus(d);
         });
         this.addressBookList = addressBookList;
-        this.initPinYin()
+        this.initPinYin();
       }
     },
 

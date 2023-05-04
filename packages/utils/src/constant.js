@@ -105,6 +105,12 @@ export const IM_HEADER_MORE_BTN_KEY = {
   IS_OPEN_GROUP_MEMBER: 'OpenGroupMember',
 };
 
+export const IM_NETWORK_STATUS = {
+  IS_CONNECT: 1,
+  IS_CONNECTING: 0,
+  IS_BREAK: -1,
+};
+
 export const IM_GROUP_MEMBER_PANEL_TYPE = {
   IS_CREATE: 'Create',
   IS_ADD: 'Add',

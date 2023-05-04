@@ -73,13 +73,13 @@ export default {
   computed: {
     ...mapGetters('IMStore', ['newFriendCount']),
   },
-  mounted() {
-    this.queryFriendRequestNotice();
-    if (this.newFriendCount > 0) {
-      IMClearFriendRequestNoticeUnreadCount().then(() => {
-        this.setNewFriendCount(0);
-      });
+  watch: {
+    newFriendCount() {
+      this.initData();
     }
+  },
+  mounted() {
+    this.initData();
   },
   methods: {
     ...mapActions('IMStore', ['setNewFriendCount']),
@@ -89,6 +89,17 @@ export default {
         isExpired: false,
         isApply: true,
       };
+    },
+
+    initData() {
+      this.queryFriendRequestNotice();
+      if (this.newFriendCount > 0) {
+        IMClearFriendRequestNoticeUnreadCount().then(() => {
+          setTimeout(() => {
+            this.setNewFriendCount(0);
+          }, 500)
+        });
+      }
     },
 
     queryFriendRequestNotice() {

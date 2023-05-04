@@ -13,8 +13,6 @@ const state = {
   IM_Network_Status: 0,
   // 数据同步状态
   IM_DataSync_Status: null,
-  // SDK准备完成标识
-  SDK_READ: 1,
   // 当前消息
   currentMsg: {},
   // 总未读数
@@ -43,7 +41,6 @@ const getters = {
   sessionWindowList: (state) => state.sessionWindowList,
   IM_Network_Status: (state) => state.IM_Network_Status,
   IM_DataSync_Status: (state) => state.IM_DataSync_Status,
-  SDK_READ: (state) => state.SDK_READ,
   currentMsg: (state) => state.currentMsg,
   allUnreadCount: (state) => state.allUnreadCount,
   refreshMsg: (state) => state.refreshMsg,

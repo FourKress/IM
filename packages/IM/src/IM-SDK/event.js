@@ -390,3 +390,18 @@ export const IMGetGroupMemberInfo = async (groupId, userId) =>
     groupId,
     userId,
   );
+
+export const IMAdminDelGroupMembers = async (groupId, userIds) =>
+  await eventHOCFnc(
+    IMSDKGroupProvider.provider,
+    IMSDKGroupProvider.events.adminDelGroupMembers,
+    groupId,
+    userIds,
+  );
+
+export const IMGetGroupRoleManagerList = async (groupId) =>
+  await eventHOCFnc(
+    IMSDKGroupProvider.provider,
+    IMSDKGroupProvider.events.getGroupRoleManagerList,
+    groupId,
+  );

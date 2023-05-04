@@ -21,7 +21,7 @@ export default {
   },
   mounted() {
     // TODO 缓存已查询到的昵称
-    IMGetGroupMemberInfo(this.message.toUser, '123454321').then(
+    IMGetGroupMemberInfo(this.message.toUser, this.message.fromUser).then(
       (res) => {
         console.log(res, this.message.toUser, this.message)
         this.nickname = res?.data?.nickname;

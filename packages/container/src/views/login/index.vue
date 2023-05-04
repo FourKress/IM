@@ -11,10 +11,6 @@
       <!--        ></LsIcon>-->
       <!--      </div>-->
 
-      <div class="network_status">
-        <LsNetwork />
-      </div>
-
       <BasicLogin
         ref="basicLogin"
         v-if="!isSendLogin"
@@ -50,7 +46,7 @@
 </template>
 
 <script>
-import { WindowOperate, LsIcon, LsNetwork } from '@lanshu/components';
+import { WindowOperate, LsIcon } from '@lanshu/components';
 import BasicLogin from './basic-login';
 import SendLogin from './send-login';
 import { RecoverAccountMixins } from '@lanshu/utils';
@@ -62,7 +58,6 @@ export default {
     BasicLogin,
     SendLogin,
     LsIcon,
-    LsNetwork,
   },
   mixins: [RecoverAccountMixins],
   data() {
@@ -161,13 +156,6 @@ export default {
       position: absolute;
       right: 0;
       bottom: 0;
-    }
-
-    .network_status {
-      position: absolute;
-      top: 38px;
-      left: 50%;
-      transform: translateX(-50%);
     }
   }
 

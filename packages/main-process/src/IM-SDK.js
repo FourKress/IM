@@ -15,10 +15,11 @@ export const IMSDKInit = (appId) => {
   global.IMSDK = IMSDK;
 
   IMSDK.getMainProvider().setLogLevel(
-    process.env.WEBPACK_DEV_SERVER_URL ? LogLevel.INFO : LogLevel.INFO,
+    process.env.WEBPACK_DEV_SERVER_URL ? LogLevel.DEBUG : LogLevel.INFO,
   );
 
   IMSDK.getMainProvider().setNetworkChangeCallBack((state) => {
+    console.log('setNetworkChangeCallBack', state);
     // state 网络状态 0：正在连接、-1：连接断开、1：连接成功
     global.mainWindow.webContents.send('IMSDKListener', {
       type: 'Network',
@@ -148,14 +149,15 @@ export const IMSDKInit = (appId) => {
     });
   });
 
-  IMSDK.getMainProvider().setGroupAttributeChangedCallBack(
-    (groupId, groupAttribute) => {
-      console.log('GroupAttributeChangedCallBack');
+  IMSDK.getMainProvider().setUserNicknameAvatarUpdateListener(
+    (userId, nickname, avatar) => {
+      console.log('UserNicknameAvatarUpdateListener');
       global.mainWindow.webContents.send('IMSDKListener', {
-        type: 'UserTokenExpiredCallBack',
+        type: 'UserNicknameAvatarUpdateListener',
         value: {
-          groupId,
-          groupAttribute,
+          userId,
+          nickname,
+          avatar,
         },
       });
     },

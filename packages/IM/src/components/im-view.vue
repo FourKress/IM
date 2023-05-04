@@ -6,7 +6,6 @@
       <div
         class="message-item"
         v-for="(item, index) in messageList"
-        :key="item.msgId"
       >
         <div class="tips-row">
           <TimesTransform
@@ -183,7 +182,9 @@ export default {
       immediate: true,
       deep: true,
       handler(value) {
-        if (value) {
+        // TODO 临时处理手动创建会话时 mainSessionWindow 的更新问题
+        if (value && value?.nickname) {
+          console.log('111 session', value)
           this.initData();
         }
       },
@@ -194,6 +195,7 @@ export default {
       async handler(msg) {
         if (!this?.session?.sessId) return;
         if (msg?.sessId === this?.session?.sessId) {
+          console.log('2222 currentMsg', msg)
           this.getMessageList();
           this.setCurrentMsg({});
         }
@@ -201,6 +203,7 @@ export default {
     },
     refreshMsg(val) {
       if (val) {
+        console.log('3333 refreshMsg', val)
         this.setRefreshMsg(false);
         this.getMessageList();
       }
@@ -302,6 +305,8 @@ export default {
     },
 
     async handleFriend(item, event) {
+      const {toUserType} = item;
+      if (toUserType === SESSION_USER_TYPE.IS_GROUP) return
       const isSelf = this.checkSelf(item);
       if (isSelf) return;
       const { fromUser } = item;
@@ -412,6 +417,7 @@ export default {
             display: block;
             width: 100%;
             height: 100%;
+            cursor: pointer;
           }
         }
 

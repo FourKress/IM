@@ -112,7 +112,6 @@ export default {
     };
   },
   computed: {
-    ...mapGetters('IMStore', ['IM_Network_Status', 'SDK_READ']),
     session() {
       return this.$attrs.session;
     },
@@ -351,7 +350,6 @@ export default {
     },
 
     async sendMsg() {
-      if (this.IM_Network_Status !== this.SDK_READ) return;
       if (this.disabledSendMsg) return;
 
       const regExp = new RegExp(

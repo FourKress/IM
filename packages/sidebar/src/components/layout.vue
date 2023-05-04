@@ -194,7 +194,8 @@ export default {
       if (currentSession) {
         this.currentSession = currentSession;
         const targetSession = sessionList.find(d => d.sessId === currentSession);
-        if (!targetSession) return;
+        // TODO 临时处理手动创建会话时 mainSessionWindow 的更新问题
+        if (!targetSession || this.mainSessionWindow?.nickname) return;
         this.handleSetSessionWindow(currentSession, targetSession);
       }
     },

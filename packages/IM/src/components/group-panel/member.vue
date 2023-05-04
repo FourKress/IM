@@ -14,7 +14,7 @@
       <span class="add btn" @click="changeMember(IM_GROUP_MEMBER_PANEL_TYPE.IS_ADD)">
         <LsIcon render-svg width="14" height="14" icon="navi_ss_add"></LsIcon>
       </span>
-      <span class="del btn" @click="changeMember(IM_GROUP_MEMBER_PANEL_TYPE.IS_DEL)">
+      <span class="del btn" v-if="isGroupManager" @click="changeMember(IM_GROUP_MEMBER_PANEL_TYPE.IS_DEL)">
         <LsIcon
           render-svg
           width="14"
@@ -65,11 +65,11 @@ export default {
   data() {
     return {
       IM_GROUP_MEMBER_PANEL_TYPE,
+      GROUP_MEMBER_TYPE_MAP,
       memberName: '',
       isAdd: false,
       nextSeq: 0,
       members: [],
-      GROUP_MEMBER_TYPE_MAP,
     };
   },
   computed: {
@@ -77,6 +77,11 @@ export default {
     groupId() {
       return this.actionWindow.toUser;
     },
+    isGroupManager() {
+      const self =  this.members.find((d) => d.userId === this.userInfo.userId);
+      if (!self) return false;
+      return [GROUP_ROLE_TYPE.IS_MANAGE, GROUP_ROLE_TYPE.IS_OWNER].includes(self.role);
+    }
   },
   watch: {
     refreshMembers() {
