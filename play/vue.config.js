@@ -131,4 +131,11 @@ module.exports = defineConfig({
       },
     },
   },
+
+  configureWebpack: {
+    devtool:
+      process.env.NODE_ENV === 'development'
+        ? 'eval-source-map'
+        : 'hidden-source-map',
+  },
 });
