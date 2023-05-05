@@ -2,22 +2,24 @@
   <div class='group-transfer' v-if="visible">
     <Drawer title="转移群主" @close="handleCloseDrawer">
       <div class='content'>
-        <div
-          class="item"
-          v-for="(item, index) in list"
-          :key='index'
-        >
-          <el-checkbox v-model="item.checked">
-            <div class="info">
-              <div class="img">
-                <img :src="item.avatar" alt="" />
+        <el-radio-group v-model="selectUserId">
+          <div
+            class="item"
+            v-for="(item, index) in members"
+            :key='index'
+          >
+            <el-radio :label="item.userId">
+              <div class="info">
+                <div class="img">
+                  <img :src="item.avatar" alt="" />
+                </div>
+                <div class="name">
+                  <span>{{ item.nickname }}</span>
+                </div>
               </div>
-              <div class="name">
-                <span>{{ item.nickname }}三大阿斯顿</span>
-              </div>
-            </div>
-          </el-checkbox>
-        </div>
+            </el-radio>
+          </div>
+        </el-radio-group>
 
         <div class='btn' @click="handleConfirm">确定</div>
       </div>
@@ -27,18 +29,55 @@
 
 <script>
 import DrawerMixins from './drawer-mixins';
+import {IMGetGroupMemberList} from "../../IM-SDK";
+import {mapGetters} from "vuex";
 
 export default {
   name: 'Transfer-group',
   mixins: [DrawerMixins],
   data() {
     return {
-      list: [{}, {}, {}]
+      nextSeq: 0,
+      members: [],
+      selectUserId: '',
     }
   },
+  computed: {
+    ...mapGetters('IMStore', [
+      'userInfo',
+      'actionWindow',
+      'refreshMembers',
+    ]),
+    groupId() {
+      return this.actionWindow.toUser;
+    },
+  },
+  watch: {
+    refreshMembers() {
+      this.getGroupMemberList();
+    },
+  },
+  mounted() {
+    this.getGroupMemberList();
+  },
   methods: {
+    getGroupMemberList() {
+      // nextSeq默认从0开始
+      IMGetGroupMemberList(this.groupId, 0).then((res) => {
+        console.log(res, 'getGroupMemberList');
+        const { nextSeq, members = [] } = res;
+        this.nextSeq = nextSeq;
+        this.members = members.filter(d => d.userId !== this.userInfo.userId).map(d => {
+          return {
+            ...d,
+            checked: false,
+          }
+        });
+      });
+    },
     handleConfirm() {
-      this.$emit('confirm')
+      if (!this.selectUserId) return
+      this.$emit('confirm', this.selectUserId)
       this.handleCloseDrawer();
     }
   }
@@ -90,7 +129,7 @@ export default {
   justify-content: space-between;
   align-items: center;
 
-  ::v-deep .el-checkbox {
+  ::v-deep .el-radio {
     display: flex;
     align-items: center;
   }

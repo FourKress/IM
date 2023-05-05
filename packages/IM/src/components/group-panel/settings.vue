@@ -6,13 +6,14 @@
           placeholder="请输入"
           size="small"
           v-model="groupInfo.nickname"
+          :disabled="groupRoleManager.whoCanSetGroupInfo > groupRole"
           @change="handleChangeGroupName"
         ></el-input>
       </RowChat>
       <!--      <RowChat title="群公告" @click="createGroup">-->
       <!--        <el-input placeholder="请输入" size="small"></el-input>-->
       <!--      </RowChat>-->
-      <RowChat label="群二维码" @click="createGroup" show-right-btn />
+      <RowChat label="群二维码" @callback="showGroupQrcode" show-right-btn />
     </div>
 
     <div class="row">
@@ -33,15 +34,23 @@
 
     <div class="row">
       <RowChat label="群管理" @callback="openGroupManager" show-right-btn />
-      <RowChat label="聊天记录" @click="createGroup" show-right-btn />
+      <!--      <RowChat label="聊天记录" @click="createGroup" show-right-btn />-->
     </div>
 
     <div class="clear-btn" @click="handleDeleteHistoryMsg">清空聊天记录</div>
     <div class="clear-btn" @click="handleOutGroup">退出群聊</div>
-    <div class="clear-btn" @click="handleRemoveGroup">解散群聊</div>
+    <div
+      class="clear-btn"
+      @click="handleRemoveGroup"
+      v-if="groupRole === GROUP_ROLE_TYPE.IS_OWNER"
+    >
+      解散群聊
+    </div>
 
     <Manager
       :visible.sync="visibleDrawer"
+      :groupRole="groupRole"
+      v-on="$listeners"
       @groupRecord="handleGroupRecord"
       @groupTransfer="handleGroupTransfer"
     />
@@ -52,22 +61,40 @@
       :visible.sync="visibleGroupTransfer"
       @confirm="handleConfirmTransfer"
     ></GroupTransfer>
+
+    <LsCardDialog :visible.sync="groupQrcodeVisible">
+      <LsQrcodePanel
+        :position="qrcodePosition"
+        tips="加入群聊  二维码7天内有效"
+        :qrcodeInfo="{
+          ...actionWindow,
+          qrcodeId: actionWindow.toUser,
+        }"
+      />
+    </LsCardDialog>
   </div>
 </template>
 
 <script>
-import { LsIcon } from '@lanshu/components';
+import { LsIcon, LsCardDialog, LsQrcodePanel } from '@lanshu/components';
 import {
   IMGetGroupAttribute,
   IMSetGroupAttribute,
   IMSetGroupAlias,
+  IMGetMyGroupMemberInfo,
+  IMClearMessage,
+  IMGetGroupRoleManagerList,
+  IMOwnerTransfer,
+  IMExitGroupChat,
+  IMDissolveGroupChat,
 } from '../../IM-SDK';
 import RowChat from './row-chat';
 import Manager from './manager';
 import Record from './record';
 import GroupTransfer from './group-transfer';
 import MsgTopAndSilence from '../base-settings/msgTopAndSilence';
-import { mapGetters } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
+import { GROUP_ROLE_TYPE } from '@lanshu/utils';
 
 export default {
   name: 'Group-settings',
@@ -78,29 +105,88 @@ export default {
     Record,
     GroupTransfer,
     MsgTopAndSilence,
+    LsCardDialog,
+    LsQrcodePanel,
   },
   data() {
     return {
+      GROUP_ROLE_TYPE,
       visibleDrawer: false,
       visibleRecord: false,
       visibleGroupTransfer: false,
       groupInfo: {},
+      groupRole: null,
+      groupRoleManager: {},
+      groupQrcodeVisible: false,
+      qrcodePosition: {},
     };
   },
   computed: {
-    ...mapGetters('IMStore', ['actionWindow']),
+    ...mapGetters('IMStore', ['actionWindow', 'refreshGroupRoleManager']),
+    isGroupManager() {
+      return [GROUP_ROLE_TYPE.IS_MANAGE, GROUP_ROLE_TYPE.IS_OWNER].includes(
+        this.groupRole,
+      );
+    },
+  },
+  watch: {
+    refreshGroupRoleManager() {
+      this.getGroupRoleManagerList();
+      this.getMyGroupMemberInfo();
+    },
   },
   mounted() {
+    this.getGroupRoleManagerList();
     this.getGroupInfo();
+    this.getMyGroupMemberInfo();
   },
   methods: {
+    ...mapActions('IMStore', [
+      'setRefreshGroupRoleManager',
+      'setMainSessionWindow',
+    ]),
+
     async getGroupInfo() {
       const res = await IMGetGroupAttribute(this.actionWindow.toUser);
       const { nickname, avatar, groupId } = res?.data || {};
-      this.groupInfo = { nickname, avatar, groupId };
+      this.groupInfo = {
+        ...this.groupInfo,
+        nickname,
+        avatar,
+        groupId,
+      };
     },
+    getGroupRoleManagerList() {
+      IMGetGroupRoleManagerList(this.actionWindow.toUser)
+        .then((res) => {
+          console.log(res.data);
+          this.groupRoleManager = res?.data || {};
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+    async getMyGroupMemberInfo() {
+      const res = await IMGetMyGroupMemberInfo(this.actionWindow.toUser);
+      const { alias, role } = res?.data || {};
+      this.groupRole = role;
+      this.groupInfo = {
+        ...this.groupInfo,
+        alias,
+      };
+    },
+
     createGroup() {
       this.$emit('createGroup');
+    },
+
+    showGroupQrcode(event) {
+      this.groupQrcodeVisible = true;
+      const { clientY, clientX } = event;
+      this.qrcodePosition = {
+        top: `${clientY}px`,
+        left: `${clientX - 400}px`,
+      };
     },
 
     handleChangeGroupName(val) {
@@ -115,21 +201,43 @@ export default {
       this.$Lconfirm({
         title: '确定清空聊天记录？',
         content: '聊天记录将在你的所有设备同步清空，不会影响其他群成员',
-      }).then(() => {});
+      }).then(() => {
+        IMClearMessage(this.actionWindow.sessId).then(() => {
+          this.setRefreshMsg(Date.now());
+          this.$message.success('清空聊天记录成功');
+          console.log('clearMessage Success');
+        });
+      });
     },
     handleOutGroup() {
+      if (this.groupRole === GROUP_ROLE_TYPE.IS_OWNER) {
+        this.$Lconfirm({
+          title: '提示',
+          content: '你是群主，需要把群主转让后才能退出群聊',
+          confirmBtnText: '去转让',
+        }).then(() => {
+          this.handleGroupTransfer();
+        });
+        return;
+      }
       this.$Lconfirm({
         title: '确定退出群聊？',
-        // 你是群主，需要把群主转让后才能退出群聊
-        content:
-          '你要退出“群聊名称”吗？退出后将无法查看历史记录且不会再收到此群聊的消息',
-      }).then(() => {});
+        content: `你要退出“${this.actionWindow.nickname}”吗？退出后将无法查看历史记录且不会再收到此群聊的消息`,
+      }).then(() => {
+        IMExitGroupChat(this.groupInfo.groupId).then(() => {
+          this.setMainSessionWindow({});
+        });
+      });
     },
     handleRemoveGroup() {
       this.$Lconfirm({
         title: '确定解散群聊？',
         content: '解散会移出所有群成员，且无法再查看此群聊的历史记录',
-      }).then(() => {});
+      }).then(() => {
+        IMDissolveGroupChat(this.groupInfo.groupId).then(() => {
+          this.setMainSessionWindow({});
+        });
+      });
     },
     openGroupManager() {
       this.visibleDrawer = true;
@@ -141,8 +249,12 @@ export default {
     handleGroupTransfer() {
       this.visibleGroupTransfer = true;
     },
-    handleConfirmTransfer() {
-      console.log(123);
+    handleConfirmTransfer(userId) {
+      console.log(userId);
+      IMOwnerTransfer(this.groupInfo.groupId, userId).then(() => {
+        this.setRefreshGroupRoleManager(Date.now());
+        this.$message.success('群主转让成功');
+      });
     },
   },
 };

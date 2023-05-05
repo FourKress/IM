@@ -68,6 +68,16 @@ export const IMSDKInit = (appId) => {
     });
   });
 
+  IMSDK.getMainProvider().setMessageSendingStateCallBack((sendState, msg) => {
+    global.mainWindow.webContents.send('IMSDKListener', {
+      type: 'MessageSendingStateCallBack',
+      value: {
+        sendState,
+        msg,
+      },
+    });
+  });
+
   IMSDK.getMainProvider().AddReceiveNewMessageCallBack((message, silence) => {
     const { msgType, sessId } = message;
 

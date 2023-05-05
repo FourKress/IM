@@ -24,8 +24,8 @@
         <div class="top-panel-warp">
           <div
             class="top-item"
-            v-for="item in topSessionList"
-            :key="item.nickname"
+            v-for="(item, index) in topSessionList"
+            :key="`${index}_${item.sessId}`"
             @click="handleMenuClick(item)"
           >
             <el-tooltip
@@ -54,8 +54,8 @@
       <div class="sidebar-menu" ref="sidebarMenu">
         <div
           class="menu-item"
-          v-for="item in selfSessionList"
-          :key="item.nickname"
+          v-for="(item, index) in selfSessionList"
+          :key="`${index}_${item.sessId}`"
           :class="currentSession === item.sessId && 'active'"
           @click="handleMenuClick(item)"
         >

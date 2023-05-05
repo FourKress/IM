@@ -1,11 +1,17 @@
 <template>
   <div class="im-view">
-    <MsgHeader v-bind="$props" v-on="$listeners" />
+    <MsgHeader
+      v-bind="$props"
+      v-on="$listeners"
+      :groupRole="myGroupRole"
+      :groupRoleManager="groupRoleManager"
+    />
 
     <div class="message-panel" ref="messagePanel" @scroll="handleScroll">
       <div
         class="message-item"
         v-for="(item, index) in messageList"
+        :key="`${index}_${item.msgId}`"
       >
         <div class="tips-row">
           <TimesTransform
@@ -30,19 +36,24 @@
               ? 'self'
               : 'target'
           "
-          :style="{minHeight: !checkSelf(item) && isGroup ? '68px' : '50px'}"
+          :style="{ minHeight: !checkSelf(item) && isGroup ? '68px' : '50px' }"
         >
-          <div class="img" @click="(event) => handleFriend(item, event)">
-            <MsgLazyAvatar
-              :is-self="checkSelf(item)"
-              :session="session"
-              :message="item"
-            ></MsgLazyAvatar>
-          </div>
-          <div class="nickname" v-if="!checkSelf(item) && isGroup">
-            <MsgLazyNickname :message="item" />
-          </div>
-          <div class="info" :style="{marginTop: !checkSelf(item) && isGroup ? '18px' : 0}">
+          <MsgLazyUserInfo
+            :class="
+              checkSelf(item) && bubbleModel === SESSION_BUBBLE_MODEL.IS_BETWEEN
+                ? 'self'
+                : 'target'
+            "
+            :is-self="checkSelf(item)"
+            :session="session"
+            :message="item"
+            @click="(event) => handleFriend(item, event)"
+          />
+
+          <div
+            class="info"
+            :style="{ marginTop: !checkSelf(item) && isGroup ? '18px' : 0 }"
+          >
             <MsgCard
               :isSelf="checkSelf(item)"
               :bubbleModel="bubbleModel"
@@ -51,7 +62,8 @@
             <div
               class="send-tips"
               :class="
-                checkSelf(item) && bubbleModel === SESSION_BUBBLE_MODEL.IS_BETWEEN
+                checkSelf(item) &&
+                bubbleModel === SESSION_BUBBLE_MODEL.IS_BETWEEN
                   ? 'self'
                   : 'target'
               "
@@ -81,7 +93,12 @@
       </div>
     </div>
 
-    <MsgInputAction v-bind="$props" @refreshMsg="handleRefreshMsg" />
+    <MsgInputAction
+      v-bind="$props"
+      :groupRole="myGroupRole"
+      :groupRoleManager="groupRoleManager"
+      @refreshMsg="handleRefreshMsg"
+    />
 
     <!--    <div class='notify'>-->
     <!--      <LsIcon render-svg width='16' height='16' icon='a-icon_qungonggao2x'></LsIcon>-->
@@ -124,10 +141,15 @@ import { TimesTransform } from '@lanshu/components';
 import MsgCard from './msg-view/msg-card';
 import MsgHeader from './msg-view/msg-header';
 import MsgInputAction from './msg-view/msg-input-action';
-import MsgLazyAvatar from './msg-view/msg-lazy-avatar';
-import MsgLazyNickname from "./msg-view/msg-lazy-nickname";
+import MsgLazyUserInfo from './msg-view/msg-lazy-userinfo.vue';
 
-import { IMGetMessageList, IMGetOneFriend, IMGetUserProfile } from '../IM-SDK';
+import {
+  IMGetGroupRoleManagerList,
+  IMGetMessageList,
+  IMGetMyGroupMemberInfo,
+  IMGetOneFriend,
+  IMGetUserProfile,
+} from '../IM-SDK';
 
 export default {
   name: 'ImView',
@@ -136,8 +158,7 @@ export default {
     MsgCard,
     MsgHeader,
     MsgInputAction,
-    MsgLazyAvatar,
-    MsgLazyNickname,
+    MsgLazyUserInfo,
     LsIcon,
     LsCardDialog,
     LsFriendPanel,
@@ -175,6 +196,8 @@ export default {
 
       showFriendDialog: false,
       bubbleModel: SESSION_BUBBLE_MODEL.IS_BETWEEN,
+      myGroupRole: -1,
+      groupRoleManager: {},
     };
   },
   watch: {
@@ -184,7 +207,7 @@ export default {
       handler(value) {
         // TODO 临时处理手动创建会话时 mainSessionWindow 的更新问题
         if (value && value?.nickname) {
-          console.log('111 session', value)
+          console.log('111 session', value);
           this.initData();
         }
       },
@@ -195,7 +218,7 @@ export default {
       async handler(msg) {
         if (!this?.session?.sessId) return;
         if (msg?.sessId === this?.session?.sessId) {
-          console.log('2222 currentMsg', msg)
+          console.log('2222 currentMsg', msg);
           this.getMessageList();
           this.setCurrentMsg({});
         }
@@ -203,14 +226,23 @@ export default {
     },
     refreshMsg(val) {
       if (val) {
-        console.log('3333 refreshMsg', val)
-        this.setRefreshMsg(false);
+        console.log('3333 refreshMsg', val);
         this.getMessageList();
       }
     },
+    refreshGroupRoleManager() {
+      console.log('refreshGroupRoleManager');
+      this.getGroupRoleManagerList();
+      this.getMyGroupMemberInfo();
+    },
   },
   computed: {
-    ...mapGetters('IMStore', ['userInfo', 'currentMsg', 'refreshMsg']),
+    ...mapGetters('IMStore', [
+      'userInfo',
+      'currentMsg',
+      'refreshMsg',
+      'refreshGroupRoleManager',
+    ]),
     toAvatar() {
       return this.session.avatar;
     },
@@ -219,7 +251,6 @@ export default {
     },
   },
   async mounted() {
-    // this.initData();
     this.bubbleModel = await renderProcess.getStore('SESSION_BUBBLE_MODEL');
     this.throttleGetMessageList = lodash.throttle(this.getMessageList, 20, {
       leading: true,
@@ -239,6 +270,14 @@ export default {
         //获取文件路径
         const path = files[0].path;
         console.log('path:', path);
+        // 禁止发言
+        if (
+          this.isGroup &&
+          this.groupRoleManager.whoCanSendMessage > this.myGroupRole
+        ) {
+          this.$message.warning('暂无权限！');
+          return;
+        }
         this.setDragFileList(files);
       }
     });
@@ -249,17 +288,17 @@ export default {
     });
   },
   methods: {
-    ...mapActions('IMStore', [
-      'setRefreshMsg',
-      'setDragFileList',
-      'setCurrentMsg',
-    ]),
+    ...mapActions('IMStore', ['setDragFileList', 'setCurrentMsg']),
 
     checkTimesInterval,
     initData() {
       this.messageList = [];
       this.nextSeq = 0;
       this.hasNext = true;
+      if (this.isGroup) {
+        this.getMyGroupMemberInfo();
+        this.getGroupRoleManagerList();
+      }
       this.getMessageList();
     },
     checkSelf(item) {
@@ -305,8 +344,8 @@ export default {
     },
 
     async handleFriend(item, event) {
-      const {toUserType} = item;
-      if (toUserType === SESSION_USER_TYPE.IS_GROUP) return
+      const { toUserType } = item;
+      if (toUserType === SESSION_USER_TYPE.IS_GROUP) return;
       const isSelf = this.checkSelf(item);
       if (isSelf) return;
       const { fromUser } = item;
@@ -329,7 +368,24 @@ export default {
     },
 
     handleResendMsg() {
+      // TODO
       console.log('重发');
+    },
+
+    getGroupRoleManagerList() {
+      IMGetGroupRoleManagerList(this.session.toUser)
+        .then((res) => {
+          console.log(res.data);
+          this.groupRoleManager = res?.data || {};
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+    async getMyGroupMemberInfo() {
+      const res = await IMGetMyGroupMemberInfo(this.session.toUser);
+      const { role } = res?.data || {};
+      this.myGroupRole = role;
     },
   },
 };
@@ -392,42 +448,10 @@ export default {
         &.self {
           padding-left: 60px;
           flex-flow: row-reverse;
-
-          .img {
-            margin-left: 10px;
-          }
         }
 
         &.target {
           padding-right: 60px;
-
-          .img {
-            margin-right: 10px;
-          }
-        }
-
-        .img {
-          width: 50px;
-          min-width: 50px;
-          height: 50px;
-          border-radius: 6px;
-          overflow: hidden;
-
-          img {
-            display: block;
-            width: 100%;
-            height: 100%;
-            cursor: pointer;
-          }
-        }
-
-        .nickname {
-          font-size: 12px;
-          color: $tips-text-color;
-          position: absolute;
-          left: 60px;
-          top: -3px;
-          z-index: 2;
         }
 
         .info {

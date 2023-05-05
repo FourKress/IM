@@ -17,6 +17,7 @@
         <LsIcon
           render-svg
           icon="a-icon_sp2x"
+          v-if="!isGroup || groupRoleManager.whoCanStartNetworkCall <= groupRole"
           @click="handleStartTrtc(NETWORK_CALL_TYPE.IS_VIDEO)"
         ></LsIcon>
       </div>
@@ -31,13 +32,17 @@
         <el-dropdown trigger="click" @command="handleCommand">
           <LsIcon render-svg icon="a-icon_more2x"></LsIcon>
           <el-dropdown-menu slot="dropdown" v-if="isGroup">
-            <el-dropdown-item :command="IM_HEADER_MORE_BTN_KEY.IS_OPEN_GROUP_MEMBER">
+            <el-dropdown-item
+              :command="IM_HEADER_MORE_BTN_KEY.IS_OPEN_GROUP_MEMBER"
+            >
               <div class="send-down-row">
                 <LsIcon render-svg icon="pop_cd_cjql"></LsIcon>
                 <span>群成员</span>
               </div>
             </el-dropdown-item>
-            <el-dropdown-item :command="IM_HEADER_MORE_BTN_KEY.IS_OPEN_GROUP_SET">
+            <el-dropdown-item
+              :command="IM_HEADER_MORE_BTN_KEY.IS_OPEN_GROUP_SET"
+            >
               <div class="send-down-row">
                 <LsIcon render-svg icon="pop_cd_sz"></LsIcon>
                 <span>群设置</span>
@@ -77,6 +82,16 @@ import { renderProcess } from '@lanshu/render-process';
 
 export default {
   name: 'Msg-header',
+  props: {
+    groupRole: {
+      type: Number,
+      default: -1,
+    },
+    groupRoleManager: {
+      type: Object,
+      default: () => {},
+    },
+  },
   components: {
     LsIcon,
   },
@@ -116,7 +131,7 @@ export default {
         type: NETWORK_CALL_TYPE,
         roomId: Date.now(),
         isBeInvited: false,
-        platform
+        platform,
       });
 
       renderProcess.openTRTCWindow(platform);

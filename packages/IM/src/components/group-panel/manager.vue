@@ -2,35 +2,21 @@
   <div class="manager" v-if="visible">
     <Drawer title="群管理" @close="handleCloseDrawer">
       <div class="drawer-content">
-        <div class="tips">共40位成员</div>
+        <div class="tips" v-if="groupRole === GROUP_ROLE_TYPE.IS_OWNER">
+          共{{ groupAdminList.length }}位管理员
+        </div>
 
         <div class="action">
-          <span
-            class="add btn"
-            @click="changeMember(IM_GROUP_MEMBER_PANEL_TYPE.IS_ADD)"
-          >
-            <LsIcon
-              render-svg
-              width="14"
-              height="14"
-              icon="navi_ss_add"
-            ></LsIcon>
-          </span>
-          <span
-            class="add btn"
-            @click="changeMember(IM_GROUP_MEMBER_PANEL_TYPE.IS_ADD)"
-          >
-            <LsIcon
-              render-svg
-              width="14"
-              height="14"
-              icon="navi_ss_add"
-            ></LsIcon>
+          <span class="item" v-for="item in groupAdminList">
+            <el-tooltip effect="dark" :content="item.nickname" placement="top">
+              <img class="img" :src="item.avatar" alt="" />
+            </el-tooltip>
           </span>
 
           <span
-            class="add btn"
-            @click="changeMember(IM_GROUP_MEMBER_PANEL_TYPE.IS_ADD)"
+            class="btn"
+            v-if="groupRole === GROUP_ROLE_TYPE.IS_OWNER"
+            @click="changeMember(IM_GROUP_MEMBER_PANEL_TYPE.IS_ADD_ADMIN)"
           >
             <LsIcon
               render-svg
@@ -40,8 +26,11 @@
             ></LsIcon>
           </span>
           <span
-            class="del btn"
-            @click="changeMember(IM_GROUP_MEMBER_PANEL_TYPE.IS_DEL)"
+            class="btn"
+            v-if="
+              groupAdminList.length && groupRole === GROUP_ROLE_TYPE.IS_OWNER
+            "
+            @click="changeMember(IM_GROUP_MEMBER_PANEL_TYPE.IS_DEL_ADMIN)"
           >
             <LsIcon
               render-svg
@@ -54,55 +43,138 @@
 
         <div class="row">
           <RowChat title="谁可以编辑群信息">
-            <el-select placeholder="请选择" size="small"></el-select>
+            <el-select
+              placeholder="请选择"
+              size="small"
+              :disabled="isDisabled"
+              v-model="groupRoleManager.whoCanSetGroupInfo"
+              @change="
+                (val) => handleGroupRoleChange(val, 'whoCanSetGroupInfo')
+              "
+            >
+              <el-option
+                v-for="(opt, i) in options"
+                :key="i"
+                :label="opt.label"
+                :value="opt.value"
+              ></el-option>
+            </el-select>
           </RowChat>
-          <RowChat title="谁可以添加群成员、分享群">
-            <el-select placeholder="请选择" size="small"></el-select>
+          <RowChat title="谁可以添加群成员">
+            <el-select
+              placeholder="请选择"
+              size="small"
+              :disabled="isDisabled"
+              v-model="groupRoleManager.whoCanAddGroupMemberOrShareGroup"
+              @change="
+                (val) =>
+                  handleGroupRoleChange(val, 'whoCanAddGroupMemberOrShareGroup')
+              "
+            >
+              <el-option
+                v-for="(opt, i) in options"
+                :key="i"
+                :label="opt.label"
+                :value="opt.value"
+              ></el-option>
+            </el-select>
           </RowChat>
 
           <RowChat title="谁可以在本群发言">
-            <el-select placeholder="请选择" size="small"></el-select>
+            <el-select
+              placeholder="请选择"
+              size="small"
+              :disabled="isDisabled"
+              v-model="groupRoleManager.whoCanSendMessage"
+              @change="(val) => handleGroupRoleChange(val, 'whoCanSendMessage')"
+            >
+              <el-option
+                v-for="(opt, i) in options"
+                :key="i"
+                :label="opt.label"
+                :value="opt.value"
+              ></el-option>
+            </el-select>
           </RowChat>
           <RowChat title="谁可以发起语音、视频通话">
-            <el-select placeholder="请选择" size="small"></el-select>
+            <el-select
+              placeholder="请选择"
+              size="small"
+              :disabled="isDisabled"
+              v-model="groupRoleManager.whoCanStartNetworkCall"
+              @change="
+                (val) => handleGroupRoleChange(val, 'whoCanStartNetworkCall')
+              "
+            >
+              <el-option
+                v-for="(opt, i) in options"
+                :key="i"
+                :label="opt.label"
+                :value="opt.value"
+              ></el-option>
+            </el-select>
           </RowChat>
 
           <RowChat title="谁可以发送文件">
-            <el-select placeholder="请选择" size="small"></el-select>
+            <el-select
+              placeholder="请选择"
+              size="small"
+              :disabled="isDisabled"
+              v-model="groupRoleManager.whoCanSendFile"
+              @change="(val) => handleGroupRoleChange(val, 'whoCanSendFile')"
+            >
+              <el-option
+                v-for="(opt, i) in options"
+                :key="i"
+                :label="opt.label"
+                :value="opt.value"
+              ></el-option>
+            </el-select>
           </RowChat>
-          <RowChat title="谁可以@所有人">
-            <el-select placeholder="请选择" size="small"></el-select>
-          </RowChat>
+          <!--          <RowChat title="谁可以@所有人">-->
+          <!--            <el-select-->
+          <!--              placeholder="请选择"-->
+          <!--              size="small"-->
+          <!--              v-model="groupRoleManager.whoCanAtAll"-->
+          <!--            >-->
+          <!--              <el-option-->
+          <!--                v-for="(opt, i) in options"-->
+          <!--                :key="i"-->
+          <!--                :label="opt.label"-->
+          <!--                :value="opt.value"-->
+          <!--              ></el-option>-->
+          <!--            </el-select>-->
+          <!--          </RowChat>-->
         </div>
 
-        <div class="row">
-          <RowChat title="谁可以收到进群通知">
-            <el-select placeholder="请选择" size="small"></el-select>
-          </RowChat>
-          <RowChat title="谁可以收到退群通知">
-            <el-select placeholder="请选择" size="small"></el-select>
-          </RowChat>
-        </div>
+        <!--        <div class="row">-->
+        <!--          <RowChat title="谁可以收到进群通知">-->
+        <!--            <el-select placeholder="请选择" size="small"></el-select>-->
+        <!--          </RowChat>-->
+        <!--          <RowChat title="谁可以收到退群通知">-->
+        <!--            <el-select placeholder="请选择" size="small"></el-select>-->
+        <!--          </RowChat>-->
+        <!--        </div>-->
 
-        <div class="row">
-          <RowChat title="进群验证" label="阿斯达四大大所">
-            <span slot="right-btn" class="check-btn">
-              <el-switch
-                slot="right-btn"
-                v-model="value"
-                active-color="#0066FF"
-                inactive-color="#C9CDD4"
-              ></el-switch>
-            </span>
-          </RowChat>
-        </div>
+        <!--        <div class="row">-->
+        <!--          <RowChat title="进群验证" label="阿斯达四大大所">-->
+        <!--            <span slot="right-btn" class="check-btn">-->
+        <!--              <el-switch-->
+        <!--                slot="right-btn"-->
+        <!--                v-model="value"-->
+        <!--                active-color="#0066FF"-->
+        <!--                inactive-color="#C9CDD4"-->
+        <!--              ></el-switch>-->
+        <!--            </span>-->
+        <!--          </RowChat>-->
+        <!--        </div>-->
 
-        <div class="row">
-          <RowChat
-            label="查看进退群记录"
-            @callback="openGroupRecord"
-            show-right-btn
-          />
+        <div class="row" v-if="groupRole === GROUP_ROLE_TYPE.IS_OWNER">
+          <!--                  <RowChat-->
+          <!--                    label="查看进退群记录"-->
+          <!--                    @callback="openGroupRecord"-->
+          <!--                    show-right-btn-->
+          <!--                  />-->
           <RowChat
             label="转让群主"
             @callback="openGroupTransfer"
@@ -115,50 +187,132 @@
 </template>
 
 <script>
-import { IM_GROUP_MEMBER_PANEL_TYPE } from '@lanshu/utils';
+import { GROUP_ROLE_TYPE, IM_GROUP_MEMBER_PANEL_TYPE } from '@lanshu/utils';
 import { LsIcon } from '@lanshu/components';
-import { IMGetGroupRoleManagerList } from '../../IM-SDK';
+import {
+  IMGetAllAdminList,
+  IMGetGroupRoleManagerList,
+  IMSetGroupRoleManagerList,
+  IMSetGroupMemberAdminRole
+} from '../../IM-SDK';
 import RowChat from './row-chat';
 import DrawerMixins from './drawer-mixins';
-import { mapGetters } from 'vuex';
+import { mapGetters, mapActions } from 'vuex';
 
 export default {
   name: 'manager',
   mixins: [DrawerMixins],
+  props: {
+    groupRole: {
+      type: Number,
+      default: -1,
+    },
+  },
   components: {
     LsIcon,
     RowChat,
   },
   data() {
     return {
-      value: true,
       IM_GROUP_MEMBER_PANEL_TYPE,
-      groupRoleManagerInfo: {},
+      GROUP_ROLE_TYPE,
+      options: [
+        {
+          label: '所有群成员',
+          value: 1,
+        },
+        {
+          label: '仅群主和管理员',
+          value: 2,
+        },
+        {
+          label: '仅群主',
+          value: 3,
+        },
+      ],
+      value: true,
+
+      groupRoleManager: {},
+      groupAdminList: [],
     };
   },
   computed: {
-    ...mapGetters('IMStore', ['actionWindow']),
+    ...mapGetters('IMStore', ['actionWindow', 'refreshGroupRoleManager']),
+
+    isDisabled() {
+      return ![GROUP_ROLE_TYPE.IS_OWNER, GROUP_ROLE_TYPE.IS_MANAGE].includes(
+        this.groupRole,
+      );
+    },
+  },
+  watch: {
+    refreshGroupRoleManager() {
+      this.initData();
+    }
   },
   mounted() {
-    this.getGroupRoleManagerList()
+    this.initData();
   },
   methods: {
+    ...mapActions('IMStore', ['setRefreshGroupRoleManager']),
+
+    initData() {
+      this.getAllAdminList();
+      this.getGroupRoleManagerList();
+    },
+
+    getAllAdminList() {
+      IMGetAllAdminList(this.actionWindow.toUser)
+        .then((res) => {
+          console.log(res.data);
+          this.groupAdminList = res?.data || {};
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+
     getGroupRoleManagerList() {
-      IMGetGroupRoleManagerList(this.actionWindow.toUser).then(res => {
-        console.log(res.data)
-        this.groupRoleManagerInfo = res?.data || {};
-      }).catch((err) => {
-        console.log(err)
-      });
+      IMGetGroupRoleManagerList(this.actionWindow.toUser)
+        .then((res) => {
+          console.log(res.data);
+          this.groupRoleManager = res?.data || {};
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     },
-    changeMember(type) {
-      this.$emit('changeGroupMember', type);
-    },
-    openGroupRecord() {
-      this.$emit('groupRecord');
-    },
+    // openGroupRecord() {
+    //   this.$emit('groupRecord');
+    // },
     openGroupTransfer() {
       this.$emit('groupTransfer');
+    },
+    handleGroupRoleChange(val, key) {
+      this.groupRoleManager[key] = val;
+      const {
+        whoCanSetGroupInfo,
+        whoCanAddGroupMemberOrShareGroup,
+        whoCanStartNetworkCall,
+        whoCanSendMessage,
+        whoCanSendFile,
+        whoCanAtAll,
+      } = this.groupRoleManager;
+      IMSetGroupRoleManagerList(
+        this.actionWindow.toUser,
+        whoCanSetGroupInfo,
+        whoCanAddGroupMemberOrShareGroup,
+        whoCanStartNetworkCall,
+        whoCanSendMessage,
+        whoCanSendFile,
+        whoCanAtAll,
+      ).then(() => {
+        this.setRefreshGroupRoleManager(Date.now());
+      });
+    },
+
+    changeMember(type) {
+      this.$emit('changeGroupMember', { type, members: this.groupAdminList });
     },
   },
 };
@@ -181,18 +335,30 @@ export default {
       align-items: center;
       justify-content: flex-start;
 
+      .item,
       .btn {
         width: 36px;
         height: 36px;
         margin-right: 10px;
-        background: $bg-white-color;
         border-radius: 5px;
-        border: 1px dashed $split-line-color;
-        cursor: pointer;
-
+        overflow: hidden;
         display: flex;
         align-items: center;
         justify-content: center;
+      }
+
+      .item {
+        img {
+          display: block;
+          width: 100%;
+          height: 100%;
+        }
+      }
+
+      .btn {
+        background: $bg-white-color;
+        border: 1px dashed $split-line-color;
+        cursor: pointer;
       }
     }
   }

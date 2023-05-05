@@ -17,14 +17,14 @@
               type="text"
               clearable
               v-model="staffName"
-              placeholder="查找联系人"
+              :placeholder="`查找${isDelAdmin || isAddAdmin ? '管理员' : '联系人'}`"
             />
           </div>
         </div>
         <div
           class="active-row"
           v-if="
-            panelType !== IM_GROUP_MEMBER_PANEL_TYPE.IS_DEL &&
+            !(this.isDel || this.isDelAdmin || this.isAddAdmin) &&
             !(tabType === isAddress && staffName)
           "
         >
@@ -126,10 +126,7 @@
         </div>
       </div>
       <div class="right">
-        <div
-          class="input-row"
-          v-if="panelType === IM_GROUP_MEMBER_PANEL_TYPE.IS_CREATE"
-        >
+        <div class="input-row" v-if="isCreate">
           <div class="query-icon">
             <LsIcon
               icon="a-icon_bianjiqunmingcheng2x"
@@ -155,7 +152,7 @@
           }"
         >
           <span class="tips">
-            <span>已选联系人：{{ selectList.length }}</span>
+            <span>已选{{`${isDelAdmin || isAddAdmin ? '管理员' : '联系人'}`}}：{{ selectList.length }}</span>
             <span v-if="panelType !== IM_GROUP_MEMBER_PANEL_TYPE.IS_DEL">
               /500
             </span>
@@ -209,6 +206,7 @@ import {
   IMAdminDelGroupMembers,
   IMCreateGroup,
   IMInviteMember,
+  IMSetGroupMemberAdminRole,
 } from '../../IM-SDK';
 
 const isAddress = false;
@@ -249,9 +247,11 @@ export default {
   computed: {
     ...mapGetters('IMStore', ['sessionList']),
     groupTitle() {
-      if (this.isDel) return '删除成员';
-      if (this.isAdd) return '添加成员';
+      if (this.isDel) return '删除群成员';
+      if (this.isAdd) return '添加群成员';
       if (this.isCreate) return '创建群聊';
+      if (this.isAddAdmin) return '添加管理员';
+      if (this.isDelAdmin) return '删除管理员';
     },
     isDel() {
       return this.panelType === this.IM_GROUP_MEMBER_PANEL_TYPE.IS_DEL;
@@ -261,6 +261,12 @@ export default {
     },
     isCreate() {
       return this.panelType === this.IM_GROUP_MEMBER_PANEL_TYPE.IS_CREATE;
+    },
+    isAddAdmin() {
+      return this.panelType === this.IM_GROUP_MEMBER_PANEL_TYPE.IS_ADD_ADMIN;
+    },
+    isDelAdmin() {
+      return this.panelType === this.IM_GROUP_MEMBER_PANEL_TYPE.IS_DEL_ADMIN;
     },
   },
   mounted() {
@@ -279,13 +285,16 @@ export default {
     this.selectList = [
       ...this.defaultMembers.map((d) => {
         // isDefault 默认勾选
-        d.isDefault = this.isDel ? false : true;
+        d.isDefault = (this.isDel || this.isDelAdmin) ? false : true;
         return d;
       }),
     ];
   },
   methods: {
-    ...mapActions('IMStore', ['setRefreshMembers']),
+    ...mapActions('IMStore', [
+      'setRefreshMembers',
+      'setRefreshGroupRoleManager',
+    ]),
 
     handleClose() {
       this.$emit('close');
@@ -293,7 +302,6 @@ export default {
     async handleConfirm() {
       const handleMap = {
         [this.IM_GROUP_MEMBER_PANEL_TYPE.IS_DEL]: {
-          label: '删除群成员',
           func: this.handleDelGroupMember,
           getList: () => {
             return this.defaultMembers.filter((d) =>
@@ -302,31 +310,45 @@ export default {
           },
         },
         [this.IM_GROUP_MEMBER_PANEL_TYPE.IS_ADD]: {
-          label: '添加群成员',
           func: this.handleAddGroupMember,
           getList: () => {
-            this.selectList.filter((d) => !d.isDefault);
+            return this.selectList.filter((d) => !d.isDefault);
           },
         },
         [this.IM_GROUP_MEMBER_PANEL_TYPE.IS_CREATE]: {
-          label: '创建群聊',
           func: this.handleCreateGroup,
           getList: () => this.selectList,
+        },
+        [this.IM_GROUP_MEMBER_PANEL_TYPE.IS_ADD_ADMIN]: {
+          func: this.handleAddGroupAdminMember,
+          getList: () => {
+            return this.selectList.filter((d) => !d.isDefault);
+          },
+        },
+        [this.IM_GROUP_MEMBER_PANEL_TYPE.IS_DEL_ADMIN]: {
+          func: this.handleAddGroupAdminMember,
+          getList: () => {
+            return this.defaultMembers.filter((d) =>
+              this.selectList.some((s) => s.userId !== d.userId),
+            );
+          },
         },
       };
       const handleTarget = handleMap[this.panelType];
       const realSelectList = handleTarget.getList();
       if (realSelectList?.length < 1) {
-        this.$message.error(`${handleTarget.label}至少选择1个联系人`);
+        this.$message.error(`${this.groupTitle}至少选择1人`);
         return;
       }
-      if (!this.groupName) {
+      if (!this.groupName && (this.isAddAdmin || this.isDelAdmin)) {
         this.$message.error('请输入群聊名称');
         return;
       }
-      const members = realSelectList.map((d) => d.toUser ? d.toUser : d.userId);
+      const members = realSelectList.map((d) =>
+        d.toUser ? d.toUser : d.userId,
+      );
       const res = await handleTarget.func(members);
-      this.$message.success(`${handleTarget.label}成功`);
+      this.$message.success(`${this.groupTitle}成功`);
       this.$emit('confirm', res?.data);
     },
 
@@ -334,6 +356,7 @@ export default {
       // TODO 群头像获取
       const avatar =
         'https://diy.jiuwa.net/make/ps?sktype=&fontsize=380&skwidth=3&fillcolor=022b6f&shadowtype=2&filltype=1&text=%E9%A9%AC&skcolor=999999&skopacity=1&distort=9&fontype=21';
+      // groupAddType – 群加入类型 1：不允许加入2：任何人都可以加入3：群主或管理员审核通过后加入
       const groupAddType = 2;
       return await IMCreateGroup(this.groupName, avatar, groupAddType, members);
     },
@@ -353,6 +376,19 @@ export default {
         // 刷新群成员
         this.setRefreshMembers(Date.now());
       });
+    },
+    async handleAddGroupAdminMember(members) {
+      await Promise.all(
+        members.map(async (d) => {
+          await IMSetGroupMemberAdminRole(
+            this.defaultGroup.toUser,
+            d,
+            this.isAddAdmin ? 2 : 1,
+          );
+        }),
+      );
+      // 刷新群管理列表
+      this.setRefreshGroupRoleManager(Date.now());
     },
 
     async handleClick(type) {
@@ -414,7 +450,7 @@ export default {
       return {
         ...item,
         checked: isDefault ? true : false,
-        isDefault: isDefault && !this.isDel,
+        isDefault: isDefault && !(this.isDel || this.isDelAdmin),
       };
     },
   },

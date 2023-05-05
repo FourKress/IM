@@ -31,7 +31,7 @@
       v-if="selfIsMember"
       v-on="$listeners"
     />
-    <Settings v-else />
+    <Settings v-on="$listeners" v-else />
   </div>
 </template>
 

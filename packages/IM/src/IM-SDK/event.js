@@ -23,7 +23,7 @@ const handlePromiseResult = async (fnc) => {
 };
 const handleIMSDKIPCResult = async (res) => {
   const { code } = res;
-  if (code !== 0) return Promise.reject(res);
+  if (![0, 112113].includes(code)) return Promise.reject(res);
   return Promise.resolve(res);
 };
 
@@ -391,6 +391,13 @@ export const IMGetGroupMemberInfo = async (groupId, userId) =>
     userId,
   );
 
+export const IMGetMyGroupMemberInfo = async (groupId) =>
+  await eventHOCFnc(
+    IMSDKGroupProvider.provider,
+    IMSDKGroupProvider.events.getMyGroupMemberInfo,
+    groupId,
+  );
+
 export const IMAdminDelGroupMembers = async (groupId, userIds) =>
   await eventHOCFnc(
     IMSDKGroupProvider.provider,
@@ -403,5 +410,72 @@ export const IMGetGroupRoleManagerList = async (groupId) =>
   await eventHOCFnc(
     IMSDKGroupProvider.provider,
     IMSDKGroupProvider.events.getGroupRoleManagerList,
+    groupId,
+  );
+
+export const IMSetGroupRoleManagerList = async (
+  groupId,
+  whoCanSetGroupInfo,
+  whoCanAddGroupMemberOrShareGroup,
+  whoCanStartNetworkCall,
+  whoCanSendMessage,
+  whoCanSendFile,
+  whoCanAtAll,
+) =>
+  await eventHOCFnc(
+    IMSDKGroupProvider.provider,
+    IMSDKGroupProvider.events.setGroupRoleManagerList,
+    groupId,
+    whoCanSetGroupInfo,
+    whoCanAddGroupMemberOrShareGroup,
+    whoCanStartNetworkCall,
+    whoCanSendMessage,
+    whoCanSendFile,
+    whoCanAtAll,
+  );
+
+export const IMOwnerTransfer = async (groupId, userId) =>
+  await eventHOCFnc(
+    IMSDKGroupProvider.provider,
+    IMSDKGroupProvider.events.ownerTransfer,
+    groupId,
+    userId,
+  );
+
+export const IMExitGroupChat = async (groupId) =>
+  await eventHOCFnc(
+    IMSDKGroupProvider.provider,
+    IMSDKGroupProvider.events.exitGroupChat,
+    groupId,
+  );
+
+export const IMDissolveGroupChat = async (groupId) =>
+  await eventHOCFnc(
+    IMSDKGroupProvider.provider,
+    IMSDKGroupProvider.events.dissolveGroupChat,
+    groupId,
+  );
+
+export const IMSetGroupMemberAddType = async (groupId, groupAddType) =>
+  await eventHOCFnc(
+    IMSDKGroupProvider.provider,
+    IMSDKGroupProvider.events.setGroupMemberAddType,
+    groupId,
+    groupAddType,
+  );
+
+export const IMSetGroupMemberAdminRole = async (groupId, userId, role) =>
+  await eventHOCFnc(
+    IMSDKGroupProvider.provider,
+    IMSDKGroupProvider.events.setGroupMemberAdminRole,
+    groupId,
+    userId,
+    role,
+  );
+
+export const IMGetAllAdminList = async (groupId) =>
+  await eventHOCFnc(
+    IMSDKGroupProvider.provider,
+    IMSDKGroupProvider.events.getAllAdminList,
     groupId,
   );

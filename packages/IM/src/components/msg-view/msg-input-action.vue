@@ -21,7 +21,7 @@
           <div
             slot="reference"
             class="btn emoji-btn"
-            @click="emojiVisible = !emojiVisible"
+            @click="handleSwitchEmoji"
           >
             <LsIcon render-svg icon="xx_srk_bq"></LsIcon>
           </div>
@@ -32,7 +32,7 @@
         </div>
 
         <div class="btn">
-          <ActionCard @actionComplete="handleActionComplete" />
+          <ActionCard v-if="!noGroupAuth" :session="session" :groupRole="groupRole" :groupRoleManager="groupRoleManager" @actionComplete="handleActionComplete" />
         </div>
 
         <div class="right">
@@ -47,7 +47,7 @@
       </div>
       <div
         class="input-textarea"
-        :contenteditable="true"
+        :contenteditable="!noGroupAuth"
         @keyup.enter.exact="handleEnterSend"
         @keyup.ctrl.enter.exact="handleCtrlEnterSend"
         ref="msgInput"
@@ -80,11 +80,15 @@
 </template>
 
 <script>
-import { EMOJI_LIST, KEY_CODE, CHECK_MSG_TYPE } from '@lanshu/utils';
+import {
+  EMOJI_LIST,
+  KEY_CODE,
+  CHECK_MSG_TYPE,
+  SESSION_USER_TYPE,
+} from '@lanshu/utils';
 import { renderProcess } from '@lanshu/render-process';
 import { LsIcon } from '@lanshu/components';
 import ActionCard from '../action-view/action-card';
-import { mapGetters } from 'vuex';
 import {
   IMSDKMessageProvider,
   IMCreateMsg,
@@ -94,6 +98,16 @@ import {
 
 export default {
   name: 'Msg-input-action',
+  props: {
+    groupRole: {
+      type: Number,
+      default: -1,
+    },
+    groupRoleManager: {
+      type: Object,
+      default: () => {},
+    },
+  },
   components: {
     LsIcon,
     ActionCard,
@@ -119,12 +133,18 @@ export default {
       return this.$attrs.recordrtc;
     },
     placeholder() {
-      return `发送给 ${this.session.nickname || ''}...`;
+      return this.noGroupAuth ? '群主已禁言' : `发送给 ${this.session.nickname || ''}...`;
     },
     disabledSendMsg() {
-      return (
-        !this.message || (!this.messageText && !this.message.includes('<img'))
-      );
+      const emptyMsg =
+        !this.message || (!this.messageText && !this.message.includes('<img'));
+      return emptyMsg || this.noGroupAuth;
+    },
+    noGroupAuth() {
+      return this.isGroup && this.groupRoleManager.whoCanSendMessage > this.groupRole;
+    },
+    isGroup() {
+      return this.session?.toUserType === SESSION_USER_TYPE.IS_GROUP;
     },
   },
   async mounted() {
@@ -263,7 +283,19 @@ export default {
       this.handleTargetInsert(emoji);
     },
 
+    handleSwitchEmoji() {
+      if (this.noGroupAuth) {
+        this.$message.warning('暂无权限！');
+        return
+      };
+      this.emojiVisible = !this.emojiVisible
+    },
+
     handleScreenshots() {
+      if (this.noGroupAuth) {
+        this.$message.warning('暂无权限！');
+        return
+      };
       renderProcess.startScreenshots().then((value) => {
         if (value) {
           const b64 = `data:image/png;base64,${value}`;

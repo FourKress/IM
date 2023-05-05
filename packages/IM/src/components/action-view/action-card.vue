@@ -25,18 +25,18 @@
             <span>文件</span>
           </div>
         </el-dropdown-item>
-        <el-dropdown-item>
-          <div class="send-down-row">
-            <LsIcon render-svg icon="pop_cd_sb"></LsIcon>
-            <span>OCR识别</span>
-          </div>
-        </el-dropdown-item>
-        <el-dropdown-item>
-          <div class="send-down-row">
-            <LsIcon render-svg icon="pop_cd_mp"></LsIcon>
-            <span>名片</span>
-          </div>
-        </el-dropdown-item>
+<!--        <el-dropdown-item>-->
+<!--          <div class="send-down-row">-->
+<!--            <LsIcon render-svg icon="pop_cd_sb"></LsIcon>-->
+<!--            <span>OCR识别</span>-->
+<!--          </div>-->
+<!--        </el-dropdown-item>-->
+<!--        <el-dropdown-item>-->
+<!--          <div class="send-down-row">-->
+<!--            <LsIcon render-svg icon="pop_cd_mp"></LsIcon>-->
+<!--            <span>名片</span>-->
+<!--          </div>-->
+<!--        </el-dropdown-item>-->
       </el-dropdown-menu>
     </el-dropdown>
     <LsCardDialog :visible.sync="visibleFileDialog" :isModalClose="false">
@@ -52,11 +52,26 @@
 <script>
 import { LsCardDialog, LsIcon } from '@lanshu/components';
 import FileDialog from './file-dialog';
-import { CHECK_MSG_TYPE } from '@lanshu/utils';
-import {mapActions, mapGetters} from 'vuex';
+import { CHECK_MSG_TYPE, SESSION_USER_TYPE } from '@lanshu/utils';
+import { mapActions, mapGetters } from 'vuex';
 
 export default {
   name: 'Action-card',
+  props: {
+    session: {
+      type: Object,
+      default: () => {},
+      require: true,
+    },
+    groupRole: {
+      type: Number,
+      default: -1,
+    },
+    groupRoleManager: {
+      type: Object,
+      default: () => {},
+    },
+  },
   components: {
     LsCardDialog,
     LsIcon,
@@ -70,24 +85,37 @@ export default {
     };
   },
   computed: {
-    ...mapGetters('IMStore', ['dragFileList'])
+    ...mapGetters('IMStore', ['dragFileList']),
+    isGroup() {
+      return this.session?.toUserType === SESSION_USER_TYPE.IS_GROUP;
+    },
+    noGroupAuth() {
+      return (
+        this.isGroup && this.groupRoleManager.whoCanSendFile > this.groupRole
+      );
+    },
   },
   watch: {
     dragFileList(val) {
-      console.log(val, 'dragFileList')
+      console.log(val, 'dragFileList');
       if (val?.length) {
         this.files = [...val];
         this.visibleFileDialog = true;
         this.$nextTick(() => {
-          this.setDragFileList([])
-        })
+          this.setDragFileList([]);
+        });
       }
-    }
+    },
   },
   methods: {
     ...mapActions('IMStore', ['setDragFileList']),
 
     handleUploadFile(isFile) {
+      if (this.noGroupAuth) {
+        this.$message.warning('暂无权限！');
+        return;
+      };
+
       this.$refs.fileInput.value = '';
       this.accept = isFile ? '' : 'image/*,audio/*,video/*';
       this.$nextTick(() => {

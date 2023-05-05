@@ -11,10 +11,18 @@
     <div class="tips">共{{ members.length }}位成员</div>
 
     <div class="action">
-      <span class="add btn" @click="changeMember(IM_GROUP_MEMBER_PANEL_TYPE.IS_ADD)">
+      <span
+        class="add btn"
+        v-if="groupRoleManager.whoCanAddGroupMemberOrShareGroup <= groupRole"
+        @click="changeMember(IM_GROUP_MEMBER_PANEL_TYPE.IS_ADD)"
+      >
         <LsIcon render-svg width="14" height="14" icon="navi_ss_add"></LsIcon>
       </span>
-      <span class="del btn" v-if="isGroupManager" @click="changeMember(IM_GROUP_MEMBER_PANEL_TYPE.IS_DEL)">
+      <span
+        class="del btn"
+        v-if="isGroupManager"
+        @click="changeMember(IM_GROUP_MEMBER_PANEL_TYPE.IS_DEL)"
+      >
         <LsIcon
           render-svg
           width="14"
@@ -54,8 +62,12 @@
 <script>
 import { LsIcon } from '@lanshu/components';
 import { mapGetters } from 'vuex';
-import { IM_GROUP_MEMBER_PANEL_TYPE, GROUP_MEMBER_TYPE_MAP, GROUP_ROLE_TYPE } from '@lanshu/utils';
-import { IMGetGroupMemberList } from '../../IM-SDK';
+import {
+  IM_GROUP_MEMBER_PANEL_TYPE,
+  GROUP_MEMBER_TYPE_MAP,
+  GROUP_ROLE_TYPE,
+} from '@lanshu/utils';
+import { IMGetGroupMemberList, IMGetGroupRoleManagerList } from '../../IM-SDK';
 
 export default {
   name: 'Member',
@@ -70,23 +82,38 @@ export default {
       isAdd: false,
       nextSeq: 0,
       members: [],
+      groupRoleManager: {},
     };
   },
   computed: {
-    ...mapGetters('IMStore', ['actionWindow', 'userInfo', 'refreshMembers']),
+    ...mapGetters('IMStore', [
+      'actionWindow',
+      'userInfo',
+      'refreshMembers',
+      'refreshGroupRoleManager',
+    ]),
     groupId() {
       return this.actionWindow.toUser;
     },
+    groupRole() {
+      const self = this.members.find((d) => d.userId === this.userInfo.userId);
+      if (!self) return -1;
+      return self.role;
+    },
     isGroupManager() {
-      const self =  this.members.find((d) => d.userId === this.userInfo.userId);
-      if (!self) return false;
-      return [GROUP_ROLE_TYPE.IS_MANAGE, GROUP_ROLE_TYPE.IS_OWNER].includes(self.role);
-    }
+      return [GROUP_ROLE_TYPE.IS_MANAGE, GROUP_ROLE_TYPE.IS_OWNER].includes(
+        this.groupRole,
+      );
+    },
   },
   watch: {
     refreshMembers() {
       this.getGroupMemberList();
-    }
+    },
+    refreshGroupRoleManager() {
+      this.getGroupMemberList();
+      this.getGroupRoleManagerList();
+    },
   },
   methods: {
     getGroupMemberList() {
@@ -99,20 +126,33 @@ export default {
       });
     },
     changeMember(type) {
-      this.$emit(
-        'changeGroupMember',
-        {
-          type,
-          members: this.members.filter((d) => d.userId !== this.userInfo.userId)
-        }
-      );
+      this.$emit('changeGroupMember', {
+        type,
+        members: this.members.filter((d) => d.userId !== this.userInfo.userId),
+      });
     },
     memberClass(role) {
-      return role === GROUP_ROLE_TYPE.IS_OWNER ? 'owner' : role === GROUP_ROLE_TYPE.IS_MANAGE ? 'manage' : '';
+      return role === GROUP_ROLE_TYPE.IS_OWNER
+        ? 'owner'
+        : role === GROUP_ROLE_TYPE.IS_MANAGE
+        ? 'manage'
+        : '';
+    },
+
+    getGroupRoleManagerList() {
+      IMGetGroupRoleManagerList(this.actionWindow.toUser)
+        .then((res) => {
+          console.log(res.data);
+          this.groupRoleManager = res?.data || {};
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     },
   },
   mounted() {
     this.getGroupMemberList();
+    this.getGroupRoleManagerList();
   },
 };
 </script>

@@ -27,6 +27,17 @@ export const IMSDKCallBackEvents = {
     console.log('@@@@@ ConvTotalUnreadMessageCount');
     stareInstance.commit('IMStore/setAllUnreadCount', AllUnreadCount);
   },
+  MessageSendingStateCallBack: (ctx, msgInfo) => {
+    const { sendState, msg } = msgInfo;
+    const mainSessionWindow =
+      stareInstance.getters['IMStore/mainSessionWindow'];
+    const sessionWindowList =
+      stareInstance.getters['IMStore/sessionWindowList'];
+
+    if (!mainSessionWindow?.sessId && !sessionWindowList?.length) return;
+    if (mainSessionWindow.sessId !== msg.sessId) return;
+    stareInstance.commit('IMStore/setRefreshMsg', Date.now());
+  },
   AddReceiveNewMessage: async (ctx, msgInfo) => {
     const { message, silence } = msgInfo;
 
@@ -90,7 +101,7 @@ export const IMSDKCallBackEvents = {
   },
   RefreshMsg(ctx, sessId) {
     console.log('RefreshMsg', sessId);
-    stareInstance.commit('IMStore/setRefreshMsg', true);
+    stareInstance.commit('IMStore/setRefreshMsg', Date.now());
   },
   FriendDelListener(ctx, info) {
     console.log('FriendDelListener', info);
@@ -99,7 +110,7 @@ export const IMSDKCallBackEvents = {
     if (mainSessionWindow.toUser === info.delUerId) {
       stareInstance.commit('IMStore/setMainSessionWindow', {});
     }
-    stareInstance.commit('IMStore/setRefreshAddressBook', true);
+    stareInstance.commit('IMStore/setRefreshAddressBook', Date.now());
   },
   UserTokenExpiredCallBack(ctx) {
     console.log('UserTokenExpiredCallBack');

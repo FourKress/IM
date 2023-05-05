@@ -10,6 +10,7 @@ import LsNetwork from '../src/ls-network.vue';
 import LsUpdate from '../src/ls-update.vue';
 import LsUserTag from '../src/ls-user-tag.vue';
 import LsFriendPanel from '../src/ls-friend-panel.vue';
+import LsQrcodePanel from '../src/ls-qrcode-panel.vue';
 
 export {
   MsgTextType,
@@ -24,4 +25,5 @@ export {
   LsUpdate,
   LsUserTag,
   LsFriendPanel,
+  LsQrcodePanel,
 };

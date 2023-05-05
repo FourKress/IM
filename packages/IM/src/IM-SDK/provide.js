@@ -54,8 +54,16 @@ export const IMSDKGroupProvider = {
     setGroupAttribute: 'setGroupAttribute',
     setGroupAlias: 'setGroupAlias',
     getGroupMemberInfo: 'getGroupMemberInfo',
+    getMyGroupMemberInfo: 'getMyGroupMemberInfo',
     adminDelGroupMembers: 'adminDelGroupMembers',
     getGroupRoleManagerList: 'getGroupRoleManagerList',
+    setGroupRoleManagerList: 'setGroupRoleManagerList',
+    ownerTransfer: 'ownerTransfer',
+    exitGroupChat: 'exitGroupChat',
+    dissolveGroupChat: 'dissolveGroupChat',
+    setGroupMemberAddType: 'setGroupMemberAddType',
+    setGroupMemberAdminRole: 'setGroupMemberAdminRole',
+    getAllAdminList: 'getAllAdminList',
   },
 };
 

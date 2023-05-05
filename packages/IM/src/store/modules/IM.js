@@ -18,7 +18,7 @@ const state = {
   // 总未读数
   allUnreadCount: 0,
   // 刷新聊天Msg
-  refreshMsg: false,
+  refreshMsg: '',
   // 当前操作的SessionWindow
   actionWindow: {},
   // 刷新群成员
@@ -28,9 +28,11 @@ const state = {
   // 新好友申请数
   newFriendCount: 0,
   // 刷新联系人列表
-  refreshAddressBook: false,
+  refreshAddressBook: '',
   // 群属性变更
   groupAttributeChanged: {},
+  // 刷新群权限信息
+  refreshGroupRoleManager: '',
 };
 
 const getters = {
@@ -50,6 +52,7 @@ const getters = {
   newFriendCount: (state) => state.newFriendCount,
   refreshAddressBook: (state) => state.refreshAddressBook,
   groupAttributeChanged: (state) => state.groupAttributeChanged,
+  refreshGroupRoleManager: (state) => state.refreshGroupRoleManager,
 };
 
 const mutations = {
@@ -114,6 +117,9 @@ const mutations = {
   setGroupAttributeChanged(data, value) {
     data.groupAttributeChanged = value;
   },
+  setRefreshGroupRoleManager(data, value) {
+    data.refreshGroupRoleManager = value;
+  },
 };
 
 const actions = {
@@ -167,6 +173,9 @@ const actions = {
   },
   setGroupAttributeChanged({ commit }, value) {
     commit('setGroupAttributeChanged', value);
+  },
+  setRefreshGroupRoleManager({ commit }, value) {
+    commit('setRefreshGroupRoleManager', value);
   },
 };
 

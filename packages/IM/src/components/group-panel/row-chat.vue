@@ -29,8 +29,8 @@ export default {
     },
   },
   methods: {
-    handleClick() {
-      this.$emit('callback')
+    handleClick(event) {
+      this.$emit('callback', event)
     }
   }
 };

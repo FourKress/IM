@@ -75,7 +75,7 @@ export default {
         content: '聊天记录将在你的所有设备同步清空，不会影响其他群成员',
       }).then(() => {
         IMClearMessage(this.actionWindow.sessId).then(() => {
-          this.setRefreshMsg(true);
+          this.setRefreshMsg(Date.now());
           this.$message.success('清空聊天记录成功');
           console.log('clearMessage Success');
         });

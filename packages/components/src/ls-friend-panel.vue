@@ -102,9 +102,6 @@
             v-model="message"
           ></el-input>
           <div class="msg-list" v-else>
-            <!--            <div class="item">-->
-            <!--              阿萨打撒十大打算鲁大师鲁大师-->
-            <!--            </div>-->
             <div class="item">
               {{ friendInfo.message }}
             </div>
