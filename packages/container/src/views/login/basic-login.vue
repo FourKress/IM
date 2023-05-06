@@ -65,7 +65,9 @@
       </div>
     </template>
 
-    <!--    <template v-els2-->
+<!--    <template v-else>-->
+<!--      <OtherLogin @wechatLogin="handleWechatLogin" />-->
+<!--    </template>-->
   </div>
 </template>
 
@@ -161,12 +163,12 @@ export default {
       }
       if (!this.activeBtn) return;
 
-      this.$emit('sendLogin', this.replacePhoneNum());
+      this.$emit('enterAuthCode', this.replacePhoneNum());
     },
     loopAppLogin() {
       this.appQrcodeTimer = setInterval(() => {
         console.log('APP扫码登录');
-        this.$emit('sendLogin');
+        // this.$emit('sendLogin');
         // TODO 清除定时器
       }, 500);
     },

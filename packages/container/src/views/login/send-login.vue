@@ -10,19 +10,53 @@
     </div>
 
     <div class="title">
-      {{ isAppLogin ? '请在APP上确认登录' : '请输入手机验证码' }}
+      {{
+        isAppLogin
+          ? '请在APP上确认登录'
+          : isSetPwd
+          ? '设置登录密码'
+          : '请输入密码'
+      }}
     </div>
 
     <template v-if="!isAppLogin">
-      <div class="title-tips">
-        4位数的验证码已发送至手机 {{ phoneText }}，有效期10分钟
+      <div class="title-tips" v-if="isSetPwd">
+        密码应为8-16位，字母+数字的组合
       </div>
 
       <div class="input-panel">
-        <AuthCode ref="authCode" @inputComplete="handleInputComplete" />
-      </div>
+        <el-form :model="form" :rules="rules" ref="loginForm" label-width="0px">
+          <div class="phone">
+            <el-form-item label="" prop="firstPhoneNum">
+              <el-input
+                ref="firstPhoneNum"
+                type="password"
+                maxlength="16"
+                show-password
+                placeholder="请输入密码"
+                v-model="form.firstPhoneNum"
+              />
+            </el-form-item>
+            <el-form-item label="" prop="secondPhoneNum">
+              <el-input
+                type="password"
+                maxlength="16"
+                show-password
+                placeholder="请再次输入密码"
+                v-model="form.secondPhoneNum"
+              />
+            </el-form-item>
+          </div>
+        </el-form>
 
-      <!--      <OtherLogin @wechatLogin="handleWechatLogin" />-->
+        <div
+          class="login-btn"
+          :class="activeBtn && 'active'"
+          @click="handleLogin"
+        >
+          下一步
+        </div>
+      </div>
     </template>
 
     <template v-else>
@@ -35,23 +69,23 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex';
-import { setToken, phoneEncryption } from '@lanshu/utils';
+import { mapActions } from 'vuex';
+import { setToken } from '@lanshu/utils';
 import { IMSDK_Init } from '@lanshu/im';
 import { renderProcess } from '@lanshu/render-process';
-import OtherLogin from './other-login';
-import AuthCode from '../../components/authCode';
 import { LsIcon } from '@lanshu/components';
 import { microShared } from '@lanshu/micro';
 
 export default {
   name: 'Send-login',
   components: {
-    OtherLogin,
-    AuthCode,
     LsIcon,
   },
   props: {
+    isSetPwd: {
+      type: Boolean,
+      default: true,
+    },
     phoneNum: {
       type: [String, Number],
       default: '',
@@ -62,41 +96,91 @@ export default {
     },
   },
   computed: {
-    phoneText() {
-      return phoneEncryption(this.phoneNum);
+    activeBtn() {
+      const { firstPhoneNum, secondPhoneNum } = this.form;
+      return (
+        firstPhoneNum && secondPhoneNum && firstPhoneNum === secondPhoneNum
+      );
     },
     isAppLogin() {
       return !this.phoneNum;
     },
-    ...mapGetters('globalStore', ['codeCountdown']),
   },
   data() {
-    return {};
+    const reg = /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]{8,16}$/g;
+    const validateFormPwd = (rule, value, callback) => {
+      if (!reg.test(value)) {
+        return callback(new Error('请输入有效的密码'));
+      }
+      const { secondPhoneNum } = this.form;
+      if (secondPhoneNum && secondPhoneNum !== value) {
+        this.$refs.loginForm.validateField('secondPhoneNum');
+      }
+      return callback();
+    };
+
+    const validateFormSecondPwd = (rule, value, callback) => {
+      if (!reg.test(value)) {
+        return callback(new Error('请输入有效的密码'));
+      }
+      const { firstPhoneNum } = this.form;
+      if (firstPhoneNum && firstPhoneNum !== value) {
+        return callback(new Error('两次密码输入不一致，请重新输入'));
+      }
+      return callback();
+    };
+
+    return {
+      form: {
+        firstPhoneNum: '',
+        secondPhoneNum: '',
+      },
+      rules: {
+        firstPhoneNum: [
+          {
+            required: true,
+            max: 16,
+            min: 8,
+            message: '请输入有效的密码',
+            trigger: ['change', 'blur'],
+          },
+          { validator: validateFormPwd, trigger: ['blur', 'change'] },
+        ],
+        secondPhoneNum: [
+          {
+            required: true,
+            max: 16,
+            min: 8,
+            message: '请输入有效的密码',
+            trigger: ['change', 'blur'],
+          },
+          {
+            validator: validateFormSecondPwd,
+            trigger: ['blur', 'change'],
+          },
+        ],
+      },
+    };
   },
-  mounted() {},
+  mounted() {
+    this.$refs.firstPhoneNum.focus();
+  },
   methods: {
     ...mapActions('IMStore', ['setUserInfo', 'setAllSession']),
     ...mapActions('routerStore', ['clearBreadCrumb']),
+
     backLogin() {
-      this.handleClearInterval();
-      this.handleSaveCountdown();
-      this.$nextTick(() => {
-        this.$emit('update:isSendLogin');
-      });
-    },
-    handleWechatLogin() {
-      this.handleClearInterval();
-      this.handleSaveCountdown();
+      this.handleBeforeDestroy();
       this.$nextTick(() => {
         this.$emit('update:isSendLogin');
       });
     },
 
-    handleInputComplete(flag) {
-      if (flag) {
-        this.handleLogin();
-      }
+    handleBeforeDestroy() {
+      this.handleClearInterval();
+      this.handleSaveCountdown();
     },
+
     handleClearInterval() {
       this.$refs?.authCode?.handleClearInterval();
     },
@@ -125,7 +209,7 @@ export default {
         microShared.setToken(token);
 
         this.$router.push('/');
-        this.clearBreadCrumb();
+        await this.clearBreadCrumb();
         renderProcess.showMainWindow();
       } catch (e) {}
     },
@@ -152,6 +236,50 @@ export default {
 }
 .input-panel {
   margin: 60px 0 126px 0;
+
+  .phone,
+  .login-btn {
+    width: 100%;
+    line-height: 60px;
+    border-radius: 6px;
+    box-sizing: border-box;
+  }
+
+  .login-btn {
+    height: 60px;
+    text-align: center;
+    color: $bg-white-color;
+    background-color: #87a1cd;
+    cursor: pointer;
+    margin-top: 36px;
+
+    &.active {
+      background: $primary-color;
+    }
+  }
+
+  .phone {
+    background: $bg-white-color;
+    margin-bottom: 20px;
+
+    ::v-deep .el-input__inner {
+      width: 100%;
+      height: 60px;
+      line-height: 24px;
+      font-size: 18px;
+      outline: none;
+      border: none;
+      padding: 18px 26px;
+      box-sizing: border-box;
+      color: $main-text-color;
+      background-color: $bg-hover-grey-color;
+
+      &::placeholder {
+        color: $tips-text-color;
+        font-size: 18px;
+      }
+    }
+  }
 }
 
 .user-info {

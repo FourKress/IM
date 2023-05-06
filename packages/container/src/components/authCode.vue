@@ -14,8 +14,11 @@
       />
     </div>
 
-    <div class="send-code" :class="timer && 'disabled'" @click="resetCode">
-      {{ timer ? `倒计时 ${countdown}S` : '重新获取验证码' }}
+    <div class="send-code">
+      <span class="left" :class="timer && 'disabled'" @click="resetCode">
+        {{ timer ? `倒计时 ${countdown}S` : '重新获取验证码' }}
+      </span>
+      <span class="right" @click="switchPassword">切换为密码登录</span>
     </div>
   </span>
 </template>
@@ -82,6 +85,10 @@ export default {
       // TODO 请求接口倒计时
       this.handleCountdown();
     },
+
+    switchPassword() {
+      this.$emit('switchPassword');
+    },
   },
 };
 </script>
@@ -125,11 +132,20 @@ export default {
   margin: 30px 0;
   font-size: 14px;
   color: $primary-hover-color;
-  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 
-  &.disabled {
-    color: $tips-text-color;
-    cursor: default;
+  .left,
+  .right {
+    cursor: pointer;
+  }
+
+  .left {
+    &.disabled {
+      color: $tips-text-color;
+      cursor: default;
+    }
   }
 }
 </style>

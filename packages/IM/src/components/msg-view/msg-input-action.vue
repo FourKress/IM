@@ -381,6 +381,15 @@ export default {
       });
     },
 
+    recursionReplace(msg) {
+      const reg = /&nbsp;$/;
+      if (reg.test(msg)) {
+        const str = msg.replace(reg, '');
+        return this.recursionReplace(str)
+      }
+      return msg;
+    },
+
     async sendMsg() {
       if (this.disabledSendMsg) return;
 
@@ -395,6 +404,12 @@ export default {
       const msgArr = realMessage.includes('<img')
         ? realMessage.match(regExp)?.filter((d) => d !== 'br') || [realMessage]
         : [realMessage];
+
+      console.log(this.message)
+      console.log(this.messageText)
+      console.log(realMessage, this.recursionReplace(realMessage))
+      console.log(msgArr)
+      return
 
       const sendMsgArr = await Promise.all(
         msgArr

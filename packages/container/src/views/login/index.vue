@@ -2,28 +2,38 @@
   <div id="login">
     <div class="image"></div>
     <div class="operate-panel">
-      <!--      <div class="login-type" @click="switchLoginType">-->
-      <!--        <LsIcon-->
-      <!--          render-svg-->
-      <!--          width="117"-->
-      <!--          height="115"-->
-      <!--          :icon="isAccountLogin ? 'a-icon_erweima2x' : 'a-icon_shouji2x'"-->
-      <!--        ></LsIcon>-->
-      <!--      </div>-->
+<!--      <div class="login-type" @click="switchLoginType">-->
+<!--        <LsIcon-->
+<!--          render-svg-->
+<!--          width="117"-->
+<!--          height="115"-->
+<!--          :icon="isAccountLogin ? 'a-icon_erweima2x' : 'a-icon_shouji2x'"-->
+<!--        ></LsIcon>-->
+<!--      </div>-->
 
       <BasicLogin
         ref="basicLogin"
-        v-if="!isSendLogin"
+        v-if="!isSendLogin && !isAuthCode"
         :isAccountLogin.sync="isAccountLogin"
+        @enterAuthCode="handleEnterAuthCode"
         @sendLogin="handleSendLogin"
-      ></BasicLogin>
+      />
+
+      <EnterAuthCode
+        v-if="isAuthCode"
+        :isAuthCode.sync="isAuthCode"
+        :phoneNum="phoneNum"
+        @sendLogin="handleSendLogin"
+        @switchPassword="handleSwitchPassword"
+      />
 
       <SendLogin
-        v-else
+        v-if="isSendLogin && !isAuthCode"
         :phoneNum="phoneNum"
+        :isSetPwd="isSetPwd"
         :isSendLogin.sync="isSendLogin"
         @changeLoginType="changeLoginType"
-      ></SendLogin>
+      />
 
       <!--      <div-->
       <!--        class="footer-btn"-->
@@ -47,9 +57,10 @@
 
 <script>
 import { WindowOperate, LsIcon } from '@lanshu/components';
+import { RecoverAccountMixins } from '@lanshu/utils';
 import BasicLogin from './basic-login';
 import SendLogin from './send-login';
-import { RecoverAccountMixins } from '@lanshu/utils';
+import EnterAuthCode from './enter-auth-code';
 
 export default {
   name: 'Login',
@@ -58,18 +69,22 @@ export default {
     BasicLogin,
     SendLogin,
     LsIcon,
+    EnterAuthCode,
   },
   mixins: [RecoverAccountMixins],
   data() {
     return {
       isAccountLogin: true,
       isSendLogin: false,
+      isAuthCode: false,
+      isSetPwd: false,
       phoneNum: '',
     };
   },
   methods: {
     clear() {
       this.isSendLogin = false;
+      this.isAuthCode = false;
       this.phoneNum = '';
     },
     switchLoginType() {
@@ -87,6 +102,18 @@ export default {
     handleSendLogin(phoneNum = '') {
       this.phoneNum = phoneNum;
       this.isSendLogin = true;
+      this.isAuthCode = false;
+    },
+
+    handleSwitchPassword(phoneNum = '') {
+      this.isSetPwd = false;
+      this.handleSendLogin(phoneNum)
+    },
+
+    handleEnterAuthCode(phoneNum = '', isSetPwd) {
+      this.isSetPwd = isSetPwd;
+      this.phoneNum = phoneNum;
+      this.isAuthCode = true;
     },
   },
 };
