@@ -3,7 +3,7 @@ import { microVuexStore, MicroVuexStoreModule } from '@lanshu/micro';
 import globalStore from './modules/global.js';
 import routerStore from './modules/router.js';
 
-let stareInstance = null;
+let storeInstance = null;
 
 const generateStore = (Vue, stores) => {
   Vue.use(Vuex);
@@ -17,13 +17,13 @@ const generateStore = (Vue, stores) => {
     },
   });
 
-  stareInstance = store;
+  storeInstance = store;
   // 把store实例注册到微应用依赖
-  MicroVuexStoreModule.setStore(stareInstance);
+  MicroVuexStoreModule.setStore(storeInstance);
 
   return store;
 };
 
-export { stareInstance };
+export { storeInstance };
 
 export default generateStore;

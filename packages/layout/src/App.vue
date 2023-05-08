@@ -10,10 +10,10 @@
 
 <script>
 import MainLayout from './components/layout';
-import { IMSDKCallBackEvents } from '@lanshu/im';
+import { ClientLogOut, IMSDKCallBackEvents } from '@lanshu/im';
 import { renderProcess } from '@lanshu/render-process';
 import { LsUpdate, LsCardDialog } from '@lanshu/components';
-import { mapGetters } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 
 export default {
   name: 'App',
@@ -29,7 +29,11 @@ export default {
     };
   },
   computed: {
-    ...mapGetters('globalStore', ['updateVersion', 'startDownload'])
+    ...mapGetters('globalStore', [
+      'updateVersion',
+      'startDownload',
+      'userError',
+    ]),
   },
   watch: {
     updateVersion() {
@@ -37,7 +41,18 @@ export default {
     },
     startDownload() {
       this.visibleUpdate = true;
-    }
+    },
+    userError(msg) {
+      if (msg) {
+        this.setUserError();
+        this.$Lconfirm({
+          title: '提示',
+          content: msg,
+        }).then(() => {
+          ClientLogOut();
+        });
+      }
+    },
   },
   created() {
     renderProcess.updateClient((event, value) => {
@@ -80,7 +95,9 @@ export default {
       this.keys = [];
     });
   },
-  methods: {},
+  methods: {
+    ...mapActions('globalStore', ['setUserError']),
+  },
 };
 </script>
 

@@ -6,9 +6,6 @@ Layout({
   // menu: [{ label: '哈哈', path: '/view2', icon: 'menu_xx_sel' }],
   routes,
   plugin,
-  // personal,government
-  // platform: 'government',
-  platform: 'personal',
 }).catch((error) => {
   console.error(error);
 });

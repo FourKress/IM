@@ -382,7 +382,7 @@ export default {
     },
 
     recursionReplace(msg) {
-      const reg = /&nbsp;$/;
+      const reg = /&nbsp; ?$/;
       if (reg.test(msg)) {
         const str = msg.replace(reg, '');
         return this.recursionReplace(str)
@@ -397,19 +397,13 @@ export default {
         /(<img src="\S*" alt(="")?>|[a-zA-Z0-9\u4e00-\u9fa5])+/g,
         'g',
       );
-      const realMessage = this.message.replace(
+      const realMessage = this.recursionReplace(this.message.replace(
         /<span|div>|<\/span|div>/g,
         '<br>',
-      );
+      ));
       const msgArr = realMessage.includes('<img')
         ? realMessage.match(regExp)?.filter((d) => d !== 'br') || [realMessage]
         : [realMessage];
-
-      console.log(this.message)
-      console.log(this.messageText)
-      console.log(realMessage, this.recursionReplace(realMessage))
-      console.log(msgArr)
-      return
 
       const sendMsgArr = await Promise.all(
         msgArr

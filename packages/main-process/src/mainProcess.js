@@ -13,6 +13,7 @@ import {
   IMSDK_Destroy,
   IMSDKNetworkCallEvent,
   IMSDKNetworkCallRefresh,
+  IMSDKInit,
 } from './IM-SDK';
 import electronLog from 'electron-log';
 import increment from './increment';
@@ -25,6 +26,7 @@ const initIpcMain = () => {
     }
 
     showLoginWindow();
+    // showMainWindow();
 
     // 初始化截图
     initScreenshots();
@@ -51,6 +53,8 @@ const initIpcMain = () => {
     );
 
     ipcMain.on('showMainWindow', (_event, config) => {
+      const { appId } = config;
+      IMSDKInit(appId);
       initHotKeys();
       showMainWindow();
     });

@@ -2,20 +2,21 @@
   <div id="login">
     <div class="image"></div>
     <div class="operate-panel">
-<!--      <div class="login-type" @click="switchLoginType">-->
-<!--        <LsIcon-->
-<!--          render-svg-->
-<!--          width="117"-->
-<!--          height="115"-->
-<!--          :icon="isAccountLogin ? 'a-icon_erweima2x' : 'a-icon_shouji2x'"-->
-<!--        ></LsIcon>-->
-<!--      </div>-->
+      <!--      <div class="login-type" @click="switchLoginType">-->
+      <!--        <LsIcon-->
+      <!--          render-svg-->
+      <!--          width="117"-->
+      <!--          height="115"-->
+      <!--          :icon="isAccountLogin ? 'a-icon_erweima2x' : 'a-icon_shouji2x'"-->
+      <!--        ></LsIcon>-->
+      <!--      </div>-->
 
       <BasicLogin
         ref="basicLogin"
         v-if="!isSendLogin && !isAuthCode"
         :isAccountLogin.sync="isAccountLogin"
         @enterAuthCode="handleEnterAuthCode"
+        @enterPassword="handleEnterPassword"
         @sendLogin="handleSendLogin"
       />
 
@@ -23,16 +24,18 @@
         v-if="isAuthCode"
         :isAuthCode.sync="isAuthCode"
         :phoneNum="phoneNum"
+        :isSetPwd="isSetPwd"
         @sendLogin="handleSendLogin"
         @switchPassword="handleSwitchPassword"
       />
 
       <SendLogin
         v-if="isSendLogin && !isAuthCode"
+        :isSendLogin.sync="isSendLogin"
         :phoneNum="phoneNum"
         :isSetPwd="isSetPwd"
-        :isSendLogin.sync="isSendLogin"
-        @changeLoginType="changeLoginType"
+        :captcha="captcha"
+        @backAuth="handleBackAuth"
       />
 
       <!--      <div-->
@@ -79,24 +82,21 @@ export default {
       isAuthCode: false,
       isSetPwd: false,
       phoneNum: '',
+      captcha: '',
     };
   },
   methods: {
     clear() {
       this.isSendLogin = false;
       this.isAuthCode = false;
+      this.isSetPwd = false;
       this.phoneNum = '';
+      this.captcha = '';
     },
     switchLoginType() {
       this.clear();
       this.$nextTick(() => {
         this.isAccountLogin = !this.isAccountLogin;
-      });
-    },
-    changeLoginType() {
-      this.clear();
-      this.$nextTick(() => {
-        this.$refs.basicLogin.handleWechatLogin();
       });
     },
     handleSendLogin(phoneNum = '') {
@@ -105,15 +105,27 @@ export default {
       this.isAuthCode = false;
     },
 
-    handleSwitchPassword(phoneNum = '') {
-      this.isSetPwd = false;
-      this.handleSendLogin(phoneNum)
+    handleSwitchPassword(phoneNum = '', isSetPwd, captcha) {
+      this.isSetPwd = isSetPwd;
+      this.captcha = captcha;
+      this.handleSendLogin(phoneNum);
     },
 
-    handleEnterAuthCode(phoneNum = '', isSetPwd) {
+    handleEnterAuthCode(phoneNum = '') {
+      this.isSetPwd = true;
+      this.isAuthCode = true;
+      this.phoneNum = phoneNum;
+    },
+    handleEnterPassword(phoneNum = '') {
+      this.isSetPwd = false;
+      this.handleSendLogin(phoneNum);
+    },
+
+    handleBackAuth(phoneNum = '', isSetPwd) {
       this.isSetPwd = isSetPwd;
       this.phoneNum = phoneNum;
       this.isAuthCode = true;
+      this.isSendLogin = false;
     },
   },
 };

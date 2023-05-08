@@ -1,7 +1,7 @@
 <template>
   <div class="basic-login">
     <div class="logo">
-      <img :src="LsAssets.logo" alt="">
+      <img :src="LsAssets.logo" alt="" />
     </div>
 
     <div class="title" v-if="isWechatLogin">请使用微信扫码登录</div>
@@ -65,16 +65,16 @@
       </div>
     </template>
 
-<!--    <template v-else>-->
-<!--      <OtherLogin @wechatLogin="handleWechatLogin" />-->
-<!--    </template>-->
+    <!--    <template v-else>-->
+    <!--      <OtherLogin @wechatLogin="handleWechatLogin" />-->
+    <!--    </template>-->
   </div>
 </template>
 
 <script>
 import { renderProcess } from '@lanshu/render-process';
 import OtherLogin from './other-login';
-import { formatPhoneNum, PhoneNumMixins } from '@lanshu/utils';
+import { formatPhoneNum, PhoneNumMixins, Apis } from '@lanshu/utils';
 import { LsAssets } from '@lanshu/components';
 
 export default {
@@ -94,7 +94,7 @@ export default {
       LsAssets,
       isWechatLogin: false,
       form: {
-        phoneNum: '',
+        phoneNum: '173 8409 4579',
       },
       rules: {
         phoneNum: [
@@ -156,14 +156,41 @@ export default {
         this.loopWechatLogin();
       });
     },
-    handleLogin() {
+    async handleLogin() {
       if (!this.protocolChecked) {
         this.$message.warning('请阅读并勾选《用户服务协议》《隐私协议》');
         return;
       }
       if (!this.activeBtn) return;
+      const phoneNum = this.replacePhoneNum();
+      const terminal = await renderProcess.getStore('CLIENT_TERMINAL');
+      const {
+        data: { code, msg },
+      } = await Apis.accountCheckStatus({
+        username: phoneNum,
+        terminal,
+      });
 
-      this.$emit('enterAuthCode', this.replacePhoneNum());
+      // 正常，跳转密码登录
+      if (code === '00000') {
+        this.$emit('enterPassword', phoneNum);
+        return;
+      }
+
+      // 异常，终止登录
+      if (code !== '10008') {
+        this.$message.error(msg);
+        return;
+      }
+      // 发送验证码
+      Apis.accountSendCaptcha({
+        phone: phoneNum,
+        terminal,
+      }).then((res) => {
+        console.log(res);
+        this.$emit('enterAuthCode', phoneNum);
+      });
+      // this.$emit('enterAuthCode', phoneNum);
     },
     loopAppLogin() {
       this.appQrcodeTimer = setInterval(() => {

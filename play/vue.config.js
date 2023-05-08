@@ -137,5 +137,8 @@ module.exports = defineConfig({
       process.env.NODE_ENV === 'development'
         ? 'eval-source-map'
         : 'hidden-source-map',
+    experiments: {
+      topLevelAwait: true,
+    },
   },
 });

@@ -1,5 +1,5 @@
 const state = {
-  userInfo: {},
+  systemUserInfo: {},
   userError: {
     visible: false,
     message: '',
@@ -12,7 +12,7 @@ const state = {
 };
 
 const getters = {
-  userInfo: (state) => state.userInfo,
+  systemUserInfo: (state) => state.systemUserInfo,
   userError: (state) => state.userError,
   codeCountdown: (state) => state.codeCountdown,
   updateVersion: (state) => state.updateVersion,
@@ -21,8 +21,8 @@ const getters = {
 };
 
 const mutations = {
-  setUserInfo(data, value) {
-    data.userInfo = value;
+  setSystemUserInfo(data, value) {
+    data.systemUserInfo = value;
   },
   setUserError(data, value) {
     data.userError = value;
@@ -50,8 +50,8 @@ const mutations = {
 };
 
 const actions = {
-  setUserInfo({ commit }, value) {
-    commit('setUserInfo', value);
+  setSystemUserInfo({ commit }, value) {
+    commit('setSystemUserInfo', value);
   },
   setUserError({ commit }, value) {
     commit('setUserError', value);

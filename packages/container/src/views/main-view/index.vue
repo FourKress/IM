@@ -12,6 +12,8 @@ import { MainIM } from '@lanshu/im';
 import { MainPlugIn } from '@lanshu/plugin';
 import { startQiankun } from '@lanshu/micro';
 import microAppConfigs from '../../micro/apps';
+import { renderProcess } from '@lanshu/render-process';
+import { CLIENT_TERMINAL } from '@lanshu/utils';
 
 export default {
   name: 'MainView',
@@ -25,9 +27,13 @@ export default {
       hasPlugin: false,
     };
   },
-  created() {
+  async created() {
     // 获取入口是否传入Plugin项
-    this.hasPlugin = JSON.parse(localStorage.getItem('hasPlugin') || 'false');
+    const hasPlugin = JSON.parse(localStorage.getItem('hasPlugin') || 'false');
+    const isGovernment =
+      (await renderProcess.getStore('CLIENT_TERMINAL')) ===
+      CLIENT_TERMINAL.IS_GOVERNMENT;
+    this.hasPlugin = hasPlugin && isGovernment;
   },
   mounted() {
     // this.$nextTick(() => {

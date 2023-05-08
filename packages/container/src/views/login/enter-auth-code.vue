@@ -12,27 +12,30 @@
     <div class="title">请输入手机验证码</div>
 
     <div class="title-tips">
-      {{ `4位数的验证码已发送至手机 ${phoneText}，有效期10分钟` }}
+      {{ `4位数的验证码已发送至手机 ${phoneText}，有效期5分钟` }}
     </div>
 
     <div class="input-panel">
-      <AuthCode ref="authCode" @inputComplete="handleInputComplete" @switchPassword="handleSwitchPassword" />
+      <AuthCode ref="authCode" :phoneNum="phoneNum" @inputComplete="handleInputComplete">
+        <span v-if="!isSetPwd" @click="handleSwitchPassword">切换为密码登录</span>
+      </AuthCode>
       <div
         class="login-btn"
         :class="isAuthCodeComplete && 'active'"
         @click="handleLogin"
       >
-        下一步
+        {{isSetPwd ? '下一步' : '立即登录'}}
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { PhoneNumMixins, phoneEncryption } from '@lanshu/utils';
+import { PhoneNumMixins, phoneEncryption, Apis } from '@lanshu/utils';
 import { LsIcon } from '@lanshu/components';
 import OtherLogin from './other-login';
 import AuthCode from '../../components/authCode';
+import {renderProcess} from "@lanshu/render-process";
 
 export default {
   name: 'Enter-auth-code',
@@ -41,6 +44,10 @@ export default {
     phoneNum: {
       type: [String, Number],
       default: '',
+    },
+    isSetPwd: {
+      type: Boolean,
+      default: true,
     },
   },
   components: {
@@ -51,6 +58,7 @@ export default {
   data() {
     return {
       isAuthCodeComplete: false,
+      codes: '',
     };
   },
   computed: {
@@ -75,24 +83,25 @@ export default {
       this.$refs?.authCode?.handleSaveCountdown();
     },
 
-    handleInputComplete(flag) {
+    handleInputComplete(flag, codes) {
       this.isAuthCodeComplete = flag;
+      this.codes = codes
     },
 
     handleSwitchPassword() {
       this.backLogin();
-      this.$emit('switchPassword', {
-        phoneNum: this.phoneNum,
-        isSetPwd: false,
-      });
+      this.$emit('switchPassword', this.phoneNum, false);
     },
 
-    handleLogin() {
+    async handleLogin() {
       if (!this.isAuthCodeComplete) return
-      this.$emit('sendLogin', {
-        phoneNum: this.phoneNum,
-        isSetPwd: true,
-      });
+      const terminal = await renderProcess.getStore('CLIENT_TERMINAL');
+      await Apis.accountCheckCaptcha({
+        phone: this.phoneNum,
+        captcha: this.codes,
+        terminal
+      })
+      this.$emit('switchPassword', this.phoneNum, this.isSetPwd, this.codes);
     },
   },
 

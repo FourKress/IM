@@ -175,3 +175,9 @@ export const SESSION_BUBBLE_MODEL = {
   IS_LEFT: 1,
   IS_BETWEEN: 2,
 };
+
+export const CLIENT_TERMINAL = {
+  IS_PERSONAL: 'personal',
+  IS_ENTERPRISE: 'enterprise',
+  IS_GOVERNMENT: 'government',
+};

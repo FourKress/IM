@@ -5,7 +5,6 @@ import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
 import { defaultWindowConfig } from './window';
 import store from './datastore';
 // import checkUpload from './checkUpload';
-import { IMSDKInit } from './IM-SDK';
 import trayAction from './trayEvent';
 
 global.store = store;
@@ -54,7 +53,8 @@ async function createWindow() {
   });
 }
 
-const initElectron = (appId) => {
+const initElectron = (terminal) => {
+  global.store.set('CLIENT_TERMINAL', terminal);
   return new Promise((resolve, reject) => {
     try {
       protocol.registerSchemesAsPrivileged([
@@ -101,8 +101,6 @@ const initElectron = (appId) => {
         trayAction();
 
         await createWindow();
-
-        IMSDKInit(appId);
 
         resolve({
           App: app,

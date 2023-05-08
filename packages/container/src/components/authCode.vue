@@ -18,16 +18,26 @@
       <span class="left" :class="timer && 'disabled'" @click="resetCode">
         {{ timer ? `倒计时 ${countdown}S` : '重新获取验证码' }}
       </span>
-      <span class="right" @click="switchPassword">切换为密码登录</span>
+      <span class="right">
+        <slot></slot>
+      </span>
     </div>
   </span>
 </template>
 
 <script>
 import { mapGetters, mapActions } from 'vuex';
+import { Apis } from '@lanshu/utils';
+import { renderProcess } from '@lanshu/render-process';
 
 export default {
   name: 'authCode',
+  props: {
+    phoneNum: {
+      type: [String, Number],
+      default: '',
+    },
+  },
   data() {
     return {
       codeList: ['', '', '', ''],
@@ -41,8 +51,9 @@ export default {
   watch: {
     codeList(val) {
       const active = val.every((d) => d);
+      const codes = val.map((d) => d).join('').toString();
       // 输入完毕自动触发
-      this.$emit('inputComplete', active);
+      this.$emit('inputComplete', active, active ? codes : '');
     },
   },
   mounted() {
@@ -78,16 +89,16 @@ export default {
         }
       }, 1000);
     },
-    resetCode() {
+    async resetCode() {
       if (this.timer || this.countdown) return;
       this.codeList = this.codeList.map(() => '');
-      this.countdown = 20;
-      // TODO 请求接口倒计时
+      this.countdown = 60;
+      const terminal = await renderProcess.getStore('CLIENT_TERMINAL');
+      await Apis.accountSendCaptcha({
+        phone: this.phoneNum,
+        terminal,
+      });
       this.handleCountdown();
-    },
-
-    switchPassword() {
-      this.$emit('switchPassword');
     },
   },
 };

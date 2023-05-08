@@ -1,10 +1,10 @@
-import { stareInstance, routeInstance } from '@lanshu/utils';
+import { storeInstance, routeInstance } from '@lanshu/utils';
 import { IMClearUnreadCount, ClientLogOut } from './event';
 
 export const IMSDKCallBackEvents = {
   Network: (ctx, state) => {
     console.log('@@@@@ Network');
-    stareInstance.commit('IMStore/setIMNetworkStatus', state);
+    storeInstance.commit('IMStore/setIMNetworkStatus', state);
   },
   DataSync: (ctx, state) => {
     console.log('@@@@@ DataSync');
@@ -14,29 +14,29 @@ export const IMSDKCallBackEvents = {
       2: '同步完成',
       3: '同步失败',
     };
-    stareInstance.commit('IMStore/setIMDataSyncStatus', {
+    storeInstance.commit('IMStore/setIMDataSyncStatus', {
       label: map[state],
       value: state,
     });
   },
   UpdateConvList: (ctx, convList) => {
     console.log('@@@@@ UpdateConvList');
-    stareInstance.commit('IMStore/setAllSession', convList);
+    storeInstance.commit('IMStore/setAllSession', convList);
   },
   ConvTotalUnreadMessageCount: (ctx, AllUnreadCount) => {
     console.log('@@@@@ ConvTotalUnreadMessageCount');
-    stareInstance.commit('IMStore/setAllUnreadCount', AllUnreadCount);
+    storeInstance.commit('IMStore/setAllUnreadCount', AllUnreadCount);
   },
   MessageSendingStateCallBack: (ctx, msgInfo) => {
     const { sendState, msg } = msgInfo;
     const mainSessionWindow =
-      stareInstance.getters['IMStore/mainSessionWindow'];
+      storeInstance.getters['IMStore/mainSessionWindow'];
     const sessionWindowList =
-      stareInstance.getters['IMStore/sessionWindowList'];
+      storeInstance.getters['IMStore/sessionWindowList'];
 
     if (!mainSessionWindow?.sessId && !sessionWindowList?.length) return;
     if (mainSessionWindow.sessId !== msg.sessId) return;
-    stareInstance.commit('IMStore/setRefreshMsg', Date.now());
+    storeInstance.commit('IMStore/setRefreshMsg', Date.now());
   },
   AddReceiveNewMessage: async (ctx, msgInfo) => {
     const { message, silence } = msgInfo;
@@ -46,12 +46,12 @@ export const IMSDKCallBackEvents = {
     new Notification(NOTIFICATION_TITLE, {
       body: NOTIFICATION_BODY,
     }).onclick = () => {
-      const sessionList = stareInstance.getters['IMStore/sessionList'];
+      const sessionList = storeInstance.getters['IMStore/sessionList'];
       const targetSession = sessionList.find(
         (d) => d.sessId === message.sessId,
       );
       if (!targetSession) return;
-      stareInstance.commit('IMStore/setMainSessionWindow', targetSession);
+      storeInstance.commit('IMStore/setMainSessionWindow', targetSession);
       if (location.hash === '#/') return;
       IMClearUnreadCount(message.sessId);
       routeInstance.push('/');
@@ -60,13 +60,13 @@ export const IMSDKCallBackEvents = {
     console.log('@@@@@ AddReceiveNewMessage');
 
     const mainSessionWindow =
-      stareInstance.getters['IMStore/mainSessionWindow'];
+      storeInstance.getters['IMStore/mainSessionWindow'];
     const sessionWindowList =
-      stareInstance.getters['IMStore/sessionWindowList'];
+      storeInstance.getters['IMStore/sessionWindowList'];
 
     if (!mainSessionWindow?.sessId && !sessionWindowList?.length) return;
 
-    stareInstance.commit('IMStore/setCurrentMsg', message);
+    storeInstance.commit('IMStore/setCurrentMsg', message);
 
     if (mainSessionWindow.sessId !== message.sessId) return;
 
@@ -77,7 +77,7 @@ export const IMSDKCallBackEvents = {
   },
   KickOutedOffline(ctx) {
     console.log('@@@@@ KickOutedOffline');
-    stareInstance.commit('IMStore/setAllSession');
+    storeInstance.commit('IMStore/setAllSession');
     ctx
       .$Lconfirm({
         title: '提示',
@@ -94,23 +94,23 @@ export const IMSDKCallBackEvents = {
   },
   FriendAddRequestUpdateListener(ctx, friendAddRequestCount) {
     console.log('新好友：', friendAddRequestCount);
-    stareInstance.commit(
+    storeInstance.commit(
       'IMStore/setNewFriendCount',
       Number(friendAddRequestCount),
     );
   },
   RefreshMsg(ctx, sessId) {
     console.log('RefreshMsg', sessId);
-    stareInstance.commit('IMStore/setRefreshMsg', Date.now());
+    storeInstance.commit('IMStore/setRefreshMsg', Date.now());
   },
   FriendDelListener(ctx, info) {
     console.log('FriendDelListener', info);
     const mainSessionWindow =
-      stareInstance.getters['IMStore/mainSessionWindow'];
+      storeInstance.getters['IMStore/mainSessionWindow'];
     if (mainSessionWindow.toUser === info.delUerId) {
-      stareInstance.commit('IMStore/setMainSessionWindow', {});
+      storeInstance.commit('IMStore/setMainSessionWindow', {});
     }
-    stareInstance.commit('IMStore/setRefreshAddressBook', Date.now());
+    storeInstance.commit('IMStore/setRefreshAddressBook', Date.now());
   },
   UserTokenExpiredCallBack(ctx) {
     console.log('UserTokenExpiredCallBack');
@@ -127,6 +127,6 @@ export const IMSDKCallBackEvents = {
   },
   UserNicknameAvatarUpdateListener(ctx, info) {
     console.log('UserNicknameAvatarUpdateListener', info);
-    stareInstance.commit('IMStore/setGroupAttributeChanged', info);
+    storeInstance.commit('IMStore/setGroupAttributeChanged', info);
   },
 };

@@ -1,6 +1,6 @@
 import Router from 'vue-router';
 
-import { stareInstance } from './store';
+import { storeInstance } from './store';
 import { checkToken } from './token';
 
 const whitelist = ['Login', 'TRTC'];
@@ -16,17 +16,14 @@ const routerIntercept = () => {
   return async (to, form, next) => {
     try {
       if (whitelist.includes(to.name)) return next();
-      const token = checkToken();
-      // const { userInfo } = stareInstance.state.globalStore;
-      // if (token && token !== 'undefined' && userInfo) {
-      //   return next();
-      // }
-      if (token) {
+      const token = checkToken('IM_TOKEN');
+      const userInfo = storeInstance.getters['globalStore/userInfo'];
+      if (token && token !== 'undefined' && userInfo) {
         return next();
       }
       return next('/login');
     } catch (e) {
-      stareInstance.commit('globalStore/setUserError', {
+      storeInstance.commit('globalStore/setUserError', {
         visible: true,
         message: e,
       });

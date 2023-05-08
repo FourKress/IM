@@ -7,12 +7,15 @@ export * from '../src/pinyin';
 import lodash from 'lodash';
 import qrcode from 'qrcode';
 import generateRoute, { routeInstance } from '../src/router';
-import generateStore, { stareInstance } from '../src/store';
+import generateStore, { storeInstance } from '../src/store';
 import regexUtils from '../src/regex';
 import AddressBookMixins from '../src/mixins/addressBook';
 import PhoneNumMixins from '../src/mixins/phoneNum';
 import RecoverAccountMixins from '../src/mixins/recoverAccount';
 import FriendMixins from '../src/mixins/friend';
+import https from '../src/https';
+import VuePrototype from '../src/VuePrototype';
+import * as Apis from '../src/apis';
 
 export {
   lodash,
@@ -20,10 +23,13 @@ export {
   generateRoute,
   generateStore,
   routeInstance,
-  stareInstance,
+  storeInstance,
   regexUtils,
   AddressBookMixins,
   PhoneNumMixins,
   RecoverAccountMixins,
   FriendMixins,
+  https,
+  VuePrototype,
+  Apis,
 };

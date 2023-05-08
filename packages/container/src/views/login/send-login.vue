@@ -37,7 +37,7 @@
                 v-model="form.firstPhoneNum"
               />
             </el-form-item>
-            <el-form-item label="" prop="secondPhoneNum">
+            <el-form-item label="" prop="secondPhoneNum" v-if="isSetPwd">
               <el-input
                 type="password"
                 maxlength="16"
@@ -49,12 +49,19 @@
           </div>
         </el-form>
 
+        <div class="tips-opt" v-if="!isSetPwd">
+          <span class="left" @click="handleForgetPassword">忘记密码？</span>
+          <span class="right" @click="handleSwitchAuthCode">
+            切换为验证码登录
+          </span>
+        </div>
+
         <div
           class="login-btn"
           :class="activeBtn && 'active'"
           @click="handleLogin"
         >
-          下一步
+          立即登录
         </div>
       </div>
     </template>
@@ -70,11 +77,13 @@
 
 <script>
 import { mapActions } from 'vuex';
-import { setToken } from '@lanshu/utils';
+import { setToken, Apis } from '@lanshu/utils';
 import { IMSDK_Init } from '@lanshu/im';
 import { renderProcess } from '@lanshu/render-process';
 import { LsIcon } from '@lanshu/components';
 import { microShared } from '@lanshu/micro';
+
+const reg = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{8,16}$/;
 
 export default {
   name: 'Send-login',
@@ -94,23 +103,32 @@ export default {
       type: Boolean,
       default: true,
     },
+    captcha: {
+      type: [String, Number],
+      default: '',
+    },
   },
   computed: {
     activeBtn() {
       const { firstPhoneNum, secondPhoneNum } = this.form;
-      return (
-        firstPhoneNum && secondPhoneNum && firstPhoneNum === secondPhoneNum
-      );
+      if (this.isSetPwd) {
+        return (
+          firstPhoneNum &&
+          secondPhoneNum &&
+          firstPhoneNum === secondPhoneNum &&
+          reg.test(firstPhoneNum)
+        );
+      }
+      return firstPhoneNum && reg.test(firstPhoneNum);
     },
     isAppLogin() {
       return !this.phoneNum;
     },
   },
   data() {
-    const reg = /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]{8,16}$/g;
     const validateFormPwd = (rule, value, callback) => {
       if (!reg.test(value)) {
-        return callback(new Error('请输入有效的密码'));
+        return callback(new Error('请输入有效的密码1'));
       }
       const { secondPhoneNum } = this.form;
       if (secondPhoneNum && secondPhoneNum !== value) {
@@ -167,42 +185,62 @@ export default {
   },
   methods: {
     ...mapActions('IMStore', ['setUserInfo', 'setAllSession']),
+    ...mapActions('globalStore', ['setSystemUserInfo']),
     ...mapActions('routerStore', ['clearBreadCrumb']),
 
     backLogin() {
-      this.handleBeforeDestroy();
-      this.$nextTick(() => {
+      if (this.isSetPwd) {
+        this.$emit('backAuth', this.phoneNum, true);
+      } else {
         this.$emit('update:isSendLogin');
-      });
+      }
     },
 
-    handleBeforeDestroy() {
-      this.handleClearInterval();
-      this.handleSaveCountdown();
+    handleForgetPassword() {
+      this.$emit('backAuth', this.phoneNum, true);
     },
-
-    handleClearInterval() {
-      this.$refs?.authCode?.handleClearInterval();
-    },
-    handleSaveCountdown() {
-      this.$refs?.authCode?.handleSaveCountdown();
+    handleSwitchAuthCode() {
+      this.$emit('backAuth', this.phoneNum, false);
     },
 
     async handleLogin() {
-      this.handleClearInterval();
+      const terminal = await renderProcess.getStore('CLIENT_TERMINAL');
+      if (this.isSetPwd) {
+        await Apis.accountSetPassword({
+          username: this.phoneNum,
+          password: this.form.firstPhoneNum,
+          captcha: this.captcha,
+          terminal,
+        });
+      }
+
+      const res = await Apis.accountLogin({
+        username: this.phoneNum,
+        password: this.form.firstPhoneNum,
+        terminal,
+        orgId: '',
+      });
+
+      const resData = res?.data || {};
+      await this.setSystemUserInfo(resData);
+
+      const { imAppid, imToken, token, userId } = resData;
+
+      setToken('IM_TOKEN', imToken);
+      setToken('SYS_TOKEN', token);
+
       // const token =
       //   'eyJhcHBJZCI6IjY0MDg0YThhODcxZGY2N2ExMTc3MmM2NSIsImFwcFVzZXIiOiI4ODg4ODg4IiwiZXhwaXJlIjotMSwic2lnbiI6IjVKT0d1VmJPL2VyelVibjc5N2xOUkdhMU1qMzA5bi9oTFNqRjdjemJWQkk9In0=';
-      const token =
-        'eyJhcHBJZCI6IjY0MDg0YThhODcxZGY2N2ExMTc3MmM2NSIsImFwcFVzZXIiOiI5OTk5OTk5IiwiZXhwaXJlIjotMSwic2lnbiI6InlBV3pid3orS1FrUUdRb3JIWU5RL1RNRTJpa093cURBSUozNzVHN3BVMzQ9In0=';
+      // const imToken =
+      //   'eyJhcHBJZCI6IjY0MDg0YThhODcxZGY2N2ExMTc3MmM2NSIsImFwcFVzZXIiOiI5OTk5OTk5IiwiZXhwaXJlIjotMSwic2lnbiI6InlBV3pid3orS1FrUUdRb3JIWU5RL1RNRTJpa093cURBSUozNzVHN3BVMzQ9In0=';
       // const token = 'eyJhcHBJZCI6IjY0MDg0YThhODcxZGY2N2ExMTc3MmM2NSIsImFwcFVzZXIiOiIxMjM0NTQzMjEiLCJleHBpcmUiOi0xLCJzaWduIjoiNTZjZUZrVWVJSjhpcUkzdENtQ0dRWFUvRldEdkFCMXNJZm5FeVhiK0plQT0ifQ==';
-      setToken({
-        token,
-      });
+
       try {
         await IMSDK_Init({
-          token,
+          imToken,
+          userId,
           // userId: '8888888',
-          userId: '9999999',
+          // userId: '9999999',
           // userId: '123454321',
         });
 
@@ -210,7 +248,9 @@ export default {
 
         this.$router.push('/');
         await this.clearBreadCrumb();
-        renderProcess.showMainWindow();
+        renderProcess.showMainWindow({
+          appId: imAppid,
+        });
       } catch (e) {}
     },
   },
@@ -277,6 +317,27 @@ export default {
       &::placeholder {
         color: $tips-text-color;
         font-size: 18px;
+      }
+    }
+  }
+
+  .tips-opt {
+    margin: 30px 0;
+    font-size: 14px;
+    color: $primary-hover-color;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    .left,
+    .right {
+      cursor: pointer;
+    }
+
+    .left {
+      &.disabled {
+        color: $tips-text-color;
+        cursor: default;
       }
     }
   }

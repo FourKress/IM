@@ -4,7 +4,7 @@ import ElementUI, { Message } from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 import { baseRoutes } from '@lanshu/container';
 import { IMStore } from '@lanshu/im';
-import { generateRoute, generateStore } from '@lanshu/utils';
+import { generateRoute, generateStore, VuePrototype } from '@lanshu/utils';
 import App from './App';
 import { LsConfirm } from '@lanshu/components';
 
@@ -16,20 +16,20 @@ Vue.config.unwrapInjectedRef = true;
 
 Vue.use(ElementUI);
 Vue.use(LsConfirm);
+Vue.use(VuePrototype);
+
 window.ClientMessage = Message;
+
 const Layout = (config = {}) => {
-  return new Promise(async (resolve, reject) => {
-    const { menu, routes, plugin, platform, store } = config;
-    if (!platform) {
-      return reject('请设置 platform 值');
-    }
+  return new Promise(async (resolve) => {
+    const { menu, routes, plugin, store } = config;
     if (menu) {
       localStorage.setItem('menu', JSON.stringify(menu));
     } else {
       localStorage.removeItem('menu');
     }
 
-    if (plugin && platform !== 'personal') {
+    if (plugin) {
       localStorage.setItem('hasPlugin', 'true');
       Vue.component('plugin', plugin);
     } else {

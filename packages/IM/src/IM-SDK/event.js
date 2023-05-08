@@ -1,5 +1,5 @@
 import { renderProcess } from '@lanshu/render-process';
-import { stareInstance, removeToken } from '@lanshu/utils';
+import { storeInstance, removeToken } from '@lanshu/utils';
 import {
   IMSDKConvProvider,
   IMSDKFileProvider,
@@ -37,7 +37,7 @@ export const IMSDK_Init = async (loginParams) => {
   const { userId } = loginParams;
   await IMLogin(loginParams);
   const res = await IMGetUserAttribute(userId);
-  stareInstance.commit('IMStore/setUserInfo', res.data);
+  storeInstance.commit('IMStore/setUserInfo', res.data);
   renderProcess.setStore('TRTC_USER_INFO', res.data);
   await IMGetUserProfile(userId);
   await IMGetConvList(userId);
@@ -65,7 +65,7 @@ export const IMGetUserProfile = async (userId) => {
     IMSDKUserProvider.events.getUserProfile,
     userId,
   );
-  stareInstance.commit('IMStore/setUserProfile', res.data);
+  storeInstance.commit('IMStore/setUserProfile', res.data);
   return res;
 };
 
@@ -76,7 +76,7 @@ export const IMGetConvList = async (userId) => {
     userId,
   );
   if (res.data.length > 0) {
-    stareInstance.commit('IMStore/setAllSession', res.data);
+    storeInstance.commit('IMStore/setAllSession', res.data);
   }
   return res;
 };
@@ -85,7 +85,7 @@ export const IMGetTotalUnreadMessageCount = async () => {
     IMSDKConvProvider.provider,
     IMSDKConvProvider.events.getTotalUnreadMessageCount,
   );
-  stareInstance.commit('IMStore/setAllUnreadCount', res.data);
+  storeInstance.commit('IMStore/setAllUnreadCount', res.data);
   return res;
 };
 
@@ -94,7 +94,8 @@ export const IMLogout = async () =>
 
 export const ClientLogOut = async () => {
   await IMLogout();
-  removeToken();
+  removeToken('IM_TOKEN');
+  removeToken('SYS_TOKEN');
   renderProcess.showLoginWindow(1000);
   window.location.reload();
 };
@@ -104,8 +105,8 @@ export const IMClearUnreadCount = async (sessId, sessionWindowList) => {
     IMSDKConvProvider.events.clearUnreadCount,
     sessId,
   );
-  const sessionList = stareInstance.getters['IMStore/sessionList'];
-  stareInstance.commit(
+  const sessionList = storeInstance.getters['IMStore/sessionList'];
+  storeInstance.commit(
     'IMStore/setAllSession',
     sessionList.map((d) => {
       let unreadCount;
@@ -231,7 +232,7 @@ export const IMSetUserProfile = async (
     location,
     phone,
   );
-  const userProfile = stareInstance.getters['IMStore/userProfile'];
+  const userProfile = storeInstance.getters['IMStore/userProfile'];
   await IMGetUserProfile(userProfile.userId);
 };
 
@@ -319,7 +320,7 @@ export const IMGetFriendRequestNoticeUnreadCount = async () => {
     IMSDKFriendProvider.provider,
     IMSDKFriendProvider.events.getFriendRequestNoticeUnreadCount,
   );
-  stareInstance.commit('IMStore/setNewFriendCount', Number(res?.data || 0));
+  storeInstance.commit('IMStore/setNewFriendCount', Number(res?.data || 0));
 };
 
 export const IMAgreeFriendAddRequest = async (noticeId, remark, desc) =>

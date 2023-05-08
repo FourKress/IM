@@ -21,7 +21,7 @@
 
         <div class="input-panel">
           <template v-if="[0, 2].includes(step)">
-            <AuthCode ref="authCode" @inputComplete="handleInputComplete" />
+            <AuthCode ref="authCode" :phoneNum="phoneNum" @inputComplete="handleInputComplete" />
 
             <!--          <div class="recover-account" v-if="step === 0">-->
             <!--            <span>手机号已停用？</span>-->

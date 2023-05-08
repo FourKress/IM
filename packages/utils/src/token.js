@@ -4,21 +4,18 @@
  * 删除本地Token
  */
 
-const authKey = 'authKey';
-
 // 获取本地token
-export function getToken() {
+export function getToken(authKey) {
   return sessionStorage.getItem(authKey);
 }
 
 // 设置/更新本地token
-export function setToken(data) {
-  const { token } = data;
+export function setToken(authKey, token) {
   return sessionStorage.setItem(authKey, token);
 }
 
 // 移除本地token
-export function removeToken(key = authKey) {
+export function removeToken(authKey) {
   sessionStorage.removeItem(authKey);
 }
 
@@ -28,6 +25,6 @@ export function removeToken(key = authKey) {
  * @returns {string} refresh_token: status = 2时会返回;
  * }
  */
-export function checkToken() {
-  return getToken();
+export function checkToken(authKey) {
+  return getToken(authKey);
 }
