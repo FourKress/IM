@@ -77,13 +77,13 @@ export const IMSDKCallBackEvents = {
   },
   KickOutedOffline(ctx) {
     console.log('@@@@@ KickOutedOffline');
-    storeInstance.commit('IMStore/setAllSession');
+    storeInstance.commit('IMStore/setAllSession', []);
     ctx
       .$Lconfirm({
         title: '提示',
         showCancelBtn: false,
         confirmBtnText: '确定',
-        content: '当前登录被提出, 请退出重新登录',
+        content: '当前登录被踢出, 请退出重新登录',
       })
       .then(async () => {
         await ClientLogOut();

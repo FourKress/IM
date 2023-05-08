@@ -29,11 +29,11 @@ export default {
   },
   async created() {
     // 获取入口是否传入Plugin项
-    const hasPlugin = JSON.parse(localStorage.getItem('hasPlugin') || 'false');
-    const isGovernment =
-      (await renderProcess.getStore('CLIENT_TERMINAL')) ===
-      CLIENT_TERMINAL.IS_GOVERNMENT;
-    this.hasPlugin = hasPlugin && isGovernment;
+    // const hasPlugin = JSON.parse(localStorage.getItem('hasPlugin') || 'false');
+    // const isGovernment =
+    //   (await renderProcess.getStore('CLIENT_TERMINAL')) ===
+    //   CLIENT_TERMINAL.IS_GOVERNMENT;
+    // this.hasPlugin = hasPlugin && isGovernment;
   },
   mounted() {
     // this.$nextTick(() => {

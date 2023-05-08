@@ -181,3 +181,8 @@ export const CLIENT_TERMINAL = {
   IS_ENTERPRISE: 'enterprise',
   IS_GOVERNMENT: 'government',
 };
+
+export const TOKEN_TYPE = {
+  IS_IM: 'IM_TOKEN',
+  IS_SYS: 'SYS_TOKEN',
+};

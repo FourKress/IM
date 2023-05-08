@@ -172,7 +172,7 @@ export default {
       });
 
       // 正常，跳转密码登录
-      if (code === '00000') {
+      if (code === '10009') {
         this.$emit('enterPassword', phoneNum);
         return;
       }
@@ -182,15 +182,7 @@ export default {
         this.$message.error(msg);
         return;
       }
-      // 发送验证码
-      Apis.accountSendCaptcha({
-        phone: phoneNum,
-        terminal,
-      }).then((res) => {
-        console.log(res);
-        this.$emit('enterAuthCode', phoneNum);
-      });
-      // this.$emit('enterAuthCode', phoneNum);
+      this.$emit('enterAuthCode', phoneNum);
     },
     loopAppLogin() {
       this.appQrcodeTimer = setInterval(() => {

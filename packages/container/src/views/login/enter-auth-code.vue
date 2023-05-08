@@ -16,15 +16,21 @@
     </div>
 
     <div class="input-panel">
-      <AuthCode ref="authCode" :phoneNum="phoneNum" @inputComplete="handleInputComplete">
-        <span v-if="!isSetPwd" @click="handleSwitchPassword">切换为密码登录</span>
+      <AuthCode
+        ref="authCode"
+        :phoneNum="phoneNum"
+        @inputComplete="handleInputComplete"
+      >
+        <span v-if="!isSetPwd" @click="handleSwitchPassword">
+          切换为密码登录
+        </span>
       </AuthCode>
       <div
         class="login-btn"
         :class="isAuthCodeComplete && 'active'"
         @click="handleLogin"
       >
-        {{isSetPwd ? '下一步' : '立即登录'}}
+        {{ isSetPwd ? '下一步' : '立即登录' }}
       </div>
     </div>
   </div>
@@ -35,11 +41,12 @@ import { PhoneNumMixins, phoneEncryption, Apis } from '@lanshu/utils';
 import { LsIcon } from '@lanshu/components';
 import OtherLogin from './other-login';
 import AuthCode from '../../components/authCode';
-import {renderProcess} from "@lanshu/render-process";
+import { renderProcess } from '@lanshu/render-process';
+import LoginMixins from './loginMixins';
 
 export default {
   name: 'Enter-auth-code',
-  mixins: [PhoneNumMixins],
+  mixins: [PhoneNumMixins, LoginMixins],
   props: {
     phoneNum: {
       type: [String, Number],
@@ -67,6 +74,15 @@ export default {
     },
   },
   watch: {},
+  async mounted() {
+    const terminal = await renderProcess.getStore('CLIENT_TERMINAL');
+    // 发送验证码
+    await Apis.accountSendCaptcha({
+      phone: this.phoneNum,
+      terminal,
+      scene: this.isSetPwd ? 'setPassword' : 'login',
+    });
+  },
   methods: {
     backLogin() {
       this.handleClearInterval();
@@ -85,7 +101,7 @@ export default {
 
     handleInputComplete(flag, codes) {
       this.isAuthCodeComplete = flag;
-      this.codes = codes
+      this.codes = codes;
     },
 
     handleSwitchPassword() {
@@ -94,21 +110,33 @@ export default {
     },
 
     async handleLogin() {
-      if (!this.isAuthCodeComplete) return
-      const terminal = await renderProcess.getStore('CLIENT_TERMINAL');
-      await Apis.accountCheckCaptcha({
-        phone: this.phoneNum,
-        captcha: this.codes,
-        terminal
-      })
-      this.$emit('switchPassword', this.phoneNum, this.isSetPwd, this.codes);
+      if (!this.isAuthCodeComplete) return;
+      if (this.isSetPwd) {
+        const terminal = await renderProcess.getStore('CLIENT_TERMINAL');
+        await Apis.accountCheckCaptcha({
+          phone: this.phoneNum,
+          captcha: this.codes,
+          terminal,
+          scene: this.isSetPwd ? 'setPassword' : 'login',
+        });
+        this.$emit('switchPassword', this.phoneNum, this.isSetPwd, this.codes);
+      } else {
+        const terminal = await renderProcess.getStore('CLIENT_TERMINAL');
+        const res = await Apis.accountLoginWithCaptcha({
+          username: this.phoneNum,
+          captcha: this.codes,
+          terminal,
+        });
+
+        await this.handleClientLogin(res);
+      }
     },
   },
 
   beforeDestroy() {
     this.handleClearInterval();
     this.handleSaveCountdown();
-  }
+  },
 };
 </script>
 

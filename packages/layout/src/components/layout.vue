@@ -1,14 +1,15 @@
 <template>
-  <div id="client-layout" v-if="!isFull">
+  <div id="client-layout" v-if="!isFull && userInfo.userId">
     <Header />
     <ContainerView />
   </div>
-  <router-view v-else class="router-view" />
+  <router-view v-else class="router-view 12" />
 </template>
 
 <script>
 import { ContainerView } from '@lanshu/container';
 import Header from './header';
+import { mapGetters } from 'vuex';
 
 export default {
   name: 'MainLayout',
@@ -17,6 +18,8 @@ export default {
     ContainerView,
   },
   computed: {
+    ...mapGetters('IMStore', ['userInfo']),
+
     isFull() {
       const { isFull = false } = this.$route.meta;
       return isFull;

@@ -1,5 +1,11 @@
 import { renderProcess } from '@lanshu/render-process';
-import { storeInstance, removeToken } from '@lanshu/utils';
+import {
+  storeInstance,
+  removeToken,
+  Apis,
+  getToken,
+  TOKEN_TYPE,
+} from '@lanshu/utils';
 import {
   IMSDKConvProvider,
   IMSDKFileProvider,
@@ -94,8 +100,9 @@ export const IMLogout = async () =>
 
 export const ClientLogOut = async () => {
   await IMLogout();
-  removeToken('IM_TOKEN');
-  removeToken('SYS_TOKEN');
+  await Apis.accountLoginOut(getToken(TOKEN_TYPE.IS_SYS));
+  removeToken(TOKEN_TYPE.IS_IM);
+  removeToken(TOKEN_TYPE.IS_SYS);
   renderProcess.showLoginWindow(1000);
   window.location.reload();
 };

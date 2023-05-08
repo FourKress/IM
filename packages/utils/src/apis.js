@@ -27,3 +27,7 @@ export const accountLoginOut = (params) => {
 export const accountCheckCaptcha = (params) => {
   return https.post('/auth/account/checkCaptcha', params);
 };
+
+export const accountLoginWithCaptcha = (params) => {
+  return https.post('/auth/account/loginWithCaptcha', params);
+};

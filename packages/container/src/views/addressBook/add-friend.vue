@@ -29,7 +29,7 @@
       v-if="friendList.length"
       v-for="item in friendList"
       :key="item.userId"
-      @click="(event) => handleOpenFriendDialog(item, event)"
+      @click="(event) => item.userId !== userInfo.userId && handleOpenFriendDialog(item, event)"
     >
       <div class="left">
         <img class="img" :src="item.avatar" alt="" />
@@ -39,7 +39,7 @@
         </div>
       </div>
       <div class="right">
-        <span>添加好友</span>
+        <span v-if="item.userId !== userInfo.userId">添加好友</span>
       </div>
     </div>
 
@@ -63,6 +63,7 @@ import {
 } from '@lanshu/utils';
 import { LsCardDialog, LsFriendPanel } from '@lanshu/components';
 import { IMSearchUserProfileOfPhone, IMFriendAddRequest } from '@lanshu/im';
+import { mapGetters } from 'vuex';
 
 export default {
   name: 'Add-friend',
@@ -90,6 +91,9 @@ export default {
       },
       friendList: [],
     };
+  },
+  computed: {
+    ...mapGetters('IMStore', ['userInfo']),
   },
   watch: {
     'form.phoneNum': function (val, oldVal) {
@@ -124,7 +128,7 @@ export default {
     },
     handleClearSearch() {
       this.friendList = [];
-    }
+    },
   },
 };
 </script>

@@ -138,7 +138,7 @@ export default {
     sessionList: {
       deep: true,
       handler(val) {
-        console.log('sessionList', val)
+        console.log('sessionList', val);
         this.initData();
       },
     },
@@ -156,18 +156,15 @@ export default {
     groupAttributeChanged: {
       deep: true,
       handler(val) {
-        console.log('groupAttributeChanged', val)
+        console.log('groupAttributeChanged', val);
       },
-    }
+    },
   },
   mounted() {
     this.initData();
   },
   methods: {
-    ...mapActions('IMStore', [
-      'setMainSessionWindow',
-      'setAllSession',
-    ]),
+    ...mapActions('IMStore', ['setMainSessionWindow']),
     initData() {
       this.selfSessionList = this.sessionList;
       this._setMainSessionWindow();
@@ -193,7 +190,9 @@ export default {
       const currentSession = this.mainSessionWindow?.sessId;
       if (currentSession) {
         this.currentSession = currentSession;
-        const targetSession = sessionList.find(d => d.sessId === currentSession);
+        const targetSession = sessionList.find(
+          (d) => d.sessId === currentSession,
+        );
         // TODO 临时处理手动创建会话时 mainSessionWindow 的更新问题
         if (!targetSession || this.mainSessionWindow?.nickname) return;
         this.handleSetSessionWindow(currentSession, targetSession);

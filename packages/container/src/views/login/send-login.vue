@@ -77,16 +77,16 @@
 
 <script>
 import { mapActions } from 'vuex';
-import { setToken, Apis } from '@lanshu/utils';
-import { IMSDK_Init } from '@lanshu/im';
+import { Apis } from '@lanshu/utils';
 import { renderProcess } from '@lanshu/render-process';
 import { LsIcon } from '@lanshu/components';
-import { microShared } from '@lanshu/micro';
+import LoginMixins from './loginMixins';
 
 const reg = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{8,16}$/;
 
 export default {
   name: 'Send-login',
+  mixins: [LoginMixins],
   components: {
     LsIcon,
   },
@@ -184,10 +184,6 @@ export default {
     this.$refs.firstPhoneNum.focus();
   },
   methods: {
-    ...mapActions('IMStore', ['setUserInfo', 'setAllSession']),
-    ...mapActions('globalStore', ['setSystemUserInfo']),
-    ...mapActions('routerStore', ['clearBreadCrumb']),
-
     backLogin() {
       if (this.isSetPwd) {
         this.$emit('backAuth', this.phoneNum, true);
@@ -221,37 +217,7 @@ export default {
         orgId: '',
       });
 
-      const resData = res?.data || {};
-      await this.setSystemUserInfo(resData);
-
-      const { imAppid, imToken, token, userId } = resData;
-
-      setToken('IM_TOKEN', imToken);
-      setToken('SYS_TOKEN', token);
-
-      // const token =
-      //   'eyJhcHBJZCI6IjY0MDg0YThhODcxZGY2N2ExMTc3MmM2NSIsImFwcFVzZXIiOiI4ODg4ODg4IiwiZXhwaXJlIjotMSwic2lnbiI6IjVKT0d1VmJPL2VyelVibjc5N2xOUkdhMU1qMzA5bi9oTFNqRjdjemJWQkk9In0=';
-      // const imToken =
-      //   'eyJhcHBJZCI6IjY0MDg0YThhODcxZGY2N2ExMTc3MmM2NSIsImFwcFVzZXIiOiI5OTk5OTk5IiwiZXhwaXJlIjotMSwic2lnbiI6InlBV3pid3orS1FrUUdRb3JIWU5RL1RNRTJpa093cURBSUozNzVHN3BVMzQ9In0=';
-      // const token = 'eyJhcHBJZCI6IjY0MDg0YThhODcxZGY2N2ExMTc3MmM2NSIsImFwcFVzZXIiOiIxMjM0NTQzMjEiLCJleHBpcmUiOi0xLCJzaWduIjoiNTZjZUZrVWVJSjhpcUkzdENtQ0dRWFUvRldEdkFCMXNJZm5FeVhiK0plQT0ifQ==';
-
-      try {
-        await IMSDK_Init({
-          imToken,
-          userId,
-          // userId: '8888888',
-          // userId: '9999999',
-          // userId: '123454321',
-        });
-
-        microShared.setToken(token);
-
-        this.$router.push('/');
-        await this.clearBreadCrumb();
-        renderProcess.showMainWindow({
-          appId: imAppid,
-        });
-      } catch (e) {}
+      await this.handleClientLogin(res);
     },
   },
 };
