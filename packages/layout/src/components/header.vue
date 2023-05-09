@@ -3,7 +3,7 @@
     <div class="header_user">
       <el-badge is-dot :hidden="!updateNotify || !updateVersion">
         <div class="avatar" @click="openDialog">
-          <img :src="userInfo.avatar" class="img" alt="" />
+          <img :src="userProfile.avatar" class="img" alt="" />
         </div>
       </el-badge>
       <!--      <div class="user-info">-->
@@ -29,7 +29,7 @@
             v-model="keywords"
             clearable
             type="text"
-            placeholder="创建事项或搜索关键词"
+            placeholder="搜索"
           />
         </div>
         <div class="add">
@@ -49,10 +49,10 @@
         </div>
         <div class="info">
           <div class="avatar">
-            <img :src="userInfo.avatar" class="img" />
+            <img :src="userProfile.avatar" class="img" />
           </div>
           <div class="sub-info">
-            <div class="nickname">{{ userInfo.nickname }}</div>
+            <div class="nickname">{{ userProfile.nickname }}</div>
             <!--            <span class="auth-tag">-->
             <!--              <LsIcon-->
             <!--                render-svg-->
@@ -79,7 +79,7 @@
           <LsUserTag
             :age="calculateAgeByBirthday(userProfile.birthday)"
             :sex="userProfile.sex"
-            address="重庆渝北"
+            :address="userProfile.location"
           ></LsUserTag>
         </div>
 

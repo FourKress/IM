@@ -37,6 +37,10 @@ export default {
       type: [String, Number],
       default: '',
     },
+    scene: {
+      type: String,
+      required: true,
+    }
   },
   data() {
     return {
@@ -97,6 +101,7 @@ export default {
       await Apis.accountSendCaptcha({
         phone: this.phoneNum,
         terminal,
+        scene: this.scene,
       });
       this.handleCountdown();
     },

@@ -15,7 +15,7 @@
               color=""
               :age="calculateAgeByBirthday(friendInfo.birthday)"
               :sex="friendInfo.sex"
-              address="重庆渝北"
+              :address="friendInfo.location"
             ></LsUserTag>
           </span>
         </div>

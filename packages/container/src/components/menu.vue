@@ -10,7 +10,9 @@
         @click="handleMenuSwitch(item.path)"
       >
         <span class="btn-icon">
+          <img v-if="item.activeIcon.includes('http')" :src="item.activeIcon" alt="">
           <LsIcon
+            v-else
             render-svg
             width="20"
             height="20"
@@ -19,7 +21,7 @@
             "
           ></LsIcon>
         </span>
-        <span>{{ item.label }}</span>
+        <span class="menu-label">{{ item.label }}</span>
 
         <el-badge
           v-if="getBadge(item)"
@@ -59,8 +61,8 @@ import BaseRoutes from '../router';
 import { LsIcon, LsCardDialog, LsAssets } from '@lanshu/components';
 import { renderProcess } from '@lanshu/render-process';
 import { mapGetters, mapActions } from 'vuex';
-import microRouter from '../micro/router';
-import { microAppPathMark } from '@lanshu/micro';
+import micro from '../micro';
+import { MICRO_APP_PATH_MARK } from '@lanshu/micro';
 
 export default {
   name: 'MainMenu',
@@ -79,14 +81,14 @@ export default {
     };
   },
   computed: {
-    ...mapGetters('globalStore', ['updateVersion']),
+    ...mapGetters('globalStore', ['updateVersion', 'systemUserInfo']),
     ...mapGetters('IMStore', ['allUnreadCount', 'newFriendCount']),
   },
   watch: {
     $route(val) {
       const { path = '' } = val;
-      const isMicro = path.includes(microAppPathMark);
-      const regExp = new RegExp('\/[a-zA-Z]+' + microAppPathMark, 'g');
+      const isMicro = path.includes(MICRO_APP_PATH_MARK);
+      const regExp = new RegExp('\/[a-zA-Z]+' + MICRO_APP_PATH_MARK, 'g');
       this.activePath = isMicro ? path.match(regExp)[0] : path;
     },
   },
@@ -94,7 +96,7 @@ export default {
     // 获取入口传入的Menu项
     const pluginMenu = JSON.parse(localStorage.getItem('menu') || '[]');
 
-    this.navList = [...BaseRoutes, ...microRouter]
+    this.navList = [...BaseRoutes, ...micro.getRoutes()]
       .filter((r) => r?.meta?.isMenu)
       .map((r) => {
         const meta = r?.meta;
@@ -185,6 +187,12 @@ export default {
         margin-bottom: 4px;
         transition: all 0.3s;
         margin-top: 2px;
+
+        img {
+          display: block;
+          width: 100%;
+          height: 100%;
+        }
       }
 
       &.active {
@@ -207,6 +215,15 @@ export default {
         display: block;
         transform-origin: center;
         transform: scale(0.8);
+      }
+
+      .menu-label {
+        width: 60px;
+        text-align: center;
+        height: 17px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
       }
     }
   }

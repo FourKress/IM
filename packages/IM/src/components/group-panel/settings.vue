@@ -17,9 +17,14 @@
     </div>
 
     <div class="row">
-      <!--      <RowChat title="我的群备注" @click="createGroup">-->
-      <!--        <el-input placeholder="请输入" size="small"></el-input>-->
-      <!--      </RowChat>-->
+      <RowChat title="我的群备注">
+        <el-input
+          placeholder="请输入"
+          size="small"
+          v-model="groupInfo.remark"
+          @change="handleChangeRemark"
+        ></el-input>
+      </RowChat>
       <RowChat title="我的群昵称">
         <el-input
           placeholder="请输入"
@@ -87,6 +92,7 @@ import {
   IMOwnerTransfer,
   IMExitGroupChat,
   IMDissolveGroupChat,
+  IMSetGroupRemark,
 } from '../../IM-SDK';
 import RowChat from './row-chat';
 import Manager from './manager';
@@ -148,12 +154,13 @@ export default {
 
     async getGroupInfo() {
       const res = await IMGetGroupAttribute(this.actionWindow.toUser);
-      const { nickname, avatar, groupId } = res?.data || {};
+      const { nickname, avatar, groupId, remark } = res?.data || {};
       this.groupInfo = {
         ...this.groupInfo,
         nickname,
         avatar,
         groupId,
+        remark,
       };
     },
     getGroupRoleManagerList() {
@@ -195,6 +202,14 @@ export default {
 
     handleChangeAlias(val) {
       IMSetGroupAlias(this.groupInfo.groupId, val);
+    },
+
+    async handleChangeRemark(val) {
+      await IMSetGroupRemark(this.groupInfo.groupId, val);
+      this.setMainSessionWindow({
+        ...this.actionWindow,
+        nickname: val
+      })
     },
 
     handleDeleteHistoryMsg() {

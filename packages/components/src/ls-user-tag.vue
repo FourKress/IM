@@ -1,6 +1,10 @@
 <template>
   <div class="ls-user-tag">
-    <span class="tag" :style="{background: bgColor}" v-if="age || (sex && unSex)">
+    <span
+      class="tag"
+      :style="{ background: bgColor }"
+      v-if="age || (sex && unSex)"
+    >
       <LsIcon
         render-svg
         class="tag-icon"
@@ -11,12 +15,14 @@
       ></LsIcon>
       {{ age ? `${age}岁` : '' }}
     </span>
-    <span class="tag" :style="{background: bgColor}">{{ address }}</span>
+    <span class="tag" v-if="addressLabel" :style="{ background: bgColor }">{{ addressLabel }}</span>
   </div>
 </template>
 
 <script>
+import { Apis } from '@lanshu/utils';
 import LsIcon from './ls-icon.vue';
+
 export default {
   name: 'Ls-User-Tag',
   props: {
@@ -37,17 +43,34 @@ export default {
     },
     bgColor: {
       type: String,
-      default: '#F2F4F9'
-    }
+      default: '#F2F4F9',
+    },
   },
   components: {
     LsIcon,
   },
   computed: {
     unSex() {
-      return this.sex !== 3
+      return this.sex !== 3;
+    },
+  },
+  data() {
+    return {
+      addressLabel: '',
+    };
+  },
+  async mounted() {
+    if (this.address) {
+      const res = await Apis.managerRegionQuery({});
+      const location = res?.data;
+      const regions = this.address.split(',');
+      const city = location.find((d) => d.code === regions[1]);
+      const area = location.find((d) => d.code === regions[2]);
+      this.addressLabel = `${city?.name}/${area?.name}`;
+    } else {
+      this.addressLabel = '';
     }
-  }
+  },
 };
 </script>
 
@@ -57,12 +80,13 @@ export default {
   align-items: flex-start;
 
   .tag {
-    min-width: 58px;
+    min-width: 42px;
     height: 22px;
     border-radius: 3px;
     display: flex;
     align-items: center;
     justify-content: center;
+    padding: 0 8px;
 
     font-size: 12px;
     font-weight: normal;

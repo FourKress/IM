@@ -21,7 +21,12 @@
 
         <div class="input-panel">
           <template v-if="[0, 2].includes(step)">
-            <AuthCode ref="authCode" :phoneNum="phoneNum" @inputComplete="handleInputComplete" />
+            <AuthCode
+              ref="authCode"
+              :phoneNum="phoneNum"
+              scene="updatePhone"
+              @inputComplete="handleInputComplete"
+            />
 
             <!--          <div class="recover-account" v-if="step === 0">-->
             <!--            <span>手机号已停用？</span>-->
@@ -59,7 +64,12 @@
           <template v-if="step == 3">
             <div class="success">
               <div class="success-icon">
-                <LsIcon render-svg width="53" height="53" icon="ls-icon-a-icon_genghuanchenggong2x1"></LsIcon>
+                <LsIcon
+                  render-svg
+                  width="53"
+                  height="53"
+                  icon="ls-icon-a-icon_genghuanchenggong2x1"
+                ></LsIcon>
               </div>
               <div class="title">手机号码更换成功！</div>
 
@@ -77,15 +87,18 @@
 </template>
 
 <script>
-import AuthCode from '../../../components/authCode';
 import {
   phoneEncryption,
   formatPhoneNum,
   PhoneNumMixins,
   RecoverAccountMixins,
+  Apis, getToken, TOKEN_TYPE,
 } from '@lanshu/utils';
 import { ClientLogOut } from '@lanshu/im';
 import { LsIcon } from '@lanshu/components';
+import AuthCode from '../../../components/authCode';
+import { mapGetters } from 'vuex';
+import { renderProcess } from '@lanshu/render-process';
 
 export default {
   name: 'Change-phoneNum',
@@ -96,8 +109,8 @@ export default {
   mixins: [RecoverAccountMixins, PhoneNumMixins],
   data() {
     return {
-      phoneNum: '17384094566',
-      newPhoneNum: '18933333333',
+      phoneNum: '',
+      newPhoneNum: '',
       step: 0,
       title: '请输入原手机验证码',
       titleTips: '',
@@ -121,12 +134,22 @@ export default {
           },
         ],
       },
-
+      terminal: '',
       countdown: 5,
     };
   },
+  computed: {
+    ...mapGetters('IMStore', ['userProfile']),
+  },
   watch: {
     step(val) {
+      const phoneMap = {
+        0: this.userProfile.phone,
+        2: this.newPhoneNum,
+      };
+      this.phoneNum = phoneMap[val];
+      this.form.phoneNum = phoneMap[val];
+
       const titleMap = {
         0: '请输入原手机验证码',
         1: '请输入新手机号码',
@@ -135,11 +158,11 @@ export default {
       const titleTipsMap = {
         0: `4位数的验证码已发送至手机 ${this.getPhoneText(
           this.phoneNum,
-        )}，有效期10分钟`,
+        )}，有效期5分钟`,
         1: '你正在修改登录手机号，修改后请使用新手机号码登录',
         2: `4位数的验证码已发送至手机 ${this.getPhoneText(
           this.newPhoneNum,
-        )}，有效期10分钟`,
+        )}，有效期5分钟`,
       };
       this.title = titleMap[val];
       this.titleTips = titleTipsMap[val];
@@ -151,24 +174,60 @@ export default {
       }
     },
   },
-  mounted() {
+  async mounted() {
+    this.terminal = await renderProcess.getStore('CLIENT_TERMINAL');
+    const { phone } = this.userProfile;
+    this.phoneNum = phone;
+    this.form.phoneNum = phone;
+    await this.sendCaptcha(phone);
     this.titleTips = `4位数的验证码已发送至手机 ${this.getPhoneText(
       this.phoneNum,
-    )}，有效期10分钟`;
+    )}，有效期5分钟`;
   },
   methods: {
+    async sendCaptcha(phone) {
+      await Apis.accountSendCaptcha({
+        phone,
+        terminal: this.terminal,
+        scene: 'updatePhone',
+      });
+    },
+
+    async checkCaptcha(phoneNum, codes) {
+      await Apis.accountCheckCaptcha({
+        phone: this.phoneNum,
+        captcha: codes,
+        terminal: this.terminal,
+        scene: 'updatePhone',
+      });
+    },
+
     getPhoneText(phoneNum) {
       return phoneEncryption(phoneNum);
     },
-    handleInputComplete(flag) {
+    async handleInputComplete(flag, codes) {
       if (flag) {
         if (this.step === 0) {
+          await this.checkCaptcha(this.phoneNum, codes);
           this.step = 1;
-          this.form.phoneNum = ''
+          this.form.phoneNum = '';
           this.$nextTick(() => {
             this.$refs.newPhoneNum.focus();
           });
         } else {
+          await this.checkCaptcha(this.newPhoneNum, codes);
+          await Apis.accountUpdatePhone({
+            newPhone: this.newPhoneNum,
+            token: getToken(TOKEN_TYPE.IS_SYS),
+            terminal: this.terminal
+          })
+          this.$loading({
+            lock: true,
+            text: '',
+            spinner: 'none',
+            background: 'transparent'
+          });
+
           this.step = 3;
           this.timer = setInterval(async () => {
             this.countdown--;
@@ -186,9 +245,10 @@ export default {
       this.step -= 1;
     },
 
-    handleAuth() {
+    async handleAuth() {
       if (!this.validPhoneNum) return;
       this.newPhoneNum = this.replacePhoneNum();
+      await this.sendCaptcha(this.newPhoneNum);
       this.step = 2;
     },
   },

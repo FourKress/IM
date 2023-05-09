@@ -8,16 +8,16 @@
           @callback="handleCallback(info)"
         >
           <template slot="tag" v-if="info.key === 'authentication'">
-<!--            <span class="auth-tag">-->
-<!--              <LsIcon-->
-<!--                render-svg-->
-<!--                class='tag-icon'-->
-<!--                icon="a-icon_yzcg2x"-->
-<!--                height="12"-->
-<!--                width="12"-->
-<!--              ></LsIcon>-->
-<!--              <span>已实名</span>-->
-<!--            </span>-->
+            <!--            <span class="auth-tag">-->
+            <!--              <LsIcon-->
+            <!--                render-svg-->
+            <!--                class='tag-icon'-->
+            <!--                icon="a-icon_yzcg2x"-->
+            <!--                height="12"-->
+            <!--                width="12"-->
+            <!--              ></LsIcon>-->
+            <!--              <span>已实名</span>-->
+            <!--            </span>-->
           </template>
         </InfoBlock>
       </template>
@@ -54,6 +54,7 @@
 <script>
 import { mapGetters, mapActions } from 'vuex';
 import { LsCardDialog, LsIcon } from '@lanshu/components';
+import {phoneEncryption} from '@lanshu/utils'
 import Card from './card';
 import InfoBlock from './info-block';
 
@@ -66,17 +67,16 @@ export default {
     LsIcon,
   },
   computed: {
-    ...mapGetters('IMStore', ['userInfo']),
+    ...mapGetters('IMStore', ['userInfo', 'userProfile']),
   },
   data() {
     return {
-
       infos: [
         {
           key: 'phoneNum',
           title: '手机号码',
           label: '已绑定号码',
-          value: '18455555553',
+          value: '',
           btnText: '更换',
           fnc: () => this.changePhone(),
         },
@@ -118,6 +118,8 @@ export default {
     };
   },
   mounted() {
+    const { phone } = this.userProfile;
+    this.infos[0].value = phoneEncryption(phone);
   },
   methods: {
     ...mapActions('routerStore', ['addBreadCrumbs']),
@@ -139,14 +141,16 @@ export default {
             手机号码登录
           </span>
         ),
-      }).then(() => {
-        const path = '/settings/changePhoneNum';
-        this.addBreadCrumbs({
-          title: '更换手机号',
-          path,
-        });
-        this.$router.push(path);
-      }).catch(e => {});
+      })
+        .then(() => {
+          const path = '/settings/changePhoneNum';
+          this.addBreadCrumbs({
+            title: '更换手机号',
+            path,
+          });
+          this.$router.push(path);
+        })
+        .catch((e) => {});
     },
     authenticate() {
       this.showAuthenticate = true;
@@ -157,9 +161,11 @@ export default {
         this.$Lconfirm({
           title: '确定要解绑微信吗？',
           content: '解绑后将不能使用微信登录',
-        }).then(() => {
-          console.log('312123231123');
-        }).catch(e => {});
+        })
+          .then(() => {
+            console.log('312123231123');
+          })
+          .catch((e) => {});
       } else {
         this.showUnbind = true;
       }

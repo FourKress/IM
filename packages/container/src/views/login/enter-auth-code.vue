@@ -19,6 +19,7 @@
       <AuthCode
         ref="authCode"
         :phoneNum="phoneNum"
+        :scene="this.isSetPwd ? 'setPassword' : 'login'"
         @inputComplete="handleInputComplete"
       >
         <span v-if="!isSetPwd" @click="handleSwitchPassword">

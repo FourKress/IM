@@ -46,7 +46,7 @@ export const IMSDK_Init = async (loginParams) => {
   storeInstance.commit('IMStore/setUserInfo', userAttribute.data);
   renderProcess.setStore('TRTC_USER_INFO', userAttribute.data);
   const userProfile = await IMGetUserProfile(userId);
-  storeInstance.commit('IMStore/setUserInfo', userProfile.data);
+  storeInstance.commit('IMStore/setUserProfile', userProfile.data);
   await IMGetConvList(userId);
   await IMGetTotalUnreadMessageCount();
   await IMGetFriendRequestNoticeUnreadCount();
@@ -238,7 +238,7 @@ export const IMSetUserProfile = async (
     phone,
   );
   const userProfile = storeInstance.getters['IMStore/userProfile'];
-  await IMGetUserProfile(userProfile.userId);
+  return await IMGetUserProfile(userProfile.userId);
 };
 
 export const IMSearchUserProfileOfPhone = async (phone) =>
@@ -484,4 +484,12 @@ export const IMGetAllAdminList = async (groupId) =>
     IMSDKGroupProvider.provider,
     IMSDKGroupProvider.events.getAllAdminList,
     groupId,
+  );
+
+export const IMSetGroupRemark = async (groupId, remark) =>
+  await eventHOCFnc(
+    IMSDKGroupProvider.provider,
+    IMSDKGroupProvider.events.setGroupRemark,
+    groupId,
+    remark,
   );

@@ -38,17 +38,19 @@
           "
           :style="{ minHeight: !checkSelf(item) && isGroup ? '68px' : '50px' }"
         >
-          <MsgLazyUserInfo
-            :class="
-              checkSelf(item) && bubbleModel === SESSION_BUBBLE_MODEL.IS_BETWEEN
-                ? 'self'
-                : 'target'
-            "
-            :is-self="checkSelf(item)"
-            :session="session"
-            :message="item"
-            @click="(event) => handleFriend(item, event)"
-          />
+          <span @click="(event) => handleFriend(item, event)">
+            <MsgLazyUserInfo
+              :class="
+                checkSelf(item) &&
+                bubbleModel === SESSION_BUBBLE_MODEL.IS_BETWEEN
+                  ? 'self'
+                  : 'target'
+              "
+              :is-self="checkSelf(item)"
+              :session="session"
+              :message="item"
+            />
+          </span>
 
           <div
             class="info"
@@ -98,6 +100,7 @@
       :groupRole="myGroupRole"
       :groupRoleManager="groupRoleManager"
       @refreshMsg="handleRefreshMsg"
+      @pushMsg="handlePushLocalMsg"
     />
 
     <!--    <div class='notify'>-->
@@ -344,6 +347,7 @@ export default {
     },
 
     async handleFriend(item, event) {
+      console.log(item);
       const { toUserType } = item;
       if (toUserType === SESSION_USER_TYPE.IS_GROUP) return;
       const isSelf = this.checkSelf(item);
@@ -363,12 +367,15 @@ export default {
       );
     },
 
-    handleRefreshMsg(msg) {
+    handlePushLocalMsg(msg) {
       this.messageList.push(msg);
       this.$nextTick(() => {
         this.$refs.messagePanel.scrollTop =
           this.$refs.messagePanel.scrollHeight;
       });
+    },
+    handleRefreshMsg() {
+      this.getMessageList();
     },
 
     handleResendMsg() {

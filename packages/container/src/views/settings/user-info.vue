@@ -3,18 +3,31 @@
     <div>
       <InfoBlock :info="{ title: '我的头像' }">
         <div class="avatar" @click="handleUploadFile">
-          <img :src="userInfo.avatar" class="img" alt="" />
-          <div class="tag"></div>
+          <img :src="userProfile.avatar" class="img" alt="" />
+          <div class="tag">
+            <LsIcon
+              class=""
+              size="10"
+              icon="ls-icon-a-icon_genghuantouxiang2x"
+            ></LsIcon>
+          </div>
         </div>
       </InfoBlock>
 
       <template v-for="info in infos">
-        <InfoBlock
-          class="row"
-          :key="info.key"
-          :info="info"
-        ></InfoBlock>
+        <InfoBlock class="row" :key="info.key" :info="info"></InfoBlock>
       </template>
+
+      <InfoBlock class="row">
+        <el-cascader
+          clearable
+          v-model="regions"
+          @change="handleRegionsChange"
+          :props="this.selectProps"
+          :options="selectOptions"
+          placeholder="请选择所在地"
+        ></el-cascader>
+      </InfoBlock>
 
       <input
         ref="fileInput"
@@ -32,9 +45,11 @@
 <script>
 import { mapGetters, mapActions } from 'vuex';
 import { LsIcon } from '@lanshu/components';
-import { IMSetUserProfile } from '@lanshu/im';
+import { IMSetUserProfile, IMGetUserProfile } from '@lanshu/im';
+import { Apis, getToken, TOKEN_TYPE } from '@lanshu/utils';
 import Card from './card';
 import InfoBlock from './info-block';
+import { renderProcess } from '@lanshu/render-process';
 
 export default {
   name: 'User-Info',
@@ -50,22 +65,12 @@ export default {
     return {
       nickname: '',
       avatar: '',
-      avatarFile: null,
-      addressOptions: [
-        {
-          value: 1,
-          label: 123,
-          children: [
-            { value: 2, label: 444, children: [{ value: 12333, label: 23 }] },
-          ],
-        },
-      ],
       infos: [
         {
           key: 'nickname',
           title: '昵称',
           label: '',
-          value: '武清区五千万',
+          value: '',
           btnText: '',
           render: (h, row) => {
             const target = this.infos.find((d) => d.key === row.key);
@@ -75,7 +80,9 @@ export default {
                 clearable
                 maxlength="10"
                 placeholder="编辑昵称…"
-                onChange={(val) => this.handleNickNameChange(val)}
+                onChange={(val) =>
+                  this.handleAvatarAndNickNameChange('nickName', val)
+                }
                 v-model={target.value}
               />
             );
@@ -85,7 +92,7 @@ export default {
           key: 'description',
           title: '个性签名',
           label: '',
-          value: '这是个性签名',
+          value: '',
           btnText: '',
           render: (h, row) => {
             const target = this.infos.find((d) => d.key === row.key);
@@ -141,47 +148,43 @@ export default {
             );
           },
         },
-        {
-          key: 'location',
-          title: '所在地',
-          label: '',
-          value: '',
-          btnText: '',
-          render: (h, row) => {
-            const target = this.infos.find((d) => d.key === row.key);
-            return (
-              <el-cascader
-                clearable
-                v-model={target.value}
-                options={this.addressOptions}
-                placeholder="请选择所在地"
-              ></el-cascader>
-            );
-          },
-        },
       ],
+      selectOptions: [],
+      selectProps: {
+        value: 'code',
+        label: 'name',
+        children: 'subRegions',
+      },
       showAuthenticate: false,
       showUnbind: false,
+      terminal: '',
+      regions: [],
     };
   },
   watch: {
     userProfile: {
       deep: true,
-      handler(val) {
+      handler() {
         this.initData();
       },
     },
   },
-  mounted() {
+  async mounted() {
+    this.terminal = await renderProcess.getStore('CLIENT_TERMINAL');
     this.initData();
+    await this.getAccountUserInfo();
+    await this.getRegion();
   },
   methods: {
     ...mapActions('routerStore', ['addBreadCrumbs']),
+    ...mapActions('IMStore', ['setUserProfile']),
 
     initData() {
       const { nickname, avatar } = this.userInfo;
+      const { location } = this.userProfile;
       this.nickname = nickname;
       this.avatar = avatar;
+      this.regions = location ? location.split(',') : [];
       this.infos = this.infos.map((d) => {
         const value = this.userProfile[d.key];
         if (value) {
@@ -202,13 +205,69 @@ export default {
     handleFileChange(event) {
       const files = event?.target?.files;
       if (!files?.length) return;
-      this.avatarFile = files[0];
-      console.log(files)
+      const avatarFile = files[0];
+      const formData = new FormData();
+      formData.append('file', avatarFile);
+      Apis.managerFileUpload(formData)
+        .then((res) => {
+          const url = res?.data?.url;
+          this.handleAvatarAndNickNameChange('picture', url);
+        })
+        .catch((error) => {
+          this.$message.error('头像上传失败!');
+        });
     },
 
-    handleNickNameChange(val) {
-      console.log(val);
+    async getAccountUserInfo() {
+      const res = await Apis.accountUserInfo({
+        token: getToken(TOKEN_TYPE.IS_SYS),
+        terminal: this.terminal,
+      });
+      this.accountUserInfo = res?.data || {};
     },
+
+    async getRegion() {
+      const res = await Apis.managerRegionQueryAsTree();
+      this.selectOptions = res?.data?.subRegions || [];
+    },
+
+    handleRegionsChange(val) {
+      const regions = val.join(',');
+      const {
+        description = '',
+        sex = '',
+        birthday = '',
+        phone = '',
+      } = this.userProfile;
+      this.handleUserProfile([
+        description,
+        sex,
+        birthday,
+        val ? regions : '',
+        phone,
+      ]);
+    },
+
+    async handleAvatarAndNickNameChange(key, val) {
+      const { picture, nickName } = this.accountUserInfo;
+      const params = {
+        picture,
+        nickName,
+        terminal: this.terminal,
+        token: getToken(TOKEN_TYPE.IS_SYS),
+      };
+      params[key] = val;
+      await Apis.accountUpdateUserInfo(params);
+      const res = await IMGetUserProfile(this.userProfile.userId);
+      await this.setUserProfile(res.data);
+    },
+
+    async handleUserProfile(params) {
+      const res = await IMSetUserProfile(...params);
+      console.log(res.data);
+      await this.setUserProfile(res.data);
+    },
+
     handleSignChange(val) {
       const {
         sex = '',
@@ -216,7 +275,7 @@ export default {
         location = '',
         phone = '',
       } = this.userProfile;
-      IMSetUserProfile(val ? val : '', sex, birthday, location, phone);
+      this.handleUserProfile([val ? val : '', sex, birthday, location, phone]);
     },
     handleBirthdayChange(val = '') {
       const {
@@ -225,7 +284,13 @@ export default {
         location = '',
         phone = '',
       } = this.userProfile;
-      IMSetUserProfile(description, sex, val ? val : '', location, phone);
+      this.handleUserProfile([
+        description,
+        sex,
+        val ? val : '',
+        location,
+        phone,
+      ]);
     },
     handleSexChange(val) {
       const {
@@ -234,8 +299,8 @@ export default {
         location = '',
         phone = '',
       } = this.userProfile;
-      IMSetUserProfile(description, val, birthday, location, phone);
-    }
+      this.handleUserProfile([description, val, birthday, location, phone]);
+    },
   },
 };
 </script>
@@ -251,18 +316,23 @@ export default {
   .tag {
     width: 18px;
     height: 18px;
+    color: $minor-text-color;
+    background: $bg-white-color;
+    box-shadow: 0px 2px 4px 0px rgba(51, 51, 51, 0.05);
+    border: 1px solid $split-line-color;
     position: absolute;
     right: -6px;
     bottom: -4px;
     border-radius: 50%;
 
-    background-color: #333;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .img {
     width: 50px;
     height: 50px;
-    background: #d8d8d8;
     border-radius: 6px;
     display: block;
   }

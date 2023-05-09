@@ -11,7 +11,7 @@ import { MainSideBar } from '@lanshu/sidebar';
 import { MainIM } from '@lanshu/im';
 import { MainPlugIn } from '@lanshu/plugin';
 import { startQiankun } from '@lanshu/micro';
-import microAppConfigs from '../../micro/apps';
+import micro from '../../micro';
 import { renderProcess } from '@lanshu/render-process';
 import { CLIENT_TERMINAL } from '@lanshu/utils';
 
@@ -36,20 +36,21 @@ export default {
     // this.hasPlugin = hasPlugin && isGovernment;
   },
   mounted() {
-    // this.$nextTick(() => {
-    //   startQiankun(microAppConfigs, {
-    //     beforeLoadHandler: (app) => {
-    //       console.log('主应用 beforeLoadHandler')
-    //     },
-    //     afterMountHandler: () => {
-    //       console.log('主应用 afterMountHandler')
-    //     },
-    //     globalErrorHandler: () => {
-    //       window.ClientMessage.error('微应用加载失败，请检查应用是否可运行');
-    //       console.log('主应用 globalErrorHandler')
-    //     },
-    //   });
-    // });
+    this.$nextTick(() => {
+      console.log(micro.getConfigs())
+      startQiankun(micro.getConfigs(), {
+        beforeLoadHandler: (app) => {
+          console.log('主应用 beforeLoadHandler')
+        },
+        afterMountHandler: () => {
+          console.log('主应用 afterMountHandler')
+        },
+        globalErrorHandler: () => {
+          window.ClientMessage.error('微应用加载失败，请检查应用是否可运行');
+          console.log('主应用 globalErrorHandler')
+        },
+      });
+    });
   },
 };
 </script>

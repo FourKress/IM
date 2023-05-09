@@ -369,14 +369,10 @@ export default {
 
     handleIMSendMsg(msg, cb) {
       IMSendMessage(msg)
-        .then((res) => {
-          console.log('消息发送成功', res);
-        })
-        .catch(() => {
-          this.$message.error('消息发送失败');
+        .finally(() => {
+          this.$emit('refreshMsg', msg);
         });
-      console.log(21321211212, msg);
-      this.$emit('refreshMsg', msg);
+      this.$emit('pushMsg', msg);
       cb && cb();
     },
 
