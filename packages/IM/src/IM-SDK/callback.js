@@ -41,6 +41,9 @@ export const IMSDKCallBackEvents = {
   AddReceiveNewMessage: async (ctx, msgInfo) => {
     const { message, silence } = msgInfo;
 
+    const audio = new Audio(require('./new-msg-audio.mp3'));
+    await audio.play();
+
     const NOTIFICATION_TITLE = '客户端通知';
     const NOTIFICATION_BODY = message?.data?.content;
     new Notification(NOTIFICATION_TITLE, {

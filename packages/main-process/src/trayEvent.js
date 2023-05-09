@@ -1,39 +1,67 @@
 import { Menu, Tray } from 'electron';
 import path from 'path';
-import { app } from 'electron';
+import { app, nativeImage } from 'electron';
 
 const isDevelopment = process.env.NODE_ENV !== 'production';
 const trayIconPath = isDevelopment
   ? './icons/icon.ico'
   : path.join(app.getPath('exe'), '/../resources/icons/icon.ico');
 
-const trayAction = () => {
-  // 设置托盘
-  const tray = new Tray(trayIconPath);
-  tray.setToolTip('蓝数IM');
-  tray.on('click', () => {
-    global.mainWindow.show();
-  });
+class TrayEvent {
+  constructor() {
+    this.tray = null;
+    this.flashTimer = null;
+  }
 
-  const trayContextMenu = Menu.buildFromTemplate([
-    {
-      label: '测试',
-      click: () => {
-        console.log(2222);
+  init() {
+    this.tray.setImage(trayIconPath);
+    this.tray.setToolTip('蓝数IM');
+  }
+
+  setTray() {
+    this.tray = new Tray(trayIconPath);
+    this.init();
+
+    this.tray.on('click', () => {
+      global.mainWindow.show();
+      this.init();
+      this.flashTimer && clearInterval(this.flashTimer);
+    });
+
+    const trayContextMenu = Menu.buildFromTemplate([
+      // {
+      //   label: '测试',
+      //   click: () => {
+      //     console.log(2222);
+      //   },
+      // },
+      // {
+      //   type: 'separator',
+      // },
+      {
+        label: '退出',
+        role: 'quit',
       },
-    },
-    {
-      type: 'separator',
-    },
-    {
-      label: '退出',
-      role: 'quit',
-    },
-  ]);
-  // 设置鼠标右键键事件
-  tray.on('right-click', () => {
-    tray.popUpContextMenu(trayContextMenu);
-  });
-};
+    ]);
+    // 设置鼠标右键键事件
+    this.tray.on('right-click', () => {
+      this.tray.popUpContextMenu(trayContextMenu);
+    });
+  }
 
-export default trayAction;
+  setFlash() {
+    let flag = false;
+    if (this.flashTimer) return;
+    this.flashTimer = setInterval(() => {
+      flag = !flag;
+      if (flag) {
+        this.tray.setImage(trayIconPath);
+      } else {
+        this.tray.setImage(nativeImage.createEmpty());
+      }
+      this.tray.setToolTip('您有新消息');
+    }, 1000);
+  }
+}
+
+export default new TrayEvent();

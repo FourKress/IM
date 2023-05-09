@@ -5,7 +5,7 @@ import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
 import { defaultWindowConfig } from './window';
 import store from './datastore';
 // import checkUpload from './checkUpload';
-import trayAction from './trayEvent';
+import trayEvent from './trayEvent';
 
 global.store = store;
 
@@ -98,7 +98,7 @@ const initElectron = (terminal) => {
           }
         }
 
-        trayAction();
+        trayEvent.setTray();
 
         await createWindow();
 

@@ -12,7 +12,6 @@ module.exports = defineConfig({
       ],
       preload: './src/preload.js',
       nodeIntegration: true,
-      // nodeModulesPath: '../node_modules',
 
       customFileProtocol: '../',
 

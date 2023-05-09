@@ -3,6 +3,7 @@ import fs from 'fs';
 import electronLog from './log';
 import { openTRTCWindow } from './window';
 import { CLIENT_TYPE } from './utils';
+import trayEvent from './trayEvent';
 
 const { LimMain, LogLevel } = require('lim-sdk-electron');
 
@@ -101,6 +102,7 @@ export const IMSDKInit = (appId) => {
         silence,
       },
     });
+    trayEvent.setFlash();
   });
 
   IMSDK.getMainProvider().setNetworkCallListener(
