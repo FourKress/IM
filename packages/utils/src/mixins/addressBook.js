@@ -40,6 +40,7 @@ export default {
   },
   methods: {
     async getFriendListData() {
+      if (this.isBot) return;
       await IMGetAllFriendList().then((res) => {
         this.addressBookList = (res?.data || []).map((d) => {
           return {

@@ -32,7 +32,13 @@
         </div>
 
         <div class="btn">
-          <ActionCard v-if="!noGroupAuth" :session="session" :groupRole="groupRole" :groupRoleManager="groupRoleManager" @actionComplete="handleActionComplete" />
+          <ActionCard
+            v-if="!noGroupAuth"
+            :session="session"
+            :groupRole="groupRole"
+            :groupRoleManager="groupRoleManager"
+            @actionComplete="handleActionComplete"
+          />
         </div>
 
         <div class="right">
@@ -133,7 +139,9 @@ export default {
       return this.$attrs.recordrtc;
     },
     placeholder() {
-      return this.noGroupAuth ? '群主已禁言' : `发送给 ${this.session.nickname || ''}...`;
+      return this.noGroupAuth
+        ? '群主已禁言'
+        : `发送给 ${this.session.nickname || ''}...`;
     },
     disabledSendMsg() {
       const emptyMsg =
@@ -141,7 +149,9 @@ export default {
       return emptyMsg || this.noGroupAuth;
     },
     noGroupAuth() {
-      return this.isGroup && this.groupRoleManager.whoCanSendMessage > this.groupRole;
+      return (
+        this.isGroup && this.groupRoleManager.whoCanSendMessage > this.groupRole
+      );
     },
     isGroup() {
       return this.session?.toUserType === SESSION_USER_TYPE.IS_GROUP;
@@ -286,16 +296,16 @@ export default {
     handleSwitchEmoji() {
       if (this.noGroupAuth) {
         this.$message.warning('暂无权限！');
-        return
-      };
-      this.emojiVisible = !this.emojiVisible
+        return;
+      }
+      this.emojiVisible = !this.emojiVisible;
     },
 
     handleScreenshots() {
       if (this.noGroupAuth) {
         this.$message.warning('暂无权限！');
-        return
-      };
+        return;
+      }
       renderProcess.startScreenshots().then((value) => {
         if (value) {
           const b64 = `data:image/png;base64,${value}`;
@@ -357,18 +367,17 @@ export default {
       return new File([u8arr], Date.now().toString(), { type: mime });
     },
 
-    async handleIMSendMsg(msg, cb) {
-      await IMSendMessage(msg)
+    handleIMSendMsg(msg, cb) {
+      IMSendMessage(msg)
         .then((res) => {
           console.log('消息发送成功', res);
         })
         .catch(() => {
           this.$message.error('消息发送失败');
-        })
-        .finally(() => {
-          this.$emit('refreshMsg');
-          cb && cb();
         });
+      console.log(21321211212, msg);
+      this.$emit('refreshMsg', msg);
+      cb && cb();
     },
 
     async getImageSize(url) {
@@ -385,7 +394,7 @@ export default {
       const reg = /&nbsp; ?$/;
       if (reg.test(msg)) {
         const str = msg.replace(reg, '');
-        return this.recursionReplace(str)
+        return this.recursionReplace(str);
       }
       return msg;
     },
@@ -397,10 +406,9 @@ export default {
         /(<img src="\S*" alt(="")?>|[a-zA-Z0-9\u4e00-\u9fa5])+/g,
         'g',
       );
-      const realMessage = this.recursionReplace(this.message.replace(
-        /<span|div>|<\/span|div>/g,
-        '<br>',
-      ));
+      const realMessage = this.recursionReplace(
+        this.message.replace(/<span|div>|<\/span|div>/g, '<br>'),
+      );
       const msgArr = realMessage.includes('<img')
         ? realMessage.match(regExp)?.filter((d) => d !== 'br') || [realMessage]
         : [realMessage];

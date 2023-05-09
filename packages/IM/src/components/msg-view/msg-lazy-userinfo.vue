@@ -44,7 +44,7 @@ export default {
   },
   mounted() {
     // TODO 缓存已查询到的昵称、头像
-    if (this.message.toUserType === SESSION_USER_TYPE.IS_GROUP) {
+    if (!this.isSelf && this.message.toUserType === SESSION_USER_TYPE.IS_GROUP) {
       IMGetGroupMemberInfo(this.message.toUser, this.message.fromUser).then(
         (res) => {
           const { nickname, avatar } = res?.data || {};

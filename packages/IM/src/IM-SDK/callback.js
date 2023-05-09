@@ -127,6 +127,15 @@ export const IMSDKCallBackEvents = {
   },
   UserNicknameAvatarUpdateListener(ctx, info) {
     console.log('UserNicknameAvatarUpdateListener', info);
-    storeInstance.commit('IMStore/setGroupAttributeChanged', info);
+    const { userId, nickname, avatar } = info;
+    const mainSessionWindow =
+      storeInstance.getters['IMStore/mainSessionWindow'];
+    if (mainSessionWindow?.toUser && userId) {
+      storeInstance.commit('IMStore/setMainSessionWindow', {
+        ...mainSessionWindow,
+        nickname,
+        avatar,
+      });
+    }
   },
 };

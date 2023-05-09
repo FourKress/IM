@@ -29,8 +29,6 @@ const state = {
   newFriendCount: 0,
   // 刷新联系人列表
   refreshAddressBook: '',
-  // 群属性变更
-  groupAttributeChanged: {},
   // 刷新群权限信息
   refreshGroupRoleManager: '',
 };
@@ -51,7 +49,6 @@ const getters = {
   dragFileList: (state) => state.dragFileList,
   newFriendCount: (state) => state.newFriendCount,
   refreshAddressBook: (state) => state.refreshAddressBook,
-  groupAttributeChanged: (state) => state.groupAttributeChanged,
   refreshGroupRoleManager: (state) => state.refreshGroupRoleManager,
 };
 
@@ -114,9 +111,6 @@ const mutations = {
   setRefreshAddressBook(data, value) {
     data.refreshAddressBook = value;
   },
-  setGroupAttributeChanged(data, value) {
-    data.groupAttributeChanged = value;
-  },
   setRefreshGroupRoleManager(data, value) {
     data.refreshGroupRoleManager = value;
   },
@@ -170,9 +164,6 @@ const actions = {
   },
   setRefreshAddressBook({ commit }, value) {
     commit('setRefreshAddressBook', value);
-  },
-  setGroupAttributeChanged({ commit }, value) {
-    commit('setGroupAttributeChanged', value);
   },
   setRefreshGroupRoleManager({ commit }, value) {
     commit('setRefreshGroupRoleManager', value);

@@ -312,7 +312,7 @@ export default {
     },
 
     changeMember(type) {
-      this.$emit('changeGroupMember', { type, members: this.groupAdminList });
+      this.$emit('changeGroupMember', { type, members: type === IM_GROUP_MEMBER_PANEL_TYPE.IS_ADD_ADMIN ? this.groupAdminList : [] });
     },
   },
 };

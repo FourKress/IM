@@ -42,10 +42,11 @@ const eventHOCFnc = async (...params) =>
 export const IMSDK_Init = async (loginParams) => {
   const { userId } = loginParams;
   await IMLogin(loginParams);
-  const res = await IMGetUserAttribute(userId);
-  storeInstance.commit('IMStore/setUserInfo', res.data);
-  renderProcess.setStore('TRTC_USER_INFO', res.data);
-  await IMGetUserProfile(userId);
+  const userAttribute = await IMGetUserAttribute(userId);
+  storeInstance.commit('IMStore/setUserInfo', userAttribute.data);
+  renderProcess.setStore('TRTC_USER_INFO', userAttribute.data);
+  const userProfile = await IMGetUserProfile(userId);
+  storeInstance.commit('IMStore/setUserInfo', userProfile.data);
   await IMGetConvList(userId);
   await IMGetTotalUnreadMessageCount();
   await IMGetFriendRequestNoticeUnreadCount();
@@ -65,15 +66,12 @@ export const IMGetUserAttribute = async (userId) =>
     userId,
   );
 
-export const IMGetUserProfile = async (userId) => {
-  const res = await eventHOCFnc(
+export const IMGetUserProfile = async (userId) =>
+  await eventHOCFnc(
     IMSDKUserProvider.provider,
     IMSDKUserProvider.events.getUserProfile,
     userId,
   );
-  storeInstance.commit('IMStore/setUserProfile', res.data);
-  return res;
-};
 
 export const IMGetConvList = async (userId) => {
   const res = await eventHOCFnc(

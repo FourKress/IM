@@ -302,7 +302,7 @@ export default {
       this.getMessageList();
     },
     checkSelf(item) {
-      return item.fromUser === this.userInfo.userId;
+      return !item.fromUser || item.fromUser === this.userInfo.userId;
     },
 
     getMessageList(isContinue = false) {
@@ -363,8 +363,12 @@ export default {
       );
     },
 
-    handleRefreshMsg() {
-      this.getMessageList();
+    handleRefreshMsg(msg) {
+      this.messageList.push(msg);
+      this.$nextTick(() => {
+        this.$refs.messagePanel.scrollTop =
+          this.$refs.messagePanel.scrollHeight;
+      });
     },
 
     handleResendMsg() {

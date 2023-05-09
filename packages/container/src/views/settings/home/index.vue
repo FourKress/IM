@@ -23,7 +23,7 @@
 <!--        <Notify></Notify>-->
         <File></File>
         <Basic></Basic>
-        <Privacy></Privacy>
+<!--        <Privacy></Privacy>-->
         <HotKey></HotKey>
         <Update></Update>
 <!--        <About></About>-->
@@ -87,11 +87,11 @@ export default {
         //   label: '通用',
         //   icon: 'sz_ty',
         // },
-        {
-          key: 'Privacy',
-          label: '隐私',
-          icon: 'sz_ys',
-        },
+        // {
+        //   key: 'Privacy',
+        //   label: '隐私',
+        //   icon: 'sz_ys',
+        // },
         {
           key: 'HotKey',
           label: '快捷键',

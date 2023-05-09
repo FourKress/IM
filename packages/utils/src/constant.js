@@ -1,3 +1,5 @@
+import { storeInstance } from './store';
+
 export * from './micro';
 
 export const CHECK_MSG_TYPE = {
@@ -54,9 +56,12 @@ export const MSG_FORMAT_MAP = {
   },
   400: {
     label: (data) => {
-      const { members } = data;
+      const { members, inviterUserId, inviterNickname } = data;
+      const userInfo = storeInstance.getters['IMStore/userInfo'];
       return formatMsgType(
-        `你邀请${members.map((d) => d.nickname).join('、')}加入了群聊`,
+        `${
+          userInfo.userId === inviterUserId ? '你' : inviterNickname
+        } 邀请 ${members.map((d) => d.nickname).join('、')} 加入了群聊`,
         false,
       );
     },

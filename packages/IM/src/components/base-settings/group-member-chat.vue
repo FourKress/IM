@@ -285,7 +285,7 @@ export default {
     this.selectList = [
       ...this.defaultMembers.map((d) => {
         // isDefault 默认勾选
-        d.isDefault = (this.isDel || this.isDelAdmin) ? false : true;
+        d.isDefault = this.isDel ? false : true;
         return d;
       }),
     ];
@@ -327,11 +327,7 @@ export default {
         },
         [this.IM_GROUP_MEMBER_PANEL_TYPE.IS_DEL_ADMIN]: {
           func: this.handleAddGroupAdminMember,
-          getList: () => {
-            return this.defaultMembers.filter((d) =>
-              this.selectList.some((s) => s.userId !== d.userId),
-            );
-          },
+          getList: () => this.selectList,
         },
       };
       const handleTarget = handleMap[this.panelType];
@@ -353,12 +349,11 @@ export default {
     },
 
     async handleCreateGroup(members) {
-      // TODO 群头像获取
-      const avatar =
-        'https://diy.jiuwa.net/make/ps?sktype=&fontsize=380&skwidth=3&fillcolor=022b6f&shadowtype=2&filltype=1&text=%E9%A9%AC&skcolor=999999&skopacity=1&distort=9&fontype=21';
+      // const avatar =
+      //   'https://diy.jiuwa.net/make/ps?sktype=&fontsize=380&skwidth=3&fillcolor=022b6f&shadowtype=2&filltype=1&text=%E9%A9%AC&skcolor=999999&skopacity=1&distort=9&fontype=21';
       // groupAddType – 群加入类型 1：不允许加入2：任何人都可以加入3：群主或管理员审核通过后加入
       const groupAddType = 2;
-      return await IMCreateGroup(this.groupName, avatar, groupAddType, members);
+      return await IMCreateGroup(this.groupName, '', groupAddType, members);
     },
     async handleAddGroupMember(members) {
       return await IMInviteMember(this.defaultGroup.toUser, members).then(
@@ -450,7 +445,7 @@ export default {
       return {
         ...item,
         checked: isDefault ? true : false,
-        isDefault: isDefault && !(this.isDel || this.isDelAdmin),
+        isDefault: isDefault && !this.isDel,
       };
     },
   },

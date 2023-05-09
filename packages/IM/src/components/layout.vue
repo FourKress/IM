@@ -79,7 +79,8 @@ export default {
   watch: {
     mainSessionWindow: {
       deep: true,
-      handler() {
+      handler(val, oldVal) {
+        if (val.sessId === oldVal.sessId) return;
         this.visibleSettings = false;
         this.visibleGroupSettings = false;
       },

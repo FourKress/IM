@@ -187,6 +187,7 @@ export default {
     this.initData();
   },
   methods: {
+    ...mapActions('IMStore', ['setUserProfile']),
     ...mapActions('routerStore', [
       'clearBreadCrumb',
       'addBreadCrumbs',
@@ -224,14 +225,21 @@ export default {
       this.showQrCodeDialog = true;
     },
 
-    handleSetSign(val) {
+    async handleSetSign(val) {
       const {
         sex = '',
         birthday = '',
         location = '',
         phone = '',
       } = this.userProfile;
-      IMSetUserProfile(val ? val : '', sex, birthday, location, phone);
+      const res = await IMSetUserProfile(
+        val ? val : '',
+        sex,
+        birthday,
+        location,
+        phone,
+      );
+      await this.setUserProfile(res.data);
     },
   },
 };
