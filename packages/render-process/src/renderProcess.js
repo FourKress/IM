@@ -23,3 +23,4 @@ export const checkForUpdates = electronAPI?.checkForUpdates;
 export const mainProcessError = electronAPI?.mainProcessError;
 export const setAutoStart = electronAPI?.setAutoStart;
 export const downloadProgress = electronAPI?.downloadProgress;
+export const activeSearch = electronAPI?.activeSearch;

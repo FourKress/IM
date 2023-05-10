@@ -32,7 +32,7 @@ export default {
     ...mapGetters('globalStore', [
       'updateVersion',
       'startDownload',
-      'userError',
+      'userErrorMsg',
     ]),
   },
   watch: {
@@ -42,9 +42,9 @@ export default {
     startDownload() {
       this.visibleUpdate = true;
     },
-    userError(msg) {
+    userErrorMsg(msg) {
       if (msg) {
-        this.setUserError();
+        this.setUserErrorMsg();
         this.$Lconfirm({
           title: '提示',
           content: msg,
@@ -96,7 +96,7 @@ export default {
     });
   },
   methods: {
-    ...mapActions('globalStore', ['setUserError']),
+    ...mapActions('globalStore', ['setUserErrorMsg']),
   },
 };
 </script>

@@ -174,6 +174,7 @@ export default {
       isVideoCall: false,
       callType: '',
       callTime: 0,
+      timer: 0,
       callUUID: null,
       disMicStatus: false,
       disSpeStatus: false,
@@ -305,6 +306,12 @@ export default {
             case this.NETWORK_CALLBACK_TYPE.IS_ANSWERED:
               this.handleEnterRoom();
               this.startTime();
+              setInterval(() => {
+                this.timer++;
+                if (this.timer >= 10) {
+                  this.handleCallEnd('通话已达最大时长2小时，将结束通话')
+                }
+              }, 1000)
               break;
             default:
               break;
@@ -450,12 +457,12 @@ export default {
       await this.stopNetworkCall();
     },
 
-    async handleCallEnd() {
+    async handleCallEnd(tips = '通话已结束') {
       await trtcCloud.exitRoom().then(() => {
         this.isExitRoom = true;
       });
       this.tipsInfo = {
-        text: '通话已结束',
+        text: tips,
         visible: true,
         className: 'waring',
       };

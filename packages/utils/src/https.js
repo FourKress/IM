@@ -63,7 +63,7 @@ instance.interceptors.response.use(
       }
       const codeList = ['10014'];
       if (codeList.includes(code)) {
-        storeInstance.commit('globalStore/setUserError', msg);
+        storeInstance.commit('globalStore/setUserErrorMsg', msg);
       } else {
         window.ClientMessage.error(msg);
       }

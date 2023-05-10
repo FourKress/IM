@@ -1,31 +1,29 @@
 const state = {
   systemUserInfo: {},
-  userError: {
-    visible: false,
-    message: '',
-    type: '',
-  },
+  userErrorMsg: '',
   codeCountdown: 0,
   updateVersion: '',
   startDownload: false,
   updateNotify: JSON.parse(localStorage.getItem('updateNotify') || 'false'),
+  searchHistory: JSON.parse(localStorage.getItem('searchHistory') || '[]'),
 };
 
 const getters = {
   systemUserInfo: (state) => state.systemUserInfo,
-  userError: (state) => state.userError,
+  userErrorMsg: (state) => state.userErrorMsg,
   codeCountdown: (state) => state.codeCountdown,
   updateVersion: (state) => state.updateVersion,
   startDownload: (state) => state.startDownload,
   updateNotify: (state) => state.updateNotify,
+  searchHistory: (state) => state.searchHistory,
 };
 
 const mutations = {
   setSystemUserInfo(data, value) {
     data.systemUserInfo = value;
   },
-  setUserError(data, value) {
-    data.userError = value;
+  setUserErrorMsg(data, value) {
+    data.userErrorMsg = value;
   },
   setCodeCountdown(data, value) {
     data.codeCountdown = value;
@@ -47,14 +45,18 @@ const mutations = {
     data.updateNotify = value;
     localStorage.setItem('updateNotify', value);
   },
+  setSearchHistory(data, value) {
+    data.searchHistory = value;
+    localStorage.setItem('searchHistory', JSON.stringify(value));
+  },
 };
 
 const actions = {
   setSystemUserInfo({ commit }, value) {
     commit('setSystemUserInfo', value);
   },
-  setUserError({ commit }, value) {
-    commit('setUserError', value);
+  setUserErrorMsg({ commit }, value) {
+    commit('setUserErrorMsg', value);
   },
   setCodeCountdown({ commit }, value) {
     commit('setCodeCountdown', value);
@@ -67,6 +69,9 @@ const actions = {
   },
   setUpdateNotify({ commit }, value) {
     commit('setUpdateNotify', value);
+  },
+  setSearchHistory({ commit }, value) {
+    commit('setSearchHistory', value);
   },
 };
 

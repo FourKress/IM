@@ -16,7 +16,7 @@ export default {
     isModalClose: {
       type: Boolean,
       default: true,
-    }
+    },
   },
   watch: {
     visible(val) {
@@ -24,7 +24,12 @@ export default {
         this.setClassName('no-drag');
         document.body.appendChild(this.$el);
       } else {
-        this.setClassName('drag');
+        const cardDialogDom = document.querySelectorAll('.ls-card-dialog');
+        console.log(cardDialogDom.length);
+        if (cardDialogDom.length === 1) {
+
+          this.setClassName('drag');
+        }
         this.handleRemoveDom();
       }
     },
@@ -40,12 +45,12 @@ export default {
       }
     },
     setClassName(className) {
-      const hearerSearch = document.querySelector('.hearer-search');
+      const hearerSearch = document.querySelector('#client-header');
       if (hearerSearch) {
         // 控制头部拖拽效果
-        hearerSearch.className = `hearer-search ${className}`;
+        hearerSearch.className = `${className}`;
       }
-    }
+    },
   },
 };
 </script>

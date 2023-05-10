@@ -25,7 +25,10 @@ class TrayEvent {
     this.tray.on('click', () => {
       global.mainWindow.show();
       this.init();
-      this.flashTimer && clearInterval(this.flashTimer);
+      if (this.flashTimer) {
+        clearInterval(this.flashTimer);
+        this.flashTimer = null;
+      }
     });
 
     const trayContextMenu = Menu.buildFromTemplate([
@@ -52,6 +55,7 @@ class TrayEvent {
   setFlash() {
     let flag = false;
     if (this.flashTimer) return;
+    global.mainWindow.flashFrame(true);
     this.flashTimer = setInterval(() => {
       flag = !flag;
       if (flag) {

@@ -64,9 +64,16 @@ export const handleHotKey = (params) => {
           break;
         case 'search':
           console.log('搜索');
+          global.mainWindow.webContents.send('activeSearch');
           break;
         case 'window':
           console.log('显示隐藏');
+          const isMinimized = global.mainWindow.isMinimized();
+          if (isMinimized) {
+            global.mainWindow.show();
+          } else {
+            global.mainWindow.minimize();
+          }
           break;
         default:
           break;

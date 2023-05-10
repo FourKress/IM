@@ -47,4 +47,5 @@ window.electronAPI = {
   downloadProgress: (callback) => ipcRenderer.on('downloadProgress', callback),
   setAutoStart: (key, data) => ipcRenderer.send('setAutoStart', key, data),
   checkForUpdates: () => ipcRenderer.send('checkForUpdates'),
+  activeSearch: (callback) => ipcRenderer.on('activeSearch', callback),
 };

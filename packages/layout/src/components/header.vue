@@ -1,5 +1,5 @@
 <template>
-  <div id="client-header">
+  <div id="client-header" class="drag">
     <div class="header_user">
       <el-badge is-dot :hidden="!updateNotify || !updateVersion">
         <div class="avatar" @click="openDialog">
@@ -19,14 +19,15 @@
       </div>
     </div>
 
-    <div class="hearer-search drag">
+    <div class="hearer-search">
       <div class="search">
         <div class="query-icon">
           <LsIcon icon="navi_ss_icon" render-svg></LsIcon>
         </div>
-        <div class="input-panel">
+        <div class="input-panel" @click="handleSearch">
           <el-input
             v-model="keywords"
+            readonly
             clearable
             type="text"
             placeholder="搜索"
@@ -134,6 +135,8 @@
         }"
       />
     </LsCardDialog>
+
+    <LsSearchPanel :visible.sync="visibleSearch"></LsSearchPanel>
   </div>
 </template>
 
@@ -147,9 +150,11 @@ import {
   LsNetwork,
   LsUserTag,
   LsQrcodePanel,
+  LsSearchPanel,
 } from '@lanshu/components';
 import { ClientLogOut, IMSetUserProfile } from '@lanshu/im';
 import { calculateAgeByBirthday } from '@lanshu/utils';
+import { renderProcess } from '@lanshu/render-process';
 
 export default {
   name: 'MainHeader',
@@ -160,6 +165,7 @@ export default {
     LsNetwork,
     LsUserTag,
     LsQrcodePanel,
+    LsSearchPanel,
   },
   computed: {
     ...mapGetters('IMStore', ['userInfo', 'userProfile']),
@@ -173,6 +179,7 @@ export default {
       description: '',
       showQrCodeDialog: false,
       qrcodeUrl: '',
+      visibleSearch: false,
     };
   },
   watch: {
@@ -182,6 +189,11 @@ export default {
         this.initData();
       },
     },
+  },
+  created() {
+    renderProcess.activeSearch((event) => {
+      this.visibleSearch = true;
+    });
   },
   mounted() {
     this.initData();
@@ -241,6 +253,10 @@ export default {
       );
       await this.setUserProfile(res.data);
     },
+
+    handleSearch() {
+      this.visibleSearch = true;
+    },
   },
 };
 </script>
@@ -256,11 +272,21 @@ export default {
   align-items: center;
   padding: 0 20px 22px 12px;
   box-sizing: border-box;
+  position: relative;
+
+  &.drag {
+    -webkit-app-region: drag !important;
+  }
+
+  &.no-drag {
+    -webkit-app-region: no-drag !important;
+  }
 
   .header_user {
     display: flex;
     align-items: center;
     position: relative;
+    -webkit-app-region: no-drag !important;
 
     .avatar {
       width: 46px;
@@ -318,14 +344,10 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
-
-    &.drag {
-      -webkit-app-region: drag !important;
-    }
-
-    &.no-drag {
-      -webkit-app-region: no-drag !important;
-    }
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    -webkit-app-region: no-drag !important;
 
     .search {
       width: 500px;
@@ -352,6 +374,7 @@ export default {
         padding: 0 8px;
         border-right: 1px solid $split-line-color;
         font-size: 14px;
+        cursor: pointer;
 
         ::v-deep .el-input {
           border: none;
@@ -385,6 +408,7 @@ export default {
     position: relative;
     width: 90px;
     height: 20px;
+    -webkit-app-region: no-drag !important;
   }
 }
 

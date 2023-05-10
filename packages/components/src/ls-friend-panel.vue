@@ -8,7 +8,7 @@
           <img :src="friendInfo.avatar" class="img" />
         </div>
         <div class="right">
-          <span class="nickname">{{ friendInfo.nickname }}</span>
+          <span class="nickname">{{ friendInfo.remark ? friendInfo.remark : friendInfo.nickname }}</span>
           <span class="tips">
             <LsUserTag
               bgColor="#fff"

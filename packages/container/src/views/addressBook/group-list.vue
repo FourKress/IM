@@ -11,7 +11,7 @@
         <div class="left">
           <img class="img" :src="item.avatar" alt="" />
           <div class="info">
-            <span class="name">{{ item.nickname }}</span>
+            <span class="name">{{ item.remark ? item.remark : item.nickname }}</span>
             <!--              <span class="tips">sadjdja</span>-->
           </div>
         </div>

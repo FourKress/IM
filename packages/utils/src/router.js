@@ -24,10 +24,7 @@ const routerIntercept = () => {
       }
       return next('/login');
     } catch (e) {
-      storeInstance.commit('globalStore/setUserError', {
-        visible: true,
-        message: e,
-      });
+      storeInstance.commit('globalStore/setUserErrorMsg', e);
       next(false);
     }
   };

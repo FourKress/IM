@@ -8,7 +8,10 @@
       :class="isLogin && 'disable'"
       @click="handleWindowChange(WIN_ACTION_TYPE.IS_MAX)"
     >
-      <LsIcon icon="navi_sx_icon" render-svg></LsIcon>
+      <LsIcon
+        :icon="isFull ? 'ls-icon-icon_zuixiaohua1' : 'navi_sx_icon'"
+        render-svg
+      ></LsIcon>
     </span>
     <span class="btn" @click="handleWindowChange(WIN_ACTION_TYPE.IS_CLOSE)">
       <LsIcon icon="navi_gb_icon" render-svg></LsIcon>
@@ -35,11 +38,15 @@ export default {
   data() {
     return {
       WIN_ACTION_TYPE,
+      isFull: false,
     };
   },
   methods: {
     handleWindowChange(type) {
-      if (type === this.WIN_ACTION_TYPE.IS_MAX && this.isLogin) return;
+      if (type === this.WIN_ACTION_TYPE.IS_MAX) {
+        if (this.isLogin) return;
+        this.isFull = !this.isFull;
+      }
       // isMain => 主窗口标识
       renderProcess.changeWindow(type, WINDOW_TYPE.IS_MAIN);
     },

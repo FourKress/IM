@@ -34,7 +34,7 @@
                 <img :src="item.avatar" alt="" />
               </div>
               <div class="name">
-                <span>{{ item.nickname }}</span>
+                <span>{{ item.remark ? item.remark : item.nickname }}</span>
               </div>
             </div>
           </div>
