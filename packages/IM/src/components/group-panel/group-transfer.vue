@@ -1,5 +1,5 @@
 <template>
-  <div class='group-transfer' v-if="visible">
+  <div class='group-transfer' v-if="visibleDrawer">
     <Drawer title="转移群主" @close="handleCloseDrawer">
       <div class='content'>
         <el-radio-group v-model="selectUserId">

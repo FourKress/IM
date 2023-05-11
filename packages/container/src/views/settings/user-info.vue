@@ -63,8 +63,6 @@ export default {
   },
   data() {
     return {
-      nickname: '',
-      avatar: '',
       infos: [
         {
           key: 'nickname',
@@ -177,13 +175,10 @@ export default {
   },
   methods: {
     ...mapActions('routerStore', ['addBreadCrumbs']),
-    ...mapActions('IMStore', ['setUserProfile']),
+    ...mapActions('IMStore', ['setUserProfile', 'setUserInfo']),
 
     initData() {
-      const { nickname, avatar } = this.userInfo;
       const { location } = this.userProfile;
-      this.nickname = nickname;
-      this.avatar = avatar;
       this.regions = location ? location.split(',') : [];
       this.infos = this.infos.map((d) => {
         const value = this.userProfile[d.key];
@@ -259,7 +254,13 @@ export default {
       params[key] = val;
       await Apis.accountUpdateUserInfo(params);
       const res = await IMGetUserProfile(this.userProfile.userId);
-      await this.setUserProfile(res.data);
+      const userProfile = res?.data || {};
+      await this.setUserInfo({
+        ...this.userInfo,
+        nickname: userProfile?.nickname,
+        avatar: userProfile?.avatar,
+      });
+      await this.setUserProfile(userProfile);
     },
 
     async handleUserProfile(params) {

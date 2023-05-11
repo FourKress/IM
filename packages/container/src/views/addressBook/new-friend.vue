@@ -76,7 +76,7 @@ export default {
   watch: {
     newFriendCount() {
       this.initData();
-    }
+    },
   },
   mounted() {
     this.initData();
@@ -97,7 +97,7 @@ export default {
         IMClearFriendRequestNoticeUnreadCount().then(() => {
           setTimeout(() => {
             this.setNewFriendCount(0);
-          }, 500)
+          }, 500);
         });
       }
     },
@@ -106,7 +106,7 @@ export default {
       this.handleCloseDialog();
       IMQueryFriendRequestNotice(0).then((res) => {
         console.log(res);
-        this.friendList = res?.data?.data;
+        this.friendList = res?.data;
       });
     },
 
@@ -136,15 +136,16 @@ export default {
       const config = this.getConfig(state);
       this.config = config;
       const userProfile = (await IMGetUserProfile(toUser))?.data || {};
-      let friendInfo = {}
+      let friendInfo = {};
       if (state === FRIEND_AUTH_STATE.IS_AGREE) {
-        friendInfo = (await IMGetOneFriend(toUser))?.data || {}
+        friendInfo = (await IMGetOneFriend(toUser))?.data || {};
       }
-      const {remark, desc} = friendInfo;
+      const { remark, desc } = friendInfo;
       this.openFriendDialog(
         {
           ...userProfile,
-          remark, desc,
+          remark,
+          desc,
           message,
           noticeId: id,
         },
@@ -160,6 +161,8 @@ export default {
   padding: 20px 18px;
   width: 100%;
   box-sizing: border-box;
+  overflow-y: auto;
+  height: 100%;
 
   .friend-list {
     display: flex;

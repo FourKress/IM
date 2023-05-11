@@ -115,8 +115,9 @@
       <LsFriendPanel
         :friend-info="friendInfo"
         :position="position"
-        :config="{ isDetails: true }"
+        :config="friendPanelConfig"
         @update="handleCloseDialog"
+        @sendApply="handleSendApply"
       />
     </LsCardDialog>
   </div>
@@ -195,8 +196,9 @@ export default {
       throttleGetMessageList: null,
 
       scrollTop: 0,
+      preScrollHeight: 0,
       accept: '',
-
+      friendPanelConfig: {},
       showFriendDialog: false,
       bubbleModel: SESSION_BUBBLE_MODEL.IS_BETWEEN,
       myGroupRole: -1,
@@ -207,10 +209,11 @@ export default {
     session: {
       immediate: true,
       deep: true,
-      handler(value) {
+      handler(val, oldVal) {
+        if (val?.sessId === oldVal?.sessId) return;
         // TODO 临时处理手动创建会话时 mainSessionWindow 的更新问题
-        if (value && value?.nickname) {
-          console.log('111 session', value);
+        if (val && val?.nickname) {
+          console.log('111 session', val);
           this.initData();
         }
       },
@@ -255,7 +258,7 @@ export default {
   },
   async mounted() {
     this.bubbleModel = await renderProcess.getStore('SESSION_BUBBLE_MODEL');
-    this.throttleGetMessageList = lodash.throttle(this.getMessageList, 20, {
+    this.throttleGetMessageList = lodash.throttle(this.getMessageList, 200, {
       leading: true,
       trailing: false,
     });
@@ -318,12 +321,15 @@ export default {
       // 拉取SDK缓存消息，每次sdk最多返回20条消息
       IMGetMessageList(sessId, this.nextSeq).then((res) => {
         console.log('拉取成功', res.data);
-        const { msgs, nextSeq, hasNext } = res.data;
+        const { msgs, nextSeq, hasNext } = res?.data || {};
         this.hasNext = hasNext;
         this.nextSeq = nextSeq;
         if (isContinue && this.messageList?.length) {
           this.messageList.unshift(...msgs);
-          this.$refs.messagePanel.scrollTop = 100;
+          this.$nextTick(() => {
+            const currentScrollHeight = this.$refs.messagePanel.scrollHeight;
+            this.$refs.messagePanel.scrollTop = currentScrollHeight - this.preScrollHeight + this.scrollTop;
+          });
         } else {
           this.messageList = msgs;
           this.$nextTick(() => {
@@ -334,28 +340,35 @@ export default {
       });
     },
 
-    handleScroll(event) {
+    handleScroll: lodash.throttle(function (event) {
       if (!this.hasNext) return;
       const scrollTop = event.target.scrollTop;
       if (
-        scrollTop <= 200 &&
+        scrollTop <= 500 &&
         (scrollTop <= this.scrollTop || this.scrollTop === 0)
       ) {
+        this.preScrollHeight = this.$refs.messagePanel.scrollHeight;
         this.scrollTop = scrollTop;
         this.throttleGetMessageList(true);
       }
-    },
+    }, 200, {
+      leading: true,
+      trailing: false,
+    }),
 
     async handleFriend(item, event) {
       console.log(item);
-      const { toUserType } = item;
-      if (toUserType === SESSION_USER_TYPE.IS_GROUP) return;
       const isSelf = this.checkSelf(item);
       if (isSelf) return;
       const { fromUser } = item;
+      const friendInfo = (await IMGetOneFriend(fromUser))?.data || {};
+      if (friendInfo?.userId) {
+        this.friendPanelConfig = { isDetails: true }
+      } else {
+        this.friendPanelConfig = { isApply: true }
+      }
+
       const userProfile = (await IMGetUserProfile(fromUser))?.data || {};
-      let friendInfo = {};
-      friendInfo = (await IMGetOneFriend(fromUser))?.data || {};
       const { remark, desc } = friendInfo;
       this.openFriendDialog(
         {

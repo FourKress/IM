@@ -1,5 +1,5 @@
 <template>
-  <div class="manager" v-if="visible">
+  <div class="manager" v-if="visibleDrawer">
     <Drawer title="群管理" @close="handleCloseDrawer">
       <div class="drawer-content">
         <div class="tips" v-if="groupRole === GROUP_ROLE_TYPE.IS_OWNER">
@@ -14,7 +14,7 @@
           </span>
 
           <span
-            class="btn"
+            class="btn item"
             v-if="groupRole === GROUP_ROLE_TYPE.IS_OWNER"
             @click="changeMember(IM_GROUP_MEMBER_PANEL_TYPE.IS_ADD_ADMIN)"
           >
@@ -26,7 +26,7 @@
             ></LsIcon>
           </span>
           <span
-            class="btn"
+            class="btn item"
             v-if="
               groupAdminList.length && groupRole === GROUP_ROLE_TYPE.IS_OWNER
             "
@@ -334,20 +334,28 @@ export default {
       display: flex;
       align-items: center;
       justify-content: flex-start;
+      flex-wrap: wrap;
 
       .item,
       .btn {
-        width: 36px;
-        height: 36px;
-        margin-right: 10px;
+        width: 35px;
+        height: 35px;
+        margin: 0 10px 10px 0;
         border-radius: 5px;
         overflow: hidden;
         display: flex;
         align-items: center;
         justify-content: center;
+        box-sizing: border-box;
+        cursor: pointer;
       }
 
       .item {
+
+        &:nth-child(6n+6) {
+          margin-right: 0;
+        }
+
         img {
           display: block;
           width: 100%;
@@ -358,7 +366,6 @@ export default {
       .btn {
         background: $bg-white-color;
         border: 1px dashed $split-line-color;
-        cursor: pointer;
       }
     }
   }

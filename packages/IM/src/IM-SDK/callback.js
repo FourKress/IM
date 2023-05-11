@@ -89,6 +89,7 @@ export const IMSDKCallBackEvents = {
         content: '当前登录被踢出, 请退出重新登录',
       })
       .then(async () => {
+        // TODO 未处理 TRTC
         await ClientLogOut();
       });
   },

@@ -39,7 +39,7 @@
 
     <div class="row">
       <RowChat label="群管理" @callback="openGroupManager" show-right-btn />
-      <!--      <RowChat label="聊天记录" @click="createGroup" show-right-btn />-->
+      <RowChat label="聊天记录" @callback="openGroupHistoryMsg" show-right-btn />
     </div>
 
     <div class="clear-btn" @click="handleDeleteHistoryMsg">清空聊天记录</div>
@@ -53,19 +53,21 @@
     </div>
 
     <Manager
-      :visible.sync="visibleDrawer"
+      :visibleDrawer.sync="visibleDrawer"
       :groupRole="groupRole"
       v-on="$listeners"
       @groupRecord="handleGroupRecord"
       @groupTransfer="handleGroupTransfer"
     />
 
-    <Record :visible.sync="visibleRecord" />
+    <Record :visibleDrawer.sync="visibleRecord" />
 
     <GroupTransfer
-      :visible.sync="visibleGroupTransfer"
+      :visibleDrawer.sync="visibleGroupTransfer"
       @confirm="handleConfirmTransfer"
     ></GroupTransfer>
+
+    <HistoryMsg :visibleDrawer.sync="visibleHistoryMsgDrawer" />
 
     <LsCardDialog :visible.sync="groupQrcodeVisible">
       <LsQrcodePanel
@@ -99,6 +101,7 @@ import Manager from './manager';
 import Record from './record';
 import GroupTransfer from './group-transfer';
 import MsgTopAndSilence from '../base-settings/msgTopAndSilence';
+import HistoryMsg from "./history-msg.vue";
 import { mapActions, mapGetters } from 'vuex';
 import { GROUP_ROLE_TYPE } from '@lanshu/utils';
 
@@ -113,11 +116,13 @@ export default {
     MsgTopAndSilence,
     LsCardDialog,
     LsQrcodePanel,
+    HistoryMsg,
   },
   data() {
     return {
       GROUP_ROLE_TYPE,
       visibleDrawer: false,
+      visibleHistoryMsgDrawer: false,
       visibleRecord: false,
       visibleGroupTransfer: false,
       groupInfo: {},
@@ -208,8 +213,8 @@ export default {
       await IMSetGroupRemark(this.groupInfo.groupId, val);
       this.setMainSessionWindow({
         ...this.actionWindow,
-        nickname: val
-      })
+        nickname: val,
+      });
     },
 
     handleDeleteHistoryMsg() {
@@ -256,6 +261,10 @@ export default {
     },
     openGroupManager() {
       this.visibleDrawer = true;
+    },
+
+    openGroupHistoryMsg() {
+      this.visibleHistoryMsgDrawer = true;
     },
 
     handleGroupRecord() {

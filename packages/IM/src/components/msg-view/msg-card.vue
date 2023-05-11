@@ -29,8 +29,6 @@
       v-if="msgType === CHECK_MSG_TYPE.IS_AUDIO"
       controls
       preload="auto"
-      width="300"
-      height="100"
       :src="assetsPath"
     ></audio>
 

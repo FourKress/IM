@@ -1,5 +1,5 @@
 <template>
-  <div v-if="visible">
+  <div v-if="visibleDrawer">
     <Drawer title="进退群记录" @close="handleCloseDrawer">
       <div class="record-content">
         <div class="record-item" v-for="item in list" :key='index'>

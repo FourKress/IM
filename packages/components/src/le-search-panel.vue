@@ -63,21 +63,26 @@
         </div>
       </div>
 
-      <div class="search-list" v-for="item in searchData" :key="item.userId">
-        <div class="item" @click="(event) => handleFriend(item, event)">
-          <div class="info">
-            <div class="img">
-              <img :src="item.avatar" alt="" />
-            </div>
-            <div class="name">
-              <span>{{ item.remark ? item.remark : item.nickname }}</span>
+      <div class="search-list">
+        <div class="scroll-view">
+          <div class="item" v-for="item in searchData" :key="item.userId" @click="(event) => handleFriend(item, event)">
+            <div class="info">
+              <div class="img">
+                <img :src="item.avatar" alt="" />
+              </div>
+              <div class="name">
+                <span>{{ item.remark ? item.remark : item.nickname }}</span>
+              </div>
             </div>
           </div>
         </div>
+
       </div>
 
       <div class="empty-data" v-if="isEmpty">
-        没有找到“<span class="link">{{ keywords }}</span>”相关的结果
+        没有找到“
+        <span class="link">{{ keywords }}</span>
+        ”相关的结果
       </div>
     </div>
   </div>
@@ -87,7 +92,7 @@
 import { LsIcon } from '@lanshu/components';
 import { lodash } from '@lanshu/utils';
 import { mapActions, mapGetters } from 'vuex';
-import {IMGetAllFriendList, IMGetByUserId, IMGetGroupList} from '@lanshu/im';
+import { IMGetAllFriendList, IMGetByUserId, IMGetGroupList } from '@lanshu/im';
 
 const TAB_TYPE = {
   IS_ALL: 'All',
@@ -116,7 +121,8 @@ export default {
       TAB_TYPE,
       keywords: '',
       tabType: TAB_TYPE.IS_ALL,
-      originData: [],
+      groupData: [],
+      addressBooKData: [],
       searchData: [],
       isEmpty: false,
     };
@@ -124,11 +130,17 @@ export default {
   watch: {
     visible(val) {
       if (val) {
+        this.setClassName('no-drag');
         this.getData();
         this.$nextTick(() => {
           this.$refs.searchInput.focus();
         });
+      } else {
+        this.setClassName('drag');
       }
+    },
+    tabType() {
+      this.getSearchResult(this.keywords);
     },
   },
   methods: {
@@ -144,19 +156,31 @@ export default {
 
     handleSearch: lodash.debounce(function (val) {
       if (!val) {
-        this.searchData = []
+        this.searchData = [];
         return;
+      }
+      this.getSearchResult(val);
+    }, 400),
+
+    getSearchResult(keywords) {
+      const dataMap = {
+        [TAB_TYPE.IS_ALL]: [...this.groupData, ...this.addressBooKData],
+        [TAB_TYPE.IS_GROUP]: this.groupData,
+        [TAB_TYPE.IS_Address]: this.addressBooKData,
       };
-      const searchData = this.originData.filter((d) => {
+      const originData = dataMap[this.tabType];
+      const searchData = originData.filter((d) => {
         const { nickname, remark = '' } = d;
-        if (nickname.includes(val)) return true;
-        if (remark && remark.includes(val)) return true;
+        if (nickname.includes(keywords)) return true;
+        if (remark && remark.includes(keywords)) return true;
         return false;
       });
+      console.log(originData, searchData);
+
       this.searchData = searchData;
 
-      this.isEmpty = !this.searchData.length && this.keywords;
-    }, 400),
+      this.isEmpty = !this.searchData.length && keywords;
+    },
 
     handleClearHistory() {
       this.setSearchHistory([]);
@@ -171,12 +195,11 @@ export default {
       this.keywords = '';
       this.searchData = '';
       this.isEmpty = false;
+      this.tabType = TAB_TYPE.IS_ALL;
       const groupRes = await IMGetGroupList();
       const addressBooKRes = await IMGetAllFriendList();
-      this.originData = [
-        ...(groupRes?.data || []),
-        ...(addressBooKRes?.data || []),
-      ];
+      this.groupData = groupRes?.data || [];
+      this.addressBooKData = addressBooKRes?.data || [];
     },
 
     async handleFriend(item) {
@@ -190,7 +213,6 @@ export default {
 
       await this.handleJumIMPage(item);
     },
-
 
     async handleJumIMPage(friend) {
       const { userId, groupId = '' } = friend;
@@ -215,6 +237,14 @@ export default {
       }
       await this.setMainSessionWindow(session);
     },
+
+    setClassName(className) {
+      const hearerSearch = document.querySelector('#client-header');
+      if (hearerSearch) {
+        // 控制头部拖拽效果
+        hearerSearch.className = `${className}`;
+      }
+    },
   },
 };
 </script>
@@ -237,9 +267,10 @@ export default {
     margin: 8px auto 0;
     padding: 0 40px;
     box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
 
     .search-warp {
-      flex: 1;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -380,46 +411,53 @@ export default {
 
     .search-list {
       margin-top: 10px;
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
 
-      .item {
-        height: 66px;
-        background-color: $bg-white-color;
-        display: flex;
-        align-items: center;
-        justify-content: flex-start;
-        box-sizing: border-box;
-        cursor: pointer;
-        padding: 10px;
-        border-radius: 6px;
+      transform: translate3d(0, 0, 0);
 
-        &:hover {
-          background-color: $bg-hover-grey-color;
-        }
-
-        .info {
-          flex: 1;
+      .scroll-view {
+        .item {
+          height: 66px;
+          background-color: $bg-white-color;
           display: flex;
           align-items: center;
           justify-content: flex-start;
+          box-sizing: border-box;
+          cursor: pointer;
+          padding: 10px;
+          border-radius: 6px;
 
-          .img {
-            width: 46px;
-            height: 46px;
-            margin-right: 8px;
-            border-radius: 6px;
-            overflow: hidden;
-
-            img {
-              width: 100%;
-              height: 100%;
-              display: block;
-            }
+          &:hover {
+            background-color: $bg-hover-grey-color;
           }
 
-          .name {
+          .info {
             flex: 1;
-            font-size: 14px;
-            color: $main-text-color;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+
+            .img {
+              width: 46px;
+              height: 46px;
+              margin-right: 8px;
+              border-radius: 6px;
+              overflow: hidden;
+
+              img {
+                width: 100%;
+                height: 100%;
+                display: block;
+              }
+            }
+
+            .name {
+              flex: 1;
+              font-size: 14px;
+              color: $main-text-color;
+            }
           }
         }
       }

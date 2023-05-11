@@ -40,6 +40,8 @@ export const IMSDKMessageProvider = {
     createFileMessage: 'createFileMessage',
     createCustomMessage: 'createCustomMessage',
     clearMessage: 'clearMessage',
+    searchMessageOfText: 'searchMessageOfText',
+    searchMessageByMsgType: 'searchMessageByMsgType',
   },
 };
 

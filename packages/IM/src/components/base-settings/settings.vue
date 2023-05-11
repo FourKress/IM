@@ -21,12 +21,14 @@
 
     <MsgTopAndSilence />
 
-    <!--    <div class="row">-->
-    <!--      <div class="item">-->
-    <!--        <span class="label">聊天记录</span>-->
-    <!--        <i class="el-icon-arrow-right"></i>-->
-    <!--      </div>-->
-    <!--    </div>-->
+    <div class="row">
+      <div class="item">
+        <span class="label" @click="openHistoryMsg">聊天记录</span>
+        <i class="el-icon-arrow-right" @click="openHistoryMsg"></i>
+      </div>
+    </div>
+
+    <HistoryMsg :visibleDrawer.sync="visibleHistoryMsgDrawer" />
 
     <div class="clear-btn" @click="handleDeleteHistoryMsg">清空聊天记录</div>
   </div>
@@ -37,6 +39,7 @@ import { mapActions, mapGetters } from 'vuex';
 import { LsIcon } from '@lanshu/components';
 import { IMClearMessage } from '../../IM-SDK';
 import MsgTopAndSilence from './msgTopAndSilence';
+import HistoryMsg from "../group-panel/history-msg";
 
 export default {
   name: 'IM-Settings',
@@ -50,11 +53,11 @@ export default {
   components: {
     LsIcon,
     MsgTopAndSilence,
+    HistoryMsg,
   },
   data() {
     return {
-      value: true,
-      value2: false,
+      visibleHistoryMsgDrawer: false,
     };
   },
   computed: {
@@ -72,7 +75,7 @@ export default {
     handleDeleteHistoryMsg() {
       this.$Lconfirm({
         title: '确定清空聊天记录？',
-        content: '聊天记录将在你的所有设备同步清空，不会影响其他群成员',
+        content: '聊天记录清空后无法恢复，确认清空吗？',
       }).then(() => {
         IMClearMessage(this.actionWindow.sessId).then(() => {
           this.setRefreshMsg(Date.now());
@@ -81,6 +84,10 @@ export default {
         });
       });
     },
+
+    openHistoryMsg() {
+      this.visibleHistoryMsgDrawer = true;
+    }
   },
 };
 </script>
@@ -92,6 +99,8 @@ export default {
   background-color: $bg-white-color;
   padding: 22px 20px 0 20px;
   border-left: 1px solid $split-line-color;
+  position: relative;
+  box-sizing: border-box;
 
   .top {
     width: 100%;
@@ -165,6 +174,13 @@ export default {
     font-size: 14px;
     color: #f65951;
     cursor: pointer;
+  }
+
+  ::v-deep .el-drawer__wrapper {
+    width: 300px;
+    position: absolute;
+    top: 0;
+    left: 0;
   }
 }
 </style>

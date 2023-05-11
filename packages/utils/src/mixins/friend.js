@@ -1,5 +1,9 @@
 import { mapGetters, mapActions } from 'vuex';
-import { IMGetByUserId, IMAgreeFriendAddRequest } from '@lanshu/im';
+import {
+  IMGetByUserId,
+  IMAgreeFriendAddRequest,
+  IMFriendAddRequest,
+} from '@lanshu/im';
 import { renderProcess } from '@lanshu/render-process';
 import { CLIENT_TYPE, NETWORK_CALL_TYPE } from '../constant';
 
@@ -35,6 +39,12 @@ export default {
       this.showFriendDialog = false;
       this.friendInfo = {};
     },
+    handleSendApply(addParams) {
+      IMFriendAddRequest(...addParams).then(() => {
+        this.handleCloseDialog();
+      });
+    },
+
     async handleJumIMPage(fnc) {
       const { userId } = this.friendInfo;
       this.handleCloseDialog();

@@ -313,12 +313,30 @@ export const IMFriendAddRequest = async (
     origin,
   );
 
-export const IMQueryFriendRequestNotice = async (nextSeq) =>
-  await eventHOCFnc(
-    IMSDKFriendProvider.provider,
-    IMSDKFriendProvider.events.queryFriendRequestNotice,
-    nextSeq,
-  );
+export const IMQueryFriendRequestNotice = async (nextSeq = 0) => {
+  return new Promise(async (resolve, reject) => {
+    let _nextSeq = nextSeq;
+    const resultData = [];
+    while (_nextSeq !== -1) {
+      try {
+        const res = await eventHOCFnc(
+          IMSDKFriendProvider.provider,
+          IMSDKFriendProvider.events.queryFriendRequestNotice,
+          nextSeq,
+        );
+        const { nextSeq: currentNextSeq, data = [] } = res.data;
+        resultData.push(...data);
+        _nextSeq = currentNextSeq;
+      } catch (e) {
+        reject(e);
+      }
+    }
+    resolve({
+      data: resultData,
+      nextSeq: _nextSeq,
+    });
+  });
+};
 
 export const IMGetFriendRequestNoticeUnreadCount = async () => {
   const res = await eventHOCFnc(
@@ -492,4 +510,27 @@ export const IMSetGroupRemark = async (groupId, remark) =>
     IMSDKGroupProvider.events.setGroupRemark,
     groupId,
     remark,
+  );
+
+export const IMSearchMessageOfText = async (keyword, nextSeq) =>
+  await eventHOCFnc(
+    IMSDKMessageProvider.provider,
+    IMSDKMessageProvider.events.searchMessageOfText,
+    keyword,
+    nextSeq,
+  );
+
+export const IMSearchMessageByMsgType = async (msgType, nextSeq) =>
+  await eventHOCFnc(
+    IMSDKMessageProvider.provider,
+    IMSDKMessageProvider.events.searchMessageByMsgType,
+    msgType,
+    nextSeq,
+  );
+
+export const IMSearchFriends = async (keywords) =>
+  await eventHOCFnc(
+    IMSDKFriendProvider.provider,
+    IMSDKFriendProvider.events.searchFriends,
+    keywords,
   );

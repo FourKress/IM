@@ -2,7 +2,7 @@ import Drawer from './drawer';
 
 export default {
   props: {
-    visible: {
+    visibleDrawer: {
       type: Boolean,
       required: true,
     },
@@ -12,7 +12,7 @@ export default {
   },
   methods: {
     handleCloseDrawer() {
-      this.$emit('update:visible', false);
+      this.$emit('update:visibleDrawer', false);
     },
   },
 };

@@ -161,6 +161,7 @@ export const IMSDKInit = (appId) => {
     });
   });
 
+  // 改所有除了群别名的信息
   IMSDK.getMainProvider().setUserNicknameAvatarUpdateListener(
     (userId, nickname, avatar) => {
       console.log('UserNicknameAvatarUpdateListener');
