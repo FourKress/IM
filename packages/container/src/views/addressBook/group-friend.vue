@@ -17,12 +17,23 @@ export default {
   },
   data() {
     return {
-      myGroupList: [],
-      joinGroupList: [],
+      groupList: [],
     };
   },
   computed: {
-    ...mapGetters('IMStore', ['userInfo']),
+    ...mapGetters('IMStore', ['userInfo', 'userNicknameAvatarUpdate']),
+
+    myGroupList() {
+      return this.groupList.filter((d) => d.owner === this.userInfo.userId);
+    },
+    joinGroupList() {
+      return this.groupList.filter((d) => d.owner !== this.userInfo.userId);
+    },
+  },
+  watch: {
+    userNicknameAvatarUpdate() {
+      this.getGroupList();
+    },
   },
   mounted() {
     this.getGroupList();
@@ -30,14 +41,7 @@ export default {
   methods: {
     async getGroupList() {
       const res = await IMGetGroupList();
-      const groupList = res?.data || [];
-      groupList.forEach((d) => {
-        if (d.owner === this.userInfo.userId) {
-          this.myGroupList.push(d);
-        } else {
-          this.joinGroupList.push(d);
-        }
-      });
+      this.groupList = res?.data || [];
     },
   },
 };
@@ -50,6 +54,5 @@ export default {
   padding: 0 20px;
   height: 100%;
   overflow-y: auto;
-  
 }
 </style>

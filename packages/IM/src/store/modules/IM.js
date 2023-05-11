@@ -31,6 +31,8 @@ const state = {
   refreshAddressBook: '',
   // 刷新群权限信息
   refreshGroupRoleManager: '',
+  // 头像或昵称修改通知
+  userNicknameAvatarUpdate: '',
 };
 
 const getters = {
@@ -50,6 +52,7 @@ const getters = {
   newFriendCount: (state) => state.newFriendCount,
   refreshAddressBook: (state) => state.refreshAddressBook,
   refreshGroupRoleManager: (state) => state.refreshGroupRoleManager,
+  userNicknameAvatarUpdate: (state) => state.userNicknameAvatarUpdate,
 };
 
 const mutations = {
@@ -114,6 +117,9 @@ const mutations = {
   setRefreshGroupRoleManager(data, value) {
     data.refreshGroupRoleManager = value;
   },
+  setUserNicknameAvatarUpdate(data, value) {
+    data.userNicknameAvatarUpdate = value;
+  },
 };
 
 const actions = {
@@ -167,6 +173,9 @@ const actions = {
   },
   setRefreshGroupRoleManager({ commit }, value) {
     commit('setRefreshGroupRoleManager', value);
+  },
+  setUserNicknameAvatarUpdate({ commit }, value) {
+    commit('setUserNicknameAvatarUpdate', value);
   },
 };
 

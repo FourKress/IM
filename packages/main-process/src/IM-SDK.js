@@ -161,7 +161,7 @@ export const IMSDKInit = (appId) => {
     });
   });
 
-  // 改所有除了群别名的信息
+  // 改所有除了我的群昵称的信息时触发
   IMSDK.getMainProvider().setUserNicknameAvatarUpdateListener(
     (userId, nickname, avatar) => {
       console.log('UserNicknameAvatarUpdateListener');

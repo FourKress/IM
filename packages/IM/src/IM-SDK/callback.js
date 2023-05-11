@@ -141,5 +141,7 @@ export const IMSDKCallBackEvents = {
         avatar,
       });
     }
+
+    storeInstance.commit('IMStore/setUserNicknameAvatarUpdate', info);
   },
 };
