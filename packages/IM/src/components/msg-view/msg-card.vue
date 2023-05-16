@@ -41,17 +41,55 @@
       <div class="view">
         <LsIcon
           class="audio-icon"
-          icon="icon_wenjian"
+          icon="ls-icon-icon_wenjian1"
           render-svg
-          width="46"
-          height="46"
+          width="31"
+          height="33"
         ></LsIcon>
       </div>
       <div class="info">
         <span class="name">{{ msgData.name }}</span>
-        <span class="tips">{{ getFileSize(msgData.size) }}</span>
+        <span class="tips">
+          <span>{{ getFileSize(msgData.size) }}</span>
+
+          <span class="btn-list">
+            <span class="opt-btn" v-if="cachePath">
+              <el-tooltip
+                class="item"
+                effect="dark"
+                content="查看文件夹"
+                placement="top"
+              >
+                <LsIcon
+                  class="audio-icon"
+                  icon="ls-icon-icon_wenjianjia"
+                  render-svg
+                  width="14"
+                  height="14"
+                  @click="handleOpenDir"
+                ></LsIcon>
+              </el-tooltip>
+            </span>
+            <span class="opt-btn" v-else>
+              <el-tooltip
+                class="item"
+                effect="dark"
+                content="下载"
+                placement="top"
+              >
+                <LsIcon
+                  class="audio-icon"
+                  icon="ls-icon-icon_xiazai"
+                  render-svg
+                  width="14"
+                  height="14"
+                  @click="handleDownload"
+                ></LsIcon>
+              </el-tooltip>
+            </span>
+          </span>
+        </span>
       </div>
-      <div class="close-btn" @click="handleDownload">下载</div>
     </div>
 
     <div
@@ -98,6 +136,7 @@ import {
 } from '@lanshu/utils';
 import { LsIcon } from '@lanshu/components';
 import { renderProcess } from '@lanshu/render-process';
+import {showItemInFolder} from "@lanshu/render-process/src/renderProcess";
 
 export default {
   name: 'Msg-card',
@@ -127,6 +166,7 @@ export default {
       MSG_FORMAT_MAP,
       CHECK_MSG_TYPE,
       assetsPath: '',
+      cachePath: '',
     };
   },
   computed: {
@@ -189,8 +229,14 @@ export default {
   },
   methods: {
     getFileSize,
-    handleDownload() {
-      downloadFile(this.assetsPath, this.msgData.name);
+    async handleDownload() {
+      const msgId = this.msg?.msgId;
+      const type = this.assetsPath.split('/').pop().split('.')[1];
+      await this.handleSaveFile(`cache_${msgId}`, this.assetsPath, msgId);
+      const cachePath = await renderProcess.getCacheFilePath(
+        `${msgId}.${type}`,
+      );
+      this.cachePath = cachePath;
     },
     //秒转化成 时分秒
     secondToDate(time) {
@@ -211,14 +257,16 @@ export default {
 
     async getAssetsPath() {
       let assetsPath = this.msgData?.url || this.msgData?.videoUrl;
-      if (assetsPath && this.msgType !== this.CHECK_MSG_TYPE.IS_FILE) {
+      if (assetsPath) {
         const msgId = this.msg?.msgId;
         const key = `cache_${msgId}`;
         const storePath = (await window.$lanshuStore.getItem(key)) || '';
         console.log(storePath, msgId);
         // 未产生缓存
         if (!storePath) {
-          await this.handleSaveFile(key, assetsPath, msgId);
+          if (this.msgType !== this.CHECK_MSG_TYPE.IS_FILE) {
+            await this.handleSaveFile(key, assetsPath, msgId);
+          }
         } else {
           const type = assetsPath.split('/').pop().split('.')[1];
           const cachePath = await renderProcess.getCacheFilePath(
@@ -227,6 +275,7 @@ export default {
           // 本地缓存文件存在
           if (cachePath) {
             assetsPath = cachePath;
+            this.cachePath = cachePath;
           } else {
             // 本地缓存文件不存在，意外删除，重新下载并缓存
             await this.handleSaveFile(key, assetsPath, msgId);
@@ -243,6 +292,11 @@ export default {
         fileName,
       });
       await window.$lanshuStore.setItem(key, url);
+    },
+
+    handleOpenDir() {
+      console.log(this.cachePath);
+      renderProcess.showItemInFolder(this.cachePath.replace('cache:///', ''))
     },
   },
 };
@@ -290,17 +344,20 @@ export default {
     max-width: 500px;
 
     &.file {
-      width: 358px;
-      height: 60px;
+      width: 340px;
+      height: 70px;
+      box-sizing: border-box;
       display: flex;
       align-items: center;
       justify-content: flex-start;
+      background: $bg-white-color;
 
       .view {
-        width: 46px;
-        height: 46px;
-        margin-right: 16px;
-        border-radius: 6px;
+        width: 31px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        margin-right: 12px;
         overflow: hidden;
 
         .tag {
@@ -313,7 +370,7 @@ export default {
 
       .info {
         flex: 1;
-        height: 48px;
+        height: 40px;
         display: flex;
         flex-direction: column;
         align-items: flex-start;
@@ -321,11 +378,12 @@ export default {
 
         .name {
           flex: 1;
-          max-width: 250px;
-          height: 22px;
-          line-height: 22px;
-          font-size: 16px;
+          max-width: 200px;
+          height: 20px;
+          line-height: 20px;
+          font-size: 14px;
           color: $main-text-color;
+          font-weight: bold;
 
           overflow: hidden;
           text-overflow: ellipsis;
@@ -334,14 +392,39 @@ export default {
 
         .tips {
           color: $minor-text-color;
-          font-size: 14px;
-        }
-      }
+          font-size: 12px;
+          width: 100%;
+          height: 17px;
+          margin-top: 2px;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
 
-      .close-btn {
-        cursor: pointer;
-        color: $primary-color;
-        margin-right: 16px;
+          .btn-list {
+            cursor: pointer;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+
+            .opt-btn {
+              width: 26px;
+              height: 26px;
+              border-radius: 4px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+
+              &:last-child {
+                margin: 2px 0 0px 10px;
+              }
+
+              &:hover {
+                background: $bg-hover-grey-color;
+              }
+            }
+          }
+        }
       }
     }
   }

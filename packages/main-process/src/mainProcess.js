@@ -139,6 +139,10 @@ const initIpcMain = () => {
     ipcMain.on('setCacheDir', async (_event, path) => {
       setCacheDir(path);
     });
+
+    ipcMain.on('showItemInFolder', async (_event, path) => {
+      await shell.showItemInFolder(path);
+    });
   });
 };
 

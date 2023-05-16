@@ -48,10 +48,11 @@ window.electronAPI = {
   setAutoStart: (key, data) => ipcRenderer.send('setAutoStart', key, data),
   checkForUpdates: () => ipcRenderer.send('checkForUpdates'),
   activeSearch: (callback) => ipcRenderer.on('activeSearch', callback),
-
   getCacheFilePath: (fileName) =>
     ipcRenderer.invoke('getCacheFilePath', fileName),
   saveCacheFile: (key, data) => ipcRenderer.send('saveCacheFile', key, data),
   getCacheDirInfo: () => ipcRenderer.invoke('getCacheDirInfo'),
   setCacheDir: (key, data) => ipcRenderer.send('setCacheDir', key, data),
+  showItemInFolder: (key, data) =>
+    ipcRenderer.send('showItemInFolder', key, data),
 };

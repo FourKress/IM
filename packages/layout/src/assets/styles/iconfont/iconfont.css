@@ -1,9 +1,9 @@
 @font-face {
   font-family: "ls-icon-font"; /* Project id 3760592 */
-  src: url('iconfont.woff2?t=1683679930420') format('woff2'),
-       url('iconfont.woff?t=1683679930420') format('woff'),
-       url('iconfont.ttf?t=1683679930420') format('truetype'),
-       url('iconfont.svg?t=1683679930420#ls-icon-font') format('svg');
+  src: url('iconfont.woff2?t=1684207335840') format('woff2'),
+       url('iconfont.woff?t=1684207335840') format('woff'),
+       url('iconfont.ttf?t=1684207335840') format('truetype'),
+       url('iconfont.svg?t=1684207335840#ls-icon-font') format('svg');
 }
 
 .ls-icon-font {
@@ -12,6 +12,18 @@
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.ls-icon-icon_wenjian1:before {
+  content: "\e72b";
+}
+
+.ls-icon-icon_xiazai:before {
+  content: "\e72c";
+}
+
+.ls-icon-icon_wenjianjia:before {
+  content: "\e72d";
 }
 
 .ls-icon-icon_zuixiaohua1:before {
