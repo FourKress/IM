@@ -17,6 +17,13 @@ import {
 } from './IM-SDK';
 import electronLog from 'electron-log';
 import increment from './increment';
+import {
+  getCacheDirInfo,
+  getCacheFilePath,
+  initCache,
+  saveCacheFile,
+  setCacheDir,
+} from './cache';
 
 const initIpcMain = () => {
   app.whenReady().then(async () => {
@@ -24,6 +31,9 @@ const initIpcMain = () => {
     if (process.platform === 'win32') {
       app.setAppUserModelId('蓝数IM');
     }
+
+    // 初始化缓存
+    initCache();
 
     showLoginWindow();
     // showMainWindow();
@@ -112,6 +122,22 @@ const initIpcMain = () => {
         upDateUrl: 'http://192.168.88.253:7654/app.zip',
         upDateExe: 'http://192.168.88.253:7654/update.exe',
       });
+    });
+
+    ipcMain.handle('getCacheFilePath', (_event, fileName) => {
+      return getCacheFilePath(fileName);
+    });
+
+    ipcMain.on('saveCacheFile', async (_event, data) => {
+      await saveCacheFile(data);
+    });
+
+    ipcMain.handle('getCacheDirInfo', async (_event) => {
+      return await getCacheDirInfo();
+    });
+
+    ipcMain.on('setCacheDir', async (_event, path) => {
+      setCacheDir(path);
     });
   });
 };

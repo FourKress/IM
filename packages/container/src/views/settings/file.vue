@@ -7,7 +7,7 @@
             type="text"
             readonly
             placeholder="请选择缓存保存位置…"
-            v-model="cacheFilePath"
+            v-model="cacheDirPath"
           />
           <span class="btn" @click="selectFilePath">更改</span>
         </div>
@@ -18,7 +18,8 @@
           <div class="clean-row">
             <span>清理软件运行缓存</span>
             <span class="btn" @click="handleClean">
-              清理 {{ fileSize ? fileSize : `${fileSize}KB` }} 缓存
+              清理
+              {{ cacheFileSize ? cacheFileSize : `${cacheFileSize}KB` }} 缓存
             </span>
           </div>
         </div>
@@ -40,25 +41,33 @@ export default {
   },
   data() {
     return {
-      cacheFilePath: '',
-      fileSize: 0,
+      cacheDirPath: '',
+      cacheFileSize: 0,
     };
+  },
+  async mounted() {
+    const { dir, size } = await renderProcess.getCacheDirInfo();
+    this.cacheDirPath = dir;
+    this.cacheFileSize = size;
   },
   methods: {
     async selectFilePath() {
-      const filePath = await renderProcess.openFile('openDirectory');
-      if (filePath) {
-        this.cacheFilePath = filePath;
+      const dirPath = await renderProcess.openFile('openDirectory');
+      if (dirPath) {
+        this.cacheDirPath = dirPath;
       }
-      const { error, fileSize } = await renderProcess.getFileSize(filePath);
+      await renderProcess.setCacheDir(dirPath);
+      await window.$lanshuStore.clear();
+      const { error, fileSize } = await renderProcess.getFileSize(dirPath);
       if (!error) {
-        this.fileSize = fileSize;
+        this.cacheFileSize = fileSize;
       }
     },
     async handleClean() {
-      if (!this.fileSize) return;
-      await renderProcess.cleanFile(this.cacheFilePath);
-      this.fileSize = 0;
+      if (!this.cacheFileSize) return;
+      await window.$lanshuStore.clear();
+      await renderProcess.cleanFile(this.cacheDirPath);
+      this.cacheFileSize = 0;
     },
   },
 };

@@ -133,7 +133,6 @@ export default {
       this.files = [];
     },
     handleFileConfirm(fileList) {
-      this.visibleFileDialog = false;
       this.$emit('actionComplete', {
         value: fileList,
         type: CHECK_MSG_TYPE.IS_SEND_FILE,

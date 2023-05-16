@@ -12,7 +12,6 @@
 <script>
 import { mapGetters } from 'vuex';
 import { SESSION_USER_TYPE } from '@lanshu/utils';
-import { IMGetGroupMemberInfo } from '../../IM-SDK';
 
 export default {
   name: 'Msg-lazy-userInfo',
@@ -45,14 +44,8 @@ export default {
   mounted() {
     // TODO 缓存已查询到的昵称、头像
     if (!this.isSelf && this.message.toUserType === SESSION_USER_TYPE.IS_GROUP) {
-      IMGetGroupMemberInfo(this.message.toUser, this.message.fromUser).then(
-        (res) => {
-          const { nickname, avatar } = res?.data || {};
-          console.log('IMGetGroupMemberInfo', nickname, avatar, this.message.fromUser);
-          this.nickname = nickname;
-          this.toAvatar = avatar;
-        },
-      );
+      this.nickname = this.message?.fromNickname;
+      this.toAvatar = this.message?.fromAvatar;
     } else {
       this.toAvatar = this.session.avatar;
     }

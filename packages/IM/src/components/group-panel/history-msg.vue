@@ -58,11 +58,11 @@
           <div class="scroll-view">
             <div class="item" v-for="msg in historyMsgList">
               <div class="img">
-                <img :src="msg.avatar" alt="" />
+                <img :src="msg.fromAvatar" alt="" />
               </div>
               <div class="info">
                 <div class="row">
-                  <span class="name">{{ msg.nickname }}</span>
+                  <span class="name">{{ msg.fromNickname }}</span>
                   <span class="time">
                     <TimesTransform
                       v-if="msg.timestamp"
@@ -171,7 +171,7 @@ export default {
 
       const fetchFnc = isKeywords ? IMSearchMessageOfText : IMSearchMessageByMsgType;
 
-      fetchFnc(isKeywords ? this.keywords : this.tabType, this.nextSeq).then((res) => {
+      fetchFnc(this.actionWindow.sessId, isKeywords ? this.keywords : this.tabType, this.nextSeq).then((res) => {
         console.log('拉取成功', res.data);
         const { msgs, nextSeq, hasNext } = res?.data || {};
         this.hasNext = hasNext;

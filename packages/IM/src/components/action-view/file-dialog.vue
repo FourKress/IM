@@ -29,18 +29,8 @@
                   class="wrap"
                   controls
                   preload="auto"
-                  width="300"
-                  height="100"
                   :src="item.path"
                 ></audio>
-
-                <LsIcon
-                  class="audio-icon"
-                  icon="icon_wenjian"
-                  render-svg
-                  width="46"
-                  height="46"
-                ></LsIcon>
               </div>
 
               <div class="tag file-icon" v-else>
@@ -70,7 +60,7 @@
     </div>
     <div class="btn-list">
       <span class="btn cancel" @click="handleClose">取消</span>
-      <span class="btn confirm" @click="handleConfirm">确定</span>
+      <el-button class="btn confirm" :loading="isUpload" @click="handleConfirm">确定</el-button>
     </div>
   </div>
 </template>
@@ -96,6 +86,7 @@ export default {
     return {
       fileList: [],
       CHECK_MSG_TYPE,
+      isUpload: false,
     };
   },
   computed: {
@@ -117,10 +108,11 @@ export default {
   },
   methods: {
     handleClose() {
-
+      if (this.isUpload) return;
       this.$emit('close');
     },
     async handleConfirm() {
+      this.isUpload = true;
       const fileList = await Promise.all(
         this.fileList.map(async (d) => {
           switch (d.type) {
@@ -133,10 +125,10 @@ export default {
               };
               break;
             case this.CHECK_MSG_TYPE.IS_VIDEO:
-              const video = this.$refs[d.name][0];
+              const file = this.$refs[d.name][0];
               return {
                 ...d,
-                time: video.duration,
+                time: parseInt((file.duration * 1000).toString()),
               };
               break;
             case this.CHECK_MSG_TYPE.IS_AUDIO:
@@ -144,7 +136,7 @@ export default {
               const time = await this.countAudioTime(audio);
               return {
                 ...d,
-                time,
+                time: parseInt((time * 1000).toString()),
               };
               break;
             default:
@@ -157,6 +149,7 @@ export default {
       this.$emit('confirm', fileList);
     },
     handleUnSelect(index) {
+      if (this.isUpload) return;
       this.fileList.splice(index, 1);
       if (!this.fileList?.length) {
         this.handleClose()
@@ -251,14 +244,10 @@ export default {
 
               &.audio {
                 audio {
-                  width: 0;
-                }
-
-                .audio-icon {
-                  position: absolute;
-                  left: 0;
-                  top: 0;
-                  z-index: 2;
+                  width: 100px;
+                  height: 46px;
+                  background: #f1f3f4;
+                  transform: translateX(-3px);
                 }
               }
 
@@ -327,6 +316,12 @@ export default {
       &.confirm {
         background-color: $primary-color;
         color: $bg-white-color;
+
+        ::v-deep {
+          border: none;
+          line-height: 34px;
+          padding: 0;
+        }
       }
     }
   }

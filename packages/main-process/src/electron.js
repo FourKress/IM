@@ -98,8 +98,10 @@ const initElectron = (terminal) => {
           }
         }
 
+        //设置托盘
         trayEvent.setTray();
 
+        // 创建窗口
         await createWindow();
 
         resolve({

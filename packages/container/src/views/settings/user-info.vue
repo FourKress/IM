@@ -170,7 +170,6 @@ export default {
   async mounted() {
     this.terminal = await renderProcess.getStore('CLIENT_TERMINAL');
     this.initData();
-    await this.getAccountUserInfo();
     await this.getRegion();
   },
   methods: {
@@ -213,14 +212,6 @@ export default {
         });
     },
 
-    async getAccountUserInfo() {
-      const res = await Apis.accountUserInfo({
-        token: getToken(TOKEN_TYPE.IS_SYS),
-        terminal: this.terminal,
-      });
-      this.accountUserInfo = res?.data || {};
-    },
-
     async getRegion() {
       const res = await Apis.managerRegionQueryAsTree();
       this.selectOptions = res?.data?.subRegions || [];
@@ -244,10 +235,10 @@ export default {
     },
 
     async handleAvatarAndNickNameChange(key, val) {
-      const { picture, nickName } = this.accountUserInfo;
+      const { avatar, nickname } = this.userProfile;
       const params = {
-        picture,
-        nickName,
+        picture: avatar,
+        nickName: nickname,
         terminal: this.terminal,
         token: getToken(TOKEN_TYPE.IS_SYS),
       };

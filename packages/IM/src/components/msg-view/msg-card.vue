@@ -21,6 +21,7 @@
       controls
       preload="auto"
       poster
+      :style="{ width: `${size.width}px`, height: `${size.height}px` }"
       :src="assetsPath"
     ></video>
 
@@ -59,7 +60,7 @@
       v-if="msgType === CHECK_MSG_TYPE.IS_TRTC"
     >
       <LsIcon
-        v-if="!isSelf || (bubbleModel === SESSION_BUBBLE_MODEL.IS_LEFT)"
+        v-if="!isSelf || bubbleModel === SESSION_BUBBLE_MODEL.IS_LEFT"
         class="trtc-icon target"
         :class="classObject"
         :icon="`${
@@ -72,7 +73,7 @@
       ></LsIcon>
       {{ trtcMsgTips }}
       <LsIcon
-        v-if="isSelf && (bubbleModel === SESSION_BUBBLE_MODEL.IS_BETWEEN)"
+        v-if="isSelf && bubbleModel === SESSION_BUBBLE_MODEL.IS_BETWEEN"
         class="trtc-icon self"
         :icon="`${
           msgData.type === NETWORK_CALL_TYPE.IS_VIDEO
@@ -96,6 +97,7 @@ import {
   SESSION_BUBBLE_MODEL,
 } from '@lanshu/utils';
 import { LsIcon } from '@lanshu/components';
+import { renderProcess } from '@lanshu/render-process';
 
 export default {
   name: 'Msg-card',
@@ -113,7 +115,7 @@ export default {
     bubbleModel: {
       type: Number,
       default: SESSION_BUBBLE_MODEL.IS_BETWEEN,
-    }
+    },
   },
   components: {
     LsIcon,
@@ -124,6 +126,7 @@ export default {
       SESSION_BUBBLE_MODEL,
       MSG_FORMAT_MAP,
       CHECK_MSG_TYPE,
+      assetsPath: '',
     };
   },
   computed: {
@@ -141,11 +144,11 @@ export default {
     isImage() {
       return this.msgType === this.CHECK_MSG_TYPE.IS_IMAGE;
     },
-    assetsPath() {
-      return this.msgData?.url || this.msgData?.videoUrl;
+    isVideo() {
+      return this.msgType === this.CHECK_MSG_TYPE.IS_VIDEO;
     },
     size() {
-      if (!this.isImage) return;
+      if (!this.isImage && !this.isVideo) return;
       const { wide, high } = this.msgData;
       const ratio = high ? wide / high : 1;
       if (wide > high && wide >= 500) {
@@ -181,7 +184,9 @@ export default {
       return tipsMap[msgType];
     },
   },
-  mounted() {},
+  mounted() {
+    this.getAssetsPath();
+  },
   methods: {
     getFileSize,
     handleDownload() {
@@ -202,6 +207,42 @@ export default {
     },
     formatTime(time) {
       return time < 10 ? `0${time}` : time;
+    },
+
+    async getAssetsPath() {
+      let assetsPath = this.msgData?.url || this.msgData?.videoUrl;
+      if (assetsPath && this.msgType !== this.CHECK_MSG_TYPE.IS_FILE) {
+        const msgId = this.msg?.msgId;
+        const key = `cache_${msgId}`;
+        const storePath = (await window.$lanshuStore.getItem(key)) || '';
+        console.log(storePath, msgId);
+        // 未产生缓存
+        if (!storePath) {
+          await this.handleSaveFile(key, assetsPath, msgId);
+        } else {
+          const type = assetsPath.split('/').pop().split('.')[1];
+          const cachePath = await renderProcess.getCacheFilePath(
+            `${msgId}.${type}`,
+          );
+          // 本地缓存文件存在
+          if (cachePath) {
+            assetsPath = cachePath;
+          } else {
+            // 本地缓存文件不存在，意外删除，重新下载并缓存
+            await this.handleSaveFile(key, assetsPath, msgId);
+          }
+          console.log('assetsPath', assetsPath);
+        }
+      }
+      this.assetsPath = assetsPath;
+    },
+
+    async handleSaveFile(key, url, fileName) {
+      await renderProcess.saveCacheFile({
+        url,
+        fileName,
+      });
+      await window.$lanshuStore.setItem(key, url);
     },
   },
 };

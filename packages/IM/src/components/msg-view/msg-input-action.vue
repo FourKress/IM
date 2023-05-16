@@ -34,6 +34,7 @@
         <div class="btn">
           <ActionCard
             v-if="!noGroupAuth"
+            ref="ActionCard"
             :session="session"
             :groupRole="groupRole"
             :groupRoleManager="groupRoleManager"
@@ -368,10 +369,9 @@ export default {
     },
 
     handleIMSendMsg(msg, cb) {
-      IMSendMessage(msg)
-        .finally(() => {
-          this.$emit('refreshMsg', msg);
-        });
+      IMSendMessage(msg).finally(() => {
+        this.$emit('refreshMsg', msg);
+      });
       this.$emit('pushMsg', msg);
       cb && cb();
     },
@@ -485,13 +485,17 @@ export default {
           });
           break;
         case this.CHECK_MSG_TYPE.IS_VIDEO:
+          const { dataURL, videoWidth, videoHeight } = await this.getVideoBase64(url);
+          const snapshotUrl = await this.handleFileUpload(dataURL);
           msgEvent = IMSDKMessageProvider.events.createVideoMessage;
           msgData.push({
             type: rawType,
             size,
             time,
             videoUrl: url,
-            snapshotUrl: url,
+            snapshotUrl,
+            high: parseInt(videoHeight),
+            wide: parseInt(videoWidth),
           });
           break;
         case this.CHECK_MSG_TYPE.IS_AUDIO:
@@ -519,6 +523,30 @@ export default {
       }
 
       return await IMCreateMsg(msgEvent, msgData);
+    },
+
+    getVideoBase64(url) {
+      return new Promise(function (resolve, reject) {
+        const video = document.createElement('video');
+        video.setAttribute('crossOrigin', 'anonymous'); //处理跨域
+        video.setAttribute('src', url);
+        video.setAttribute('preload', 'auto');
+        video.addEventListener('loadeddata', function () {
+          const canvas = document.createElement('canvas'),
+            width = video.videoWidth / 3.85, //canvas的尺寸和图片一样
+            height = video.videoHeight / 3.85;
+          canvas.width = width;
+          canvas.height = height;
+
+          canvas.getContext('2d').drawImage(video, 0, 0, width, height);
+          const dataURL = canvas.toDataURL('image/jpeg'); //转换为base64
+          resolve({
+            dataURL,
+            videoWidth: width,
+            videoHeight: height,
+          });
+        });
+      });
     },
 
     async handleFileUpload(filePath) {
@@ -550,6 +578,10 @@ export default {
             }),
           )
         ).filter((d) => d);
+
+        console.log(123123);
+
+        this.$refs.ActionCard.handleFileClose();
 
         sendMsgArr.forEach((d) => {
           this.handleIMSendMsg(d);

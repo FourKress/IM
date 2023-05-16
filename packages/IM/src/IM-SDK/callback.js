@@ -144,4 +144,9 @@ export const IMSDKCallBackEvents = {
 
     storeInstance.commit('IMStore/setUserNicknameAvatarUpdate', info);
   },
+
+  GroupUserAttributeChangedCallBack(ctx, info) {
+    console.log(info);
+    storeInstance.commit('IMStore/setGroupUserAttributeChanged', info);
+  },
 };

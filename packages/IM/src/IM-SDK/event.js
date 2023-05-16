@@ -512,18 +512,20 @@ export const IMSetGroupRemark = async (groupId, remark) =>
     remark,
   );
 
-export const IMSearchMessageOfText = async (keyword, nextSeq) =>
+export const IMSearchMessageOfText = async (sessId, keyword, nextSeq) =>
   await eventHOCFnc(
     IMSDKMessageProvider.provider,
     IMSDKMessageProvider.events.searchMessageOfText,
+    sessId,
     keyword,
     nextSeq,
   );
 
-export const IMSearchMessageByMsgType = async (msgType, nextSeq) =>
+export const IMSearchMessageByMsgType = async (sessId, msgType, nextSeq) =>
   await eventHOCFnc(
     IMSDKMessageProvider.provider,
     IMSDKMessageProvider.events.searchMessageByMsgType,
+    sessId,
     msgType,
     nextSeq,
   );

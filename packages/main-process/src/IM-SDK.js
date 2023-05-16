@@ -16,7 +16,7 @@ export const IMSDKInit = (appId) => {
   global.IMSDK = IMSDK;
 
   IMSDK.getMainProvider().setLogLevel(
-    process.env.WEBPACK_DEV_SERVER_URL ? LogLevel.DEBUG : LogLevel.INFO,
+    process.env.WEBPACK_DEV_SERVER_URL ? LogLevel.INFO : LogLevel.INFO,
   );
 
   IMSDK.getMainProvider().setNetworkChangeCallBack((state) => {
@@ -171,6 +171,22 @@ export const IMSDKInit = (appId) => {
           userId,
           nickname,
           avatar,
+        },
+      });
+    },
+  );
+
+  // 群成员信息变更回调
+  IMSDK.getMainProvider().setGroupUserAttributeChangedCallBack(
+    (groupId, userId, avatar, nickname) => {
+      console.log('GroupUserAttributeChangedCallBack');
+      global.mainWindow.webContents.send('IMSDKListener', {
+        type: 'GroupUserAttributeChangedCallBack',
+        value: {
+          groupId,
+          userId,
+          avatar,
+          nickname,
         },
       });
     },

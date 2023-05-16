@@ -67,7 +67,7 @@ function removeFile(targetPath) {
 }
 
 export default async function downloadFile(
-  { url, targetPath, folder = './' },
+  { url, targetPath, fileName, folder = './' },
   cb = () => {},
 ) {
   if (!targetPath || !url) {
@@ -79,7 +79,7 @@ export default async function downloadFile(
     throw new Error(error);
   }
   return new Promise((resolve, reject) => {
-    const name = url.split('/').pop();
+    const name = fileName ? fileName : url.split('/').pop();
     const filePath = path.join(targetPath, folder, name);
     download(url, filePath, (status, result) => {
       if (status === 'completed') {

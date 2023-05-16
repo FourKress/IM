@@ -74,6 +74,7 @@ export const defaultWindowConfig = {
   hasShadow: false,
   autoHideMenuBar: true,
   webPreferences: {
+    webSecurity: false,
     nodeIntegration: true,
     contextIsolation: false,
     backgroundThrottling: false,

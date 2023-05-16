@@ -308,10 +308,10 @@ export default {
               this.startTime();
               setInterval(() => {
                 this.timer++;
-                if (this.timer >= 10) {
-                  this.handleCallEnd('通话已达最大时长2小时，将结束通话')
+                if (this.timer >= 60 * 60 * 2) {
+                  this.handleCallEnd('通话已达最大时长2小时，通话已结束');
                 }
-              }, 1000)
+              }, 1000);
               break;
             default:
               break;
