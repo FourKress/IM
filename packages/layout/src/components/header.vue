@@ -1,7 +1,7 @@
 <template>
   <div id="client-header" class="drag">
     <div class="header_user">
-      <el-badge is-dot :hidden="!updateNotify || !updateVersion">
+      <el-badge is-dot :hidden="!updateNotify">
         <div class="avatar" @click="openDialog">
           <img :src="userProfile.avatar" class="img" alt="" />
         </div>
@@ -103,7 +103,7 @@
             <span class="label" @click="goToSettings">设置</span>
             <el-badge
               is-dot
-              :hidden="!updateNotify || !updateVersion"
+              :hidden="!updateNotify"
             ></el-badge>
           </div>
           <div class="row">
@@ -169,7 +169,7 @@ export default {
   },
   computed: {
     ...mapGetters('IMStore', ['userInfo', 'userProfile']),
-    ...mapGetters('globalStore', ['updateNotify', 'updateVersion']),
+    ...mapGetters('globalStore', ['updateNotify']),
   },
   data() {
     return {

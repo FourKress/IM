@@ -33,6 +33,8 @@ const state = {
   refreshGroupRoleManager: '',
   // 头像或昵称修改通知
   userNicknameAvatarUpdate: '',
+  // 群成员在群内的昵称修改通知
+  groupUserAttributeChanged: '',
 };
 
 const getters = {
@@ -53,6 +55,7 @@ const getters = {
   refreshAddressBook: (state) => state.refreshAddressBook,
   refreshGroupRoleManager: (state) => state.refreshGroupRoleManager,
   userNicknameAvatarUpdate: (state) => state.userNicknameAvatarUpdate,
+  groupUserAttributeChanged: (state) => state.groupUserAttributeChanged,
 };
 
 const mutations = {
@@ -120,6 +123,9 @@ const mutations = {
   setUserNicknameAvatarUpdate(data, value) {
     data.userNicknameAvatarUpdate = value;
   },
+  setGroupUserAttributeChanged(data, value) {
+    data.groupUserAttributeChanged = value;
+  },
 };
 
 const actions = {
@@ -176,6 +182,9 @@ const actions = {
   },
   setUserNicknameAvatarUpdate({ commit }, value) {
     commit('setUserNicknameAvatarUpdate', value);
+  },
+  setGroupUserAttributeChanged({ commit }, value) {
+    commit('setGroupUserAttributeChanged', value);
   },
 };
 

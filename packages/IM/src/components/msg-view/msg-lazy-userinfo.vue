@@ -3,7 +3,10 @@
     <div class="img">
       <img :src="isSelf ? userInfo.avatar : toAvatar" alt="" />
     </div>
-    <div class="nickname" v-if="!isSelf && message.toUserType === SESSION_USER_TYPE.IS_GROUP">
+    <div
+      class="nickname"
+      v-if="!isSelf && message.toUserType === SESSION_USER_TYPE.IS_GROUP"
+    >
       <span>{{ nickname }}</span>
     </div>
   </span>
@@ -41,14 +44,26 @@ export default {
       toAvatar: '',
     };
   },
+  watch: {
+    message() {
+      this.initData();
+    },
+  },
   mounted() {
-    // TODO 缓存已查询到的昵称、头像
-    if (!this.isSelf && this.message.toUserType === SESSION_USER_TYPE.IS_GROUP) {
-      this.nickname = this.message?.fromNickname;
-      this.toAvatar = this.message?.fromAvatar;
-    } else {
-      this.toAvatar = this.session.avatar;
-    }
+    this.initData();
+  },
+  methods: {
+    initData() {
+      if (
+        !this.isSelf &&
+        this.message.toUserType === SESSION_USER_TYPE.IS_GROUP
+      ) {
+        this.nickname = this.message?.fromNickname;
+        this.toAvatar = this.message?.fromAvatar;
+      } else {
+        this.toAvatar = this.session.avatar;
+      }
+    },
   },
 };
 </script>

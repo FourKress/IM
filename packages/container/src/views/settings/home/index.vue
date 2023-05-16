@@ -12,7 +12,7 @@
           <LsIcon render-svg :icon="nav.icon"></LsIcon>
         </span>
         <span class="text">{{ nav.label }}</span>
-        <el-badge is-dot :hidden="!updateNotify || !updateVersion" v-if="nav.key === 'Update'">
+        <el-badge is-dot :hidden="!updateNotify" v-if="nav.key === 'Update'">
         </el-badge>
       </div>
     </div>
@@ -114,7 +114,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters('globalStore', ['updateNotify', 'updateVersion']),
+    ...mapGetters('globalStore', ['updateNotify']),
   },
   mounted() {
     this.scrollView = document.querySelector('.scroll-view');

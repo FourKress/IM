@@ -1,5 +1,6 @@
-import { storeInstance, routeInstance } from '@lanshu/utils';
+import { storeInstance, routeInstance, WINDOW_TYPE } from '@lanshu/utils';
 import { IMClearUnreadCount, ClientLogOut } from './event';
+import { renderProcess } from '@lanshu/render-process';
 
 export const IMSDKCallBackEvents = {
   Network: (ctx, state) => {
@@ -89,7 +90,13 @@ export const IMSDKCallBackEvents = {
         content: '当前登录被踢出, 请退出重新登录',
       })
       .then(async () => {
-        // TODO 未处理 TRTC
+        const hasWindow = await renderProcess.hasWindow('TRTCWindow');
+        if (hasWindow) {
+          renderProcess.changeWindow(
+            this.WIN_ACTION_TYPE.IS_CLOSE,
+            WINDOW_TYPE.IS_TRTC,
+          );
+        }
         await ClientLogOut();
       });
   },

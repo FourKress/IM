@@ -67,7 +67,7 @@ const initElectron = (terminal) => {
 
       const gotTheLock = app.requestSingleInstanceLock();
       if (!gotTheLock) {
-        // app.quit();
+        app.quit();
       } else {
         app.on('second-instance', (event, argv) => {
           // 当运行第二个实例时,将会聚焦到myWindow这个窗口

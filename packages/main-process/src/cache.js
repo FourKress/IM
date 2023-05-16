@@ -25,6 +25,10 @@ export const initCache = () => {
     screen.getPrimaryDisplay().scaleFactor,
     screen.getPrimaryDisplay().size,
   );
+  screen.on('display-metrics-changed', function (ev, display) {
+    console.log(ev, display);
+  });
+
   if (fs.existsSync(cacheDir)) {
     console.log('找到缓存文件夹');
   } else {

@@ -14,6 +14,7 @@ import { ClientLogOut, IMSDKCallBackEvents } from '@lanshu/im';
 import { renderProcess } from '@lanshu/render-process';
 import { LsUpdate, LsCardDialog } from '@lanshu/components';
 import { mapActions, mapGetters } from 'vuex';
+import { WINDOW_TYPE } from '@lanshu/utils';
 
 export default {
   name: 'App',
@@ -29,16 +30,9 @@ export default {
     };
   },
   computed: {
-    ...mapGetters('globalStore', [
-      'updateVersion',
-      'startDownload',
-      'userErrorMsg',
-    ]),
+    ...mapGetters('globalStore', ['startDownload', 'userErrorMsg']),
   },
   watch: {
-    updateVersion() {
-      this.visibleUpdate = true;
-    },
     startDownload() {
       this.visibleUpdate = true;
     },
@@ -48,8 +42,15 @@ export default {
         this.$Lconfirm({
           title: '提示',
           content: msg,
-        }).then(() => {
-          ClientLogOut();
+        }).then(async () => {
+          const hasWindow = await renderProcess.hasWindow('TRTCWindow');
+          if (hasWindow) {
+            renderProcess.changeWindow(
+              this.WIN_ACTION_TYPE.IS_CLOSE,
+              WINDOW_TYPE.IS_TRTC,
+            );
+          }
+          await ClientLogOut();
         });
       }
     },
@@ -73,6 +74,8 @@ export default {
     });
   },
   mounted() {
+    this.handleGetVersion();
+
     document.addEventListener('keydown', (event) => {
       const code = event.code;
       const keys = [
@@ -96,7 +99,23 @@ export default {
     });
   },
   methods: {
-    ...mapActions('globalStore', ['setUserErrorMsg']),
+    ...mapActions('globalStore', ['setUserErrorMsg', 'setUpdateNotify', 'setUpdateVersion']),
+
+    async handleGetVersion() {
+      // TODO 检查是否有新版本 强制OR非强制
+      const isUpdate = true;
+      const isForced = false;
+      const version = '3.2.3';
+      this.setUpdateVersion(version);
+      if (!isUpdate) return;
+      if (isForced) {
+        this.visibleUpdate = true;
+      } else {
+        this.setUpdateNotify({
+          version: '1.0.0'
+        });
+      }
+    },
   },
 };
 </script>

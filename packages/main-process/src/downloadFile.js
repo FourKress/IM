@@ -1,3 +1,5 @@
+import electronLog from './log';
+
 const request = require('request');
 const fs = require('fs');
 const fse = require('fs-extra');
@@ -20,6 +22,7 @@ function download(url, targetPath, cb = () => {}) {
     req.on('data', (chunk) => {
       cur += chunk.length;
       const progress = ((100 * cur) / len).toFixed(2);
+      electronLog.info(progress);
       status = 'progressing';
       cb(status, progress);
     });

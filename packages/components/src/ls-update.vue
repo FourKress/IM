@@ -11,7 +11,7 @@
             :text-inside="true"
             :stroke-width="16"
             text-color="#fff"
-            :percentage="downloadProgress.percent"
+            :percentage="downloadProgress"
           ></el-progress>
         </div>
         <span class="tips">新版本正在努力更新中，请耐心等待…</span>
@@ -50,7 +50,7 @@ export default {
     return {
       LsAssets,
       WIN_ACTION_TYPE,
-      downloadProgress: {},
+      downloadProgress: 0,
       richText:
         'dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>',
     };

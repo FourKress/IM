@@ -31,7 +31,7 @@
         ></el-badge>
       </div>
     </div>
-    <div class="update" v-if="updateVersion" @click="handleUpdate">
+    <div class="update" v-if="updateNotify" @click="handleUpdate">
       <img class="img" src="" alt="" />
       <span class="label">新版本</span>
     </div>
@@ -81,7 +81,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters('globalStore', ['updateVersion', 'systemUserInfo']),
+    ...mapGetters('globalStore', ['updateNotify', 'systemUserInfo']),
     ...mapGetters('IMStore', ['allUnreadCount', 'newFriendCount']),
   },
   watch: {

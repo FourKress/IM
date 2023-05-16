@@ -5,12 +5,16 @@
     <!--    </InfoBlock>-->
 
     <InfoBlock :info="{}">
-      <el-checkbox class="item" v-model="selfUpdateNotify" @change="handleChange">
+      <el-checkbox
+        class="item"
+        v-model="selfUpdateNotify"
+        @change="handleChange"
+      >
         更新提醒
       </el-checkbox>
     </InfoBlock>
 
-    <div class="tips">当前安装版本：1.0.01</div>
+    <div class="tips">当前安装版本：{{ updateVersion }}</div>
 
     <template v-for="(info, index) in infos">
       <InfoBlock
@@ -26,6 +30,7 @@
 import Card from './card';
 import InfoBlock from './info-block';
 import { mapActions, mapGetters } from 'vuex';
+import { renderProcess } from '@lanshu/render-process';
 
 export default {
   name: 'Update-Card',
@@ -40,7 +45,8 @@ export default {
 
       infos: [
         {
-          btnText: '立即升级',
+          btnText: '立即更新',
+          fnc: (info) => this.handleUpdate(info),
         },
         {
           btnText: '更新日志',
@@ -49,19 +55,26 @@ export default {
     };
   },
   computed: {
-    ...mapGetters('globalStore', ['updateNotify']),
+    ...mapGetters('globalStore', ['updateNotify', 'updateVersion']),
   },
   created() {
-    this.selfUpdateNotify = this.updateNotify
+    this.selfUpdateNotify = this.updateNotify;
   },
   methods: {
     ...mapActions('globalStore', ['setUpdateNotify']),
 
     handleCallback(info) {
-      console.log(info);
+      if (info?.fnc) {
+        info.fnc(info);
+      }
     },
     handleChange() {
       this.setUpdateNotify(this.selfUpdateNotify);
+    },
+
+    handleUpdate() {
+      this.setStartDownload(true);
+      renderProcess.checkForUpdates();
     },
   },
 };

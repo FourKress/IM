@@ -119,8 +119,8 @@ const initIpcMain = () => {
       console.log('检查更新');
       electronLog.info('检查更新, 增量更新');
       await increment({
-        upDateUrl: 'http://192.168.88.253:7654/app.zip',
-        upDateExe: 'http://192.168.88.253:7654/update.exe',
+        upDateUrl: 'http://172.16.4.65:7654/app.zip',
+        upDateExe: 'http://172.16.4.65:7654/update.exe',
       });
     });
 
