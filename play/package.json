@@ -7,12 +7,13 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "ele:build": "yarn generatePreload && yarn generateIconfont && vue-cli-service electron:build && yarn removePreload && yarn removeIconfont",
+    "ele:build": "yarn generatePreload && yarn generateIconfont && vue-cli-service electron:build && yarn removePreload && yarn removeIconfont && yarn generateInstall",
     "ele:serve": "yarn generatePreload && yarn generateIconfont && vue-cli-service electron:serve",
     "generatePreload": "node ./generate-preload.js",
     "removePreload": "node ./remove-preload.js",
     "generateIconfont": "node ./generate-iconfont.js",
-    "removeIconfont": "node ./remove-iconfont.js"
+    "removeIconfont": "node ./remove-iconfont.js",
+    "generateInstall": "node ./custom-install/generate-install.js"
   },
   "main": "background.js",
   "dependencies": {

@@ -118,7 +118,7 @@ module.exports = defineConfig({
           },
         ],
 
-        afterPack: './afterPack.js',
+        afterPack: 'node_modules/@lanshu/main-process/src/afterPack.js',
       },
     },
   },

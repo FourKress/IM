@@ -26,3 +26,5 @@ play/src/preload.js
 play/public/iconfont.js
 play/dist_electron
 play/build
+play/custom-install/FilesToInstall
+play/custom-install/Output

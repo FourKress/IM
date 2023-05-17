@@ -128,7 +128,7 @@ export default {
   data() {
     const validateFormPwd = (rule, value, callback) => {
       if (!reg.test(value)) {
-        return callback(new Error('请输入有效的密码1'));
+        return callback(new Error('请输入有效的密码'));
       }
       const { secondPhoneNum } = this.form;
       if (secondPhoneNum && secondPhoneNum !== value) {
