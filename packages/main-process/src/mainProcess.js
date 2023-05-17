@@ -62,9 +62,11 @@ const initIpcMain = () => {
       IMSDKNetworkCallRefresh(data),
     );
 
+    ipcMain.on('IMSDK_INIT', async (_event, appId) => {
+      await IMSDKInit(appId);
+    });
+
     ipcMain.on('showMainWindow', (_event, config) => {
-      const { appId } = config;
-      IMSDKInit(appId);
       initHotKeys();
       showMainWindow();
     });

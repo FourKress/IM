@@ -89,7 +89,7 @@ export default {
       if (keys.includes(code)) {
         this.keys.push(code);
         if (this.keys.every((d) => keys.includes(d))) {
-          // event.preventDefault();
+          event.preventDefault();
           return;
         }
       }
@@ -111,9 +111,7 @@ export default {
       if (isForced) {
         this.visibleUpdate = true;
       } else {
-        this.setUpdateNotify({
-          version: '1.0.0'
-        });
+        this.setUpdateNotify(true);
       }
     },
   },

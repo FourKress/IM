@@ -30,12 +30,7 @@ export default {
       // setToken(TOKEN_TYPE.IS_IM, imToken);
 
       try {
-        microShared.setToken(token);
-        this.$router.push('/');
-        await this.clearBreadCrumb();
-        await renderProcess.showMainWindow({
-          appId: imAppid,
-        });
+        await renderProcess.IMSDK_INIT(imAppid);
         await IMSDK_Init({
           token: imToken,
           userId,
@@ -43,6 +38,10 @@ export default {
           // userId: '9999999',
           // userId: '123454321',
         });
+        microShared.setToken(token);
+        this.$router.push('/');
+        await this.clearBreadCrumb();
+        await renderProcess.showMainWindow();
       } catch (e) {}
     },
   },

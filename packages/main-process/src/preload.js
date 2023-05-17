@@ -33,6 +33,7 @@ window.electronAPI = {
   setStore: (key, data) => ipcRenderer.send('setStore', key, data),
   getStore: (key) => ipcRenderer.invoke('getStore', key),
   updateClient: (callback) => ipcRenderer.on('updateClient', callback),
+  IMSDK_INIT: (appId) => ipcRenderer.send('IMSDK_INIT', appId),
   IMSDKIPC: (provider, event, ...data) =>
     ipcRenderer.invoke('IMSDKIPC', provider, event, data),
   IMSDKNetworkCall: (event, ...data) =>
