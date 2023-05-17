@@ -94,7 +94,7 @@ export default {
       LsAssets,
       isWechatLogin: false,
       form: {
-        phoneNum: '173 8409 4579',
+        phoneNum: '',
       },
       rules: {
         phoneNum: [

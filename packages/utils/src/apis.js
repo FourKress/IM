@@ -1,19 +1,27 @@
 import https from './https';
 
 export const accountCheckStatus = (params) => {
-  return https.post('/auth/account/checkStatus', params);
+  return https.post('/auth/account/checkStatus', params, {
+    isAuth: false,
+  });
 };
 
 export const accountSendCaptcha = (params) => {
-  return https.post('/auth/account/sendCaptcha', params);
+  return https.post('/auth/account/sendCaptcha', params, {
+    isAuth: false,
+  });
 };
 
 export const accountSetPassword = (params) => {
-  return https.post('/auth/account/setPassword', params);
+  return https.post('/auth/account/setPassword', params, {
+    isAuth: false,
+  });
 };
 
 export const accountLogin = (params) => {
-  return https.post('/auth/account/login', params);
+  return https.post('/auth/account/login', params, {
+    isAuth: false,
+  });
 };
 
 export const accountQueryPermision = (params) => {
@@ -25,11 +33,15 @@ export const accountLoginOut = (params) => {
 };
 
 export const accountCheckCaptcha = (params) => {
-  return https.post('/auth/account/checkCaptcha', params);
+  return https.post('/auth/account/checkCaptcha', params, {
+    isAuth: false,
+  });
 };
 
 export const accountLoginWithCaptcha = (params) => {
-  return https.post('/auth/account/loginWithCaptcha', params);
+  return https.post('/auth/account/loginWithCaptcha', params, {
+    isAuth: false,
+  });
 };
 
 export const accountUserInfo = (params) => {

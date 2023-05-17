@@ -36,6 +36,8 @@ instance.interceptors.request.use(
       config.headers[HEADER_AUTH] = authToken;
     }
 
+    config.headers['os'] = 'pc';
+
     if (serialize) {
       if (data) data = qs.stringify(data);
       if (params) data = qs.stringify(params);
