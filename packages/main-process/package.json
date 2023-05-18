@@ -36,5 +36,5 @@
     "electron-devtools-installer": "^3.1.0",
     "vue-cli-plugin-electron-builder": "~2.1.1"
   },
-  "gitHead": "3ddb0ea8d7a74c51e724ecaebae05919607c9513"
+  "gitHead": "a21c4b508de11419906d97a84b5c721a9ba67a23"
 }
