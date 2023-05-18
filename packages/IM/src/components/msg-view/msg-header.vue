@@ -17,7 +17,7 @@
         <LsIcon
           render-svg
           icon="a-icon_sp2x"
-          v-if="!isGroup || groupRoleManager.whoCanStartNetworkCall <= groupRole"
+          v-if="!isGroup && groupRoleManager.whoCanStartNetworkCall <= groupRole"
           @click="handleStartTrtc(NETWORK_CALL_TYPE.IS_VIDEO)"
         ></LsIcon>
       </div>
@@ -25,7 +25,7 @@
         <LsIcon
           render-svg
           icon="a-icon_yy2x"
-          v-if="!isGroup || groupRoleManager.whoCanStartNetworkCall <= groupRole"
+          v-if="!isGroup && groupRoleManager.whoCanStartNetworkCall <= groupRole"
           @click="handleStartTrtc(NETWORK_CALL_TYPE.IS_AUDIO)"
         ></LsIcon>
       </div>
