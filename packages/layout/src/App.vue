@@ -89,7 +89,7 @@ export default {
       if (keys.includes(code)) {
         this.keys.push(code);
         if (this.keys.every((d) => keys.includes(d))) {
-          event.preventDefault();
+          // event.preventDefault();
           return;
         }
       }

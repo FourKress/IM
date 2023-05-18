@@ -13,7 +13,7 @@
     "removePreload": "node ./remove-preload.js",
     "generateIconfont": "node ./generate-iconfont.js",
     "removeIconfont": "node ./remove-iconfont.js",
-    "generateInstall": "node ./custom-install/generate-install.js"
+    "generateInstall": "node ./generate-install.js"
   },
   "main": "background.js",
   "dependencies": {

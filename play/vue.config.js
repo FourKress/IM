@@ -44,7 +44,7 @@ module.exports = defineConfig({
         directories: {
           output: 'build', //输出文件路径
         },
-        icon: './icons/icon_512x512.png',
+        icon: './icons/icon.ico',
         dmg: {
           contents: [
             {

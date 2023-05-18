@@ -3,7 +3,6 @@ const AdmZip = require('adm-zip');
 const fse = require('fs-extra');
 
 exports.default = async function (context) {
-  console.log('afterPack');
   const { appOutDir, outDir, packager } = context;
   let targetPath;
   if (packager.platform.nodeName === 'darwin') {
