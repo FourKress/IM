@@ -1,7 +1,7 @@
 <template>
   <div class="top">
     <div class="left">
-      <div class="img">
+      <div class="img" @click="handleFriend">
         <img :src="toAvatar" alt="" />
       </div>
       <div class="info">
@@ -14,7 +14,7 @@
       <!--        <LsIcon render-svg icon="a-icon_sp2x"></LsIcon>-->
       <!--      </div>-->
       <div class="btn">
-<!--        && groupRoleManager.whoCanStartNetworkCall <= groupRole-->
+        <!--        && groupRoleManager.whoCanStartNetworkCall <= groupRole-->
         <LsIcon
           render-svg
           icon="a-icon_sp2x"
@@ -23,7 +23,7 @@
         ></LsIcon>
       </div>
       <div class="btn">
-<!--        && groupRoleManager.whoCanStartNetworkCall <= groupRole-->
+        <!--        && groupRoleManager.whoCanStartNetworkCall <= groupRole-->
         <LsIcon
           render-svg
           icon="a-icon_yy2x"
@@ -69,19 +69,30 @@
         </el-dropdown>
       </div>
     </div>
+
+    <LsCardDialog :visible.sync="showFriendDialog">
+      <LsFriendPanel
+        :friend-info="friendInfo"
+        :position="position"
+        :config="{ isDetails: true }"
+        @update="handleCloseDialog"
+      />
+    </LsCardDialog>
   </div>
 </template>
 
 <script>
 import { mapActions, mapGetters } from 'vuex';
-import { LsIcon } from '@lanshu/components';
+import { LsIcon, LsCardDialog, LsFriendPanel } from '@lanshu/components';
 import {
   IM_HEADER_MORE_BTN_KEY,
   SESSION_USER_TYPE,
   CLIENT_TYPE,
   NETWORK_CALL_TYPE,
+  FriendMixins,
 } from '@lanshu/utils';
 import { renderProcess } from '@lanshu/render-process';
+import {IMGetOneFriend, IMGetUserProfile} from "../../IM-SDK";
 
 export default {
   name: 'Msg-header',
@@ -97,13 +108,17 @@ export default {
   },
   components: {
     LsIcon,
+    LsCardDialog,
+    LsFriendPanel,
   },
   data() {
     return {
       IM_HEADER_MORE_BTN_KEY,
       NETWORK_CALL_TYPE,
+      showFriendDialog: false,
     };
   },
+  mixins: [FriendMixins],
   computed: {
     ...mapGetters('IMStore', ['userInfo']),
 
@@ -144,6 +159,22 @@ export default {
       if (this.isMainSession) return;
       this.removeSessionWindowList(this.session);
     },
+
+    async handleFriend(event) {
+      if (this.isGroup) return;
+      const { toUser } = this.session;
+      const friendInfo = (await IMGetOneFriend(toUser))?.data || {};
+      const userProfile = (await IMGetUserProfile(toUser))?.data || {};
+      const { remark, desc } = friendInfo;
+      this.openFriendDialog(
+        {
+          ...userProfile,
+          remark,
+          desc,
+        },
+        event,
+      );
+    },
   },
 };
 </script>
@@ -170,6 +201,7 @@ export default {
       border-radius: 6px;
       margin-right: 10px;
       overflow: hidden;
+      cursor: pointer;
 
       img {
         display: block;

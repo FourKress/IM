@@ -249,7 +249,7 @@ export default {
       }
     },
     async handleSetRemarkOrDesc() {
-      if (!this.panelConfig.isPass) return;
+      if (!this.panelConfig.isPass && !this.panelConfig.isDetails) return;
       await IMSetRemarkOrDesc(this.friendInfo.userId, this.remark, this.desc);
       this.$emit('update')
     }
