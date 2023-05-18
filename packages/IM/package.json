@@ -1,6 +1,6 @@
 {
   "name": "@lanshu/im",
-  "version": "0.1.22",
+  "version": "0.1.23",
   "description": "客户端IM",
   "keywords": [
     "IM"
@@ -20,9 +20,9 @@
   ],
   "scripts": {},
   "dependencies": {
-    "@lanshu/components": "^0.1.22",
-    "@lanshu/render-process": "^0.1.22",
-    "@lanshu/utils": "^0.1.22",
+    "@lanshu/components": "^0.1.23",
+    "@lanshu/render-process": "^0.1.23",
+    "@lanshu/utils": "^0.1.23",
     "recordrtc": "^5.6.2",
     "trtc-electron-sdk": "10.3.406",
     "vuex": "^3.6.2"
