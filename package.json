@@ -6,7 +6,7 @@
   "description": "客户端架构包 npm私有库管理",
   "license": "MIT",
   "publishConfig": {
-    "registry": "http://172.16.2.250:8081/repository/npm-hosted/"
+    "registry": "http://172.16.3.249:8081/repository/npm-hosted/"
   },
   "scripts": {},
   "dependencies": {
