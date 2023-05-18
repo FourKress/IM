@@ -1,6 +1,6 @@
 {
   "name": "@lanshu/main-process",
-  "version": "0.1.26",
+  "version": "0.1.27",
   "description": "客户端主进程",
   "keywords": [
     "main-process"
