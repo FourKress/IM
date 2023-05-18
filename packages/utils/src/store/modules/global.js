@@ -43,7 +43,7 @@ const mutations = {
   },
   setUpdateNotify(data, value) {
     data.updateNotify = value;
-    localStorage.setItem('updateNotify', value);
+    sessionStorage.setItem('updateNotify', value);
   },
   setSearchHistory(data, value) {
     data.searchHistory = value;

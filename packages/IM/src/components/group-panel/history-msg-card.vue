@@ -1,8 +1,10 @@
 <template>
   <div class="history-msg-card">
-    <div class="text" v-if="msgType === CHECK_MSG_TYPE.IS_TEXT">
-      {{ text }}
-    </div>
+    <div
+      class="text"
+      v-if="msgType === CHECK_MSG_TYPE.IS_TEXT"
+      v-html="text"
+    ></div>
 
     <div
       class="wrap"

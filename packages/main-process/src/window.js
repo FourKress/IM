@@ -128,6 +128,8 @@ export const openTRTCWindow = async (type = CLIENT_TYPE.IS_PC) => {
     if (!process.env.IS_TEST) TRTCWindow.webContents.openDevTools();
   }
   await TRTCWindow.loadURL(loadURL);
+  // TODO 临时打开
+  TRTCWindow.webContents.openDevTools();
 
   // const code = `sessionStorage.setItem("authKey", "${token}")`;
   // await TRTCWindow.webContents.executeJavaScript(code).then(async () => {

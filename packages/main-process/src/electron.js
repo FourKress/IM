@@ -30,6 +30,8 @@ async function createWindow() {
     createProtocol('app');
     await win.loadURL('app://./index.html');
   }
+  // TODO 临时打开
+  win.webContents.openDevTools();
 
   global.mainWindow = win;
 

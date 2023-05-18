@@ -42,7 +42,9 @@ class Mirco {
     });
 
     console.log(routers);
-    return routers;
+    // TODO 暂时屏蔽
+    return [];
+    // return routers;
   }
 }
 

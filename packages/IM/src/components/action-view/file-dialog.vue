@@ -95,13 +95,15 @@ export default {
   mounted() {
     this.fileList = this.files.map((d) => {
       const { name, size, type } = d;
+      const rawType = type;
+      const isTextFile = type.includes('text/');
       return {
         name,
         formatSize: getFileSize(size),
         size,
         path: getObjectURL(d),
-        type: type.replace(/\/\S+/g, ''),
-        rawType: type,
+        type: isTextFile ? 'application' : type.replace(/\/\S+/g, ''),
+        rawType,
         file: d,
       };
     });

@@ -103,16 +103,15 @@ export default {
 
     async handleGetVersion() {
       // TODO 检查是否有新版本 强制OR非强制
-      const isUpdate = true;
-      const isForced = false;
-      const version = '3.2.3';
-      this.setUpdateVersion(version);
-      if (!isUpdate) return;
-      if (isForced) {
-        this.visibleUpdate = true;
-      } else {
-        this.setUpdateNotify(true);
-      }
+      // const isUpdate = false;
+      // const isForced = false;
+      // const version = '3.2.3';
+      // if (!isUpdate) return;
+      // if (isForced) {
+      //   this.visibleUpdate = true;
+      // } else {
+      //   this.setUpdateNotify(true);
+      // }
     },
   },
 };

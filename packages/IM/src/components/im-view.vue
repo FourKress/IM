@@ -200,7 +200,7 @@ export default {
       accept: '',
       friendPanelConfig: {},
       showFriendDialog: false,
-      bubbleModel: SESSION_BUBBLE_MODEL.IS_BETWEEN,
+      bubbleModel: '',
       myGroupRole: -1,
       groupRoleManager: {},
     };
@@ -272,7 +272,7 @@ export default {
     },
   },
   async mounted() {
-    this.bubbleModel = await renderProcess.getStore('SESSION_BUBBLE_MODEL');
+    this.bubbleModel = await renderProcess.getStore('SESSION_BUBBLE_MODEL') || SESSION_BUBBLE_MODEL.IS_BETWEEN;
     this.throttleGetMessageList = lodash.throttle(this.getMessageList, 200, {
       leading: true,
       trailing: false,

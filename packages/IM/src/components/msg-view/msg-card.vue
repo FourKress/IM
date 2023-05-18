@@ -4,8 +4,8 @@
       class="card text"
       :class="classObject"
       v-if="msgType === CHECK_MSG_TYPE.IS_TEXT"
+      v-html="text"
     >
-      {{ text }}
     </div>
     <img
       class="wrap"
@@ -152,7 +152,7 @@ export default {
       default: true,
     },
     bubbleModel: {
-      type: Number,
+      type: [Number, String],
       default: SESSION_BUBBLE_MODEL.IS_BETWEEN,
     },
   },

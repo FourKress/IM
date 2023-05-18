@@ -45,10 +45,10 @@ export const IMSDKCallBackEvents = {
     const audio = new Audio(require('./new-msg-audio.mp3'));
     await audio.play();
 
-    const NOTIFICATION_TITLE = '客户端通知';
     const NOTIFICATION_BODY = message?.data?.content;
-    new Notification(NOTIFICATION_TITLE, {
+    new Notification(message.fromNickname, {
       body: NOTIFICATION_BODY,
+      icon: message.fromAvatar,
     }).onclick = () => {
       const sessionList = storeInstance.getters['IMStore/sessionList'];
       const targetSession = sessionList.find(

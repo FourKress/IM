@@ -233,6 +233,14 @@ export default {
         }`;
         const brNode = `${before}${after}`;
         this.handleTargetInsert(brNode);
+        // 在最末尾处换行时，需要两次才能换行，需要特殊处理
+        const wrapArr = innerText.split('\n');
+        const lastText = wrapArr.pop();
+        if((lastText && endOffset === lastText.length)) {
+          setTimeout(() => {
+            this.handleCtrlEnterSend()
+          })
+        }
       }
     },
     handleInput() {
@@ -566,6 +574,7 @@ export default {
 
     async handleActionComplete(data) {
       const { value, type } = data;
+      debugger
       if (type === this.CHECK_MSG_TYPE.IS_SEND_FILE) {
         const sendMsgArr = (
           await Promise.all(
