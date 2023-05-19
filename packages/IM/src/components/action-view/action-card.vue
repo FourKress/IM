@@ -1,7 +1,14 @@
 <template>
   <div>
     <el-dropdown placement="top" trigger="click">
-      <LsIcon render-svg icon="xx_srk_gd"></LsIcon>
+      <el-tooltip
+        class="item"
+        effect="dark"
+        content="更多"
+        placement="top"
+      >
+        <LsIcon render-svg icon="xx_srk_gd"></LsIcon>
+      </el-tooltip>
       <input
         ref="fileInput"
         style="display: none"

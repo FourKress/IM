@@ -128,6 +128,7 @@ export const WIN_ACTION_TYPE = {
   IS_MIN: 'min',
   IS_MAX: 'max',
   IS_CLOSE: 'close',
+  IS_SHOW: 'show',
 };
 
 export const WINDOW_TYPE = {

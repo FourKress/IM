@@ -1,4 +1,4 @@
-import { ipcMain, app, shell } from 'electron';
+import { ipcMain, app, shell, BrowserWindow } from 'electron';
 import { handleFileOpen, calcFileSize, deleteFile } from './utils';
 import { initScreenshots } from './screenshots';
 import {
@@ -148,6 +148,14 @@ const initIpcMain = () => {
 
     ipcMain.on('previewAssets', async (_event, path) => {
       await shell.openPath(path);
+    });
+
+    ipcMain.on('previewAssets', async (_event, path) => {
+      await shell.openPath(path);
+    });
+
+    ipcMain.handle('getFocusedWindow', (_event, win) => {
+      return !!BrowserWindow.getFocusedWindow();
     });
   });
 };

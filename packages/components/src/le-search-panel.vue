@@ -63,7 +63,7 @@
         </div>
       </div>
 
-      <div class="search-list">
+      <div class="search-list" v-if="searchData.length">
         <div class="scroll-view">
           <div class="item" v-for="item in searchData" :key="item.userId" @click="(event) => handleFriend(item, event)">
             <div class="info">
@@ -171,7 +171,7 @@ export default {
       const originData = dataMap[this.tabType];
       const searchData = originData.filter((d) => {
         const { nickname, remark = '' } = d;
-        if (nickname.includes(keywords)) return true;
+        if (nickname && nickname.includes(keywords)) return true;
         if (remark && remark.includes(keywords)) return true;
         return false;
       });

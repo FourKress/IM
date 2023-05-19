@@ -1,4 +1,4 @@
-import { app } from 'electron';
+import { app, BrowserWindow } from 'electron';
 import fs from 'fs';
 import electronLog from './log';
 import { openTRTCWindow } from './window';
@@ -95,14 +95,20 @@ export const IMSDKInit = (appId) => {
         value: msgType,
       });
     }
+
+    const focusedWindow = BrowserWindow.getFocusedWindow();
+    if (!focusedWindow) {
+      trayEvent.setFlash();
+    }
+
     global.mainWindow.webContents.send('IMSDKListener', {
       type: 'AddReceiveNewMessage',
       value: {
         message,
         silence,
+        isFocused: !!focusedWindow,
       },
     });
-    trayEvent.setFlash();
   });
 
   IMSDK.getMainProvider().setNetworkCallListener(

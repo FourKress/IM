@@ -23,12 +23,26 @@
             class="btn emoji-btn"
             @click="handleSwitchEmoji"
           >
-            <LsIcon render-svg icon="xx_srk_bq"></LsIcon>
+            <el-tooltip
+              class="item"
+              effect="dark"
+              content="表情"
+              placement="top"
+            >
+              <LsIcon render-svg icon="xx_srk_bq"></LsIcon>
+            </el-tooltip>
           </div>
         </el-popover>
 
         <div class="btn" @click="handleScreenshots">
-          <LsIcon render-svg icon="xx_srk_jt"></LsIcon>
+          <el-tooltip
+            class="item"
+            effect="dark"
+            :content="`截图(${screenshotHotKey})`"
+            placement="top"
+          >
+            <LsIcon render-svg icon="xx_srk_jt"></LsIcon>
+          </el-tooltip>
         </div>
 
         <div class="btn">
@@ -129,6 +143,7 @@ export default {
       emojiVisible: false,
       windowRange: null,
       sendMsgHotKey: null,
+      screenshotHotKey: null,
       KEY_CODE,
       CHECK_MSG_TYPE,
     };
@@ -198,9 +213,10 @@ export default {
       }
     });
 
-    this.sendMsgHotKey = (
-      await renderProcess.getStore('HOT_KEYS')
-    ).sendMsg.currentKey;
+    const hotKeyDB = await renderProcess.getStore('HOT_KEYS');
+
+    this.sendMsgHotKey = hotKeyDB.sendMsg.currentKey;
+    this.screenshotHotKey = hotKeyDB.screenshot.currentKey;
 
     if (this.sendMsgHotKey === this.KEY_CODE.IS_ENTER) {
       document.onkeydown = (e) => {

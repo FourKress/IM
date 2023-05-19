@@ -6,6 +6,7 @@
       </div>
       <div class="info">
         <span class="name">{{ session.nickname }}</span>
+        <span v-if="isGroup">({{ members.length }})</span>
         <!--        <span class="tips">顶顶顶顶</span>-->
       </div>
     </div>
@@ -92,7 +93,11 @@ import {
   FriendMixins,
 } from '@lanshu/utils';
 import { renderProcess } from '@lanshu/render-process';
-import {IMGetOneFriend, IMGetUserProfile} from "../../IM-SDK";
+import {
+  IMGetGroupMemberList,
+  IMGetOneFriend,
+  IMGetUserProfile,
+} from '../../IM-SDK';
 
 export default {
   name: 'Msg-header',
@@ -116,6 +121,7 @@ export default {
       IM_HEADER_MORE_BTN_KEY,
       NETWORK_CALL_TYPE,
       showFriendDialog: false,
+      members: [],
     };
   },
   mixins: [FriendMixins],
@@ -131,6 +137,11 @@ export default {
     isGroup() {
       return this.session?.toUserType === SESSION_USER_TYPE.IS_GROUP;
     },
+  },
+  mounted() {
+    if (this.isGroup) {
+      this.getGroupMemberList();
+    }
   },
   methods: {
     ...mapActions('IMStore', ['removeSessionWindowList']),
@@ -175,6 +186,14 @@ export default {
         event,
       );
     },
+
+    getGroupMemberList() {
+      // nextSeq默认从0开始
+      IMGetGroupMemberList(this.session.toUser, 0).then((res) => {
+        const { members = [] } = res;
+        this.members = members;
+      });
+    },
   },
 };
 </script>
@@ -211,16 +230,20 @@ export default {
     }
 
     .info {
+      flex: 1;
       display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      justify-content: center;
+      align-items: center;
+      justify-content: flex-start;
+      font-weight: bold;
 
       .name {
         font-size: 16px;
-        font-weight: bold;
         color: $main-text-color;
-        margin-bottom: 5px;
+        height: 22px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        max-width: 200px;
       }
 
       .tips {

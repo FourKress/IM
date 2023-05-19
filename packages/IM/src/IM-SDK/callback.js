@@ -4,9 +4,53 @@ import {
   WINDOW_TYPE,
   MSG_FORMAT_MAP,
   CHECK_MSG_TYPE,
+  SESSION_USER_TYPE,
+  lodash,
+  WIN_ACTION_TYPE,
 } from '@lanshu/utils';
-import { IMClearUnreadCount, ClientLogOut } from './event';
+import { IMClearUnreadCount, ClientLogOut, IMGetGroupAttribute } from './event';
 import { renderProcess } from '@lanshu/render-process';
+
+const startNotification = lodash.debounce(async function (message) {
+  const audio = new Audio(require('./new-msg-audio.mp3'));
+  await audio.play();
+
+  const isGroup = message.toUserType === SESSION_USER_TYPE.IS_GROUP;
+  let NOTIFICATION_TITLE = message.fromNickname,
+    NOTIFICATION_ICON = message.fromAvatar;
+
+  if (isGroup) {
+    const res = await IMGetGroupAttribute(message.toUser);
+    const groupInfo = res?.data || {};
+    NOTIFICATION_TITLE = groupInfo.nickname;
+    NOTIFICATION_ICON = groupInfo.avatar;
+  }
+
+  let NOTIFICATION_BODY;
+  // 文本类型的消息直接展示
+  if (MSG_FORMAT_MAP[message.msgType]?.type === CHECK_MSG_TYPE.IS_TEXT) {
+    NOTIFICATION_BODY = message?.data?.content.split('<br>')[0];
+  } else {
+    // 其他类型消息动态处理
+    NOTIFICATION_BODY = `${MSG_FORMAT_MAP[message.msgType]?.label(
+      message?.data,
+    )}`;
+  }
+
+  new Notification(NOTIFICATION_TITLE, {
+    body: NOTIFICATION_BODY,
+    icon: NOTIFICATION_ICON,
+  }).onclick = () => {
+    const sessionList = storeInstance.getters['IMStore/sessionList'];
+    const targetSession = sessionList.find((d) => d.sessId === message.sessId);
+    if (!targetSession) return;
+    storeInstance.commit('IMStore/setMainSessionWindow', targetSession);
+    renderProcess.changeWindow(WIN_ACTION_TYPE.IS_SHOW, WINDOW_TYPE.IS_MAIN);
+    if (location.hash === '#/') return;
+    IMClearUnreadCount(message.sessId);
+    routeInstance.push('/');
+  };
+}, 800);
 
 export const IMSDKCallBackEvents = {
   Network: (ctx, state) => {
@@ -46,35 +90,7 @@ export const IMSDKCallBackEvents = {
     storeInstance.commit('IMStore/setRefreshMsg', Date.now());
   },
   AddReceiveNewMessage: async (ctx, msgInfo) => {
-    const { message, silence } = msgInfo;
-
-    const audio = new Audio(require('./new-msg-audio.mp3'));
-    await audio.play();
-
-    let NOTIFICATION_BODY;
-    // 文本类型的消息直接展示
-    if (MSG_FORMAT_MAP[message.msgType]?.type === CHECK_MSG_TYPE.IS_TEXT) {
-      NOTIFICATION_BODY = message?.data?.content.split('<br>')[0];
-    } else {
-      // 其他类型消息动态处理
-      NOTIFICATION_BODY = `${MSG_FORMAT_MAP[message.msgType]?.label(
-        message?.data,
-      )}`;
-    }
-    new Notification(message.fromNickname, {
-      body: NOTIFICATION_BODY,
-      icon: message.fromAvatar,
-    }).onclick = () => {
-      const sessionList = storeInstance.getters['IMStore/sessionList'];
-      const targetSession = sessionList.find(
-        (d) => d.sessId === message.sessId,
-      );
-      if (!targetSession) return;
-      storeInstance.commit('IMStore/setMainSessionWindow', targetSession);
-      if (location.hash === '#/') return;
-      IMClearUnreadCount(message.sessId);
-      routeInstance.push('/');
-    };
+    const { message, silence, isFocused } = msgInfo;
 
     console.log('@@@@@ AddReceiveNewMessage');
 
@@ -83,11 +99,18 @@ export const IMSDKCallBackEvents = {
     const sessionWindowList =
       storeInstance.getters['IMStore/sessionWindowList'];
 
+    const isCurrentSessionWindow = mainSessionWindow.sessId === message.sessId;
+
+    // 窗口是否聚集
+    if (!isFocused) {
+      startNotification(message);
+    }
+
     if (!mainSessionWindow?.sessId && !sessionWindowList?.length) return;
 
     storeInstance.commit('IMStore/setCurrentMsg', message);
 
-    if (mainSessionWindow.sessId !== message.sessId) return;
+    if (!isCurrentSessionWindow) return;
 
     await IMClearUnreadCount(message.sessId, [
       mainSessionWindow,
