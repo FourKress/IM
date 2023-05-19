@@ -145,6 +145,10 @@ const initIpcMain = () => {
     ipcMain.on('showItemInFolder', async (_event, path) => {
       await shell.showItemInFolder(path);
     });
+
+    ipcMain.on('previewAssets', async (_event, path) => {
+      await shell.openPath(path);
+    });
   });
 };
 

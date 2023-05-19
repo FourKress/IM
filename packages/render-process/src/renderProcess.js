@@ -30,3 +30,4 @@ export const saveCacheFile = electronAPI?.saveCacheFile;
 export const getCacheDirInfo = electronAPI?.getCacheDirInfo;
 export const setCacheDir = electronAPI?.setCacheDir;
 export const showItemInFolder = electronAPI?.showItemInFolder;
+export const previewAssets = electronAPI?.previewAssets;

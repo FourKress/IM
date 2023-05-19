@@ -9,10 +9,12 @@
     </div>
     <img
       class="wrap"
+      style="cursor: pointer"
       v-if="isImage"
       :width="size.width"
       :height="size.height"
       :src="assetsPath"
+      @click="handlePreview"
     />
     <video
       class="wrap"
@@ -295,9 +297,15 @@ export default {
     },
 
     handleOpenDir() {
-      console.log(this.cachePath);
       renderProcess.showItemInFolder(this.cachePath.replace('cache:///', ''))
     },
+
+    async handlePreview() {
+      if (!this.assetsPath.includes('cache')) {
+        await this.handleDownload()
+      }
+      renderProcess.previewAssets(this.cachePath.replace('cache:///', ''))
+    }
   },
 };
 </script>

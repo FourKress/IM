@@ -56,4 +56,5 @@ window.electronAPI = {
   setCacheDir: (key, data) => ipcRenderer.send('setCacheDir', key, data),
   showItemInFolder: (key, data) =>
     ipcRenderer.send('showItemInFolder', key, data),
+  previewAssets: (key, data) => ipcRenderer.send('previewAssets', key, data),
 };

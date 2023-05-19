@@ -1173,10 +1173,10 @@
     "@jridgewell/resolve-uri" "3.1.0"
     "@jridgewell/sourcemap-codec" "1.4.14"
 
-"@lanshu/micro@^0.0.8":
-  version "0.0.8"
-  resolved "http://172.16.2.250:8081/repository/npm-group/@lanshu/micro/-/micro-0.0.8.tgz#b55eaa68184509b62098d1007d5c0755725817ff"
-  integrity sha512-6tMgi4Ji6MJWpw1l2gagECIUFv81KFcZkI6edDUS4sAURot+4XgikLw1r0+MnNdUBE1hrWrjL3a3QoeSB/AnKg==
+"@lanshu/micro@^0.1.0":
+  version "0.1.0"
+  resolved "http://172.16.3.249:8081/repository/npm-group/@lanshu/micro/-/micro-0.1.0.tgz#6a960b04c284c26995f009aaf3629b94d7f0b7ce"
+  integrity sha512-KEeZLRX3okHmJKNy7PTpHynwvIqTEtuT0g+tAG7Sc6/6kCHuchfCt1yjkNCJXCQpcOdjpVc7R7yKbQWSsZwnsA==
   dependencies:
     qiankun "^2.10.5"
     redux "^4.2.1"
@@ -8397,10 +8397,10 @@ lilconfig@^2.0.3:
   resolved "http://172.16.2.250:8081/repository/npm-group/lilconfig/-/lilconfig-2.1.0.tgz#78e23ac89ebb7e1bfbf25b18043de756548e7f52"
   integrity sha512-utWOt/GHzuUxnLKxB6dk81RoOeoNeHgbrXiuGk4yyF5qlRz+iIVWu56E2fqGHFrXz0QNUhLB/8nKqvRH66JKGQ==
 
-lim-sdk-electron@2.4.4-test:
-  version "2.4.4-test"
-  resolved "http://172.16.2.250:8081/repository/npm-group/lim-sdk-electron/-/lim-sdk-electron-2.4.4-test.tgz#292b1426f5985a3bf92b773c106e6eb197c2e5e2"
-  integrity sha512-/01KDpkQoejljzfSyMkiFmhY7CZch8XYA2ggmxL8wwUIuLezaWxKvlWTsvTDX+Dv0A9ywLV7ZYk1mrTWU5wPZw==
+lim-sdk-electron@2.5.2:
+  version "2.5.2"
+  resolved "http://172.16.3.249:8081/repository/npm-group/lim-sdk-electron/-/lim-sdk-electron-2.5.2.tgz#30a787467f0a083cfcdf997b7094218c51ddd394"
+  integrity sha512-khoP0HbkXwc7JMnfp8wdbtCU6P7hzMSmF8oP/OOWK5rNgzBvPiPZAhMxBEMbhZ+xhlp1KVSjd0WsXPfuL4W58w==
   dependencies:
     "@journeyapps/sqlcipher" "^5.3.1"
     axios "^1.3.4"

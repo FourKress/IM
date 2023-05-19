@@ -1,4 +1,10 @@
-import { storeInstance, routeInstance, WINDOW_TYPE } from '@lanshu/utils';
+import {
+  storeInstance,
+  routeInstance,
+  WINDOW_TYPE,
+  MSG_FORMAT_MAP,
+  CHECK_MSG_TYPE,
+} from '@lanshu/utils';
 import { IMClearUnreadCount, ClientLogOut } from './event';
 import { renderProcess } from '@lanshu/render-process';
 
@@ -45,7 +51,16 @@ export const IMSDKCallBackEvents = {
     const audio = new Audio(require('./new-msg-audio.mp3'));
     await audio.play();
 
-    const NOTIFICATION_BODY = message?.data?.content;
+    let NOTIFICATION_BODY;
+    // 文本类型的消息直接展示
+    if (MSG_FORMAT_MAP[message.msgType]?.type === CHECK_MSG_TYPE.IS_TEXT) {
+      NOTIFICATION_BODY = message?.data?.content.split('<br>')[0];
+    } else {
+      // 其他类型消息动态处理
+      NOTIFICATION_BODY = `${MSG_FORMAT_MAP[message.msgType]?.label(
+        message?.data,
+      )}`;
+    }
     new Notification(message.fromNickname, {
       body: NOTIFICATION_BODY,
       icon: message.fromAvatar,

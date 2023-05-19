@@ -92,6 +92,7 @@ import {
   KEY_CODE,
   CHECK_MSG_TYPE,
   SESSION_USER_TYPE,
+  lodash,
 } from '@lanshu/utils';
 import { renderProcess } from '@lanshu/render-process';
 import { LsIcon } from '@lanshu/components';
@@ -167,11 +168,24 @@ export default {
     document.addEventListener('click', this.handleGlobalClick);
     document.querySelector('.input-textarea').addEventListener('paste', (e) => {
       this.handleBlur(e);
+      e.preventDefault();
+      let text;
+      const clp = (e.originalEvent || e).clipboardData;
+      if (clp === undefined || clp === null) {
+        text = window.clipboardData.getData('text') || '';
+      } else {
+        text = clp.getData('text/plain') || '';
+      }
+      if (text) {
+        this.handleTargetInsert(text);
+        return;
+      }
+
       const items = e.clipboardData.items;
-      let isFileFlag = false;
       for (let item of items) {
-        if (!isFileFlag && item.kind === 'file') {
-          isFileFlag = true;
+        // 图片类型
+        if (item.kind === 'file' && item.type.includes('image')) {
+          if (!item.type.includes('image')) return;
           const blob = item.getAsFile();
           const reader = new FileReader();
           reader.onload = () => {
@@ -182,7 +196,6 @@ export default {
           reader.readAsDataURL(blob);
         }
       }
-      if (isFileFlag) e.preventDefault();
     });
 
     this.sendMsgHotKey = (
@@ -236,10 +249,10 @@ export default {
         // 在最末尾处换行时，需要两次才能换行，需要特殊处理
         const wrapArr = innerText.split('\n');
         const lastText = wrapArr.pop();
-        if((lastText && endOffset === lastText.length)) {
+        if (lastText && endOffset === lastText.length) {
           setTimeout(() => {
-            this.handleCtrlEnterSend()
-          })
+            this.handleCtrlEnterSend();
+          });
         }
       }
     },
@@ -403,62 +416,88 @@ export default {
       return msg;
     },
 
-    async sendMsg() {
-      if (this.disabledSendMsg) return;
+    sendMsg: lodash.throttle(
+      async function () {
+        if (this.disabledSendMsg) return;
 
-      const regExp = new RegExp(
-        /(<img src="\S*" alt(="")?>|[a-zA-Z0-9\u4e00-\u9fa5])+/g,
-        'g',
-      );
-      const realMessage = this.recursionReplace(
-        this.message.replace(/<span|div>|<\/span|div>/g, '<br>'),
-      );
-      const msgArr = realMessage.includes('<img')
-        ? realMessage.match(regExp)?.filter((d) => d !== 'br') || [realMessage]
-        : [realMessage];
+        const regExp = new RegExp(/(<img src="\S*" alt(="")?>)+/g, 'g');
+        const realMessage = this.recursionReplace(
+          this.message.replace(/(<(span|div)>)|(<\/(span|div)>)/g, '<br>'),
+        );
 
-      const sendMsgArr = await Promise.all(
-        msgArr
-          .map(async (d) => {
-            let msg = null;
-            if (d.includes('<img')) {
-              const b64 = d.replace(/(<img src=")(\S+)(" \S*)/, '$2');
-              const file = this.dataURLtoFile(b64);
-              const { name, size, type } = file;
-              const url = await this.handleFileUpload(b64);
-              if (!url) return;
+        let msgArr = [];
+        if (realMessage.includes('<img')) {
+          const imageArr = realMessage.match(regExp);
+          const tempMsgArr = realMessage
+            .replace(
+              /(<br>)?<img src="\S*" alt(="")?>(<br>)?/g,
+              '#_&_#IMAGE_BR#_&_#',
+            )
+            .split('#_&_#');
+          msgArr = tempMsgArr
+            .map((d) => {
+              if (d === 'IMAGE_BR') {
+                d = imageArr.splice(0, 1)[0];
+              }
+              if (!d.replace(/<br>/g, '')) d = '';
+              return d;
+            })
+            .filter((d) => d);
+        } else {
+          msgArr = [realMessage];
+        }
 
-              const { width, height } = await this.getImageSize(url);
-              msg = await this.handleCreateMsg(
-                {
-                  name,
-                  type: type.replace(/\/[a-z]+/g, ''),
-                  rawType: type,
-                  size,
-                  height,
-                  width,
-                },
-                url,
-              );
-            } else {
-              msg = await this.handleCreateMsg({
-                type: this.CHECK_MSG_TYPE.IS_TEXT,
-                message: d,
-              });
-            }
+        this.clearInput()
 
-            return msg;
-          })
-          .filter((msg) => msg),
-      );
+        const sendMsgArr = await Promise.all(
+          msgArr
+            .map(async (d) => {
+              let msg = null;
+              if (d.includes('<img')) {
+                const b64 = d.replace(/(<img src=")(\S+)(" \S*)/, '$2');
+                const file = this.dataURLtoFile(b64);
+                const { name, size, type } = file;
+                const url = await this.handleFileUpload(b64);
+                if (!url) return;
 
-      sendMsgArr.forEach((d) => {
-        this.handleIMSendMsg(d, this.clearInput);
-      });
-    },
+                const { width, height } = await this.getImageSize(url);
+                msg = await this.handleCreateMsg(
+                  {
+                    name,
+                    type: type.replace(/\/[a-z]+/g, ''),
+                    rawType: type,
+                    size,
+                    height,
+                    width,
+                  },
+                  url,
+                );
+              } else {
+                msg = await this.handleCreateMsg({
+                  type: this.CHECK_MSG_TYPE.IS_TEXT,
+                  message: d,
+                });
+              }
+
+              return msg;
+            })
+            .filter((msg) => msg),
+        );
+
+        await Promise.all(
+          sendMsgArr.map(async (d) => {
+            await this.handleIMSendMsg(d);
+          }),
+        );
+      },
+      400,
+      {
+        leading: true,
+        trailing: false,
+      },
+    ),
 
     async handleCreateMsg(params, url = '') {
-      console.log('msg', params);
       let msgEvent = null;
       let msgData = [
         this.session.toUser, //消息接收方，为会话列表中的toUser
@@ -493,7 +532,8 @@ export default {
           });
           break;
         case this.CHECK_MSG_TYPE.IS_VIDEO:
-          const { dataURL, videoWidth, videoHeight } = await this.getVideoBase64(url);
+          const { dataURL, videoWidth, videoHeight } =
+            await this.getVideoBase64(url);
           const snapshotUrl = await this.handleFileUpload(dataURL);
           msgEvent = IMSDKMessageProvider.events.createVideoMessage;
           msgData.push({
@@ -559,13 +599,11 @@ export default {
 
     async handleFileUpload(filePath) {
       return new Promise(async (resolve) => {
-        console.log(filePath);
         await IMUploadFile(filePath)
           .then((res) => {
             resolve(res.data.url);
           })
           .catch((error) => {
-            console.log(error);
             this.$message.error('文件上传失败!');
             resolve();
           });
@@ -574,7 +612,6 @@ export default {
 
     async handleActionComplete(data) {
       const { value, type } = data;
-      debugger
       if (type === this.CHECK_MSG_TYPE.IS_SEND_FILE) {
         const sendMsgArr = (
           await Promise.all(
@@ -582,13 +619,10 @@ export default {
               const filePath = d.file.path;
               const url = await this.handleFileUpload(filePath);
               if (!url) return;
-              console.log(d);
               return await this.handleCreateMsg(d, url);
             }),
           )
         ).filter((d) => d);
-
-        console.log(123123);
 
         this.$refs.ActionCard.handleFileClose();
 
