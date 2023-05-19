@@ -156,6 +156,7 @@ export default {
 
     handleSearch: lodash.debounce(function (val) {
       if (!val) {
+        this.isEmpty = false;
         this.searchData = [];
         return;
       }

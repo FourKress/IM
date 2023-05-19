@@ -29,7 +29,10 @@
       v-if="friendList.length"
       v-for="item in friendList"
       :key="item.userId"
-      @click="(event) => item.userId !== userInfo.userId && handleOpenFriendDialog(item, event)"
+      @click="
+        (event) =>
+          item.userId !== userInfo.userId && handleOpenFriendDialog(item, event)
+      "
     >
       <div class="left">
         <img class="img" :src="item.avatar" alt="" />
@@ -42,6 +45,14 @@
         <span v-if="item.userId !== userInfo.userId">添加好友</span>
       </div>
     </div>
+
+    <div class="empty-data" v-if="isEmpty">
+      没有找到“
+      <span class="link">{{ form.phoneNum }}</span>
+      ”相关的结果
+    </div>
+
+    <div class=""></div>
 
     <LsCardDialog :visible.sync="showFriendDialog">
       <LsFriendPanel
@@ -90,6 +101,7 @@ export default {
         ],
       },
       friendList: [],
+      isEmpty: false,
     };
   },
   computed: {
@@ -113,6 +125,7 @@ export default {
       IMSearchUserProfileOfPhone(this.replacePhoneNum(this.form.phoneNum)).then(
         ({ data }) => {
           this.friendList = data;
+          this.isEmpty = !this.friendList.length && this.validPhoneNum;
         },
       );
     },
@@ -127,6 +140,7 @@ export default {
       });
     },
     handleClearSearch() {
+      this.isEmpty = false;
       this.friendList = [];
     },
   },
@@ -245,6 +259,17 @@ export default {
           color: $tips-text-color;
         }
       }
+    }
+  }
+
+  .empty-data {
+    height: 20px;
+    font-size: 14px;
+    margin: 270px auto 0;
+    text-align: center;
+
+    .link {
+      color: $primary-color;
     }
   }
 }

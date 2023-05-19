@@ -4,7 +4,7 @@
     <div class="main">
       <div class="list">
         <div class="scroll-view">
-          <div class="item" v-for="(item, index) in fileList" :key='index'>
+          <div class="item" v-for="(item, index) in fileList" :key="index">
             <div class="view">
               <img
                 :ref="item.name"
@@ -44,7 +44,9 @@
             </div>
             <div class="info">
               <span class="name">{{ item.name }}</span>
-              <span class="tips">{{ item.formatSize }}</span>
+              <span class="tips" :class="checkFileSize(item) && 'error'">
+                {{ item.formatSize }}
+              </span>
             </div>
             <div class="close-icon" @click="handleUnSelect(index)">
               <LsIcon
@@ -60,7 +62,9 @@
     </div>
     <div class="btn-list">
       <span class="btn cancel" @click="handleClose">取消</span>
-      <el-button class="btn confirm" :loading="isUpload" @click="handleConfirm">确定</el-button>
+      <el-button class="btn confirm" :loading="isUpload" @click="handleConfirm">
+        确定
+      </el-button>
     </div>
   </div>
 </template>
@@ -68,7 +72,7 @@
 <script>
 import { LsIcon } from '@lanshu/components';
 import { mapGetters } from 'vuex';
-import {getFileSize, getObjectURL, CHECK_MSG_TYPE} from '@lanshu/utils';
+import { getFileSize, getObjectURL, CHECK_MSG_TYPE } from '@lanshu/utils';
 
 export default {
   name: 'File-dialog',
@@ -114,7 +118,14 @@ export default {
       this.$emit('close');
     },
     async handleConfirm() {
+      const isFileSizeMax = this.fileList.some((d) => this.checkFileSize(d));
+      if (isFileSizeMax) {
+        this.$message.error('上传文件最大支持100M');
+        return;
+      }
+
       this.isUpload = true;
+
       const fileList = await Promise.all(
         this.fileList.map(async (d) => {
           switch (d.type) {
@@ -154,7 +165,7 @@ export default {
       if (this.isUpload) return;
       this.fileList.splice(index, 1);
       if (!this.fileList?.length) {
-        this.handleClose()
+        this.handleClose();
       }
     },
     // 计算音频的时长
@@ -166,6 +177,12 @@ export default {
         audio.currentTime = 10000000 * Math.random();
       }
       return audio.duration;
+    },
+
+    checkFileSize(file) {
+      const formatSize = file.formatSize;
+      const [first, second] = formatSize.split(' ');
+      return first > 1 && ![' B', 'KB'].includes(second);
     },
   },
 };
@@ -283,6 +300,10 @@ export default {
             .tips {
               color: $tips-text-color;
               font-size: 14px;
+
+              &.error {
+                color: $minor-red-color;
+              }
             }
           }
 

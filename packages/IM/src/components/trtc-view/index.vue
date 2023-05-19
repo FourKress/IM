@@ -101,7 +101,8 @@
           :src="isPc ? LsAssets.trtcMePc : LsAssets.trtcBgMobile"
           alt=""
         />
-        <img class="avatar" :src="trtcSession.avatar" alt="" />
+        <img class="avatar" v-if="disCamStatus" :src="userInfo.avatar" alt="" />
+        <img class="avatar"v-if="!isEnterRoom && !disCamStatus" :src="trtcSession.avatar" alt="" />
       </div>
     </div>
 

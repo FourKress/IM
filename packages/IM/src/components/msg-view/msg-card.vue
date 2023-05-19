@@ -1,12 +1,21 @@
 <template>
   <div class="msg-card">
+    <!--    <el-popover placement="right" title="" width="200" trigger="hover">-->
+    <!--      <span>-->
+    <!--        <el-tooltip class="item" effect="dark" content="复制" placement="top">-->
+    <!--          <LsIcon render-svg icon="xx_srk_gd"></LsIcon>-->
+    <!--        </el-tooltip>-->
+    <!--      </span>-->
+    <!--      -->
+    <!--    </el-popover>-->
     <div
+      slot="reference"
       class="card text"
       :class="classObject"
       v-if="msgType === CHECK_MSG_TYPE.IS_TEXT"
       v-html="text"
-    >
-    </div>
+    ></div>
+
     <img
       class="wrap"
       style="cursor: pointer"
@@ -138,7 +147,7 @@ import {
 } from '@lanshu/utils';
 import { LsIcon } from '@lanshu/components';
 import { renderProcess } from '@lanshu/render-process';
-import {showItemInFolder} from "@lanshu/render-process/src/renderProcess";
+import { showItemInFolder } from '@lanshu/render-process/src/renderProcess';
 
 export default {
   name: 'Msg-card',
@@ -297,15 +306,15 @@ export default {
     },
 
     handleOpenDir() {
-      renderProcess.showItemInFolder(this.cachePath.replace('cache:///', ''))
+      renderProcess.showItemInFolder(this.cachePath.replace('cache:///', ''));
     },
 
     async handlePreview() {
       if (!this.assetsPath.includes('cache')) {
-        await this.handleDownload()
+        await this.handleDownload();
       }
-      renderProcess.previewAssets(this.cachePath.replace('cache:///', ''))
-    }
+      renderProcess.previewAssets(this.cachePath.replace('cache:///', ''));
+    },
   },
 };
 </script>

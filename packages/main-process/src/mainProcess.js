@@ -150,10 +150,6 @@ const initIpcMain = () => {
       await shell.openPath(path);
     });
 
-    ipcMain.on('previewAssets', async (_event, path) => {
-      await shell.openPath(path);
-    });
-
     ipcMain.handle('getFocusedWindow', (_event, win) => {
       return !!BrowserWindow.getFocusedWindow();
     });

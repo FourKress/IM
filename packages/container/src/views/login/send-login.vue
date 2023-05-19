@@ -201,23 +201,28 @@ export default {
 
     async handleLogin() {
       const terminal = await renderProcess.getStore('CLIENT_TERMINAL');
-      if (this.isSetPwd) {
-        await Apis.accountSetPassword({
-          username: this.phoneNum,
-          password: this.form.firstPhoneNum,
-          captcha: this.captcha,
-          terminal,
-        });
-      }
+      this.$refs.loginForm.validate(async (valid) => {
+        if (valid) {
+          if (this.isSetPwd) {
+            await Apis.accountSetPassword({
+              username: this.phoneNum,
+              password: this.form.firstPhoneNum,
+              captcha: this.captcha,
+              terminal,
+            });
+          }
 
-      const res = await Apis.accountLogin({
-        username: this.phoneNum,
-        password: this.form.firstPhoneNum,
-        terminal,
-        orgId: '',
-      });
+          const res = await Apis.accountLogin({
+            username: this.phoneNum,
+            password: this.form.firstPhoneNum,
+            terminal,
+            orgId: '',
+          });
 
-      await this.handleClientLogin(res);
+          await this.handleClientLogin(res);
+        }
+      })
+      return
     },
   },
 };
