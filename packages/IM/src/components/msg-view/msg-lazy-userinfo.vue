@@ -1,5 +1,5 @@
 <template>
-  <span class="msg-card">
+  <span class="msg-card" :class="(isGroup && !isSelf) && 'is-group'">
     <div class="img">
       <img :src="isSelf ? userInfo.avatar : toAvatar" alt="" />
     </div>
@@ -42,6 +42,7 @@ export default {
       SESSION_USER_TYPE,
       nickname: '',
       toAvatar: '',
+      isGroup: false,
     };
   },
   watch: {
@@ -54,9 +55,10 @@ export default {
   },
   methods: {
     initData() {
+      this.isGroup = this.message.toUserType === SESSION_USER_TYPE.IS_GROUP
       if (
         !this.isSelf &&
-        this.message.toUserType === SESSION_USER_TYPE.IS_GROUP
+        this.isGroup
       ) {
         this.nickname = this.message?.fromNickname;
         this.toAvatar = this.message?.fromAvatar;
@@ -139,6 +141,13 @@ export default {
       border-width: 5px 5px 5px 0;
       border-style: solid;
       border-color: transparent $bg-white-color transparent;
+    }
+  }
+
+  &.is-group {
+    &:before {
+      top: 36.5px;
+      transform: translateY(0);
     }
   }
 }

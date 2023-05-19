@@ -16,15 +16,14 @@
       v-html="text"
     ></div>
 
-    <img
-      class="wrap"
-      style="cursor: pointer"
+    <div
+      class="wrap img"
       v-if="isImage"
-      :width="size.width"
-      :height="size.height"
-      :src="assetsPath"
-      @click="handlePreview"
-    />
+      :style="{ width: `${size.width}px`, height: `${size.height}px` }"
+    >
+      <img :src="assetsPath" @click="handlePreview" />
+    </div>
+
     <video
       class="wrap"
       v-if="msgType === CHECK_MSG_TYPE.IS_VIDEO"
@@ -360,6 +359,31 @@ export default {
     max-height: 500px;
     max-width: 500px;
 
+    &.img {
+      cursor: pointer;
+      background: $bg-white-color;
+      position: relative;
+
+      &:before {
+        content: '图片加载中...';
+        z-index: 0;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 12px;
+        color: $tips-text-color;
+      }
+
+      img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        position: relative;
+        z-index: 1;
+      }
+    }
+
     &.file {
       width: 340px;
       height: 70px;
@@ -367,7 +391,7 @@ export default {
       display: flex;
       align-items: center;
       justify-content: flex-start;
-      background: $bg-white-color;
+      //background: $bg-white-color;
 
       .view {
         width: 31px;
