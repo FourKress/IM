@@ -64,6 +64,7 @@ import { RecoverAccountMixins } from '@lanshu/utils';
 import BasicLogin from './basic-login';
 import SendLogin from './send-login';
 import EnterAuthCode from './enter-auth-code';
+import { mapActions, mapGetters } from 'vuex';
 
 export default {
   name: 'Login',
@@ -85,7 +86,12 @@ export default {
       captcha: '',
     };
   },
+  computed: {
+    ...mapGetters('globalStore', ['codeCountdown']),
+  },
   methods: {
+    ...mapActions('globalStore', ['setCodeCountdown']),
+
     clear() {
       this.isSendLogin = false;
       this.isAuthCode = false;
@@ -111,21 +117,27 @@ export default {
       this.handleSendLogin(phoneNum);
     },
 
-    handleEnterAuthCode(phoneNum = '') {
+    async handleEnterAuthCode(phoneNum = '') {
       this.isSetPwd = true;
       this.isAuthCode = true;
       this.phoneNum = phoneNum;
+      if (!this.codeCountdown) {
+        await this.setCodeCountdown(60);
+      }
     },
     handleEnterPassword(phoneNum = '') {
       this.isSetPwd = false;
       this.handleSendLogin(phoneNum);
     },
 
-    handleBackAuth(phoneNum = '', isSetPwd) {
+    async handleBackAuth(phoneNum = '', isSetPwd) {
       this.isSetPwd = isSetPwd;
       this.phoneNum = phoneNum;
       this.isAuthCode = true;
       this.isSendLogin = false;
+      if (!isSetPwd && !this.codeCountdown) {
+        await this.setCodeCountdown(60);
+      }
     },
   },
 };

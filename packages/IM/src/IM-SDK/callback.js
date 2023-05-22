@@ -18,21 +18,22 @@ const startNotification = lodash.debounce(async function (message) {
   const isGroup = message.toUserType === SESSION_USER_TYPE.IS_GROUP;
   let NOTIFICATION_TITLE = message.fromNickname,
     NOTIFICATION_ICON = message.fromAvatar;
+  let NOTIFICATION_BODY = '';
 
   if (isGroup) {
     const res = await IMGetGroupAttribute(message.toUser);
     const groupInfo = res?.data || {};
     NOTIFICATION_TITLE = groupInfo.nickname;
     NOTIFICATION_ICON = groupInfo.avatar;
+    NOTIFICATION_BODY = `${message.fromNickname}: `;
   }
 
-  let NOTIFICATION_BODY;
   // 文本类型的消息直接展示
   if (MSG_FORMAT_MAP[message.msgType]?.type === CHECK_MSG_TYPE.IS_TEXT) {
-    NOTIFICATION_BODY = message?.data?.content.split('<br>')[0];
+    NOTIFICATION_BODY += message?.data?.content.split('<br>')[0];
   } else {
     // 其他类型消息动态处理
-    NOTIFICATION_BODY = `${MSG_FORMAT_MAP[message.msgType]?.label(
+    NOTIFICATION_BODY += `${MSG_FORMAT_MAP[message.msgType]?.label(
       message?.data,
     )}`;
   }

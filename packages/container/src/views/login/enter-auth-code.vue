@@ -44,6 +44,7 @@ import OtherLogin from './other-login';
 import AuthCode from '../../components/authCode';
 import { renderProcess } from '@lanshu/render-process';
 import LoginMixins from './loginMixins';
+import { mapGetters } from 'vuex';
 
 export default {
   name: 'Enter-auth-code',
@@ -70,17 +71,18 @@ export default {
     };
   },
   computed: {
+    ...mapGetters('globalStore', ['codeCountdown']),
+
     phoneText() {
       return phoneEncryption(this.phoneNum);
     },
   },
   watch: {},
   async mounted() {
-    const terminal = await renderProcess.getStore('CLIENT_TERMINAL');
+    if (this.codeCountdown) return;
     // 发送验证码
     await Apis.accountSendCaptcha({
       phone: this.phoneNum,
-      terminal,
       scene: this.isSetPwd ? 'setPassword' : 'login',
     });
   },
@@ -113,23 +115,33 @@ export default {
     async handleLogin() {
       if (!this.isAuthCodeComplete) return;
       if (this.isSetPwd) {
-        const terminal = await renderProcess.getStore('CLIENT_TERMINAL');
         await Apis.accountCheckCaptcha({
           phone: this.phoneNum,
           captcha: this.codes,
-          terminal,
           scene: this.isSetPwd ? 'setPassword' : 'login',
-        });
-        this.$emit('switchPassword', this.phoneNum, this.isSetPwd, this.codes);
+        })
+          .then(() => {
+            this.$emit(
+              'switchPassword',
+              this.phoneNum,
+              this.isSetPwd,
+              this.codes,
+            );
+          })
+          .catch(() => {
+            this.$refs?.authCode?.handleClearCode();
+          });
       } else {
-        const terminal = await renderProcess.getStore('CLIENT_TERMINAL');
         const res = await Apis.accountLoginWithCaptcha({
           username: this.phoneNum,
           captcha: this.codes,
-          terminal,
-        });
-
-        await this.handleClientLogin(res);
+        })
+          .then(async () => {
+            await this.handleClientLogin(res);
+          })
+          .catch(() => {
+            this.$refs?.authCode?.handleClearCode();
+          });
       }
     },
   },

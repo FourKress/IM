@@ -100,7 +100,7 @@ export default {
     this.fileList = this.files.map((d) => {
       const { name, size, type } = d;
       const rawType = type;
-      const isTextFile = type.includes('text/');
+      const isTextFile = !type || type.includes('text/');
       return {
         name,
         formatSize: getFileSize(size),

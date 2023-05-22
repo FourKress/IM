@@ -1,27 +1,55 @@
 import https from './https';
+import { renderProcess } from '@lanshu/render-process';
+
+const terminal = await renderProcess.getStore('CLIENT_TERMINAL');
 
 export const accountCheckStatus = (params) => {
-  return https.post('/auth/account/checkStatus', params, {
-    isAuth: false,
-  });
+  return https.post(
+    '/auth/account/checkStatus',
+    { ...params, terminal },
+    {
+      isAuth: false,
+    },
+  );
 };
 
 export const accountSendCaptcha = (params) => {
-  return https.post('/auth/account/sendCaptcha', params, {
-    isAuth: false,
-  });
+  return https.post(
+    '/auth/account/sendCaptcha',
+    {
+      ...params,
+      terminal,
+    },
+    {
+      isAuth: false,
+    },
+  );
 };
 
 export const accountSetPassword = (params) => {
-  return https.post('/auth/account/setPassword', params, {
-    isAuth: false,
-  });
+  return https.post(
+    '/auth/account/setPassword',
+    {
+      ...params,
+      terminal,
+    },
+    {
+      isAuth: false,
+    },
+  );
 };
 
 export const accountLogin = (params) => {
-  return https.post('/auth/account/login', params, {
-    isAuth: false,
-  });
+  return https.post(
+    '/auth/account/login',
+    {
+      ...params,
+      terminal,
+    },
+    {
+      isAuth: false,
+    },
+  );
 };
 
 export const accountQueryPermision = (params) => {
@@ -33,15 +61,29 @@ export const accountLoginOut = (params) => {
 };
 
 export const accountCheckCaptcha = (params) => {
-  return https.post('/auth/account/checkCaptcha', params, {
-    isAuth: false,
-  });
+  return https.post(
+    '/auth/account/checkCaptcha',
+    {
+      ...params,
+      terminal,
+    },
+    {
+      isAuth: false,
+    },
+  );
 };
 
 export const accountLoginWithCaptcha = (params) => {
-  return https.post('/auth/account/loginWithCaptcha', params, {
-    isAuth: false,
-  });
+  return https.post(
+    '/auth/account/loginWithCaptcha',
+    {
+      ...params,
+      terminal,
+    },
+    {
+      isAuth: false,
+    },
+  );
 };
 
 export const accountUserInfo = (params) => {
@@ -49,11 +91,11 @@ export const accountUserInfo = (params) => {
 };
 
 export const accountUpdateUserInfo = (params) => {
-  return https.post('/auth/user/updateUserInfo', params);
+  return https.post('/auth/user/updateUserInfo', { ...params, terminal });
 };
 
 export const accountUpdatePhone = (params) => {
-  return https.post('/auth/user/updatePhone', params);
+  return https.post('/auth/user/updatePhone', { ...params, terminal });
 };
 
 export const managerFileUpload = (params) => {

@@ -30,6 +30,7 @@ instance.interceptors.request.use(
       isAuth = true,
     } = config;
     let { data, params } = config;
+    console.log(isAuth, config);
 
     const authToken = getToken('SYS_TOKEN');
     if (isAuth && authToken) {

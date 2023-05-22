@@ -200,7 +200,6 @@ export default {
     },
 
     async handleLogin() {
-      const terminal = await renderProcess.getStore('CLIENT_TERMINAL');
       this.$refs.loginForm.validate(async (valid) => {
         if (valid) {
           if (this.isSetPwd) {
@@ -208,14 +207,12 @@ export default {
               username: this.phoneNum,
               password: this.form.firstPhoneNum,
               captcha: this.captcha,
-              terminal,
             });
           }
 
           const res = await Apis.accountLogin({
             username: this.phoneNum,
             password: this.form.firstPhoneNum,
-            terminal,
             orgId: '',
           });
 

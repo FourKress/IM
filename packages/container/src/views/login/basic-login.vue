@@ -163,12 +163,10 @@ export default {
       }
       if (!this.activeBtn) return;
       const phoneNum = this.replacePhoneNum();
-      const terminal = await renderProcess.getStore('CLIENT_TERMINAL');
       const {
         data: { code, msg },
       } = await Apis.accountCheckStatus({
         username: phoneNum,
-        terminal,
       });
 
       // 正常，跳转密码登录

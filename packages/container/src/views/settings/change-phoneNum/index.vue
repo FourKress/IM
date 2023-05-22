@@ -134,7 +134,6 @@ export default {
           },
         ],
       },
-      terminal: '',
       countdown: 5,
     };
   },
@@ -175,7 +174,6 @@ export default {
     },
   },
   async mounted() {
-    this.terminal = await renderProcess.getStore('CLIENT_TERMINAL');
     const { phone } = this.userProfile;
     this.phoneNum = phone;
     this.form.phoneNum = phone;
@@ -188,7 +186,6 @@ export default {
     async sendCaptcha(phone) {
       await Apis.accountSendCaptcha({
         phone,
-        terminal: this.terminal,
         scene: 'updatePhone',
       });
     },
@@ -197,7 +194,6 @@ export default {
       await Apis.accountCheckCaptcha({
         phone: this.phoneNum,
         captcha: codes,
-        terminal: this.terminal,
         scene: 'updatePhone',
       });
     },
@@ -219,7 +215,6 @@ export default {
           await Apis.accountUpdatePhone({
             newPhone: this.newPhoneNum,
             token: getToken(TOKEN_TYPE.IS_SYS),
-            terminal: this.terminal
           })
           this.$loading({
             lock: true,

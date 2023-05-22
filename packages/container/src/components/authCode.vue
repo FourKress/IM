@@ -15,8 +15,12 @@
     </div>
 
     <div class="send-code">
-      <span class="left" :class="timer && 'disabled'" @click="resetCode">
-        {{ timer ? `倒计时 ${countdown}S` : '重新获取验证码' }}
+      <span
+        class="left"
+        :class="timer && 'disabled'"
+        @click="resetCode"
+      >
+        重新获取验证码{{ timer ? ` ${countdown}S` : '' }}
       </span>
       <span class="right">
         <slot></slot>
@@ -40,7 +44,7 @@ export default {
     scene: {
       type: String,
       required: true,
-    }
+    },
   },
   data() {
     return {
@@ -55,21 +59,29 @@ export default {
   watch: {
     codeList(val) {
       const active = val.every((d) => d);
-      const codes = val.map((d) => d).join('').toString();
+      const codes = val
+        .map((d) => d)
+        .join('')
+        .toString();
       // 输入完毕自动触发
       this.$emit('inputComplete', active, active ? codes : '');
     },
   },
   mounted() {
-    // 读取历史倒计时
-    this.countdown = this.codeCountdown;
-    if (this.countdown) {
-      this.handleCountdown();
-    }
-    this.$refs[`codeRef_0`][0].focus();
+    this.initData();
   },
   methods: {
     ...mapActions('globalStore', ['setCodeCountdown']),
+
+    initData() {
+      // 读取历史倒计时
+      this.countdown = this.codeCountdown;
+      if (this.countdown) {
+        this.handleCountdown();
+      }
+      this.$refs[`codeRef_0`][0].focus();
+    },
+
     handleInput(val, index) {
       if (!val) return;
       if (index !== 3) {
@@ -77,7 +89,10 @@ export default {
       }
     },
     handleClearInterval() {
-      this.timer && clearInterval(this.timer);
+      if (this.timer) {
+        clearInterval(this.timer);
+        this.countdown = 0;
+      }
     },
     // 保存倒计时
     handleSaveCountdown() {
@@ -95,15 +110,16 @@ export default {
     },
     async resetCode() {
       if (this.timer || this.countdown) return;
-      this.codeList = this.codeList.map(() => '');
+      this.handleClearCode();
       this.countdown = 60;
-      const terminal = await renderProcess.getStore('CLIENT_TERMINAL');
       await Apis.accountSendCaptcha({
         phone: this.phoneNum,
-        terminal,
         scene: this.scene,
       });
       this.handleCountdown();
+    },
+    handleClearCode() {
+      this.codeList = this.codeList.map(() => '');
     },
   },
 };

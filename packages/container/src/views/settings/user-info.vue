@@ -155,7 +155,6 @@ export default {
       },
       showAuthenticate: false,
       showUnbind: false,
-      terminal: '',
       regions: [],
     };
   },
@@ -168,7 +167,6 @@ export default {
     },
   },
   async mounted() {
-    this.terminal = await renderProcess.getStore('CLIENT_TERMINAL');
     this.initData();
     await this.getRegion();
   },
@@ -239,7 +237,6 @@ export default {
       const params = {
         picture: avatar,
         nickName: nickname,
-        terminal: this.terminal,
         token: getToken(TOKEN_TYPE.IS_SYS),
       };
       params[key] = val;
