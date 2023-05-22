@@ -306,7 +306,9 @@ export default {
         // 未产生缓存
         if (!storePath) {
           if (this.msgType !== this.CHECK_MSG_TYPE.IS_FILE) {
-            await this.handleSaveFile(key, assetsPath, msgId);
+            this.handleSaveFile(key, assetsPath, msgId).then(() => {
+              console.log('文件缓存下载成功')
+            });
           }
         } else {
           const type = assetsPath.split('/').pop().split('.')[1];
@@ -319,7 +321,9 @@ export default {
             this.cachePath = cachePath;
           } else {
             // 本地缓存文件不存在，意外删除，重新下载并缓存
-            await this.handleSaveFile(key, assetsPath, msgId);
+            this.handleSaveFile(key, assetsPath, msgId).then(() => {
+              console.log('文件缓存下载成功')
+            });
           }
           console.log('assetsPath', assetsPath);
         }
