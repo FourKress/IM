@@ -13,7 +13,8 @@
       width="40"
       trigger="manual"
       popper-class="context-menu-popover"
-      v-model="visibleContextMenu">
+      v-model="visibleContextMenu"
+    >
       <div
         :ref="`MsgCard_${msg.msgId}`"
         slot="reference"
@@ -26,7 +27,6 @@
       <div class="menu-list">
         <span class="item" @click="handleCopy">复制</span>
       </div>
-
     </el-popover>
 
     <div
@@ -145,7 +145,6 @@
         height="18"
       ></LsIcon>
     </div>
-
   </div>
 </template>
 
@@ -254,18 +253,15 @@ export default {
     this.getAssetsPath();
 
     this.$nextTick(() => {
-      this.$refs[`MsgCard_${this.msg.msgId}`].addEventListener(
-        'contextmenu',
-        (e) => {
-          this.selectedText = window.getSelection().toString();
-          console.log(this.selectedText)
-          this.visibleContextMenu = true;
-        },
-      );
+      const hasMsgCard = this.$refs[`MsgCard_${this.msg.msgId}`];
+      if (hasMsgCard) {
+        this.$refs[`MsgCard_${this.msg.msgId}`].addEventListener(
+          'contextmenu',
+          this.handleOpenContentMenu,
+        );
 
-      document.body.addEventListener('click', (e) => {
-        this.visibleContextMenu = false;
-      })
+        document.addEventListener('click', this.handleCloseContentMenu);
+      }
     });
   },
   methods: {
@@ -307,7 +303,7 @@ export default {
         if (!storePath) {
           if (this.msgType !== this.CHECK_MSG_TYPE.IS_FILE) {
             this.handleSaveFile(key, assetsPath, msgId).then(() => {
-              console.log('文件缓存下载成功')
+              console.log('文件缓存下载成功');
             });
           }
         } else {
@@ -322,7 +318,7 @@ export default {
           } else {
             // 本地缓存文件不存在，意外删除，重新下载并缓存
             this.handleSaveFile(key, assetsPath, msgId).then(() => {
-              console.log('文件缓存下载成功')
+              console.log('文件缓存下载成功');
             });
           }
           console.log('assetsPath', assetsPath);
@@ -352,9 +348,30 @@ export default {
 
     async handleCopy() {
       this.visibleContextMenu = false;
-      const text = this.selectedText || this.$refs[`MsgCard_${this.msg.msgId}`].innerText;
+      const text =
+        this.selectedText || this.$refs[`MsgCard_${this.msg.msgId}`].innerText;
       await navigator.clipboard.writeText(text);
       this.$message.success('复制成功');
+    },
+
+    handleCloseContentMenu() {
+      this.visibleContextMenu = false;
+    },
+    handleOpenContentMenu() {
+      this.selectedText = window.getSelection().toString();
+      console.log(this.selectedText);
+      this.visibleContextMenu = true;
+    },
+  },
+  destroyed() {
+    const hasMsgCard = this.$refs[`MsgCard_${this.msg.msgId}`];
+    if (hasMsgCard) {
+      this.$refs[`MsgCard_${this.msg.msgId}`].removeEventListener(
+        'contextmenu',
+        this.handleOpenContentMenu(),
+      );
+
+      document.removeEventListener('click', this.handleCloseContentMenu);
     }
   },
 };
