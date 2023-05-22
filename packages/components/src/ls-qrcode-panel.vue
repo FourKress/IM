@@ -1,32 +1,42 @@
 <template>
   <div class="qrcode-dialog" :style="position">
-    <div class="top">
-      <img :src="LsAssets.topBg" alt="" />
-    </div>
-    <div class="info">
-      <div class="avatar">
-        <img :src="qrcodeInfo.avatar" class="img" />
+    <div class="main-wrap">
+      <div class="top">
+        <img :src="LsAssets.topBg" alt="" />
       </div>
-      <div class="sub-info">
-        <div class="nickname">{{ qrcodeInfo.nickname }}</div>
+      <div class="info">
+        <div class="avatar">
+          <img :src="qrcodeInfo.avatar" class="img" />
+        </div>
+        <div class="sub-info">
+          <div class="nickname">{{ qrcodeInfo.nickname }}</div>
+        </div>
       </div>
+
+      <div class="qrcode-wrap">
+        <img class="qrcode" v-if="qrcodeUrl" :src="qrcodeUrl" alt="" />
+      </div>
+
+      <div class="tips">扫码二维码，{{ tips }}</div>
     </div>
 
-    <div class="qrcode-wrap">
-      <img class="qrcode" v-if="qrcodeUrl" :src="qrcodeUrl" alt="" />
-    </div>
-
-    <div class="tips">扫码二维码，{{ tips }}</div>
     <div class="btn-list">
-      <span class="btn left" @click="handleCopy">复制图片</span>
-      <span class="btn right" @click="handleDown">下载图片</span>
+      <el-button class="btn left" :loading="isCopyLoading" @click="handleCopy">
+        复制图片
+      </el-button>
+      <el-button class="btn right" :loading="isDownLoading" @click="handleDown">
+        下载图片
+      </el-button>
     </div>
+
+    <canvas id="qrcode-canvas" style="display: none"></canvas>
   </div>
 </template>
 
 <script>
 import LsAssets from './assets';
-import { qrcode } from '@lanshu/utils';
+import { qrcode, domToImage } from '@lanshu/utils';
+
 export default {
   name: 'Ls-qrcode-panel',
   props: {
@@ -59,6 +69,8 @@ export default {
     return {
       LsAssets,
       qrcodeUrl: '',
+      isCopyLoading: false,
+      isDownLoading: false,
     };
   },
   mounted() {
@@ -93,26 +105,42 @@ export default {
     },
 
     async handleCopy() {
-      const blob = this.dataURLtoBlob(this.qrcodeUrl);
+      this.isCopyLoading = true;
+      const imageUrl = await this.getHtmlToImageUrl()
+      const blob = this.dataURLtoBlob(imageUrl);
 
       await navigator.clipboard.write([
         new ClipboardItem({
           [blob.type]: blob,
         }),
       ]);
-      this.$message.success('二维码复制成功');
+      this.isCopyLoading = false;
+      this.$message.success('图片复制成功');
     },
-    handleDown() {
+    async handleDown() {
+      this.isDownLoading = true;
+      const imageUrl = await this.getHtmlToImageUrl()
       const tempLink = document.createElement('a');
       tempLink.style.display = 'none';
-      tempLink.href = this.qrcodeUrl;
+      tempLink.href = imageUrl;
       tempLink.setAttribute(
         'download',
         `${this.qrcodeInfo.nickname}的蓝数IM二维码`,
       );
       document.body.appendChild(tempLink);
       tempLink.click();
+      this.isDownLoading = false;
       document.body.removeChild(tempLink);
+    },
+
+    async getHtmlToImageUrl() {
+      return await domToImage.toPng(
+        document.querySelector('.qrcode-dialog .main-wrap'),
+        {
+          quality: 0.95,
+          bgcolor: '#fff',
+        },
+      );
     },
   },
 };
@@ -130,6 +158,10 @@ export default {
   position: fixed;
   z-index: 9;
 
+  .main-wrap {
+    padding-bottom: 50px;
+  }
+
   .qrcode-wrap {
     width: 160px;
     height: 160px;
@@ -145,7 +177,7 @@ export default {
   }
 
   .tips {
-    margin: 20px 0 50px 0;
+    margin-top: 20px;
     font-size: 14px;
     color: $tips-text-color;
     text-align: center;
@@ -157,7 +189,7 @@ export default {
     justify-content: center;
 
     .btn {
-      width: 88px;
+      width: 110px;
       height: 34px;
       line-height: 34px;
       text-align: center;
@@ -175,6 +207,12 @@ export default {
         background: $bg-grey-color;
         color: $primary-color;
       }
+    }
+
+    ::v-deep .el-button {
+      border: none;
+      display: inline;
+      padding: 0;
     }
   }
 

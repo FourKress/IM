@@ -43,7 +43,7 @@
           <span @click="handleCreateGroup">创建群聊</span>
         </span>
       </div>
-      <div class="main-warp">
+      <div class="main-wrap">
         <div class="empty-bg" v-if="!componentConfig.key">
           <LsIcon
             icon="ls-icon-logo"
@@ -266,7 +266,7 @@ export default {
       }
     }
 
-    .main-warp {
+    .main-wrap {
       flex: 1;
       overflow: hidden;
       position: relative;

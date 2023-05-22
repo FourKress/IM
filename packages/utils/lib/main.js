@@ -6,6 +6,7 @@ export * from '../src/base';
 export * from '../src/pinyin';
 import lodash from 'lodash';
 import qrcode from 'qrcode';
+import domToImage from 'dom-to-image';
 import generateRoute, { routeInstance } from '../src/router';
 import generateStore, { storeInstance } from '../src/store';
 import regexUtils from '../src/regex';
@@ -20,6 +21,7 @@ import * as Apis from '../src/apis';
 export {
   lodash,
   qrcode,
+  domToImage,
   generateRoute,
   generateStore,
   routeInstance,

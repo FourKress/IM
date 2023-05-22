@@ -21,7 +21,7 @@
       </div>
 
       <div class="top-panel" v-if="topSessionList.length && tabType === isAll">
-        <div class="top-panel-warp">
+        <div class="top-panel-wrap">
           <div
             class="top-item"
             v-for="(item, index) in topSessionList"
@@ -273,7 +273,7 @@ export default {
     .top-panel {
       padding: 0 10px 12px 10px;
 
-      .top-panel-warp {
+      .top-panel-wrap {
         padding: 0 10px 12px 10px;
         box-sizing: border-box;
         display: grid;

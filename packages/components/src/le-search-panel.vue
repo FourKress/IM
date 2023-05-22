@@ -1,7 +1,7 @@
 <template>
   <div class="ls-search-panel" v-if="visible" @click.self="handleClose">
     <div class="container">
-      <div class="search-warp">
+      <div class="search-wrap">
         <div class="search">
           <div class="query-icon">
             <LsIcon icon="navi_ss_icon" render-svg></LsIcon>
@@ -271,7 +271,7 @@ export default {
     display: flex;
     flex-direction: column;
 
-    .search-warp {
+    .search-wrap {
       display: flex;
       justify-content: center;
       align-items: center;

@@ -21,6 +21,7 @@
   "scripts": {},
   "dependencies": {
     "dayjs": "^1.11.6",
+    "dom-to-image": "^2.6.0",
     "lodash": "^4.17.21",
     "pinyin": "2.11.2",
     "qrcode": "^1.5.1",
