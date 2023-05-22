@@ -99,6 +99,7 @@ export const IMLogout = async () =>
 export const ClientLogOut = async () => {
   await IMLogout();
   await Apis.accountLoginOut(getToken(TOKEN_TYPE.IS_SYS));
+  await window.$lanshuStore.removeItem('tempMsgOBJ');
   removeToken(TOKEN_TYPE.IS_IM);
   removeToken(TOKEN_TYPE.IS_SYS);
   renderProcess.showLoginWindow(1000);

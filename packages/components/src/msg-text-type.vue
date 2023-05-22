@@ -1,5 +1,11 @@
 <template>
-  <span>{{ messageTextType }}</span>
+  <span>
+    <span class="temp-msg" v-if="tempMsg.preview">
+      <span class="label">[草稿]</span>
+      <span>{{ tempMsg.preview }}</span>
+    </span>
+    <span v-else>{{ messageTextType }}</span>
+  </span>
 </template>
 
 <script>
@@ -11,6 +17,14 @@ export default {
     lastMsg: {
       type: Object,
       default: () => {},
+    },
+    tempMsg: {
+      type: Object,
+      default: () => {
+        return {
+          preview: '',
+        }
+      },
     },
   },
   computed: {
@@ -28,4 +42,20 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped lang="scss">
+.temp-msg {
+  display: block;
+  width: 145px;
+  height: 17px;
+  font-size: 12px;
+  color: $tips-text-color;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  .label {
+    color: $minor-red-color;
+  }
+}
+</style>

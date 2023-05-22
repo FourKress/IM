@@ -74,7 +74,7 @@
             </div>
             <div class="msg-row">
               <span class="message">
-                <MsgTextType v-if="item.lastMsg" :lastMsg="item.lastMsg" />
+                <MsgTextType v-if="item.lastMsg" :lastMsg="item.lastMsg" :tempMsg="currentSession === item.sessId ? {} : historyTempMsgOBJ[item.sessId]" />
               </span>
 
               <span class="unread-count" v-if="item.unreadCount">
@@ -114,6 +114,7 @@ export default {
       selfSessionList: [],
       LsAssets,
       isScroll: true,
+      historyTempMsgOBJ: {}
     };
   },
   components: {
@@ -191,10 +192,18 @@ export default {
         this.handleSetSessionWindow(currentSession, targetSession);
       }
     },
-    handleMenuClick(session) {
+    async handleMenuClick(session) {
       const sessId = session.sessId;
       this.handleSetSessionWindow(sessId, session);
+      setTimeout(async () => {
+        await this.getHistoryTempMsg();
+      }, 300)
     },
+    async getHistoryTempMsg() {
+      console.log('##############')
+      // 获取切换时保存的临时类容
+      this.historyTempMsgOBJ = await window.$lanshuStore.getItem('tempMsgOBJ') ;
+    }
   },
 };
 </script>

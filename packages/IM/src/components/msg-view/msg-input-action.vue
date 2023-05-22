@@ -175,9 +175,15 @@ export default {
     },
   },
   async mounted() {
-    this.$nextTick(() => {
+    this.$nextTick(async () => {
       this.$refs.msgInput.focus();
       this.windowRange = window.getSelection().getRangeAt(0);
+      // 获取切换时保存的临时类容
+      const historyTempMsgOBJ = await window.$lanshuStore.getItem('tempMsgOBJ');
+      const tempMsg = historyTempMsgOBJ?.[this.session.sessId];
+      if (tempMsg?.preview) {
+        this.handleTargetInsert(tempMsg.rawMsg);
+      }
     });
 
     document.addEventListener('click', this.handleGlobalClick);
@@ -463,7 +469,7 @@ export default {
           msgArr = [realMessage];
         }
 
-        this.clearInput()
+        this.clearInput();
 
         const sendMsgArr = await Promise.all(
           msgArr
@@ -648,9 +654,24 @@ export default {
       }
     },
   },
-  destroyed() {
+  async destroyed() {
     document.removeEventListener('click', this.handleGlobalClick);
     document.onkeydown = null;
+    const sessId = this.session.sessId;
+    const historyTempMsgOBJ = await window.$lanshuStore.getItem('tempMsgOBJ');
+    let tempMsg = '';
+    if (this.messageText) {
+      tempMsg = this.messageText
+    } else if (this.message.includes('<img')) {
+      tempMsg = '[图片]'
+    }
+    await window.$lanshuStore.setItem('tempMsgOBJ', {
+      ...historyTempMsgOBJ,
+      [sessId]: {
+        preview: tempMsg,
+        rawMsg: this.message,
+      },
+    });
   },
 };
 </script>
