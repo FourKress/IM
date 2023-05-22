@@ -1,24 +1,24 @@
 import https from './https';
 import { renderProcess } from '@lanshu/render-process';
 
-const terminal = await renderProcess.getStore('CLIENT_TERMINAL');
+const getTerminal = async () => await renderProcess.getStore('CLIENT_TERMINAL');
 
-export const accountCheckStatus = (params) => {
+export const accountCheckStatus = async (params) => {
   return https.post(
     '/auth/account/checkStatus',
-    { ...params, terminal },
+    { ...params, terminal: await getTerminal() },
     {
       isAuth: false,
     },
   );
 };
 
-export const accountSendCaptcha = (params) => {
+export const accountSendCaptcha = async (params) => {
   return https.post(
     '/auth/account/sendCaptcha',
     {
       ...params,
-      terminal,
+      terminal: await getTerminal(),
     },
     {
       isAuth: false,
@@ -26,12 +26,12 @@ export const accountSendCaptcha = (params) => {
   );
 };
 
-export const accountSetPassword = (params) => {
+export const accountSetPassword = async (params) => {
   return https.post(
     '/auth/account/setPassword',
     {
       ...params,
-      terminal,
+      terminal: await getTerminal(),
     },
     {
       isAuth: false,
@@ -39,12 +39,12 @@ export const accountSetPassword = (params) => {
   );
 };
 
-export const accountLogin = (params) => {
+export const accountLogin = async (params) => {
   return https.post(
     '/auth/account/login',
     {
       ...params,
-      terminal,
+      terminal: await getTerminal(),
     },
     {
       isAuth: false,
@@ -60,12 +60,12 @@ export const accountLoginOut = (params) => {
   return https.post('/auth/account/loginOut', params);
 };
 
-export const accountCheckCaptcha = (params) => {
+export const accountCheckCaptcha = async (params) => {
   return https.post(
     '/auth/account/checkCaptcha',
     {
       ...params,
-      terminal,
+      terminal: await getTerminal(),
     },
     {
       isAuth: false,
@@ -73,12 +73,12 @@ export const accountCheckCaptcha = (params) => {
   );
 };
 
-export const accountLoginWithCaptcha = (params) => {
+export const accountLoginWithCaptcha = async (params) => {
   return https.post(
     '/auth/account/loginWithCaptcha',
     {
       ...params,
-      terminal,
+      terminal: await getTerminal(),
     },
     {
       isAuth: false,
@@ -90,12 +90,18 @@ export const accountUserInfo = (params) => {
   return https.post('/auth/user/userInfo', params);
 };
 
-export const accountUpdateUserInfo = (params) => {
-  return https.post('/auth/user/updateUserInfo', { ...params, terminal });
+export const accountUpdateUserInfo = async (params) => {
+  return https.post('/auth/user/updateUserInfo', {
+    ...params,
+    terminal: await getTerminal(),
+  });
 };
 
-export const accountUpdatePhone = (params) => {
-  return https.post('/auth/user/updatePhone', { ...params, terminal });
+export const accountUpdatePhone = async (params) => {
+  return https.post('/auth/user/updatePhone', {
+    ...params,
+    terminal: await getTerminal(),
+  });
 };
 
 export const managerFileUpload = (params) => {

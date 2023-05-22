@@ -8,13 +8,26 @@
     <!--      </span>-->
     <!--      -->
     <!--    </el-popover>-->
-    <div
-      slot="reference"
-      class="card text"
-      :class="classObject"
-      v-if="msgType === CHECK_MSG_TYPE.IS_TEXT"
-      v-html="text"
-    ></div>
+    <el-popover
+      placement="right"
+      width="40"
+      trigger="manual"
+      popper-class="context-menu-popover"
+      v-model="visibleContextMenu">
+      <div
+        :ref="`MsgCard_${msg.msgId}`"
+        slot="reference"
+        class="card text"
+        :class="classObject"
+        v-if="msgType === CHECK_MSG_TYPE.IS_TEXT"
+        v-html="text"
+      ></div>
+
+      <div class="menu-list">
+        <span class="item" @click="handleCopy">复制</span>
+      </div>
+
+    </el-popover>
 
     <div
       class="wrap img"
@@ -132,6 +145,7 @@
         height="18"
       ></LsIcon>
     </div>
+
   </div>
 </template>
 
@@ -177,6 +191,8 @@ export default {
       CHECK_MSG_TYPE,
       assetsPath: '',
       cachePath: '',
+      selectedText: '',
+      visibleContextMenu: false,
     };
   },
   computed: {
@@ -236,6 +252,21 @@ export default {
   },
   mounted() {
     this.getAssetsPath();
+
+    this.$nextTick(() => {
+      this.$refs[`MsgCard_${this.msg.msgId}`].addEventListener(
+        'contextmenu',
+        (e) => {
+          this.selectedText = window.getSelection().toString();
+          console.log(this.selectedText)
+          this.visibleContextMenu = true;
+        },
+      );
+
+      document.body.addEventListener('click', (e) => {
+        this.visibleContextMenu = false;
+      })
+    });
   },
   methods: {
     getFileSize,
@@ -314,6 +345,13 @@ export default {
       }
       renderProcess.previewAssets(this.cachePath.replace('cache:///', ''));
     },
+
+    async handleCopy() {
+      this.visibleContextMenu = false;
+      const text = this.selectedText || this.$refs[`MsgCard_${this.msg.msgId}`].innerText;
+      await navigator.clipboard.writeText(text);
+      this.$message.success('复制成功');
+    }
   },
 };
 </script>
@@ -324,6 +362,7 @@ export default {
   height: 100%;
   overflow: hidden;
   border-radius: 6px;
+  position: relative;
 
   .card {
     padding: 15px;
@@ -341,6 +380,7 @@ export default {
       word-break: break-all;
       display: flex;
       align-items: center;
+      cursor: pointer;
 
       .trtc-icon {
         &.self {
@@ -466,6 +506,25 @@ export default {
             }
           }
         }
+      }
+    }
+  }
+}
+</style>
+
+<style lang="scss">
+.context-menu-popover {
+  min-width: 40px !important;
+
+  .menu-list {
+    text-align: center;
+    font-size: 12px;
+
+    .item {
+      cursor: pointer;
+
+      &:hover {
+        color: $primary-color;
       }
     }
   }
