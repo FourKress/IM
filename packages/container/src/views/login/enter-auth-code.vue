@@ -26,14 +26,17 @@
         :phoneNum="phoneNum"
         :scene="this.isSetPwd ? 'setPassword' : 'login'"
         @inputComplete="handleInputComplete"
+        @keyup.enter.native="handleLogin"
       >
-        <div
+        <el-button
           class="login-btn"
           :class="isAuthCodeComplete && 'active'"
+          :loading="isAwait"
           @click="handleLogin"
         >
           {{ isSetPwd ? '下一步' : '立即登录' }}
-        </div>
+        </el-button>
+
       </AuthCode>
     </div>
   </div>
@@ -66,6 +69,7 @@ export default {
     return {
       isAuthCodeComplete: false,
       codes: '',
+      isAwait: false,
     };
   },
   computed: {
@@ -101,8 +105,9 @@ export default {
 
     async handleLogin() {
       if (!this.isAuthCodeComplete) return;
+      this.isAwait = true;
       if (this.isSetPwd) {
-        await Apis.accountCheckCaptcha({
+        Apis.accountCheckCaptcha({
           phone: this.phoneNum,
           captcha: this.codes,
           scene: this.isSetPwd ? 'setPassword' : 'login',
@@ -117,17 +122,19 @@ export default {
           })
           .catch(() => {
             this.$refs?.authCode?.handleClearCode();
+            this.isAwait = false;
           });
       } else {
-        const res = await Apis.accountLoginWithCaptcha({
+        Apis.accountLoginWithCaptcha({
           username: this.phoneNum,
           captcha: this.codes,
         })
-          .then(async () => {
+          .then(async (res) => {
             await this.handleClientLogin(res);
           })
           .catch(() => {
             this.$refs?.authCode?.handleClearCode();
+            this.isAwait = false;
           });
       }
     },
@@ -172,7 +179,6 @@ export default {
   }
 }
 
-
 .title {
   height: 32px;
   line-height: 32px;
@@ -201,6 +207,9 @@ export default {
     background-color: #87a1cd;
     cursor: pointer;
     margin: 16px 0;
+    border: none;
+    padding: 0;
+    display: block;
 
     &.active {
       background: $primary-color;

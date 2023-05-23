@@ -21,14 +21,14 @@ const initMainWindow = () => {
 
 const delayShowWindow = (initFn, delay) => {
   const mainWindow = global.mainWindow;
-  if (IS_MAC) {
+  if (!IS_MAC) {
     mainWindow.setOpacity(0);
   }
   initFn();
   // 在最小化之后修改size会无效，所以要在最小化之前修改大小
   mainWindow.minimize();
   setTimeout(() => {
-    if (IS_MAC) {
+    if (!IS_MAC) {
       mainWindow.setOpacity(1);
     }
     mainWindow.show();
@@ -37,7 +37,7 @@ const delayShowWindow = (initFn, delay) => {
 };
 
 export const showMainWindow = () => {
-  delayShowWindow(initMainWindow, 500);
+  delayShowWindow(initMainWindow, 1000);
 };
 
 export const showLoginWindow = (delay) => {
@@ -71,10 +71,10 @@ export const changeWindow = (type, win) => {
 export const defaultWindowConfig = {
   // TODO 生产环境开启
   // devTools: false,
-  transparent: true,
+  show: false,
   frame: false,
   hasShadow: false,
-  backgroundColor: '#00000000',
+  transparent: true,
   autoHideMenuBar: true,
   webPreferences: {
     webSecurity: false,

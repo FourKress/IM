@@ -102,8 +102,8 @@ export const ClientLogOut = async () => {
   await window.$lanshuStore.removeItem('tempMsgOBJ');
   removeToken(TOKEN_TYPE.IS_IM);
   removeToken(TOKEN_TYPE.IS_SYS);
-  renderProcess.showLoginWindow(1000);
   window.location.reload();
+  renderProcess.showLoginWindow(1000);
 };
 export const IMClearUnreadCount = async (sessId, sessionWindowList) => {
   const res = await eventHOCFnc(

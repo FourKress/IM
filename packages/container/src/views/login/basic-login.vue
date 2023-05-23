@@ -10,7 +10,13 @@
 
     <template>
       <div class="input-panel">
-        <el-form :model="form" :rules="rules" ref="loginForm" label-width="0px">
+        <el-form
+          :model="form"
+          :rules="rules"
+          ref="loginForm"
+          label-width="0px"
+          @keyup.enter.native="handleLogin"
+        >
           <div class="phone">
             <el-form-item label="" prop="phoneNum">
               <el-input
@@ -21,24 +27,25 @@
               />
             </el-form-item>
           </div>
+
+          <el-button
+            class="login-btn"
+            :class="activeBtn && 'active'"
+            :loading="isAwait"
+            @click="handleLogin"
+          >
+            确定
+          </el-button>
+
+          <div class="checkbox-row">
+            <el-checkbox v-model="protocolChecked">
+              <span>我已阅读并同意</span>
+            </el-checkbox>
+
+            <span class="link" @click="openUrl">《用户服务协议》</span>
+            <span class="link" @click="openUrl">《隐私协议》</span>
+          </div>
         </el-form>
-
-        <div
-          class="login-btn"
-          :class="activeBtn && 'active'"
-          @click="handleLogin"
-        >
-          下一步
-        </div>
-
-        <div class="checkbox-row">
-          <el-checkbox v-model="protocolChecked">
-            <span>我已阅读并同意</span>
-          </el-checkbox>
-
-          <span class="link" @click="openUrl">《用户服务协议》</span>
-          <span class="link" @click="openUrl">《隐私协议》</span>
-        </div>
       </div>
     </template>
   </div>
@@ -76,6 +83,7 @@ export default {
         ],
       },
       protocolChecked: false,
+      isAwait: false,
     };
   },
   computed: {
@@ -97,11 +105,12 @@ export default {
       renderProcess.openUrl('https://www.baidu.com' || url);
     },
     async handleLogin() {
+      if (!this.activeBtn) return;
       if (!this.protocolChecked) {
         this.$message.warning('请阅读并勾选《用户服务协议》《隐私协议》');
         return;
       }
-      if (!this.activeBtn) return;
+      this.isAwait = true;
       const phoneNum = this.replacePhoneNum();
       const {
         data: { code, msg },
@@ -109,10 +118,11 @@ export default {
         username: phoneNum,
       });
 
+      this.isAwait = false;
+
       // 正常，跳转密码登录
       if (code === '10009') {
-        this.$emit('enterPassword', phoneNum);
-        // this.$emit('enterAuthCode', phoneNum);
+        this.$emit('enterAuthCode', phoneNum);
         return;
       }
 
@@ -182,6 +192,9 @@ export default {
     background-color: #87a1cd;
     cursor: pointer;
     margin-bottom: 16px;
+    border: none;
+    padding: 0;
+    display: block;
 
     &.active {
       background: $primary-color;

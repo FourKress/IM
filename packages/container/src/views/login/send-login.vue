@@ -18,49 +18,50 @@
 
     <div class="title-tips">密码应为8-16位，字母+数字的组合</div>
 
-    <template v-if="!isAppLogin">
-      <div class="title-tips" v-if="isSetPwd">
-        密码应为8-16位，字母+数字的组合
-      </div>
+    <div class="input-panel">
+      <el-form
+        :model="form"
+        :rules="rules"
+        ref="loginForm"
+        label-width="0px"
+        @keyup.enter.native="handleLogin"
+      >
+        <div class="phone">
+          <el-form-item label="" prop="firstPhoneNum">
+            <el-input
+              ref="firstPhoneNum"
+              type="password"
+              maxlength="16"
+              show-password
+              placeholder="请输入密码"
+              v-model="form.firstPhoneNum"
+            />
+          </el-form-item>
+          <el-form-item label="" prop="secondPhoneNum" v-if="isSetPwd">
+            <el-input
+              type="password"
+              maxlength="16"
+              show-password
+              placeholder="请再次输入密码"
+              v-model="form.secondPhoneNum"
+            />
+          </el-form-item>
+        </div>
 
-      <div class="input-panel">
-        <el-form :model="form" :rules="rules" ref="loginForm" label-width="0px">
-          <div class="phone">
-            <el-form-item label="" prop="firstPhoneNum">
-              <el-input
-                ref="firstPhoneNum"
-                type="password"
-                maxlength="16"
-                show-password
-                placeholder="请输入密码"
-                v-model="form.firstPhoneNum"
-              />
-            </el-form-item>
-            <el-form-item label="" prop="secondPhoneNum" v-if="isSetPwd">
-              <el-input
-                type="password"
-                maxlength="16"
-                show-password
-                placeholder="请再次输入密码"
-                v-model="form.secondPhoneNum"
-              />
-            </el-form-item>
-          </div>
-        </el-form>
-
-        <div
+        <el-button
           class="login-btn"
           :class="activeBtn && 'active'"
+          :loading="isAwait"
           @click="handleLogin"
         >
           立即登录
-        </div>
+        </el-button>
+      </el-form>
 
-        <div class="tips-opt" v-if="!isSetPwd">
-          <span class="left" @click="handleForgetPassword">忘记密码？</span>
-        </div>
+      <div class="tips-opt" v-if="!isSetPwd">
+        <span class="left" @click="handleForgetPassword">忘记密码？</span>
       </div>
-    </template>
+    </div>
   </div>
 </template>
 
@@ -107,9 +108,6 @@ export default {
         );
       }
       return firstPhoneNum && reg.test(firstPhoneNum);
-    },
-    isAppLogin() {
-      return !this.phoneNum;
     },
   },
   data() {
@@ -165,6 +163,7 @@ export default {
           },
         ],
       },
+      isAwait: false,
     };
   },
   mounted() {
@@ -189,21 +188,26 @@ export default {
     async handleLogin() {
       this.$refs.loginForm.validate(async (valid) => {
         if (valid) {
-          if (this.isSetPwd) {
-            await Apis.accountSetPassword({
+          this.isAwait = true;
+          try {
+            if (this.isSetPwd) {
+              await Apis.accountSetPassword({
+                username: this.phoneNum,
+                password: this.form.firstPhoneNum,
+                captcha: this.captcha,
+              });
+            }
+
+            const res = await Apis.accountLogin({
               username: this.phoneNum,
               password: this.form.firstPhoneNum,
-              captcha: this.captcha,
+              orgId: '',
             });
+
+            await this.handleClientLogin(res);
+          } catch (e) {
+            this.isAwait = false;
           }
-
-          const res = await Apis.accountLogin({
-            username: this.phoneNum,
-            password: this.form.firstPhoneNum,
-            orgId: '',
-          });
-
-          await this.handleClientLogin(res);
         }
       });
       return;
@@ -264,18 +268,25 @@ export default {
   .phone,
   .login-btn {
     width: 100%;
-    height: 60px;
     line-height: 60px;
     border-radius: 6px;
     box-sizing: border-box;
   }
 
+  .phone {
+    min-height: 60px;
+  }
+
   .login-btn {
+    height: 60px;
     text-align: center;
     color: $bg-white-color;
     background-color: #87a1cd;
     cursor: pointer;
     margin-bottom: 16px;
+    border: none;
+    padding: 0;
+    display: block;
 
     &.active {
       background: $primary-color;

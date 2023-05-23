@@ -36,7 +36,6 @@ const initIpcMain = () => {
     initCache();
 
     showLoginWindow();
-    // showMainWindow();
 
     // 初始化截图
     initScreenshots();

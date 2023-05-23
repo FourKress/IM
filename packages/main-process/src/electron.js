@@ -19,8 +19,8 @@ console.log(
 async function createWindow() {
   const win = new BrowserWindow({
     ...defaultWindowConfig,
-    width: 1440,
-    height: 1080,
+    width: 460,
+    height: 620,
   });
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
