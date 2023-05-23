@@ -77,8 +77,11 @@ export default {
         background-color: $bg-white-color;
       }
 
-      ::v-deep .el-icon-loading {
-        font-size: 20px;
+      & > ::v-deep .el-loading-mask {
+        z-index: 9;
+        .el-icon-loading {
+          font-size: 20px;
+        }
       }
     }
   }

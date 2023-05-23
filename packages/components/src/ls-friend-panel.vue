@@ -8,7 +8,9 @@
           <img :src="friendInfo.avatar" class="img" />
         </div>
         <div class="right">
-          <span class="nickname">{{ friendInfo.remark ? friendInfo.remark : friendInfo.nickname }}</span>
+          <span class="nickname">
+            {{ friendInfo.remark ? friendInfo.remark : friendInfo.nickname }}
+          </span>
           <span class="tips">
             <LsUserTag
               bgColor="#fff"
@@ -37,12 +39,12 @@
         >
           <LsIcon render-svg icon="a-icon_more2x"></LsIcon>
           <el-dropdown-menu slot="dropdown">
-<!--            <el-dropdown-item :command="IS_SHARED">-->
-<!--              <div class="send-down-row">-->
-<!--                <LsIcon size="14" icon="pop_cd_cjql"></LsIcon>-->
-<!--                <span>转发名片</span>-->
-<!--              </div>-->
-<!--            </el-dropdown-item>-->
+            <!--            <el-dropdown-item :command="IS_SHARED">-->
+            <!--              <div class="send-down-row">-->
+            <!--                <LsIcon size="14" icon="pop_cd_cjql"></LsIcon>-->
+            <!--                <span>转发名片</span>-->
+            <!--              </div>-->
+            <!--            </el-dropdown-item>-->
             <el-dropdown-item :command="IS_DELETE">
               <div class="send-down-row">
                 <LsIcon size="14" color="red" icon="pop_cd_sz"></LsIcon>
@@ -108,12 +110,25 @@
           </div>
         </div>
       </div>
-      <div class="btn" v-if="panelConfig.isApply" @click="handleSendApply">
+
+      <el-button
+        class="btn"
+        v-if="panelConfig.isApply"
+        @click="handleSendApply"
+        :loading="isAwait"
+      >
         发送申请
-      </div>
-      <div class="btn" v-if="panelConfig.isAuth" @click="handleSendAuth">
+      </el-button>
+
+      <el-button
+        class="btn"
+        v-if="panelConfig.isAuth"
+        @click="handleSendAuth"
+        :loading="isAwait"
+      >
         通过验证
-      </div>
+      </el-button>
+
       <template v-if="panelConfig.isExpired">
         <div class="btn expired">通过验证</div>
         <p class="expired-tips">
@@ -122,9 +137,29 @@
         </p>
       </template>
       <div class="btn-list" v-if="panelConfig.isPass">
-        <div class="action-btn left" @click="handleSendMsg">发信息</div>
-        <div class="action-btn" @click="handleSendVideo">视频</div>
-        <div class="action-btn" @click="handleSendAudio">语音</div>
+        <el-button
+          class="action-btn left"
+          @click="handleSendMsg"
+          :loading="isMsgAwait"
+        >
+          发信息
+        </el-button>
+
+        <el-button
+          class="action-btn"
+          @click="handleSendVideo"
+          :loading="isVideoAwait"
+        >
+          视频
+        </el-button>
+
+        <el-button
+          class="action-btn"
+          @click="handleSendAudio"
+          :loading="isAudioAwait"
+        >
+          语音
+        </el-button>
       </div>
     </div>
   </div>
@@ -182,6 +217,10 @@ export default {
       },
       IS_SHARED: 'IS_SHARED',
       IS_DELETE: 'IS_DELETE',
+      isAwait: false,
+      isMsgAwait: false,
+      isVideoAwait: false,
+      isAudioAwait: false,
     };
   },
   components: {
@@ -212,6 +251,7 @@ export default {
     calculateAgeByBirthday,
 
     handleSendAuth() {
+      this.isAwait = true;
       this.$emit('sendAuth', [
         this.friendInfo.noticeId,
         this.remark,
@@ -219,6 +259,7 @@ export default {
       ]);
     },
     handleSendApply() {
+      this.isAwait = true;
       this.$emit('sendApply', [
         this.friendInfo.userId,
         this.remark,
@@ -228,12 +269,15 @@ export default {
       ]);
     },
     handleSendMsg() {
+      this.isMsgAwait = true;
       this.$emit('sendMsg');
     },
     handleSendVideo() {
+      this.isVideoAwait = true;
       this.$emit('sendVideo');
     },
     handleSendAudio() {
+      this.isAudioAwait = true;
       this.$emit('sendAudio');
     },
     handleResetApply() {
@@ -251,8 +295,8 @@ export default {
     async handleSetRemarkOrDesc() {
       if (!this.panelConfig.isPass && !this.panelConfig.isDetails) return;
       await IMSetRemarkOrDesc(this.friendInfo.userId, this.remark, this.desc);
-      this.$emit('update')
-    }
+      this.$emit('update');
+    },
   },
 };
 </script>
@@ -402,6 +446,7 @@ export default {
     }
 
     .btn {
+      width: 100%;
       height: 48px;
       line-height: 48px;
       background: $primary-color;
@@ -411,6 +456,10 @@ export default {
       color: $bg-white-color;
       text-align: center;
       margin: 52px 0 34px 0;
+
+      border: none;
+      padding: 0;
+      display: block;
 
       &.expired {
         background: #87a1cd;
@@ -451,6 +500,13 @@ export default {
         color: $main-text-color;
         text-align: center;
         box-sizing: border-box;
+
+        padding: 0;
+        display: block;
+
+        &:hover {
+          background: $bg-white-color;
+        }
 
         &.left {
           background: $primary-color;

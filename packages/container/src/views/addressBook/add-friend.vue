@@ -15,13 +15,14 @@
         </el-form>
       </div>
 
-      <span
+      <el-button
         class="btn"
         :class="validPhoneNum && 'active'"
         @click="handleSearch"
+        :loading="isAwait"
       >
         搜索
-      </span>
+      </el-button>
     </div>
 
     <div
@@ -102,6 +103,7 @@ export default {
       },
       friendList: [],
       isEmpty: false,
+      isAwait: false,
     };
   },
   computed: {
@@ -122,12 +124,16 @@ export default {
   methods: {
     handleSearch() {
       if (!this.validPhoneNum) return;
+      this.isAwait = true;
       IMSearchUserProfileOfPhone(this.replacePhoneNum(this.form.phoneNum)).then(
         ({ data }) => {
+          this.isAwait = false;
           this.friendList = data;
           this.isEmpty = !this.friendList.length && this.validPhoneNum;
         },
-      );
+      ).catch(() => {
+        this.isAwait = false;
+      });
     },
     handleOpenFriendDialog(friendInfo, event) {
       this.friendInfo = friendInfo;
@@ -204,6 +210,10 @@ export default {
       color: $bg-white-color;
       line-height: 39px;
       text-align: center;
+
+      border: none;
+      padding: 0;
+      display: block;
 
       &.active {
         background: $primary-color;
