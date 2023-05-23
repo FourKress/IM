@@ -26,6 +26,7 @@
         :phoneNum="phoneNum"
         :scene="this.isSetPwd ? 'setPassword' : 'login'"
         @inputComplete="handleInputComplete"
+        @submit.native.prevent
         @keyup.enter.native="handleLogin"
       >
         <el-button

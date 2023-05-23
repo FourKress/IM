@@ -15,7 +15,7 @@
       <!--        <LsIcon render-svg icon="a-icon_sp2x"></LsIcon>-->
       <!--      </div>-->
       <div class="btn">
-        <!--        && groupRoleManager.whoCanStartNetworkCall <= groupRole-->
+        <!--        || groupRoleManager.whoCanStartNetworkCall <= groupRole-->
         <LsIcon
           render-svg
           icon="a-icon_sp2x"
@@ -24,7 +24,7 @@
         ></LsIcon>
       </div>
       <div class="btn">
-        <!--        && groupRoleManager.whoCanStartNetworkCall <= groupRole-->
+        <!--        || groupRoleManager.whoCanStartNetworkCall <= groupRole-->
         <LsIcon
           render-svg
           icon="a-icon_yy2x"
@@ -32,7 +32,7 @@
           @click="handleStartTrtc(NETWORK_CALL_TYPE.IS_AUDIO)"
         ></LsIcon>
       </div>
-      <div class="btn">
+      <div class="btn" v-if="!isGroup || groupRole > 0">
         <el-dropdown trigger="click" @command="handleCommand">
           <LsIcon render-svg icon="a-icon_more2x"></LsIcon>
           <el-dropdown-menu slot="dropdown" v-if="isGroup">

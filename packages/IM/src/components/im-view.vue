@@ -424,7 +424,7 @@ export default {
     async getMyGroupMemberInfo() {
       const res = await IMGetMyGroupMemberInfo(this.session.toUser);
       const { role } = res?.data || {};
-      this.myGroupRole = role;
+      this.myGroupRole = role || this.myGroupRole;
     },
   },
 };

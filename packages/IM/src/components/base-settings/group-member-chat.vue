@@ -336,7 +336,7 @@ export default {
         this.$message.error(`${this.groupTitle}至少选择1人`);
         return;
       }
-      if (!this.groupName && (this.isAddAdmin || this.isDelAdmin)) {
+      if (!this.groupName && !(this.isAddAdmin || this.isDelAdmin)) {
         this.$message.error('请输入群聊名称');
         return;
       }

@@ -15,6 +15,7 @@
           :rules="rules"
           ref="loginForm"
           label-width="0px"
+          @submit.native.prevent
           @keyup.enter.native="handleLogin"
         >
           <div class="phone">
@@ -122,7 +123,7 @@ export default {
 
       // 正常，跳转密码登录
       if (code === '10009') {
-        this.$emit('enterAuthCode', phoneNum);
+        this.$emit('enterPassword', phoneNum);
         return;
       }
 

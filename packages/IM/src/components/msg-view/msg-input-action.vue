@@ -156,9 +156,11 @@ export default {
       return this.$attrs.recordrtc;
     },
     placeholder() {
-      return this.noGroupAuth
-        ? '群主已禁言'
-        : `发送给 ${this.session.nickname || ''}...`;
+      if (this.isGroup) {
+        if (this.groupRole < 0) return '您不是该群成员！';
+        if (this.noGroupAuth) return '群主已禁言';
+      }
+      return `发送给 ${this.session.nickname || ''}...`;
     },
     disabledSendMsg() {
       const emptyMsg =

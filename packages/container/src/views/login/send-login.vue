@@ -24,6 +24,7 @@
         :rules="rules"
         ref="loginForm"
         label-width="0px"
+        @submit.native.prevent
         @keyup.enter.native="handleLogin"
       >
         <div class="phone">
@@ -56,6 +57,8 @@
         >
           立即登录
         </el-button>
+
+        <input type="hidden">
       </el-form>
 
       <div class="tips-opt" v-if="!isSetPwd">

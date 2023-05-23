@@ -31,6 +31,8 @@ export default {
     messageTextType() {
       const { msgType, data } = this.lastMsg;
       if (!msgType && !data) return '暂无消息';
+      const msgTypes = Object.keys(MSG_FORMAT_MAP);
+      if (!msgTypes.includes(String(msgType))) return '未知消息';
       // 文本类型的消息直接展示
       if (MSG_FORMAT_MAP[msgType]?.type === CHECK_MSG_TYPE.IS_TEXT) {
         return data.content.split('<br>')[0];
