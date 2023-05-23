@@ -406,8 +406,8 @@ export default {
 
   .header_action {
     position: relative;
-    width: 90px;
-    height: 20px;
+    width: 102px;
+    height: 24px;
     -webkit-app-region: no-drag !important;
   }
 }

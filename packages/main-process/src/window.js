@@ -5,8 +5,7 @@ import checkDevices from './checkDevices';
 
 const initLoginWindow = () => {
   const mainWindow = global.mainWindow;
-  mainWindow.setSize(1440, 1080);
-  mainWindow.setMinimumSize(1440, 1080);
+  mainWindow.setSize(440, 600);
   mainWindow.setResizable(false);
   mainWindow.setMaximizable(false);
   mainWindow.center();

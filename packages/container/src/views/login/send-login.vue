@@ -1,23 +1,22 @@
 <template>
   <div class="send-login">
-    <div class="back-icon" @click="backLogin">
-      <LsIcon
-        render-svg
-        width="30"
-        height="20"
-        icon="a-icon_zuobian2x"
-      ></LsIcon>
+    <div class="top">
+      <div class="back-icon" @click="backLogin">
+        <LsIcon
+          render-svg
+          width="30"
+          height="20"
+          icon="a-icon_zuobian2x"
+        ></LsIcon>
+      </div>
+      <span class="right" @click="handleSwitchAuthCode">验证码登录</span>
     </div>
 
     <div class="title">
-      {{
-        isAppLogin
-          ? '请在APP上确认登录'
-          : isSetPwd
-          ? '设置登录密码'
-          : '请输入密码'
-      }}
+      {{ isSetPwd ? '设置登录密码' : '请输入密码' }}
     </div>
+
+    <div class="title-tips">密码应为8-16位，字母+数字的组合</div>
 
     <template v-if="!isAppLogin">
       <div class="title-tips" v-if="isSetPwd">
@@ -49,13 +48,6 @@
           </div>
         </el-form>
 
-        <div class="tips-opt" v-if="!isSetPwd">
-          <span class="left" @click="handleForgetPassword">忘记密码？</span>
-          <span class="right" @click="handleSwitchAuthCode">
-            切换为验证码登录
-          </span>
-        </div>
-
         <div
           class="login-btn"
           :class="activeBtn && 'active'"
@@ -63,22 +55,17 @@
         >
           立即登录
         </div>
-      </div>
-    </template>
 
-    <template v-else>
-      <div class="user-info">
-        <div class="avatar"></div>
-        <div class="nickname">李安宁</div>
+        <div class="tips-opt" v-if="!isSetPwd">
+          <span class="left" @click="handleForgetPassword">忘记密码？</span>
+        </div>
       </div>
     </template>
   </div>
 </template>
 
 <script>
-import { mapActions } from 'vuex';
 import { Apis } from '@lanshu/utils';
-import { renderProcess } from '@lanshu/render-process';
 import { LsIcon } from '@lanshu/components';
 import LoginMixins from './loginMixins';
 
@@ -218,48 +205,77 @@ export default {
 
           await this.handleClientLogin(res);
         }
-      })
-      return
+      });
+      return;
     },
   },
 };
 </script>
 
 <style scoped lang="scss">
-.back-icon {
-  width: 30px;
-  height: 20px;
-  margin: 24px 0 44px 0;
-  cursor: pointer;
+.send-login {
+  padding-top: 110px;
 }
+
+.top {
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  .back-icon {
+    width: 30px;
+    height: 20px;
+    cursor: pointer;
+  }
+
+  .right {
+    cursor: pointer;
+    width: 96px;
+    height: 36px;
+    text-align: center;
+    line-height: 36px;
+    background: $bg-white-color;
+    border-radius: 6px;
+    border: 1px solid $primary-color;
+    box-sizing: border-box;
+    font-size: 15px;
+    color: $primary-hover-color;
+  }
+}
+
 .title {
-  font-size: 30px;
+  height: 32px;
+  line-height: 32px;
+  font-size: 24px;
   color: $main-text-color;
   font-weight: bold;
+  margin-top: 25px;
 }
 .title-tips {
-  font-size: 14px;
+  font-size: 16px;
   color: $tips-text-color;
   margin-top: 8px;
 }
+
 .input-panel {
-  margin: 60px 0 126px 0;
+  margin-top: 60px;
 
   .phone,
   .login-btn {
     width: 100%;
+    height: 60px;
     line-height: 60px;
     border-radius: 6px;
     box-sizing: border-box;
   }
 
   .login-btn {
-    height: 60px;
     text-align: center;
     color: $bg-white-color;
     background-color: #87a1cd;
     cursor: pointer;
-    margin-top: 36px;
+    margin-bottom: 16px;
 
     &.active {
       background: $primary-color;
@@ -268,7 +284,7 @@ export default {
 
   .phone {
     background: $bg-white-color;
-    margin-bottom: 20px;
+    margin-bottom: 16px;
 
     ::v-deep .el-input__inner {
       width: 100%;
@@ -276,59 +292,34 @@ export default {
       line-height: 24px;
       font-size: 18px;
       outline: none;
+      background-color: $bg-hover-grey-color;
       border: none;
-      padding: 18px 26px;
+      padding: 18px 24px;
       box-sizing: border-box;
       color: $main-text-color;
-      background-color: $bg-hover-grey-color;
 
       &::placeholder {
         color: $tips-text-color;
         font-size: 18px;
       }
     }
+
+    ::v-deep .el-form-item__error {
+      padding-top: 2px;
+    }
   }
 
   .tips-opt {
-    margin: 30px 0;
-    font-size: 14px;
+    margin-top: 16px;
+    font-size: 15px;
     color: $primary-hover-color;
     display: flex;
     align-items: center;
     justify-content: space-between;
 
-    .left,
-    .right {
+    .left {
       cursor: pointer;
     }
-
-    .left {
-      &.disabled {
-        color: $tips-text-color;
-        cursor: default;
-      }
-    }
-  }
-}
-
-.user-info {
-  width: 140px;
-  margin: 126px auto 0;
-  text-align: center;
-
-  .avatar {
-    width: 140px;
-    height: 140px;
-    background: #9482ff;
-    border-radius: 20px;
-  }
-
-  .nickname {
-    text-align: center;
-    font-size: 30px;
-    font-weight: bold;
-    color: $main-text-color;
-    margin-top: 30px;
   }
 }
 </style>

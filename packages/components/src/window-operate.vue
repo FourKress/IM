@@ -1,20 +1,22 @@
 <template>
   <div class="window-action">
     <span class="btn" @click="handleWindowChange(WIN_ACTION_TYPE.IS_MIN)">
-      <LsIcon icon="navi_zxh_icon" render-svg></LsIcon>
+      <LsIcon icon="ls-icon-zxh" width="24" height="24" render-svg></LsIcon>
     </span>
     <span
       class="btn"
-      :class="isLogin && 'disable'"
+      v-if="!isLogin"
       @click="handleWindowChange(WIN_ACTION_TYPE.IS_MAX)"
     >
       <LsIcon
-        :icon="isFull ? 'ls-icon-icon_zuixiaohua1' : 'navi_sx_icon'"
+        :icon="isFull ? 'ls-icon-zuixiaohua' : 'ls-icon-sx'"
+        width="24"
+        height="24"
         render-svg
       ></LsIcon>
     </span>
     <span class="btn" @click="handleWindowChange(WIN_ACTION_TYPE.IS_CLOSE)">
-      <LsIcon icon="navi_gb_icon" render-svg></LsIcon>
+      <LsIcon icon="ls-icon-gb" width="24" height="24" render-svg></LsIcon>
     </span>
   </div>
 </template>
@@ -44,7 +46,6 @@ export default {
   methods: {
     handleWindowChange(type) {
       if (type === this.WIN_ACTION_TYPE.IS_MAX) {
-        if (this.isLogin) return;
         this.isFull = !this.isFull;
       }
       // isMain => 主窗口标识
@@ -66,16 +67,11 @@ export default {
   z-index: 999;
 
   .btn {
-    width: 20px;
-    height: 20px;
+    width: 24px;
+    height: 24px;
     margin-left: 10px;
     border-radius: 50%;
     cursor: pointer;
-
-    &.disable {
-      cursor: not-allowed;
-      opacity: 0.5;
-    }
   }
 }
 </style>

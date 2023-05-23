@@ -24,6 +24,7 @@
             <AuthCode
               ref="authCode"
               :phoneNum="phoneNum"
+              :newPhoneNum="newPhoneNum"
               scene="updatePhone"
               @inputComplete="handleInputComplete"
             />
@@ -98,7 +99,6 @@ import { ClientLogOut } from '@lanshu/im';
 import { LsIcon } from '@lanshu/components';
 import AuthCode from '../../../components/authCode';
 import { mapGetters } from 'vuex';
-import { renderProcess } from '@lanshu/render-process';
 
 export default {
   name: 'Change-phoneNum',
@@ -173,12 +173,11 @@ export default {
       }
     },
   },
-  async mounted() {
+  async created() {
     const { phone } = this.userProfile;
     this.phoneNum = phone;
     this.form.phoneNum = phone;
-    await this.sendCaptcha(phone);
-    this.titleTips = `4位数的验证码已发送至手机 ${this.getPhoneText(
+    this.titleTips = `验证码已发送至手机 ${this.getPhoneText(
       this.phoneNum,
     )}，有效期5分钟`;
   },
@@ -204,14 +203,24 @@ export default {
     async handleInputComplete(flag, codes) {
       if (flag) {
         if (this.step === 0) {
-          await this.checkCaptcha(this.phoneNum, codes);
+          try {
+            await this.checkCaptcha(this.phoneNum, codes);
+          } catch (e) {
+            this.$refs.authCode.handleClearCode();
+            return;
+          }
           this.step = 1;
           this.form.phoneNum = '';
           this.$nextTick(() => {
             this.$refs.newPhoneNum.focus();
           });
         } else {
-          await this.checkCaptcha(this.newPhoneNum, codes);
+          try {
+            await this.checkCaptcha(this.newPhoneNum, codes);
+          } catch (e) {
+            this.$refs.authCode.handleClearCode();
+            return;
+          }
           await Apis.accountUpdatePhone({
             newPhone: this.newPhoneNum,
             token: getToken(TOKEN_TYPE.IS_SYS),
@@ -243,15 +252,14 @@ export default {
     async handleAuth() {
       if (!this.validPhoneNum) return;
       this.newPhoneNum = this.replacePhoneNum();
-      await this.sendCaptcha(this.newPhoneNum);
       this.step = 2;
     },
   },
   beforeDestroy() {
     // 清理和保存未结束的定时器
     if ([0, 2].includes(this.step)) {
-      this.$refs.authCode.handleClearInterval();
       this.$refs.authCode.handleSaveCountdown();
+      this.$refs.authCode.handleClearInterval();
     }
   },
 };

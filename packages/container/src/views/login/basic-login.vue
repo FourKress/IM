@@ -4,20 +4,11 @@
       <img :src="LsAssets.logo" alt="" />
     </div>
 
-    <div class="title" v-if="isWechatLogin">请使用微信扫码登录</div>
-    <div class="title" v-else>
-      {{ isAccountLogin ? '欢迎使用登录' : '请使用APP扫码登录' }}
-    </div>
+    <div class="title">欢迎使用</div>
 
-    <div class="title-tips" v-if="isAccountLogin || isWechatLogin">
-      {{
-        isWechatLogin
-          ? '微信扫码可以同时进行注册和登录'
-          : '未注册的手机号，输入后将自动注册'
-      }}
-    </div>
+    <div class="title-tips">未注册的手机号，输入后将自动注册</div>
 
-    <template v-if="isAccountLogin && !isWechatLogin">
+    <template>
       <div class="input-panel">
         <el-form :model="form" :rules="rules" ref="loginForm" label-width="0px">
           <div class="phone">
@@ -41,54 +32,26 @@
         </div>
 
         <div class="checkbox-row">
-          <el-checkbox v-model="protocolChecked"></el-checkbox>
-          <span class="text">我已阅读并同意</span>
+          <el-checkbox v-model="protocolChecked">
+            <span>我已阅读并同意</span>
+          </el-checkbox>
+
           <span class="link" @click="openUrl">《用户服务协议》</span>
           <span class="link" @click="openUrl">《隐私协议》</span>
         </div>
-        <div class="checkbox-row">
-          <el-checkbox v-model="autoLoginChecked"></el-checkbox>
-          <span class="text">15天自动登录</span>
-        </div>
       </div>
     </template>
-
-    <template v-if="!isAccountLogin && !isWechatLogin">
-      <div class="qrcode-wrap app-qrcode"></div>
-    </template>
-
-    <template v-if="isWechatLogin">
-      <div class="qrcode-wrap wechat-qrcode"></div>
-      <div class="wechat-checkbox-row">
-        <el-checkbox v-model="autoLoginChecked"></el-checkbox>
-        <span class="text">15天自动登录</span>
-      </div>
-    </template>
-
-    <!--    <template v-else>-->
-    <!--      <OtherLogin @wechatLogin="handleWechatLogin" />-->
-    <!--    </template>-->
   </div>
 </template>
 
 <script>
 import { renderProcess } from '@lanshu/render-process';
-import OtherLogin from './other-login';
 import { formatPhoneNum, PhoneNumMixins, Apis } from '@lanshu/utils';
 import { LsAssets } from '@lanshu/components';
 
 export default {
   name: 'Basic-login',
   mixins: [PhoneNumMixins],
-  props: {
-    isAccountLogin: {
-      type: Boolean,
-      default: true,
-    },
-  },
-  components: {
-    OtherLogin,
-  },
   data() {
     return {
       LsAssets,
@@ -113,9 +76,6 @@ export default {
         ],
       },
       protocolChecked: false,
-      autoLoginChecked: false,
-      appQrcodeTimer: null,
-      wechatQrcodeTimer: null,
     };
   },
   computed: {
@@ -125,17 +85,6 @@ export default {
     },
   },
   watch: {
-    isAccountLogin(val) {
-      this.protocolChecked = false;
-      this.autoLoginChecked = false;
-      clearInterval(this.wechatQrcodeTimer);
-      if (val) {
-        clearInterval(this.appQrcodeTimer);
-      } else if (!this.isWechatLogin) {
-        this.loopAppLogin();
-      }
-      this.isWechatLogin = false;
-    },
     'form.phoneNum': function (val, oldVal) {
       const phoneNum = formatPhoneNum(val, oldVal);
       if (phoneNum) {
@@ -146,15 +95,6 @@ export default {
   methods: {
     openUrl(url) {
       renderProcess.openUrl('https://www.baidu.com' || url);
-    },
-    handleWechatLogin() {
-      this.isWechatLogin = true;
-      clearInterval(this.appQrcodeTimer);
-      this.$emit('update:isAccountLogin', false);
-      this.$nextTick(() => {
-        this.isWechatLogin = true;
-        this.loopWechatLogin();
-      });
     },
     async handleLogin() {
       if (!this.protocolChecked) {
@@ -172,6 +112,7 @@ export default {
       // 正常，跳转密码登录
       if (code === '10009') {
         this.$emit('enterPassword', phoneNum);
+        // this.$emit('enterAuthCode', phoneNum);
         return;
       }
 
@@ -182,27 +123,17 @@ export default {
       }
       this.$emit('enterAuthCode', phoneNum);
     },
-    loopAppLogin() {
-      this.appQrcodeTimer = setInterval(() => {
-        console.log('APP扫码登录');
-        // this.$emit('sendLogin');
-        // TODO 清除定时器
-      }, 500);
-    },
-    loopWechatLogin() {
-      this.wechatQrcodeTimer = setInterval(() => {
-        console.log('微信扫码登录');
-        // TODO 清除定时器
-      }, 500);
-    },
   },
 };
 </script>
 
 <style scoped lang="scss">
+.basic-login {
+  padding-top: 80px;
+}
 .logo {
-  width: 60px;
-  height: 60px;
+  width: 64px;
+  height: 64px;
   border-radius: 12px;
   background: $bg-IM-color;
   border: 1px solid $split-line-color;
@@ -213,26 +144,28 @@ export default {
 
   img {
     display: block;
-    width: 40px;
-    height: 40px;
+    width: 42px;
+    height: 42px;
   }
 }
 
 .title {
-  font-size: 30px;
+  height: 32px;
+  line-height: 32px;
+  font-size: 24px;
   color: $main-text-color;
   font-weight: bold;
-  margin-top: 20px;
+  margin-top: 24px;
 }
 
 .title-tips {
-  font-size: 14px;
+  font-size: 16px;
   color: $tips-text-color;
   margin-top: 8px;
 }
 
 .input-panel {
-  margin: 60px 0;
+  margin-top: 60px;
 
   .phone,
   .login-btn {
@@ -248,7 +181,7 @@ export default {
     color: $bg-white-color;
     background-color: #87a1cd;
     cursor: pointer;
-    margin-bottom: 60px;
+    margin-bottom: 16px;
 
     &.active {
       background: $primary-color;
@@ -257,7 +190,7 @@ export default {
 
   .phone {
     background-color: $bg-hover-grey-color;
-    margin-bottom: 20px;
+    margin-bottom: 16px;
 
     ::v-deep .el-input__inner {
       width: 100%;
@@ -267,69 +200,35 @@ export default {
       outline: none;
       background-color: transparent;
       border: none;
-      padding: 18px 26px;
+      padding: 18px 24px;
       box-sizing: border-box;
       color: $main-text-color;
 
       &::placeholder {
         color: $tips-text-color;
-        font-size: 18px;
       }
+    }
+
+    ::v-deep .el-form-item__error {
+      padding-top: 2px;
     }
   }
 
   .checkbox-row {
     color: $minor-text-color;
-    font-size: 14px;
-    margin-bottom: 22px;
+    font-size: 15px;
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
 
-    .text {
-      margin-left: 8px;
+    ::v-deep .el-checkbox__label {
+      padding-left: 8px;
     }
 
     .link {
       cursor: pointer;
       color: $primary-color;
     }
-
-    &:last-child {
-      margin-bottom: 0;
-    }
-  }
-}
-
-.wechat-checkbox-row {
-  color: $minor-text-color;
-  font-size: 14px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  .text {
-    margin-left: 8px;
-  }
-
-  .link {
-    cursor: pointer;
-    color: $primary-color;
-  }
-}
-
-.qrcode-wrap {
-  width: 235px;
-  height: 232px;
-
-  background-color: #333333;
-
-  &.app-qrcode {
-    margin: 88px auto 90px;
-  }
-
-  &.wechat-qrcode {
-    margin: 60px auto 90px;
   }
 }
 </style>
