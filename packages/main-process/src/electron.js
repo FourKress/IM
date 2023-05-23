@@ -35,6 +35,14 @@ async function createWindow() {
 
   global.mainWindow = win;
 
+  win.hookWindowMessage(278, () => {
+    win.setEnabled(false);
+    setTimeout(() => {
+      win.setEnabled(true);
+    }, 100);
+    return true;
+  });
+
   win.on('close', (event) => {
     const hasGlobalWindow = global.TRTCWindow;
     if (!!hasGlobalWindow) {

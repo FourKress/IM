@@ -284,7 +284,7 @@ export default {
 
   .phone {
     background: $bg-white-color;
-    margin-bottom: 16px;
+    margin-bottom: 20px;
 
     ::v-deep .el-input__inner {
       width: 100%;
@@ -302,10 +302,6 @@ export default {
         color: $tips-text-color;
         font-size: 18px;
       }
-    }
-
-    ::v-deep .el-form-item__error {
-      padding-top: 2px;
     }
   }
 

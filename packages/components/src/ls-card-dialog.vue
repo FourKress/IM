@@ -22,12 +22,10 @@ export default {
     visible(val) {
       if (val) {
         this.setClassName('no-drag');
-        document.body.appendChild(this.$el);
+        document.querySelector('#lanshu-app').appendChild(this.$el);
       } else {
         const cardDialogDom = document.querySelectorAll('.ls-card-dialog');
-        console.log(cardDialogDom.length);
         if (cardDialogDom.length === 1) {
-
           this.setClassName('drag');
         }
         this.handleRemoveDom();

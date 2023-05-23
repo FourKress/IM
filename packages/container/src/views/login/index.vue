@@ -107,7 +107,6 @@ export default {
   height: 600px;
   background-color: $bg-white-color;
   box-sizing: border-box;
-  border-radius: 20px;
   padding: 0 40px;
   user-select: none;
   overflow: hidden;

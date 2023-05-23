@@ -190,7 +190,7 @@ export default {
 
   .phone {
     background-color: $bg-hover-grey-color;
-    margin-bottom: 16px;
+    margin-bottom: 20px;
 
     ::v-deep .el-input__inner {
       width: 100%;
@@ -207,10 +207,6 @@ export default {
       &::placeholder {
         color: $tips-text-color;
       }
-    }
-
-    ::v-deep .el-form-item__error {
-      padding-top: 2px;
     }
   }
 
