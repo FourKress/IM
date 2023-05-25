@@ -182,7 +182,7 @@ export default {
     checkFileSize(file) {
       const formatSize = file.formatSize;
       const [first, second] = formatSize.split(' ');
-      return first > 150 && ![' B', 'KB'].includes(second);
+      return first > 150 && !['B', 'KB'].includes(second);
     },
   },
 };
