@@ -146,7 +146,6 @@ export default {
       margin-right: 10px;
       border-radius: 6px;
       overflow: hidden;
-      background-color: #333333;
 
       img {
         width: 100%;

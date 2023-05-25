@@ -116,8 +116,8 @@ export default {
     },
 
     handleChangeGroupMember(data) {
-      const { type, members, group } = data;
-      console.log(type, members, group);
+      const { type, members } = data;
+      console.log(type, members);
       this.defaultMembers = members;
       this.defaultGroup = this.actionWindow;
       this.groupMemberPanelType = type;

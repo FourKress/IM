@@ -156,7 +156,7 @@ export default {
       return this.$attrs.recordrtc;
     },
     placeholder() {
-      if (this.isGroup) {
+      if (this.isGroup ) {
         if (this.groupRole < 0) return '您不是该群成员！';
         if (this.noGroupAuth) return '群主已禁言';
       }

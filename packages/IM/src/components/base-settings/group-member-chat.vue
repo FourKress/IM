@@ -285,7 +285,7 @@ export default {
     this.selectList = [
       ...this.defaultMembers.map((d) => {
         // isDefault 默认勾选
-        d.isDefault = this.isDel ? false : true;
+        d.isDefault = true;
         return d;
       }),
     ];
@@ -303,11 +303,7 @@ export default {
       const handleMap = {
         [this.IM_GROUP_MEMBER_PANEL_TYPE.IS_DEL]: {
           func: this.handleDelGroupMember,
-          getList: () => {
-            return this.defaultMembers.filter((d) =>
-              this.selectList.some((s) => s.userId !== d.userId),
-            );
-          },
+          getList: () => this.selectList,
         },
         [this.IM_GROUP_MEMBER_PANEL_TYPE.IS_ADD]: {
           func: this.handleAddGroupMember,
@@ -343,6 +339,7 @@ export default {
       const members = realSelectList.map((d) =>
         d.toUser ? d.toUser : d.userId,
       );
+
       const res = await handleTarget.func(members);
       this.$message.success(`${this.groupTitle}成功`);
       this.$emit('confirm', res?.data);
@@ -444,8 +441,8 @@ export default {
       const isDefault = this.defaultMembers.some((c) => c[key] === item.toUser);
       return {
         ...item,
-        checked: isDefault ? true : false,
-        isDefault: isDefault && !this.isDel,
+        checked: isDefault,
+        isDefault: isDefault,
       };
     },
   },
@@ -692,7 +689,6 @@ export default {
                 margin-right: 10px;
                 border-radius: 6px;
                 overflow: hidden;
-                background-color: #333333;
 
                 img {
                   width: 100%;
@@ -753,7 +749,6 @@ export default {
               margin-right: 10px;
               border-radius: 6px;
               overflow: hidden;
-              background-color: #333333;
 
               img {
                 width: 100%;

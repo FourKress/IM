@@ -64,8 +64,6 @@ export default {
     border-radius: 6px;
     overflow: hidden;
 
-    background-color: #333;
-
     img {
       display: block;
       width: 100%;

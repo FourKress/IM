@@ -126,7 +126,7 @@ export default {
   },
   mixins: [FriendMixins],
   computed: {
-    ...mapGetters('IMStore', ['userInfo']),
+    ...mapGetters('IMStore', ['userInfo', 'refreshMembers']),
 
     session() {
       return this.$attrs.session;
@@ -136,6 +136,11 @@ export default {
     },
     isGroup() {
       return this.session?.toUserType === SESSION_USER_TYPE.IS_GROUP;
+    },
+  },
+  watch: {
+    refreshMembers() {
+      this.getGroupMemberList();
     },
   },
   mounted() {

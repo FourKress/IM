@@ -197,6 +197,16 @@ export const IMSDKInit = (appId) => {
       });
     },
   );
+
+  IMSDK.getMainProvider().setGroupMemberDeleteCallBack((groupId) => {
+    console.log('GroupMemberDeleteCallBack', groupId);
+    global.mainWindow.webContents.send('IMSDKListener', {
+      type: 'GroupMemberDeleteCallBack',
+      value: {
+        groupId,
+      },
+    });
+  });
 };
 
 export const IMSDKEvent = async (provider, event, data) => {

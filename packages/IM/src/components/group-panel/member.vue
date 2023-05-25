@@ -128,7 +128,7 @@ export default {
     changeMember(type) {
       this.$emit('changeGroupMember', {
         type,
-        members: this.members.filter((d) => d.userId !== this.userInfo.userId),
+        members: type === this.IM_GROUP_MEMBER_PANEL_TYPE.IS_ADD ? this.members.filter((d) => d.userId !== this.userInfo.userId) : [],
       });
     },
     memberClass(role) {

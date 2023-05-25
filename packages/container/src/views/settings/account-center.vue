@@ -241,8 +241,6 @@ export default {
     width: 160px;
     height: 160px;
     margin: 0 auto;
-
-    background-color: #333333;
   }
 
   &-footer {

@@ -167,8 +167,6 @@ export default {
     height: 160px;
     margin: 34px auto 0;
 
-    background: #333;
-
     .qrcode {
       display: block;
       width: 160px;

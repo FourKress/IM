@@ -135,7 +135,7 @@ export default {
       const matchArr = content.match(reg) || [];
       let linkArr = [];
       matchArr.forEach((d) => {
-        linkArr.push(...d.split('&nbsp;'));
+        linkArr.push(...(d.split(/&nbsp;|<br>|\n/)).filter(c => reg.test(c)));
       });
       return linkArr?.length ? linkArr : [];
     },
@@ -152,9 +152,9 @@ export default {
           .filter((d) => d && d !== ' ')
           .map((d) => {
             if (d === 'LINK') {
-              d = `&nbsp;<span class="link-jump link-jump_${this.msg.msgId}">${
+              d = `<span class="link-jump link-jump_${this.msg.msgId}">${
                 linkArr.splice(0, 1)[0]
-              }</span>&nbsp;`;
+              }</span>`;
             }
             return d;
           })

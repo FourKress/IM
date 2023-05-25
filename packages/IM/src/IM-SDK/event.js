@@ -29,7 +29,7 @@ const handlePromiseResult = async (fnc) => {
 };
 const handleIMSDKIPCResult = async (res) => {
   const { code } = res;
-  if (![0, 112113, 120].includes(code)) return Promise.reject(res);
+  if (![0, 112113, 120, 112].includes(code)) return Promise.reject(res);
   return Promise.resolve(res);
 };
 
@@ -168,6 +168,7 @@ export const IMGetGroupMemberList = async (groupId, nextSeq) => {
         totalMembers.push(...members);
         _nextSeq = currentNextSeq;
       } catch (e) {
+        _nextSeq = -1;
         reject(e);
       }
     }
