@@ -21,7 +21,7 @@
         class="card text"
         :class="classObject"
         v-if="msgType === CHECK_MSG_TYPE.IS_TEXT"
-        v-html="text"
+        v-html="msgText"
       ></div>
 
       <div class="menu-list">
@@ -153,13 +153,12 @@ import {
   MSG_FORMAT_MAP,
   CHECK_MSG_TYPE,
   getFileSize,
-  downloadFile,
   NETWORK_CALL_TYPE,
   SESSION_BUBBLE_MODEL,
+  lodash,
 } from '@lanshu/utils';
 import { LsIcon } from '@lanshu/components';
 import { renderProcess } from '@lanshu/render-process';
-import { showItemInFolder } from '@lanshu/render-process/src/renderProcess';
 
 export default {
   name: 'Msg-card',
@@ -202,9 +201,42 @@ export default {
     msgData() {
       return this.msg?.data || {};
     },
-
-    text() {
-      return this.msgData?.content;
+    linkArr() {
+      const content = this.msgData?.content;
+      if (!this.isText || !content) return [];
+      const reg = /http(s)?:\/\/\S+/g;
+      const matchArr = content.match(reg) || [];
+      let linkArr = [];
+      matchArr.forEach((d) => {
+        linkArr.push(...d.split('&nbsp;'));
+      });
+      return linkArr?.length ? linkArr : [];
+    },
+    msgText() {
+      const content = this.msgData?.content;
+      const linkArr = lodash.cloneDeep(this.linkArr);
+      let msgText = content;
+      if (linkArr.length) {
+        linkArr.forEach((d) => {
+          msgText = msgText.replace(d, `#_&_#LINK#_&_#`);
+        });
+        msgText = msgText
+          .split('#_&_#')
+          .filter((d) => d && d !== ' ')
+          .map((d) => {
+            if (d === 'LINK') {
+              d = `&nbsp;<span class="link-jump link-jump_${this.msg.msgId}">${
+                linkArr.splice(0, 1)[0]
+              }</span>&nbsp;`;
+            }
+            return d;
+          })
+          .join('');
+      }
+      return msgText;
+    },
+    isText() {
+      return this.msgType === this.CHECK_MSG_TYPE.IS_TEXT;
     },
     isImage() {
       return this.msgType === this.CHECK_MSG_TYPE.IS_IMAGE;
@@ -261,6 +293,18 @@ export default {
         );
 
         document.addEventListener('click', this.handleCloseContentMenu);
+      }
+
+      if (this.linkArr.length) {
+        const linKDomArr = [
+          ...document.querySelectorAll(`.link-jump_${this.msg.msgId}`),
+        ];
+        linKDomArr.forEach((d) => {
+          d.onclick = (e) => {
+            const url = e.target.innerText;
+            renderProcess.openUrl(url)
+          }
+        });
       }
     });
   },
@@ -402,6 +446,10 @@ export default {
       display: flex;
       align-items: center;
       cursor: pointer;
+
+      ::v-deep .link-jump {
+        color: $primary-color;
+      }
 
       .trtc-icon {
         &.self {

@@ -28,15 +28,9 @@ const startNotification = lodash.debounce(async function (message) {
     NOTIFICATION_BODY = `${message.fromNickname}: `;
   }
 
-  // 文本类型的消息直接展示
-  if (MSG_FORMAT_MAP[message.msgType]?.type === CHECK_MSG_TYPE.IS_TEXT) {
-    NOTIFICATION_BODY += message?.data?.content.split('<br>')[0];
-  } else {
-    // 其他类型消息动态处理
-    NOTIFICATION_BODY += `${MSG_FORMAT_MAP[message.msgType]?.label(
-      message?.data,
-    )}`;
-  }
+  NOTIFICATION_BODY += `${MSG_FORMAT_MAP[message.msgType]?.label(
+    message?.data,
+  )}`;
 
   new Notification(NOTIFICATION_TITLE, {
     body: NOTIFICATION_BODY,
@@ -180,7 +174,13 @@ export const IMSDKCallBackEvents = {
     const { userId, nickname, avatar } = info;
     const mainSessionWindow =
       storeInstance.getters['IMStore/mainSessionWindow'];
-    if (mainSessionWindow?.toUser && userId) {
+    console.log(mainSessionWindow);
+
+    if (
+      mainSessionWindow?.toUser &&
+      userId &&
+      mainSessionWindow?.toUser === userId
+    ) {
       storeInstance.commit('IMStore/setMainSessionWindow', {
         ...mainSessionWindow,
         nickname,

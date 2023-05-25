@@ -117,9 +117,9 @@ export default {
         data: { code, msg },
       } = await Apis.accountCheckStatus({
         username: phoneNum,
+      }).finally(() => {
+        this.isAwait = false;
       });
-
-      this.isAwait = false;
 
       // 正常，跳转密码登录
       if (code === '10009') {

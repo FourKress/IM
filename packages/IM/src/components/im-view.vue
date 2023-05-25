@@ -13,7 +13,10 @@
         v-for="(item, index) in messageList"
         :key="`${index}_${item.msgId}`"
       >
-        <div class="tips-row">
+        <div class="tips-row" :style="{marginTop: !checkTimesInterval(
+                item.timestamp,
+                messageList[Math.max(index - 1, 0)].timestamp,
+              ) && !BASE_MSG_TYPES.includes(item.msgType) ? '8px' : '0' }">
           <TimesTransform
             v-if="
               checkTimesInterval(
@@ -23,7 +26,7 @@
             "
             :timestamp="item.timestamp"
           />
-          <span v-if="!BASE_MSG_TYPES.includes(item.msgType)">
+          <span class="tips-tag" v-if="!BASE_MSG_TYPES.includes(item.msgType)">
             {{ MSG_FORMAT_MAP[item.msgType]?.label(item.data) }}
           </span>
         </div>
@@ -242,17 +245,17 @@ export default {
       this.getMyGroupMemberInfo();
     },
     groupUserAttributeChanged(data) {
-      const {groupId, nickname, userId, avatar} = data;
+      const { groupId, nickname, userId, avatar } = data;
       if (this.session.toUser === groupId) {
-        this.messageList = this.messageList.map(d => {
+        this.messageList = this.messageList.map((d) => {
           if (d.fromUser === userId) {
             d.fromNickname = nickname;
             d.fromAvatar = avatar;
           }
           return {
             ...d,
-          }
-        })
+          };
+        });
       }
     },
   },
@@ -272,7 +275,9 @@ export default {
     },
   },
   async mounted() {
-    this.bubbleModel = await renderProcess.getStore('SESSION_BUBBLE_MODEL') || SESSION_BUBBLE_MODEL.IS_BETWEEN;
+    this.bubbleModel =
+      (await renderProcess.getStore('SESSION_BUBBLE_MODEL')) ||
+      SESSION_BUBBLE_MODEL.IS_BETWEEN;
     this.throttleGetMessageList = lodash.throttle(this.getMessageList, 200, {
       leading: true,
       trailing: false,
@@ -343,7 +348,8 @@ export default {
           this.messageList.unshift(...msgs);
           this.$nextTick(() => {
             const currentScrollHeight = this.$refs.messagePanel.scrollHeight;
-            this.$refs.messagePanel.scrollTop = currentScrollHeight - this.preScrollHeight + this.scrollTop;
+            this.$refs.messagePanel.scrollTop =
+              currentScrollHeight - this.preScrollHeight + this.scrollTop;
           });
         } else {
           this.messageList = msgs;
@@ -355,21 +361,25 @@ export default {
       });
     },
 
-    handleScroll: lodash.throttle(function (event) {
-      if (!this.hasNext) return;
-      const scrollTop = event.target.scrollTop;
-      if (
-        scrollTop <= 500 &&
-        (scrollTop <= this.scrollTop || this.scrollTop === 0)
-      ) {
-        this.preScrollHeight = this.$refs.messagePanel.scrollHeight;
-        this.scrollTop = scrollTop;
-        this.throttleGetMessageList(true);
-      }
-    }, 200, {
-      leading: true,
-      trailing: false,
-    }),
+    handleScroll: lodash.throttle(
+      function (event) {
+        if (!this.hasNext) return;
+        const scrollTop = event.target.scrollTop;
+        if (
+          scrollTop <= 500 &&
+          (scrollTop <= this.scrollTop || this.scrollTop === 0)
+        ) {
+          this.preScrollHeight = this.$refs.messagePanel.scrollHeight;
+          this.scrollTop = scrollTop;
+          this.throttleGetMessageList(true);
+        }
+      },
+      200,
+      {
+        leading: true,
+        trailing: false,
+      },
+    ),
 
     async handleFriend(item, event) {
       console.log(item);
@@ -378,9 +388,9 @@ export default {
       const { fromUser } = item;
       const friendInfo = (await IMGetOneFriend(fromUser))?.data || {};
       if (friendInfo?.userId) {
-        this.friendPanelConfig = { isDetails: true }
+        this.friendPanelConfig = { isDetails: true };
       } else {
-        this.friendPanelConfig = { isApply: true }
+        this.friendPanelConfig = { isApply: true };
       }
 
       const userProfile = (await IMGetUserProfile(fromUser))?.data || {};
@@ -469,8 +479,16 @@ export default {
         line-height: 26px;
         display: flex;
         flex-direction: column;
+        align-items: center;
+        justify-content: center;
 
         background-color: transparent;
+
+        .tips-tag {
+          background: $split-line-color;
+          padding: 0 18px;
+          border-radius: 13px;
+        }
       }
 
       &:first-child {

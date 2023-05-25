@@ -2,7 +2,14 @@
   <div class="add-friend">
     <div class="search">
       <div class="input-panel">
-        <el-form :model="form" :rules="rules" ref="form" label-width="0px">
+        <el-form
+          :model="form"
+          :rules="rules"
+          ref="form"
+          label-width="0px"
+          @submit.native.prevent
+          @keyup.enter.native="handleSearch"
+        >
           <el-form-item label="" prop="phoneNum">
             <el-input
               v-model="form.phoneNum"
@@ -125,15 +132,15 @@ export default {
     handleSearch() {
       if (!this.validPhoneNum) return;
       this.isAwait = true;
-      IMSearchUserProfileOfPhone(this.replacePhoneNum(this.form.phoneNum)).then(
-        ({ data }) => {
+      IMSearchUserProfileOfPhone(this.replacePhoneNum(this.form.phoneNum))
+        .then(({ data }) => {
           this.isAwait = false;
           this.friendList = data;
           this.isEmpty = !this.friendList.length && this.validPhoneNum;
-        },
-      ).catch(() => {
-        this.isAwait = false;
-      });
+        })
+        .catch(() => {
+          this.isAwait = false;
+        });
     },
     handleOpenFriendDialog(friendInfo, event) {
       this.friendInfo = friendInfo;

@@ -14,6 +14,7 @@ export const CHECK_MSG_TYPE = {
   IS_SEND_BUSINESS_CARD: 'BusinessCard',
   IS_CREATE_GROUP: 'createGroup',
   IS_TRTC: 'TRTC',
+  IS_NOT_FRIEND: 'notFriend',
 };
 
 const formatMsgType = (val, isBaseType = true) => {
@@ -31,7 +32,9 @@ export const BASE_MSG_TYPES = [1, 2, 3, 4, 5, 6, 671, 672, 673, 674];
 
 export const MSG_FORMAT_MAP = {
   1: {
-    label: () => formatMsgType('文本'),
+    label: (data) => {
+      return data?.content ? data.content.split('<br>')[0] : '';
+    },
     type: CHECK_MSG_TYPE.IS_TEXT,
   },
   2: {
@@ -82,6 +85,10 @@ export const MSG_FORMAT_MAP = {
   674: {
     label: (data) => getNetworkCallLabel(data),
     type: CHECK_MSG_TYPE.IS_TRTC,
+  },
+  1000: {
+    label: (data) => data.content,
+    type: CHECK_MSG_TYPE.IS_NOT_FRIEND,
   },
 };
 

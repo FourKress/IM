@@ -305,6 +305,7 @@ export default {
           this.$refs.msgInput.focus();
         }
         this.message = '';
+        this.messageText = ''
       });
     },
 
@@ -660,6 +661,7 @@ export default {
     document.removeEventListener('click', this.handleGlobalClick);
     document.onkeydown = null;
     const sessId = this.session.sessId;
+    console.log('%%%%%%%%%%%%' ,this.message, this.messageText)
     const historyTempMsgOBJ = await window.$lanshuStore.getItem('tempMsgOBJ');
     let tempMsg = '';
     if (this.messageText) {

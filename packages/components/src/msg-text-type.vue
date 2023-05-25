@@ -1,15 +1,15 @@
 <template>
   <span>
-    <span class="temp-msg" v-if="tempMsg.preview">
+    <span class="temp-msg" v-if="tempMsgText">
       <span class="label">[草稿]</span>
-      <span>{{ tempMsg.preview }}</span>
+      <span>{{ tempMsgText }}</span>
     </span>
     <span v-else>{{ messageTextType }}</span>
   </span>
 </template>
 
 <script>
-import { MSG_FORMAT_MAP, CHECK_MSG_TYPE } from '@lanshu/utils';
+import { MSG_FORMAT_MAP } from '@lanshu/utils';
 
 export default {
   name: 'Msg-text-type',
@@ -23,7 +23,7 @@ export default {
       default: () => {
         return {
           preview: '',
-        }
+        };
       },
     },
   },
@@ -33,13 +33,25 @@ export default {
       if (!msgType && !data) return '暂无消息';
       const msgTypes = Object.keys(MSG_FORMAT_MAP);
       if (!msgTypes.includes(String(msgType))) return '未知消息';
-      // 文本类型的消息直接展示
-      if (MSG_FORMAT_MAP[msgType]?.type === CHECK_MSG_TYPE.IS_TEXT) {
-        return data.content.split('<br>')[0];
-      }
-      // 其他类型消息动态处理
       return `${MSG_FORMAT_MAP[msgType]?.label(data)}`;
     },
+  },
+  watch: {
+    tempMsg: {
+      deep: true,
+      handler(val) {
+        const preview = val?.preview;
+        const timer = preview ? 100 : 1;
+        setTimeout(() => {
+          this.tempMsgText = this.tempMsg?.preview;
+        }, timer);
+      },
+    },
+  },
+  data() {
+    return {
+      tempMsgText: '',
+    };
   },
 };
 </script>

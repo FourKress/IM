@@ -1,5 +1,5 @@
 <template>
-  <div id="client-sidebar">
+  <div id="client-sidebar" v-if="selfSessionList.length">
     <div class="sidebar-container">
       <div class="top">
         <div class="left">
@@ -200,7 +200,6 @@ export default {
       }, 300)
     },
     async getHistoryTempMsg() {
-      console.log('##############')
       // 获取切换时保存的临时类容
       this.historyTempMsgOBJ = await window.$lanshuStore.getItem('tempMsgOBJ') ;
     }
