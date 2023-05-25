@@ -198,5 +198,6 @@ export const IMSDKCallBackEvents = {
 
   GroupMemberDeleteCallBack(ctx, info) {
     console.log(info);
+    storeInstance.commit('IMStore/setGroupMemberDeleteCallBack', info);
   },
 };

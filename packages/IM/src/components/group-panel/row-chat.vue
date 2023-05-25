@@ -1,12 +1,12 @@
 <template>
-  <div class="item">
+  <div class="item" @click="handleClick">
     <div class="info" v-if="title || label">
       <span class="title">{{ title }}</span>
-      <span class="label" v-if="label" @click="handleClick">{{ label }}</span>
+      <span class="label" v-if="label">{{ label }}</span>
       <slot></slot>
     </div>
     <slot name="right-btn" v-if="showRightBtn || $slots['right-btn']">
-      <i class="el-icon-arrow-right" @click="handleClick"></i>
+      <i class="el-icon-arrow-right"></i>
     </slot>
   </div>
 </template>

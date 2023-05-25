@@ -126,9 +126,18 @@ export default {
       });
     },
     changeMember(type) {
-      this.$emit('changeGroupMember', {
+      const members = this.members.filter(
+        (d) => d.userId !== this.userInfo.userId,
+      );
+      const data = {
         type,
-        members: type === this.IM_GROUP_MEMBER_PANEL_TYPE.IS_ADD ? this.members.filter((d) => d.userId !== this.userInfo.userId) : [],
+        defaultMembers: members,
+      };
+      if (type === this.IM_GROUP_MEMBER_PANEL_TYPE.IS_DEL) {
+        data.members = members;
+      }
+      this.$emit('changeGroupMember', {
+        ...data,
       });
     },
     memberClass(role) {

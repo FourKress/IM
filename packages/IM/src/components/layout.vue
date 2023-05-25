@@ -1,7 +1,7 @@
 <template>
   <div id="client-im">
     <div class="empty-bg" v-if="!mainSessionWindow.sessId">
-      <img :src="LsAssets.emptyData" alt="">
+      <img :src="LsAssets.emptyData" alt="" />
     </div>
 
     <ImView
@@ -32,6 +32,7 @@
         :panelType="groupMemberPanelType"
         @close="handleGroupClose"
         @confirm="handleCroupConfirm"
+        :rawMembers="rawMembers"
         :defaultMembers="defaultMembers"
         :defaultGroup="defaultGroup"
       ></GroupMemberChat>
@@ -47,7 +48,11 @@ import Settings from './base-settings/settings';
 import GroupMemberChat from './base-settings/group-member-chat';
 import GroupPanel from './group-panel/index';
 import { LsCardDialog, LsAssets } from '@lanshu/components';
-import { IM_HEADER_MORE_BTN_KEY, IM_GROUP_MEMBER_PANEL_TYPE } from '@lanshu/utils';
+import {
+  IM_HEADER_MORE_BTN_KEY,
+  IM_GROUP_MEMBER_PANEL_TYPE,
+  SESSION_USER_TYPE,
+} from '@lanshu/utils';
 
 export default {
   name: 'MainIM',
@@ -64,6 +69,7 @@ export default {
       recordrtc: null,
       IM_HEADER_MORE_BTN_KEY,
       IM_GROUP_MEMBER_PANEL_TYPE,
+      SESSION_USER_TYPE,
       isMember: false,
       visibleSettings: false,
       visibleGroupMember: false,
@@ -71,10 +77,22 @@ export default {
       groupMemberPanelType: IM_GROUP_MEMBER_PANEL_TYPE.IS_CREATE,
       defaultMembers: [],
       defaultGroup: null,
+      rawMembers: [],
     };
   },
   computed: {
-    ...mapGetters('IMStore', ['mainSessionWindow', 'sessionWindowList', 'actionWindow']),
+    ...mapGetters('IMStore', [
+      'mainSessionWindow',
+      'sessionWindowList',
+      'actionWindow',
+      'sessionList',
+    ]),
+
+    sessionMembers() {
+      return this.sessionList.filter(
+        (d) => d.toUserType === SESSION_USER_TYPE.IS_BASIC,
+      );
+    },
   },
   watch: {
     mainSessionWindow: {
@@ -116,9 +134,10 @@ export default {
     },
 
     handleChangeGroupMember(data) {
-      const { type, members } = data;
-      console.log(type, members);
-      this.defaultMembers = members;
+      const { type, defaultMembers, members = this.sessionMembers } = data;
+      console.log(type, defaultMembers, members);
+      this.defaultMembers = defaultMembers;
+      this.rawMembers = members;
       this.defaultGroup = this.actionWindow;
       this.groupMemberPanelType = type;
       this.visibleGroupMember = true;
@@ -139,8 +158,7 @@ export default {
       this.defaultGroup = null;
     },
     handleCroupConfirm(session) {
-      console.log(session)
-      if(session) {
+      if (session) {
         this.setMainSessionWindow(session);
       }
       this.handleGroupClose();

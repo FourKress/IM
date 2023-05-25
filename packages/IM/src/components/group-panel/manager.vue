@@ -193,7 +193,7 @@ import {
   IMGetAllAdminList,
   IMGetGroupRoleManagerList,
   IMSetGroupRoleManagerList,
-  IMSetGroupMemberAdminRole
+  IMGetGroupMemberList,
 } from '../../IM-SDK';
 import RowChat from './row-chat';
 import DrawerMixins from './drawer-mixins';
@@ -234,10 +234,11 @@ export default {
 
       groupRoleManager: {},
       groupAdminList: [],
+      members: [],
     };
   },
   computed: {
-    ...mapGetters('IMStore', ['actionWindow', 'refreshGroupRoleManager']),
+    ...mapGetters('IMStore', ['actionWindow', 'refreshGroupRoleManager', 'userInfo']),
 
     isDisabled() {
       return ![GROUP_ROLE_TYPE.IS_OWNER, GROUP_ROLE_TYPE.IS_MANAGE].includes(
@@ -248,7 +249,7 @@ export default {
   watch: {
     refreshGroupRoleManager() {
       this.initData();
-    }
+    },
   },
   mounted() {
     this.initData();
@@ -258,7 +259,18 @@ export default {
 
     initData() {
       this.getAllAdminList();
+      this.getGroupMemberList();
       this.getGroupRoleManagerList();
+    },
+
+    getGroupMemberList() {
+      // nextSeq默认从0开始
+      IMGetGroupMemberList(this.actionWindow.toUser, 0).then((res) => {
+        console.log(res, 'getGroupMemberList');
+        const { nextSeq, members = [] } = res;
+        this.nextSeq = nextSeq;
+        this.members = members.filter(d => d.userId !== this.userInfo.userId);
+      });
     },
 
     getAllAdminList() {
@@ -312,7 +324,7 @@ export default {
     },
 
     changeMember(type) {
-      this.$emit('changeGroupMember', { type, members: type === IM_GROUP_MEMBER_PANEL_TYPE.IS_ADD_ADMIN ? this.groupAdminList : [] });
+      this.$emit('changeGroupMember', { type, defaultMembers: this.groupAdminList, members: this.members });
     },
   },
 };
@@ -351,8 +363,7 @@ export default {
       }
 
       .item {
-
-        &:nth-child(6n+6) {
+        &:nth-child(6n + 6) {
           margin-right: 0;
         }
 

@@ -35,6 +35,8 @@ const state = {
   userNicknameAvatarUpdate: '',
   // 群成员在群内的昵称修改通知
   groupUserAttributeChanged: '',
+  // 被提出或退出群聊
+  groupMemberDeleteCallBack: '',
 };
 
 const getters = {
@@ -56,6 +58,7 @@ const getters = {
   refreshGroupRoleManager: (state) => state.refreshGroupRoleManager,
   userNicknameAvatarUpdate: (state) => state.userNicknameAvatarUpdate,
   groupUserAttributeChanged: (state) => state.groupUserAttributeChanged,
+  groupMemberDeleteCallBack: (state) => state.groupMemberDeleteCallBack,
 };
 
 const mutations = {
@@ -126,6 +129,9 @@ const mutations = {
   setGroupUserAttributeChanged(data, value) {
     data.groupUserAttributeChanged = value;
   },
+  setGroupMemberDeleteCallBack(data, value) {
+    data.groupMemberDeleteCallBack = value;
+  },
 };
 
 const actions = {
@@ -185,6 +191,9 @@ const actions = {
   },
   setGroupUserAttributeChanged({ commit }, value) {
     commit('setGroupUserAttributeChanged', value);
+  },
+  setGroupMemberDeleteCallBack({ commit }, value) {
+    commit('setGroupMemberDeleteCallBack', value);
   },
 };
 

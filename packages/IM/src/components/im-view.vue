@@ -258,6 +258,12 @@ export default {
         });
       }
     },
+    groupMemberDeleteCallBack(data) {
+      const { groupId } = data;
+      if (groupId === this.session.toUser) {
+        this.getMyGroupMemberInfo();
+      }
+    }
   },
   computed: {
     ...mapGetters('IMStore', [
@@ -266,6 +272,7 @@ export default {
       'refreshMsg',
       'refreshGroupRoleManager',
       'groupUserAttributeChanged',
+      'groupMemberDeleteCallBack',
     ]),
     toAvatar() {
       return this.session.avatar;

@@ -17,7 +17,9 @@
               type="text"
               clearable
               v-model="staffName"
-              :placeholder="`查找${isDelAdmin || isAddAdmin ? '管理员' : '联系人'}`"
+              :placeholder="`查找${
+                isDelAdmin || isAddAdmin ? '管理员' : '联系人'
+              }`"
             />
           </div>
         </div>
@@ -152,7 +154,11 @@
           }"
         >
           <span class="tips">
-            <span>已选{{`${isDelAdmin || isAddAdmin ? '管理员' : '联系人'}`}}：{{ selectList.length }}</span>
+            <span>
+              已选{{ `${isDelAdmin || isAddAdmin ? '管理员' : '联系人'}` }}：{{
+                selectList.length
+              }}
+            </span>
             <span v-if="panelType !== IM_GROUP_MEMBER_PANEL_TYPE.IS_DEL">
               /500
             </span>
@@ -199,9 +205,12 @@
 
 <script>
 import { LsIcon } from '@lanshu/components';
-import { mapGetters, mapActions } from 'vuex';
-import _ from 'lodash';
-import { IM_GROUP_MEMBER_PANEL_TYPE, AddressBookMixins } from '@lanshu/utils';
+import { mapActions } from 'vuex';
+import {
+  IM_GROUP_MEMBER_PANEL_TYPE,
+  AddressBookMixins,
+  lodash,
+} from '@lanshu/utils';
 import {
   IMAdminDelGroupMembers,
   IMCreateGroup,
@@ -221,6 +230,10 @@ export default {
       default: IM_GROUP_MEMBER_PANEL_TYPE.IS_CREATE,
     },
     defaultMembers: {
+      type: Array,
+      default: () => [],
+    },
+    rawMembers: {
       type: Array,
       default: () => [],
     },
@@ -245,7 +258,6 @@ export default {
     };
   },
   computed: {
-    ...mapGetters('IMStore', ['sessionList']),
     groupTitle() {
       if (this.isDel) return '删除群成员';
       if (this.isAdd) return '添加群成员';
@@ -270,25 +282,27 @@ export default {
     },
   },
   mounted() {
-    this.selfSessionList = _.cloneDeep(this.sessionList)
-      .filter((d) => d.toUserType === 0)
-      .map((d) => {
-        return this.getCheckedStatus(d);
-      });
+    this.selfSessionList = lodash.cloneDeep(this.rawMembers).map((d) => {
+      return this.getCheckedStatus(d);
+    });
 
     this.minScrollTop = 370;
     this.maxScrollTop = 440;
 
     if (!this.isCreate) {
       this.groupName = this.defaultGroup.nickname;
+
+      if (this.defaultMembers.length) {
+        if (this.isAddAdmin || this.isAdd) {
+          this.selectList = [
+            ...this.defaultMembers.map((d) => {
+              d.isDefault = true;
+              return d;
+            }),
+          ];
+        }
+      }
     }
-    this.selectList = [
-      ...this.defaultMembers.map((d) => {
-        // isDefault 默认勾选
-        d.isDefault = true;
-        return d;
-      }),
-    ];
   },
   methods: {
     ...mapActions('IMStore', [
@@ -339,6 +353,7 @@ export default {
       const members = realSelectList.map((d) =>
         d.toUser ? d.toUser : d.userId,
       );
+      console.log(members, realSelectList.map(d => d.nickname));
 
       const res = await handleTarget.func(members);
       this.$message.success(`${this.groupTitle}成功`);
@@ -436,13 +451,12 @@ export default {
 
     getCheckedStatus(item) {
       const key = this.isCreate ? 'toUser' : 'userId';
-      console.log(key, item.toUser);
-      // isDefault 默认勾选
-      const isDefault = this.defaultMembers.some((c) => c[key] === item.toUser);
+      const isDefault = this.defaultMembers.some((c) => c[key] === item[key]);
+      const flag = (this.isAdd || this.isAddAdmin) ? isDefault : false;
       return {
         ...item,
-        checked: isDefault,
-        isDefault: isDefault,
+        checked: flag,
+        isDefault: flag,
       };
     },
   },
