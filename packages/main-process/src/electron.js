@@ -21,6 +21,7 @@ async function createWindow() {
     ...defaultWindowConfig,
     width: 460,
     height: 620,
+    show: false,
   });
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {

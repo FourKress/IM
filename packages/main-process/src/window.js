@@ -71,7 +71,6 @@ export const changeWindow = (type, win) => {
 export const defaultWindowConfig = {
   // TODO 生产环境开启
   // devTools: false,
-  show: false,
   frame: false,
   hasShadow: false,
   transparent: true,
