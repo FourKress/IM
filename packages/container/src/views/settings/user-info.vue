@@ -49,7 +49,6 @@ import { IMSetUserProfile, IMGetUserProfile } from '@lanshu/im';
 import { Apis, getToken, TOKEN_TYPE } from '@lanshu/utils';
 import Card from './card';
 import InfoBlock from './info-block';
-import { renderProcess } from '@lanshu/render-process';
 
 export default {
   name: 'User-Info',
@@ -62,6 +61,12 @@ export default {
     ...mapGetters('IMStore', ['userInfo', 'userProfile']),
   },
   data() {
+    const expireTimeOption = {
+      disabledDate(time) {
+        return time.getTime() > Date.now();  //如果没有后面的-8.64e7就是不可以选择今天的
+      }
+    };
+
     return {
       infos: [
         {
@@ -118,6 +123,7 @@ export default {
                 clearable
                 v-model={target.value}
                 onChange={(val) => this.handleBirthdayChange(val)}
+                picker-options={expireTimeOption}
                 type="date"
                 placeholder="请选择生日"
                 format="yyyy/MM/dd"

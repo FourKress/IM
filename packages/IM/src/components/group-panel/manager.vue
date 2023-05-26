@@ -238,7 +238,11 @@ export default {
     };
   },
   computed: {
-    ...mapGetters('IMStore', ['actionWindow', 'refreshGroupRoleManager', 'userInfo']),
+    ...mapGetters('IMStore', [
+      'actionWindow',
+      'refreshGroupRoleManager',
+      'userInfo',
+    ]),
 
     isDisabled() {
       return ![GROUP_ROLE_TYPE.IS_OWNER, GROUP_ROLE_TYPE.IS_MANAGE].includes(
@@ -269,7 +273,14 @@ export default {
         console.log(res, 'getGroupMemberList');
         const { nextSeq, members = [] } = res;
         this.nextSeq = nextSeq;
-        this.members = members.filter(d => d.userId !== this.userInfo.userId);
+        this.members = members
+          .filter((d) => d.userId !== this.userInfo.userId)
+          .map((d) => {
+            return {
+              ...d,
+              nickname: d.alias || d.nickname,
+            };
+          });
       });
     },
 
@@ -324,7 +335,11 @@ export default {
     },
 
     changeMember(type) {
-      this.$emit('changeGroupMember', { type, defaultMembers: this.groupAdminList, members: this.members });
+      this.$emit('changeGroupMember', {
+        type,
+        defaultMembers: this.groupAdminList,
+        members: this.members,
+      });
     },
   },
 };

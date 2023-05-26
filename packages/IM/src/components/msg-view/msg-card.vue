@@ -470,6 +470,7 @@ export default {
       cursor: pointer;
       background: $bg-white-color;
       position: relative;
+      border: 1px solid $split-line-color;
 
       &:before {
         content: '图片加载中...';

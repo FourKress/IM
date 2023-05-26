@@ -263,7 +263,20 @@ export default {
       if (groupId === this.session.toUser) {
         this.getMyGroupMemberInfo();
       }
-    }
+    },
+
+    userNicknameAvatarUpdate(data) {
+      const { nickname, userId, avatar } = data;
+      this.messageList = this.messageList.map((d) => {
+        if (d.fromUser === userId) {
+          d.fromNickname = nickname;
+          d.fromAvatar = avatar;
+        }
+        return {
+          ...d,
+        };
+      });
+    },
   },
   computed: {
     ...mapGetters('IMStore', [
@@ -271,6 +284,7 @@ export default {
       'currentMsg',
       'refreshMsg',
       'refreshGroupRoleManager',
+      'userNicknameAvatarUpdate',
       'groupUserAttributeChanged',
       'groupMemberDeleteCallBack',
     ]),

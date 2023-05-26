@@ -7,7 +7,7 @@
     ></div>
 
     <div
-      class="wrap"
+      class="wrap img"
       style="cursor: pointer"
       v-if="isImage"
       :style="{ width: `${size.width}px`, height: `${size.height}px` }"
@@ -295,6 +295,10 @@ export default {
     max-width: 210px;
     margin-top: 6px;
     border-radius: 6px;
+
+    &.img {
+      border: 1px solid $split-line-color;
+    }
 
     img {
       display: block;

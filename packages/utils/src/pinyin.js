@@ -2,12 +2,12 @@ import pinyin from 'pinyin';
 
 export const sortedPY = (array) => {
   return array.sort((a, b) => {
-    const aPy = pinyin(a.nickname, { style: pinyin.STYLE_FIRST_LETTER }).join(
-      '',
-    );
-    const bPy = pinyin(b.nickname, { style: pinyin.STYLE_FIRST_LETTER }).join(
-      '',
-    );
+    const aPy = pinyin(a.remark ? a.remark : a.nickname, {
+      style: pinyin.STYLE_FIRST_LETTER,
+    }).join('');
+    const bPy = pinyin(b.remark ? b.remark : b.nickname, {
+      style: pinyin.STYLE_FIRST_LETTER,
+    }).join('');
     return aPy.localeCompare(bPy);
   });
 };

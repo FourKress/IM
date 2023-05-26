@@ -6,6 +6,27 @@
   "description": "IM、政务通用",
   "glyphs": [
     {
+      "icon_id": "35710151",
+      "name": "icon_xiaoxi_lan",
+      "font_class": "icon_xiaoxi_lan",
+      "unicode": "e739",
+      "unicode_decimal": 59193
+    },
+    {
+      "icon_id": "35708294",
+      "name": "icon_shipin",
+      "font_class": "icon_shipin1",
+      "unicode": "e738",
+      "unicode_decimal": 59192
+    },
+    {
+      "icon_id": "35704193",
+      "name": "icon_guanlizuzhi",
+      "font_class": "icon_guanlizuzhi",
+      "unicode": "e737",
+      "unicode_decimal": 59191
+    },
+    {
       "icon_id": "35676798",
       "name": "icon_down",
       "font_class": "icon_down",
@@ -606,13 +627,6 @@
       "font_class": "a-icon_wblxr2x",
       "unicode": "e6eb",
       "unicode_decimal": 59115
-    },
-    {
-      "icon_id": "34073670",
-      "name": "icon_Video@2x",
-      "font_class": "a-icon_Video2x",
-      "unicode": "e6ec",
-      "unicode_decimal": 59116
     },
     {
       "icon_id": "34073671",

@@ -55,7 +55,53 @@
         </el-dropdown>
       </div>
     </div>
+
     <div class="wrap">
+
+      <div class="btn-list" v-if="panelConfig.isPass">
+        <el-button
+          class="action-btn left"
+          @click="handleSendMsg"
+          :loading="isMsgAwait"
+        >
+          <LsIcon
+            render-svg
+            width="20"
+            height="20"
+            icon="ls-icon-icon_xiaoxi_lan"
+          ></LsIcon>
+          <span class="btn-label">消息</span>
+        </el-button>
+
+        <el-button
+          class="action-btn"
+          @click="handleSendAudio"
+          :loading="isAudioAwait"
+        >
+          <LsIcon
+            render-svg
+            width="20"
+            height="20"
+            icon="ls-icon-a-icon_yuyin2x"
+          ></LsIcon>
+          <span class="btn-label">语音</span>
+        </el-button>
+
+        <el-button
+          class="action-btn"
+          @click="handleSendVideo"
+          :loading="isVideoAwait"
+        >
+          <LsIcon
+            render-svg
+            width="20"
+            height="20"
+            icon="ls-icon-icon_shipin1"
+          ></LsIcon>
+          <span class="btn-label">视频</span>
+        </el-button>
+      </div>
+
       <div class="row">
         <span class="label sign-label">个性签名</span>
         <div class="input">
@@ -136,31 +182,6 @@
           <span class="link" @click="handleResetApply">好友申请</span>
         </p>
       </template>
-      <div class="btn-list" v-if="panelConfig.isPass">
-        <el-button
-          class="action-btn left"
-          @click="handleSendMsg"
-          :loading="isMsgAwait"
-        >
-          发信息
-        </el-button>
-
-        <el-button
-          class="action-btn"
-          @click="handleSendVideo"
-          :loading="isVideoAwait"
-        >
-          视频
-        </el-button>
-
-        <el-button
-          class="action-btn"
-          @click="handleSendAudio"
-          :loading="isAudioAwait"
-        >
-          语音
-        </el-button>
-      </div>
     </div>
   </div>
 </template>
@@ -286,10 +307,16 @@ export default {
     handleCommand(command) {
       console.log(command);
       if (command === this.IS_DELETE) {
-        IMDelFriendOneWay(this.friendInfo.userId).then(() => {
-          this.$message.success('好友删除成功');
-          this.$emit('update');
-        });
+        this.$Lconfirm({
+          title: '提示',
+          content: '你确定要删除该好友吗？',
+        }).then(() => {
+          IMDelFriendOneWay(this.friendInfo.userId).then(() => {
+            this.$message.success('好友删除成功');
+            this.$emit('update');
+          });
+        }).catch(() => {})
+
       }
     },
     async handleSetRemarkOrDesc() {
@@ -357,10 +384,10 @@ export default {
           font-size: 18px;
           font-weight: bold;
           color: $main-text-color;
-          margin-bottom: 10px;
         }
 
         .tips {
+          margin-top: 10px;
         }
       }
     }
@@ -487,31 +514,36 @@ export default {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin: 147px 0 34px 0;
+      margin: 0px 0 34px 0;
 
       .action-btn {
         width: 100px;
-        border: 1px solid $main-text-color;
+        background: $bg-IM-color;
         height: 48px;
-        line-height: 48px;
         border-radius: 6px;
         cursor: pointer;
         font-size: 16px;
         color: $main-text-color;
-        text-align: center;
         box-sizing: border-box;
-
         padding: 0;
-        display: block;
+        border: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
 
-        &:hover {
-          background: $bg-white-color;
+        ::v-deep > span {
+          width: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+
+          .btn-label {
+            padding-left: 6px;
+          }
         }
 
         &.left {
-          background: $primary-color;
-          border-color: $primary-color;
-          color: $bg-white-color;
+          color: $primary-color;
         }
       }
     }

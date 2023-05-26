@@ -52,13 +52,18 @@ export const setCacheDir = (dirPath) => {
 };
 
 export const getCacheFilePath = (fileName) => {
-  const cacheDir = global.store.get('CACHE_DIR');
-  const filePath = path.resolve(cacheDir, fileName);
-  if (fs.existsSync(filePath)) {
-    console.log('找到缓存文件');
-    return `cache:///${filePath}`;
-  } else {
-    console.log('未找到缓存文件');
+  try {
+    const cacheDir = global.store.get('CACHE_DIR');
+    const filePath = path.resolve(cacheDir, fileName);
+    if (fs.existsSync(filePath)) {
+      console.log('找到缓存文件');
+      return `cache:///${filePath}`;
+    } else {
+      console.log('未找到缓存文件');
+      return '';
+    }
+  } catch (e) {
+    console.log('查找缓存文件失败');
     return '';
   }
 };

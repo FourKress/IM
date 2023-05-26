@@ -10,7 +10,7 @@
         {{ item }}
       </span>
     </div>
-    <div class="list selected-scroll-view">
+    <div class="list">
       <div class="scroll-view" v-if="addressBookList.length">
         <div
           class="group-panel"
@@ -26,7 +26,7 @@
             class="item"
             v-for="item in group"
             v-if="item.nickname"
-            :key="item.nickname"
+            :key="item.userId"
             @click="(event) => handleFriend(item, event)"
           >
             <div class="info">

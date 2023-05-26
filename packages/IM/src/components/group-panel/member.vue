@@ -122,7 +122,12 @@ export default {
         console.log(res, 'getGroupMemberList');
         const { nextSeq, members = [] } = res;
         this.nextSeq = nextSeq;
-        this.members = members;
+        this.members = members.map(d => {
+          return {
+            ...d,
+            nickname: d.alias || d.nickname
+          }
+        });
       });
     },
     changeMember(type) {

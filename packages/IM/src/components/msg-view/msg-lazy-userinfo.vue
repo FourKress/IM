@@ -114,41 +114,5 @@ export default {
 
 .msg-card {
   position: relative;
-
-  &:before {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    right: 5px;
-    content: ' ';
-    width: 0;
-    height: 0;
-
-  }
-
-  &.self {
-    &:before {
-      left: 0;
-      border-width: 5px 0 5px 5px;
-      border-style: solid;
-      border-color: transparent $bubble-IM-color transparent;
-    }
-  }
-
-  &.target {
-    &:before {
-      right: 0;
-      border-width: 5px 5px 5px 0;
-      border-style: solid;
-      border-color: transparent $bg-white-color transparent;
-    }
-  }
-
-  &.is-group {
-    &:before {
-      top: 36.5px;
-      transform: translateY(0);
-    }
-  }
 }
 </style>

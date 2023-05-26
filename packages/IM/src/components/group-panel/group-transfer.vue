@@ -70,6 +70,7 @@ export default {
         this.members = members.filter(d => d.userId !== this.userInfo.userId).map(d => {
           return {
             ...d,
+            nickname: d.alias || d.nickname,
             checked: false,
           }
         });
