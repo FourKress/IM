@@ -1,5 +1,5 @@
 <template>
-  <div id="client-sidebar" v-if="selfSessionList.length">
+  <div id="client-sidebar" v-if="sessionList.length">
     <div class="sidebar-container">
       <div class="top">
         <div class="left">

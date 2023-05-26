@@ -31,16 +31,16 @@
     </div>
     <div class="right">
       <div class="top" v-if="componentConfig.key">
-        {{ componentConfig.label }}
+        <span class="top-label">{{ componentConfig.label }}</span>
         <span class="create-group" v-if="componentConfig.key === 'GroupFriend'">
           <LsIcon
             icon="ls-icon-icon_cjql"
-            width="14"
-            height="14"
+            width="13"
+            height="13"
             class="top-btn"
             render-svg
           ></LsIcon>
-          <span @click="handleCreateGroup">创建群聊</span>
+          <span style="padding-left: 2px" @click="handleCreateGroup">创建群聊</span>
         </span>
       </div>
       <div class="main-wrap">
@@ -99,25 +99,25 @@ export default {
           label: '新的联系人',
           component: 'NewFriend',
           key: 'NewFriend',
-          icon: 'icon_txl_xdlxr',
+          icon: 'ls-icon-icon_xindehaoyou',
         },
         {
           label: '群聊',
           component: 'GroupFriend',
           key: 'GroupFriend',
-          icon: 'icon_txl_ql',
+          icon: 'ls-icon-icon_qunliao',
         },
         {
           label: '联系人',
           component: 'FriendList',
           key: 'FriendList',
-          icon: 'icon_txl_lxr',
+          icon: 'ls-icon-icon_haoyou',
         },
         {
           label: '技术支持',
           component: 'FriendList',
           key: 'FriendListBot',
-          icon: 'icon_txl_jszc',
+          icon: 'ls-icon-icon_jishuzhichi',
         },
       ],
       addFriendConfig: {
@@ -213,6 +213,8 @@ export default {
         display: flex;
         align-items: center;
         justify-content: space-between;
+        font-size: 14px;
+        font-weight: bold;
         cursor: pointer;
 
         &.active {
@@ -263,6 +265,10 @@ export default {
         font-size: 12px;
         color: $primary-color;
         cursor: pointer;
+      }
+
+      .top-label {
+        font-weight: bold;
       }
     }
 

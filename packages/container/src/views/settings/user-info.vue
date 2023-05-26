@@ -32,7 +32,7 @@
       <input
         ref="fileInput"
         style="display: none"
-        accept="image/*"
+        accept="image/jpg,image/png"
         id="file"
         type="file"
         name="file"

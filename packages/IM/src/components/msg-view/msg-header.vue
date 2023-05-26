@@ -15,26 +15,47 @@
       <!--        <LsIcon render-svg icon="a-icon_sp2x"></LsIcon>-->
       <!--      </div>-->
       <div class="btn">
-        <!--        || groupRoleManager.whoCanStartNetworkCall <= groupRole-->
-        <LsIcon
-          render-svg
-          icon="a-icon_sp2x"
-          v-if="!isGroup"
-          @click="handleStartTrtc(NETWORK_CALL_TYPE.IS_VIDEO)"
-        ></LsIcon>
+        <el-tooltip
+          class="item"
+          effect="dark"
+          content="视频"
+          placement="top"
+        >
+          <!--        || groupRoleManager.whoCanStartNetworkCall <= groupRole-->
+          <LsIcon
+            render-svg
+            icon="a-icon_sp2x"
+            v-if="!isGroup"
+            @click="handleStartTrtc(NETWORK_CALL_TYPE.IS_VIDEO)"
+          ></LsIcon>
+        </el-tooltip>
       </div>
       <div class="btn">
-        <!--        || groupRoleManager.whoCanStartNetworkCall <= groupRole-->
-        <LsIcon
-          render-svg
-          icon="a-icon_yy2x"
-          v-if="!isGroup"
-          @click="handleStartTrtc(NETWORK_CALL_TYPE.IS_AUDIO)"
-        ></LsIcon>
+        <el-tooltip
+          class="item"
+          effect="dark"
+          content="语音"
+          placement="top"
+        >
+          <!--        || groupRoleManager.whoCanStartNetworkCall <= groupRole-->
+          <LsIcon
+            render-svg
+            icon="a-icon_yy2x"
+            v-if="!isGroup"
+            @click="handleStartTrtc(NETWORK_CALL_TYPE.IS_AUDIO)"
+          ></LsIcon>
+        </el-tooltip>
       </div>
       <div class="btn" v-if="!isGroup || groupRole > 0">
         <el-dropdown trigger="click" @command="handleCommand">
-          <LsIcon render-svg icon="a-icon_more2x"></LsIcon>
+          <el-tooltip
+            class="item"
+            effect="dark"
+            content="更多"
+            placement="top"
+          >
+            <LsIcon render-svg icon="a-icon_more2x"></LsIcon>
+          </el-tooltip>
           <el-dropdown-menu slot="dropdown" v-if="isGroup">
             <el-dropdown-item
               :command="IM_HEADER_MORE_BTN_KEY.IS_OPEN_GROUP_MEMBER"

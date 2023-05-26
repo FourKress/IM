@@ -20,11 +20,11 @@
     </div>
 
     <div class="hearer-search">
-      <div class="search">
+      <div class="search" @click="handleSearch">
         <div class="query-icon">
           <LsIcon icon="navi_ss_icon" render-svg></LsIcon>
         </div>
-        <div class="input-panel" @click="handleSearch">
+        <div class="input-panel">
           <el-input
             v-model="keywords"
             readonly

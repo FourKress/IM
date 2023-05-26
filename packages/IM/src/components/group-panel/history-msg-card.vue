@@ -285,6 +285,7 @@ export default {
 
     ::v-deep .link-jump {
       color: $primary-color;
+      cursor: pointer;
     }
   }
 

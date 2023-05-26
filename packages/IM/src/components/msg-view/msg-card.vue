@@ -443,10 +443,10 @@ export default {
     &.text {
       user-select: text;
       word-break: break-all;
-      cursor: pointer;
 
       ::v-deep .link-jump {
         color: $primary-color;
+        cursor: pointer;
       }
 
       .trtc-icon {

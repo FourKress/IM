@@ -156,10 +156,6 @@ export default {
           realKey = key;
         }
       });
-
-      if (realKey) {
-        this.navSelectKey = realKey;
-      }
     },
   },
 
