@@ -35,7 +35,7 @@
 
               <div class="tag file-icon" v-else>
                 <LsIcon
-                  icon="icon_wenjian"
+                  icon="ls-icon-icon_wenjian1"
                   render-svg
                   width="46"
                   height="46"
