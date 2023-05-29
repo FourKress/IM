@@ -135,7 +135,7 @@ import {
   MSG_FORMAT_MAP,
   FriendMixins,
   SESSION_BUBBLE_MODEL,
-  SESSION_USER_TYPE,
+  SESSION_USER_TYPE, GROUP_ROLE_TYPE_LOCAL,
 } from '@lanshu/utils';
 import {
   LsIcon,
@@ -204,7 +204,7 @@ export default {
       friendPanelConfig: {},
       showFriendDialog: false,
       bubbleModel: '',
-      myGroupRole: -1,
+      myGroupRole: GROUP_ROLE_TYPE_LOCAL.IS_DEFAULT,
       groupRoleManager: {},
     };
   },
@@ -458,7 +458,10 @@ export default {
     async getMyGroupMemberInfo() {
       const res = await IMGetMyGroupMemberInfo(this.session.toUser);
       const { role } = res?.data || {};
-      this.myGroupRole = role || this.myGroupRole;
+      setTimeout(() => {
+        this.myGroupRole = role || GROUP_ROLE_TYPE_LOCAL.IS_NOT_AUTH;
+
+      }, 1000000)
     },
   },
 };

@@ -106,7 +106,7 @@ import {
   KEY_CODE,
   CHECK_MSG_TYPE,
   SESSION_USER_TYPE,
-  lodash,
+  lodash, GROUP_ROLE_TYPE_LOCAL,
 } from '@lanshu/utils';
 import { renderProcess } from '@lanshu/render-process';
 import { LsIcon } from '@lanshu/components';
@@ -123,7 +123,7 @@ export default {
   props: {
     groupRole: {
       type: Number,
-      default: -1,
+      default: null,
     },
     groupRoleManager: {
       type: Object,
@@ -156,8 +156,8 @@ export default {
       return this.$attrs.recordrtc;
     },
     placeholder() {
-      if (this.isGroup) {
-        if (this.groupRole < 0) return '您不是该群成员！';
+      if (this.isGroup && (this.groupRole !== GROUP_ROLE_TYPE_LOCAL.IS_DEFAULT)) {
+        if (this.groupRole === GROUP_ROLE_TYPE_LOCAL.IS_NOT_AUTH) return '您不是该群成员！';
         if (this.noSendAuth) return '群主已禁言';
       }
       return `发送给 ${this.session.nickname || ''}...`;
@@ -168,9 +168,15 @@ export default {
       return emptyMsg || this.noSendAuth;
     },
     noSendAuth() {
+      console.log(
+        this.isGroup &&
+          (!this.groupRole ||
+            this.groupRoleManager.whoCanSendMessage > this.groupRole),
+      );
       return (
         (this.isGroup &&
-          this.groupRoleManager.whoCanSendMessage > this.groupRole) ||
+          (this.groupRole === GROUP_ROLE_TYPE_LOCAL.IS_DEFAULT ||
+            this.groupRoleManager.whoCanSendMessage > this.groupRole)) ||
         ![
           SESSION_USER_TYPE.IS_GROUP,
           SESSION_USER_TYPE.IS_BASIC,

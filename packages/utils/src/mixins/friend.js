@@ -21,7 +21,7 @@ export default {
     ...mapGetters('IMStore', ['userInfo', 'sessionList']),
   },
   methods: {
-    ...mapActions('IMStore', ['setMainSessionWindow']),
+    ...mapActions('IMStore', ['setMainSessionWindow', 'setRefreshMsg']),
 
     async openFriendDialog(event, cb) {
       const { clientWidth, clientHeight } = document.body;
@@ -88,7 +88,7 @@ export default {
         const msgData = [
           session.toUser,
           session.toUserType,
-          '我通过了你的朋友验证请求，现在我们可以开始聊天了',
+          '我们已经是好友啦，现在可以聊天了！',
         ];
         const msg = await renderProcess.IMSDKIPC(
           IMSDKMessageProvider.provider,
@@ -97,6 +97,7 @@ export default {
         );
         IMSendMessage(msg).finally(() => {
           console.log('发送成功');
+          this.setRefreshMsg(Date.now());
         });
       });
     },

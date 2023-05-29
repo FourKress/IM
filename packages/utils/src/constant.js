@@ -143,6 +143,10 @@ export const WINDOW_TYPE = {
   IS_TRTC: 2,
 };
 
+export const GROUP_ROLE_TYPE_LOCAL = {
+  IS_DEFAULT: -99,
+  IS_NOT_AUTH: -1,
+};
 export const GROUP_ROLE_TYPE = {
   IS_OWNER: 3,
   IS_MANAGE: 2,
