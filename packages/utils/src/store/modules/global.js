@@ -6,6 +6,7 @@ const state = {
   startDownload: false,
   updateNotify: JSON.parse(localStorage.getItem('updateNotify') || 'false'),
   searchHistory: JSON.parse(localStorage.getItem('searchHistory') || '[]'),
+  isMaxWindow: false,
 };
 
 const getters = {
@@ -16,6 +17,7 @@ const getters = {
   startDownload: (state) => state.startDownload,
   updateNotify: (state) => state.updateNotify,
   searchHistory: (state) => state.searchHistory,
+  isMaxWindow: (state) => state.isMaxWindow,
 };
 
 const mutations = {
@@ -49,6 +51,9 @@ const mutations = {
     data.searchHistory = value;
     localStorage.setItem('searchHistory', JSON.stringify(value));
   },
+  setIsMaxWindow(data, value) {
+    data.isMaxWindow = value;
+  },
 };
 
 const actions = {
@@ -72,6 +77,9 @@ const actions = {
   },
   setSearchHistory({ commit }, value) {
     commit('setSearchHistory', value);
+  },
+  setIsMaxWindow({ commit }, value) {
+    commit('setIsMaxWindow', value);
   },
 };
 

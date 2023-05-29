@@ -156,6 +156,7 @@ import {
   NETWORK_CALL_TYPE,
   SESSION_BUBBLE_MODEL,
   lodash,
+  secondToDate,
 } from '@lanshu/utils';
 import { LsIcon } from '@lanshu/components';
 import { renderProcess } from '@lanshu/render-process';
@@ -208,7 +209,7 @@ export default {
       const matchArr = content.match(reg) || [];
       let linkArr = [];
       matchArr.forEach((d) => {
-        linkArr.push(...(d.split(/&nbsp;|<br>|\n/)).filter(c => reg.test(c)));
+        linkArr.push(...d.split(/&nbsp;|<br>|\n/).filter((c) => reg.test(c)));
       });
       return linkArr?.length ? linkArr : [];
     },
@@ -273,7 +274,7 @@ export default {
     trtcMsgTips() {
       const msgType = this.msg?.msgType;
       const tipsMap = {
-        671: `通话结束 ${this.secondToDate(this.msgData?.time)}`,
+        671: `通话结束 ${secondToDate(this.msgData?.time)}`,
         672: `${this.isSelf ? '' : '对方'}已拒绝`,
         673: `${this.isSelf ? '' : '对方'}已取消`,
         674: `${this.isSelf ? '对方无' : '未'}应答`,
@@ -302,8 +303,8 @@ export default {
         linKDomArr.forEach((d) => {
           d.onclick = (e) => {
             const url = e.target.innerText;
-            renderProcess.openUrl(url)
-          }
+            renderProcess.openUrl(url);
+          };
         });
       }
     });
@@ -318,22 +319,6 @@ export default {
         `${msgId}.${type}`,
       );
       this.cachePath = cachePath;
-    },
-    //秒转化成 时分秒
-    secondToDate(time) {
-      if (!time) return '';
-      const h = Math.floor(time / 3600);
-      const m = Math.floor((time / 60) % 60);
-      const s = Math.floor(time % 60);
-      if (h) {
-        return `${this.formatTime(h)}:${this.formatTime(m)}:${this.formatTime(
-          s,
-        )}`;
-      }
-      return `${this.formatTime(m)}:${this.formatTime(s)}`;
-    },
-    formatTime(time) {
-      return time < 10 ? `0${time}` : time;
     },
 
     async getAssetsPath() {

@@ -48,3 +48,18 @@ export const calculateAgeByBirthday = (birthday) => {
   const nowYear = dayjs().year();
   return (nowYear - birthdayYear).toString();
 };
+
+const formatTime = (time) => {
+  return time < 10 ? `0${time}` : time;
+};
+//秒转化成 时分秒
+export const secondToDate = (time) => {
+  if (!time) return '';
+  const h = Math.floor(time / 3600);
+  const m = Math.floor((time / 60) % 60);
+  const s = Math.floor(time % 60);
+  if (h) {
+    return `${formatTime(h)}:${formatTime(m)}:${formatTime(s)}`;
+  }
+  return `${formatTime(m)}:${formatTime(s)}`;
+};

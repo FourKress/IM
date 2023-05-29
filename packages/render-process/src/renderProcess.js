@@ -1,6 +1,24 @@
+import { WINDOW_TYPE, WIN_ACTION_TYPE } from '@lanshu/utils';
+import { storeInstance } from '@lanshu/utils';
+
 const electronAPI = window?.electronAPI ?? {};
 
-export const changeWindow = electronAPI?.changeWindow;
+export const changeWindow = (type, win) => {
+  if (type === WIN_ACTION_TYPE.IS_MAX && win === WINDOW_TYPE.IS_MAIN) {
+    const isMaxWindow = storeInstance.getters['globalStore/isMaxWindow'];
+    storeInstance.commit('globalStore/setIsMaxWindow', !isMaxWindow);
+    if (!isMaxWindow) {
+      document.body.style.cssText = 'padding: 0 !important';
+      document.querySelector('#lanshu-app').style.cssText =
+        'box-shadow: none !important;';
+    } else {
+      document.body.style.cssText = 'padding: 10px !important';
+      document.querySelector('#lanshu-app').style.cssText =
+        'box-shadow: 0 0 10px 0 rgb(0 0 0 / 10%) !important;';
+    }
+  }
+  electronAPI?.changeWindow(type, win);
+};
 export const openFile = electronAPI?.openFile;
 export const startScreenshots = electronAPI?.startScreenshots;
 export const showMainWindow = electronAPI?.showMainWindow;

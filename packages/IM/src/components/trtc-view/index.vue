@@ -13,6 +13,7 @@
       <span class="btn" @click="handleWindowChange(WIN_ACTION_TYPE.IS_CLOSE)">
         <LsIcon icon="ls-icon-icon_guanbi" size="14"></LsIcon>
       </span>
+      <span class="timer">{{ secondToDate(timer) }}</span>
     </div>
     <div class="user-panel" v-if="trtcSession.userId && !isEnterRoom">
       <img class="avatar" :src="trtcSession.avatar" alt="" />
@@ -102,7 +103,12 @@
           alt=""
         />
         <img class="avatar" v-if="disCamStatus" :src="userInfo.avatar" alt="" />
-        <img class="avatar"v-if="!isEnterRoom && !disCamStatus" :src="trtcSession.avatar" alt="" />
+        <img
+          class="avatar"
+          v-if="!isEnterRoom && !disCamStatus"
+          :src="trtcSession.avatar"
+          alt=""
+        />
       </div>
     </div>
 
@@ -131,6 +137,7 @@ import {
   WINDOW_TYPE,
   NETWORK_CALLBACK_TYPE,
   CLIENT_TYPE,
+  secondToDate,
 } from '@lanshu/utils';
 import { renderProcess } from '@lanshu/render-process';
 import {
@@ -256,8 +263,16 @@ export default {
     if (!isBeInvited) {
       this.startNetworkCall();
     }
+
+    this.$nextTick(() => {
+      document.body.style.cssText = 'padding: 0 !important';
+      document.querySelector('#lanshu-app').style.cssText =
+        '!important; box-shadow: none !important;';
+    });
   },
   methods: {
+    secondToDate,
+
     initMouseEvent() {
       this.debounceOptPanelVisible = lodash.debounce(
         this.changeOptPanelVisible,
@@ -608,6 +623,14 @@ export default {
       }
 
       -webkit-app-region: no-drag !important;
+    }
+
+    .timer {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 14px;
     }
   }
 

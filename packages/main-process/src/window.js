@@ -13,7 +13,7 @@ const initLoginWindow = () => {
 
 const initMainWindow = () => {
   const mainWindow = global.mainWindow;
-  mainWindow.setSize(1920, 1080);
+  mainWindow.setSize(1940, 1100);
   mainWindow.setResizable(true);
   mainWindow.setMaximizable(true);
   mainWindow.center();

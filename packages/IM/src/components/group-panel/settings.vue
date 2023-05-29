@@ -39,7 +39,11 @@
 
     <div class="row">
       <RowChat label="群管理" @callback="openGroupManager" show-right-btn />
-      <RowChat label="聊天记录" @callback="openGroupHistoryMsg" show-right-btn />
+      <RowChat
+        label="聊天记录"
+        @callback="openGroupHistoryMsg"
+        show-right-btn
+      />
     </div>
 
     <div class="clear-btn" @click="handleDeleteHistoryMsg">清空聊天记录</div>
@@ -101,7 +105,7 @@ import Manager from './manager';
 import Record from './record';
 import GroupTransfer from './group-transfer';
 import MsgTopAndSilence from '../base-settings/msgTopAndSilence';
-import HistoryMsg from "./history-msg.vue";
+import HistoryMsg from './history-msg.vue';
 import { mapActions, mapGetters } from 'vuex';
 import { GROUP_ROLE_TYPE } from '@lanshu/utils';
 
@@ -289,6 +293,9 @@ export default {
   position: relative;
   height: calc(100% - 42px);
   box-sizing: border-box;
+  padding: 0 20px;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 .row {
   padding: 26px 0 6px 0;

@@ -95,7 +95,7 @@ export default {
   min-width: 300px;
   height: 100%;
   background-color: $bg-white-color;
-  padding: 22px 20px 0 20px;
+  padding-top: 22px;
   border-left: 1px solid $split-line-color;
   overflow: hidden;
   box-sizing: border-box;
@@ -108,6 +108,8 @@ export default {
     align-items: center;
     justify-content: space-between;
     margin-bottom: 10px;
+    box-sizing: border-box;
+    padding: 0 20px;
 
     .left {
       flex: 1;

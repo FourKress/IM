@@ -144,7 +144,6 @@ body {
   padding: 10px;
   box-sizing: border-box;
   background-color: rgba(0, 0, 0, 0);
-  border-right: 20px;
 }
 
 #lanshu-app {
@@ -157,6 +156,6 @@ body {
   box-sizing: border-box;
   background: #d8d8d8;
   box-shadow: 0 0 10px 0 rgb(0 0 0 / 10%);
-  border-radius: 12px;
+  border-radius: 16px;
 }
 </style>
