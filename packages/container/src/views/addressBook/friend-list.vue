@@ -10,7 +10,7 @@
         {{ item }}
       </span>
     </div>
-    <div class="list">
+    <div class="list selected-scroll-view">
       <div class="scroll-view" v-if="addressBookList.length">
         <div
           class="group-panel"
@@ -102,17 +102,19 @@ export default {
       this.getFriendListData();
     },
     async handleFriend(item, event) {
-      const res = await IMGetUserProfile(item.userId);
-      const { birthday, description, sex, location } = res?.data || {};
-      this.openFriendDialog(
-        {
-          ...item,
-          birthday,
-          description,
-          sex,
-          location,
-        },
+      await this.openFriendDialog(
         event,
+        async () => {
+          const res = await IMGetUserProfile(item.userId);
+          const { birthday, description, sex, location } = res?.data || {};
+          return {
+            ...item,
+            birthday,
+            description,
+            sex,
+            location,
+          };
+        }
       );
     },
   },

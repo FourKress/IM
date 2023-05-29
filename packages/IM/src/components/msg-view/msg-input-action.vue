@@ -47,7 +47,7 @@
 
         <div class="btn">
           <ActionCard
-            v-if="!noGroupAuth"
+            v-if="!noSendAuth"
             ref="ActionCard"
             :session="session"
             :groupRole="groupRole"
@@ -68,7 +68,7 @@
       </div>
       <div
         class="input-textarea"
-        :contenteditable="!noGroupAuth"
+        :contenteditable="!noSendAuth"
         @keyup.enter.exact="handleEnterSend"
         @keyup.ctrl.enter.exact="handleCtrlEnterSend"
         ref="msgInput"
@@ -156,20 +156,26 @@ export default {
       return this.$attrs.recordrtc;
     },
     placeholder() {
-      if (this.isGroup ) {
+      if (this.isGroup) {
         if (this.groupRole < 0) return '您不是该群成员！';
-        if (this.noGroupAuth) return '群主已禁言';
+        if (this.noSendAuth) return '群主已禁言';
       }
       return `发送给 ${this.session.nickname || ''}...`;
     },
     disabledSendMsg() {
       const emptyMsg =
         !this.message || (!this.messageText && !this.message.includes('<img'));
-      return emptyMsg || this.noGroupAuth;
+      return emptyMsg || this.noSendAuth;
     },
-    noGroupAuth() {
+    noSendAuth() {
       return (
-        this.isGroup && this.groupRoleManager.whoCanSendMessage > this.groupRole
+        (this.isGroup &&
+          this.groupRoleManager.whoCanSendMessage > this.groupRole) ||
+        ![
+          SESSION_USER_TYPE.IS_GROUP,
+          SESSION_USER_TYPE.IS_BASIC,
+          SESSION_USER_TYPE.IS_BOT,
+        ].includes(this.session.toUserType)
       );
     },
     isGroup() {
@@ -305,7 +311,7 @@ export default {
           this.$refs.msgInput.focus();
         }
         this.message = '';
-        this.messageText = ''
+        this.messageText = '';
       });
     },
 
@@ -341,7 +347,7 @@ export default {
     },
 
     handleSwitchEmoji() {
-      if (this.noGroupAuth) {
+      if (this.noSendAuth) {
         this.$message.warning('暂无权限！');
         return;
       }
@@ -349,7 +355,7 @@ export default {
     },
 
     handleScreenshots() {
-      if (this.noGroupAuth) {
+      if (this.noSendAuth) {
         this.$message.warning('暂无权限！');
         return;
       }
@@ -661,13 +667,13 @@ export default {
     document.removeEventListener('click', this.handleGlobalClick);
     document.onkeydown = null;
     const sessId = this.session.sessId;
-    console.log('%%%%%%%%%%%%' ,this.message, this.messageText)
+    console.log('%%%%%%%%%%%%', this.message, this.messageText);
     const historyTempMsgOBJ = await window.$lanshuStore.getItem('tempMsgOBJ');
     let tempMsg = '';
     if (this.messageText) {
-      tempMsg = this.messageText
+      tempMsg = this.messageText;
     } else if (this.message.includes('<img')) {
-      tempMsg = '[图片]'
+      tempMsg = '[图片]';
     }
     await window.$lanshuStore.setItem('tempMsgOBJ', {
       ...historyTempMsgOBJ,

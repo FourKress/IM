@@ -142,9 +142,11 @@ export default {
           this.isAwait = false;
         });
     },
-    handleOpenFriendDialog(friendInfo, event) {
+    async handleOpenFriendDialog(friendInfo, event) {
       this.friendInfo = friendInfo;
-      this.openFriendDialog(this.friendInfo, event);
+      await this.openFriendDialog(event, async () => {
+        return this.friendInfo;
+      });
     },
     handleSendApply(addParams) {
       console.log(this.friendInfo, addParams);
@@ -169,7 +171,7 @@ export default {
     height: 48px;
     margin: 0 auto;
     border-radius: 10px;
-    padding: 0 18px;
+    padding: 0 6px 0 18px;
     display: flex;
     align-items: center;
     justify-content: space-between;

@@ -406,23 +406,26 @@ export default {
       console.log(item);
       const isSelf = this.checkSelf(item);
       if (isSelf) return;
-      const { fromUser } = item;
-      const friendInfo = (await IMGetOneFriend(fromUser))?.data || {};
-      if (friendInfo?.userId) {
-        this.friendPanelConfig = { isDetails: true };
-      } else {
-        this.friendPanelConfig = { isApply: true };
-      }
 
-      const userProfile = (await IMGetUserProfile(fromUser))?.data || {};
-      const { remark, desc } = friendInfo;
-      this.openFriendDialog(
-        {
-          ...userProfile,
-          remark,
-          desc,
-        },
+      await this.openFriendDialog(
         event,
+        async () => {
+          const { fromUser } = item;
+          const friendInfo = (await IMGetOneFriend(fromUser))?.data || {};
+          if (friendInfo?.userId) {
+            this.friendPanelConfig = { isDetails: true };
+          } else {
+            this.friendPanelConfig = { isApply: true };
+          }
+
+          const userProfile = (await IMGetUserProfile(fromUser))?.data || {};
+          const { remark, desc } = friendInfo;
+          return  {
+            ...userProfile,
+            remark,
+            desc,
+          };
+        }
       );
     },
 

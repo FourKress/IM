@@ -15,12 +15,7 @@
       <!--        <LsIcon render-svg icon="a-icon_sp2x"></LsIcon>-->
       <!--      </div>-->
       <div class="btn">
-        <el-tooltip
-          class="item"
-          effect="dark"
-          content="视频"
-          placement="top"
-        >
+        <el-tooltip class="item" effect="dark" content="视频" placement="top">
           <!--        || groupRoleManager.whoCanStartNetworkCall <= groupRole-->
           <LsIcon
             render-svg
@@ -31,12 +26,7 @@
         </el-tooltip>
       </div>
       <div class="btn">
-        <el-tooltip
-          class="item"
-          effect="dark"
-          content="语音"
-          placement="top"
-        >
+        <el-tooltip class="item" effect="dark" content="语音" placement="top">
           <!--        || groupRoleManager.whoCanStartNetworkCall <= groupRole-->
           <LsIcon
             render-svg
@@ -48,12 +38,7 @@
       </div>
       <div class="btn" v-if="!isGroup || groupRole > 0">
         <el-dropdown trigger="click" @command="handleCommand">
-          <el-tooltip
-            class="item"
-            effect="dark"
-            content="更多"
-            placement="top"
-          >
+          <el-tooltip class="item" effect="dark" content="更多" placement="top">
             <LsIcon render-svg icon="a-icon_more2x"></LsIcon>
           </el-tooltip>
           <el-dropdown-menu slot="dropdown" v-if="isGroup">
@@ -199,18 +184,18 @@ export default {
 
     async handleFriend(event) {
       if (this.isGroup) return;
-      const { toUser } = this.session;
-      const friendInfo = (await IMGetOneFriend(toUser))?.data || {};
-      const userProfile = (await IMGetUserProfile(toUser))?.data || {};
-      const { remark, desc } = friendInfo;
-      this.openFriendDialog(
-        {
+
+      await this.openFriendDialog(event, async () => {
+        const { toUser } = this.session;
+        const friendInfo = (await IMGetOneFriend(toUser))?.data || {};
+        const userProfile = (await IMGetUserProfile(toUser))?.data || {};
+        const { remark, desc } = friendInfo;
+        return {
           ...userProfile,
           remark,
           desc,
-        },
-        event,
-      );
+        };
+      });
     },
 
     getGroupMemberList() {

@@ -1,5 +1,12 @@
 <template>
-  <div class="friend-dialog" :style="position">
+  <div
+    class="friend-dialog"
+    :style="position"
+    v-loading="isLoading"
+    element-loading-text="加载中"
+    element-loading-spinner="el-icon-loading"
+    element-loading-background="rgba(255, 255, 255, 0.8)"
+  >
     <div class="top">
       <img :src="LsAssets.topBg" alt="" />
 
@@ -57,7 +64,6 @@
     </div>
 
     <div class="wrap">
-
       <div class="btn-list" v-if="panelConfig.isPass">
         <el-button
           class="action-btn left"
@@ -242,6 +248,7 @@ export default {
       isMsgAwait: false,
       isVideoAwait: false,
       isAudioAwait: false,
+      isLoading: false,
     };
   },
   components: {
@@ -258,7 +265,24 @@ export default {
       };
     },
   },
+
+  watch: {
+    friendInfo: {
+      deep: true,
+      handler(val) {
+        if (val?.userId) {
+          this.isLoading = false;
+        }
+      },
+    },
+  },
+
   mounted() {
+    setTimeout(() => {
+      if (!this.friendInfo?.userId) {
+        this.isLoading = true;
+      }
+    }, 200)
     if (this.panelConfig.isApply) {
       this.message = `我是${this.userInfo.nickname}`;
     }
@@ -310,13 +334,14 @@ export default {
         this.$Lconfirm({
           title: '提示',
           content: '你确定要删除该好友吗？',
-        }).then(() => {
-          IMDelFriendOneWay(this.friendInfo.userId).then(() => {
-            this.$message.success('好友删除成功');
-            this.$emit('update');
-          });
-        }).catch(() => {})
-
+        })
+          .then(() => {
+            IMDelFriendOneWay(this.friendInfo.userId).then(() => {
+              this.$message.success('好友删除成功');
+              this.$emit('update');
+            });
+          })
+          .catch(() => {});
       }
     },
     async handleSetRemarkOrDesc() {
@@ -331,7 +356,7 @@ export default {
 <style scoped lang="scss">
 .friend-dialog {
   width: 372px;
-  min-height: 338px;
+  min-height: 446px;
   background: $bg-white-color;
   box-shadow: 0px 4px 20px 0px rgba(51, 51, 51, 0.1);
   border-radius: 12px;
@@ -514,7 +539,7 @@ export default {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin: 0px 0 34px 0;
+      margin: 12px 0 34px 0;
 
       .action-btn {
         width: 100px;

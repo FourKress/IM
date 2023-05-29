@@ -132,24 +132,27 @@ export default {
     },
 
     async handleFriend(item, event) {
-      const { toUser, state, message, id } = item;
-      const config = this.getConfig(state);
-      this.config = config;
-      const userProfile = (await IMGetUserProfile(toUser))?.data || {};
-      let friendInfo = {};
-      if (state === FRIEND_AUTH_STATE.IS_AGREE) {
-        friendInfo = (await IMGetOneFriend(toUser))?.data || {};
-      }
-      const { remark, desc } = friendInfo;
-      this.openFriendDialog(
-        {
-          ...userProfile,
-          remark,
-          desc,
-          message,
-          noticeId: id,
-        },
+      await this.openFriendDialog(
         event,
+        async () => {
+          const { toUser, state, message, id } = item;
+          const config = this.getConfig(state);
+          this.config = config;
+          const userProfile = (await IMGetUserProfile(toUser))?.data || {};
+          let friendInfo = {};
+          if (state === FRIEND_AUTH_STATE.IS_AGREE) {
+            friendInfo = (await IMGetOneFriend(toUser))?.data || {};
+          }
+          const { remark, desc } = friendInfo;
+
+          return {
+            ...userProfile,
+            remark,
+            desc,
+            message,
+            noticeId: id,
+          };
+        }
       );
     },
   },

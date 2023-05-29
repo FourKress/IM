@@ -3,6 +3,8 @@ import {
   IMGetByUserId,
   IMAgreeFriendAddRequest,
   IMFriendAddRequest,
+  IMSDKMessageProvider,
+  IMSendMessage,
 } from '@lanshu/im';
 import { renderProcess } from '@lanshu/render-process';
 import { CLIENT_TYPE, NETWORK_CALL_TYPE } from '../constant';
@@ -21,18 +23,21 @@ export default {
   methods: {
     ...mapActions('IMStore', ['setMainSessionWindow']),
 
-    openFriendDialog(friend, event) {
-      console.log(friend);
-      this.friendInfo = friend;
-      const clientWidth = document.body.clientWidth;
+    async openFriendDialog(event, cb) {
+      const { clientWidth, clientHeight } = document.body;
       // 网页宽度 - 面板宽度 = left的最大值，避免定位超出视图区
-      const maxLeft = clientWidth - 380;
+      const maxLeft = clientWidth - 400;
+      const maxHeight = clientHeight - 500;
       const { clientY, clientX } = event;
       this.position = {
-        top: `${clientY}px`,
+        top: maxHeight >= clientY ? `${clientY}px` : `${maxHeight}px`,
         left: maxLeft >= clientX ? `${clientX}px` : `${maxLeft}px`,
       };
       this.showFriendDialog = true;
+      if (cb && typeof cb === 'function') {
+        const friend = await cb();
+        this.friendInfo = friend;
+      }
     },
 
     handleCloseDialog() {
@@ -79,7 +84,21 @@ export default {
 
     async handleSendAuth(authParams) {
       await IMAgreeFriendAddRequest(...authParams);
-      await this.handleSendMsg();
+      await this.handleJumIMPage(async (session) => {
+        const msgData = [
+          session.toUser,
+          session.toUserType,
+          '我通过了你的朋友验证请求，现在我们可以开始聊天了',
+        ];
+        const msg = await renderProcess.IMSDKIPC(
+          IMSDKMessageProvider.provider,
+          IMSDKMessageProvider.events.createTextMessage,
+          ...msgData,
+        );
+        IMSendMessage(msg).finally(() => {
+          console.log('发送成功');
+        });
+      });
     },
     async handleSendMsg() {
       await this.handleJumIMPage();
