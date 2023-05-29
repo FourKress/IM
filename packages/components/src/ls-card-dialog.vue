@@ -1,5 +1,5 @@
 <template>
-  <div class="ls-card-dialog" v-if="visible" @click.self.stop="handleClose">
+  <div class="ls-card-dialog" :style="{backgroundColor: backgroundColor}" v-if="visible" @click.self.stop="handleClose">
     <slot></slot>
   </div>
 </template>
@@ -16,6 +16,10 @@ export default {
     isModalClose: {
       type: Boolean,
       default: true,
+    },
+    backgroundColor: {
+      type: String,
+      default: 'transparent',
     },
   },
   watch: {
@@ -57,7 +61,6 @@ export default {
 .ls-card-dialog {
   width: 100%;
   height: 100%;
-  background-color: transparent;
   position: fixed;
   left: 0;
   top: 0;

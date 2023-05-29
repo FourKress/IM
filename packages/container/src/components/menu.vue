@@ -32,7 +32,7 @@
       </div>
     </div>
     <div class="update" v-if="updateNotify" @click="handleUpdate">
-      <img class="img" src="" alt="" />
+      <LsIcon icon="ls-icon-icon_shengji" width="28" height="28" render-svg></LsIcon>
       <span class="label">新版本</span>
     </div>
 
@@ -238,12 +238,6 @@ export default {
     cursor: pointer;
     margin: 8px 0 20px 0;
 
-    .img {
-      display: block;
-      width: 28px;
-      height: 28px;
-    }
-
     .label {
       margin-top: 6px;
     }
@@ -263,6 +257,7 @@ export default {
   background: $bg-white-color;
   border-radius: 12px;
   overflow: hidden;
+  box-shadow: 0px 4px 20px 0px rgb(51 51 51 / 10%);
 
   .top {
     width: 100%;

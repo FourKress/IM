@@ -17,9 +17,7 @@
               type="text"
               clearable
               v-model="staffName"
-              :placeholder="`查找${
-                isDelAdmin || isAddAdmin ? '管理员' : '联系人'
-              }`"
+              :placeholder="`查找${placeholder}`"
             />
           </div>
         </div>
@@ -154,11 +152,7 @@
           }"
         >
           <span class="tips">
-            <span>
-              已选{{ `${isDelAdmin || isAddAdmin ? '管理员' : '联系人'}` }}：{{
-                selectList.length
-              }}
-            </span>
+            <span>已选{{ placeholder }}：{{ selectList.length }}</span>
             <span v-if="panelType !== IM_GROUP_MEMBER_PANEL_TYPE.IS_DEL">
               /500
             </span>
@@ -280,6 +274,16 @@ export default {
     isDelAdmin() {
       return this.panelType === this.IM_GROUP_MEMBER_PANEL_TYPE.IS_DEL_ADMIN;
     },
+    placeholder() {
+      let str = '联系人';
+      if (this.isDelAdmin || this.isAddAdmin) {
+        str = '管理员';
+      }
+      if (this.isAdd || this.isDel) {
+        str = '群成员';
+      }
+      return str;
+    },
   },
   mounted() {
     this.selfSessionList = lodash.cloneDeep(this.rawMembers).map((d) => {
@@ -353,7 +357,10 @@ export default {
       const members = realSelectList.map((d) =>
         d.toUser ? d.toUser : d.userId,
       );
-      console.log(members, realSelectList.map(d => d.nickname));
+      console.log(
+        members,
+        realSelectList.map((d) => d.nickname),
+      );
 
       const res = await handleTarget.func(members);
       this.$message.success(`${this.groupTitle}成功`);
@@ -452,7 +459,7 @@ export default {
     getCheckedStatus(item) {
       const key = this.isCreate ? 'toUser' : 'userId';
       const isDefault = this.defaultMembers.some((c) => c[key] === item[key]);
-      const flag = (this.isAdd || this.isAddAdmin) ? isDefault : false;
+      const flag = this.isAdd || this.isAddAdmin ? isDefault : false;
       return {
         ...item,
         checked: flag,

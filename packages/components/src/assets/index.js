@@ -6,6 +6,7 @@ const trtcMePc = require('./images/trtc-me-pc.png');
 const trtcMeMobile = require('./images/trtc-me-mobile.png');
 const updateBg = require('./images/update-bg.png');
 const updateBgSmall = require('./images/update-bg-small.png');
+const updateBgLogin = require('./images/update-bg-login.png');
 const emptyData = require('./images/empty-data.png');
 const logo = require('./images/logo.png');
 
@@ -19,6 +20,7 @@ export default {
   trtcMeMobile,
   updateBg,
   updateBgSmall,
+  updateBgLogin,
   emptyData,
   logo,
 };

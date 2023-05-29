@@ -14,7 +14,7 @@ export const CHECK_MSG_TYPE = {
   IS_SEND_BUSINESS_CARD: 'BusinessCard',
   IS_CREATE_GROUP: 'createGroup',
   IS_TRTC: 'TRTC',
-  IS_NOT_FRIEND: 'notFriend',
+  IS_SYSTEM_NOTIFY: 'systemNotify',
 };
 
 const formatMsgType = (val, isBaseType = true) => {
@@ -88,7 +88,7 @@ export const MSG_FORMAT_MAP = {
   },
   1000: {
     label: (data) => data.content,
-    type: CHECK_MSG_TYPE.IS_NOT_FRIEND,
+    type: CHECK_MSG_TYPE.IS_SYSTEM_NOTIFY,
   },
 };
 

@@ -86,6 +86,7 @@ export const IMSDKCallBackEvents = {
   },
   AddReceiveNewMessage: async (ctx, msgInfo) => {
     const { message, silence, isFocused } = msgInfo;
+    const { sessId, msgType } = message;
 
     console.log('@@@@@ AddReceiveNewMessage');
 
@@ -94,10 +95,14 @@ export const IMSDKCallBackEvents = {
     const sessionWindowList =
       storeInstance.getters['IMStore/sessionWindowList'];
 
-    const isCurrentSessionWindow = mainSessionWindow.sessId === message.sessId;
+    const isCurrentSessionWindow = mainSessionWindow.sessId === sessId;
+
+    const isNotSystemNotify =
+      MSG_FORMAT_MAP[msgType]?.type &&
+      MSG_FORMAT_MAP[msgType]?.type !== CHECK_MSG_TYPE.IS_SYSTEM_NOTIFY;
 
     // 窗口是否聚集
-    if (!isFocused) {
+    if (!isFocused && isNotSystemNotify) {
       startNotification(message);
     }
 
@@ -107,10 +112,7 @@ export const IMSDKCallBackEvents = {
 
     if (!isCurrentSessionWindow) return;
 
-    await IMClearUnreadCount(message.sessId, [
-      mainSessionWindow,
-      ...sessionWindowList,
-    ]);
+    await IMClearUnreadCount(sessId, [mainSessionWindow, ...sessionWindowList]);
   },
   KickOutedOffline(ctx) {
     console.log('@@@@@ KickOutedOffline');

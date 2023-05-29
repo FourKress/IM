@@ -6,6 +6,13 @@
   "description": "IM、政务通用",
   "glyphs": [
     {
+      "icon_id": "35722847",
+      "name": "icon_shengji",
+      "font_class": "icon_shengji",
+      "unicode": "e73a",
+      "unicode_decimal": 59194
+    },
+    {
       "icon_id": "35710151",
       "name": "icon_xiaoxi_lan",
       "font_class": "icon_xiaoxi_lan",

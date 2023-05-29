@@ -2,7 +2,7 @@ const state = {
   systemUserInfo: {},
   userErrorMsg: '',
   codeCountdown: 0,
-  updateVersion: '',
+  updateInfo: {},
   startDownload: false,
   updateNotify: JSON.parse(localStorage.getItem('updateNotify') || 'false'),
   searchHistory: JSON.parse(localStorage.getItem('searchHistory') || '[]'),
@@ -12,7 +12,7 @@ const getters = {
   systemUserInfo: (state) => state.systemUserInfo,
   userErrorMsg: (state) => state.userErrorMsg,
   codeCountdown: (state) => state.codeCountdown,
-  updateVersion: (state) => state.updateVersion,
+  updateInfo: (state) => state.updateInfo,
   startDownload: (state) => state.startDownload,
   updateNotify: (state) => state.updateNotify,
   searchHistory: (state) => state.searchHistory,
@@ -35,8 +35,8 @@ const mutations = {
       }
     }, 1000);
   },
-  setUpdateVersion(data, value) {
-    data.updateVersion = value;
+  setUpdateInfo(data, value) {
+    data.updateInfo = value;
   },
   setStartDownload(data, value) {
     data.startDownload = value;
@@ -61,8 +61,8 @@ const actions = {
   setCodeCountdown({ commit }, value) {
     commit('setCodeCountdown', value);
   },
-  setUpdateVersion({ commit }, value) {
-    commit('setUpdateVersion', value);
+  setUpdateInfo({ commit }, value) {
+    commit('setUpdateInfo', value);
   },
   setStartDownload({ commit }, value) {
     commit('setStartDownload', value);

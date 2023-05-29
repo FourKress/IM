@@ -458,10 +458,7 @@ export default {
     async getMyGroupMemberInfo() {
       const res = await IMGetMyGroupMemberInfo(this.session.toUser);
       const { role } = res?.data || {};
-      setTimeout(() => {
-        this.myGroupRole = role || GROUP_ROLE_TYPE_LOCAL.IS_NOT_AUTH;
-
-      }, 1000000)
+      this.myGroupRole = role || GROUP_ROLE_TYPE_LOCAL.IS_NOT_AUTH;
     },
   },
 };

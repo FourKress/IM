@@ -295,8 +295,12 @@ export default {
         .then((res) => {
           console.log('拨打回调', res);
           let waringText;
-          const { type, uuid } = res;
+          const { type, uuid, data } = res;
           this.callUUID = uuid;
+
+          const { platform = CLIENT_TYPE.IS_PC } = data;
+          this.isPc = platform === CLIENT_TYPE.IS_PC;
+
           switch (type) {
             case this.NETWORK_CALLBACK_TYPE.IS_TIMEOUT:
               waringText = '对方未应答';
@@ -647,7 +651,7 @@ export default {
 
   .opt-panel {
     position: absolute;
-    bottom: 40px;
+    bottom: 20px;
     left: 50%;
     transform: translateX(-50%);
     max-width: 320px;

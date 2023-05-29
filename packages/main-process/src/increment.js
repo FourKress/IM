@@ -33,6 +33,7 @@ export default async (data) => {
     ).catch((err) => {
       console.log(err);
       electronLog.info(err);
+      global.mainWindow.webContents.send('downloadProgress', null);
     });
   }
   // 提权的方案，这里简写了，正式项目请自行选择位置放update.exe
@@ -96,5 +97,6 @@ export default async (data) => {
     .catch((err) => {
       electronLog.info(err);
       console.log(err);
+      global.mainWindow.webContents.send('downloadProgress', null);
     });
 };

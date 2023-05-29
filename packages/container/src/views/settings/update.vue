@@ -14,7 +14,7 @@
       </el-checkbox>
     </InfoBlock>
 
-    <div class="tips">当前安装版本：{{ updateVersion }}</div>
+    <div class="tips">当前安装版本：{{ updateInfo.version }}</div>
 
     <template v-for="(info, index) in infos">
       <InfoBlock
@@ -55,13 +55,13 @@ export default {
     };
   },
   computed: {
-    ...mapGetters('globalStore', ['updateNotify', 'updateVersion']),
+    ...mapGetters('globalStore', ['updateNotify', 'updateInfo']),
   },
   created() {
     this.selfUpdateNotify = this.updateNotify;
   },
   methods: {
-    ...mapActions('globalStore', ['setUpdateNotify']),
+    ...mapActions('globalStore', ['setUpdateNotify', 'setStartDownload']),
 
     handleCallback(info) {
       if (info?.fnc) {
@@ -73,6 +73,12 @@ export default {
     },
 
     handleUpdate() {
+      debugger
+      // TODO 检查是否有更新
+      const update = true;
+      if (update) {
+
+      }
       this.setStartDownload(true);
       renderProcess.checkForUpdates();
     },

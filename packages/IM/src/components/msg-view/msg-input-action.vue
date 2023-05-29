@@ -191,7 +191,7 @@ export default {
   async mounted() {
     this.$nextTick(async () => {
       this.$refs.msgInput.focus();
-      this.windowRange = window.getSelection().getRangeAt(0);
+      this.windowRange = window.getSelection()?.getRangeAt(0);
       // 获取切换时保存的临时类容
       const historyTempMsgOBJ = await window.$lanshuStore.getItem('tempMsgOBJ');
       const tempMsg = historyTempMsgOBJ?.[this.session.sessId];

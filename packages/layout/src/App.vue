@@ -2,8 +2,8 @@
   <div id="lanshu-app">
     <MainLayout />
 
-    <LsCardDialog :visible.sync="visibleUpdate" :is-modal-close="false">
-      <LsUpdate :startDownload="startDownload" />
+    <LsCardDialog :visible.sync="visibleUpdate" background-color="rgba(0,0,0,.5)" :is-modal-close="false">
+      <LsUpdate :startDownload="startDownload" @cancel="handleCancelUpdate" />
     </LsCardDialog>
   </div>
 </template>
@@ -99,20 +99,30 @@ export default {
     });
   },
   methods: {
-    ...mapActions('globalStore', ['setUserErrorMsg', 'setUpdateNotify', 'setUpdateVersion']),
+    ...mapActions('globalStore', [
+      'setUserErrorMsg',
+      'setUpdateNotify',
+      'setUpdateInfo',
+    ]),
 
     async handleGetVersion() {
       // TODO 检查是否有新版本 强制OR非强制
-      // const isUpdate = false;
-      // const isForced = false;
-      // const version = '3.2.3';
-      // if (!isUpdate) return;
-      // if (isForced) {
-      //   this.visibleUpdate = true;
-      // } else {
-      //   this.setUpdateNotify(true);
-      // }
+      const isUpdate = false;
+      const updateInfo = {
+        version: '3.2.3',
+        isForced: false,
+      };
+      if (!isUpdate) return;
+      this.setUpdateInfo(updateInfo);
+      if (!updateInfo?.isForced) {
+        this.setUpdateNotify(true);
+      }
+      this.visibleUpdate = true;
     },
+
+    handleCancelUpdate () {
+      this.visibleUpdate = false;
+    }
   },
 };
 </script>
