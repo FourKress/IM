@@ -4,7 +4,6 @@ import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
 
 import { defaultWindowConfig } from './window';
 import store from './datastore';
-// import checkUpload from './checkUpload';
 import trayEvent from './trayEvent';
 
 global.store = store;

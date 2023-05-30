@@ -112,6 +112,8 @@ export const IMSDKCallBackEvents = {
 
     if (!isCurrentSessionWindow) return;
 
+    if (location.hash !== '#/') return;
+
     await IMClearUnreadCount(sessId, [mainSessionWindow, ...sessionWindowList]);
   },
   KickOutedOffline(ctx) {

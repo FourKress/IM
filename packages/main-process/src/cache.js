@@ -1,4 +1,4 @@
-import { app, protocol, screen } from 'electron';
+import { app, protocol } from 'electron';
 import downloadFile from './downloadFile';
 import electronLog from './log';
 import { calcFileSize } from './utils';
@@ -20,14 +20,6 @@ export const initCache = () => {
     cacheDir = storeCacheDir;
   }
   global.store.set('CACHE_DIR', cacheDir);
-
-  console.log(
-    screen.getPrimaryDisplay().scaleFactor,
-    screen.getPrimaryDisplay().size,
-  );
-  screen.on('display-metrics-changed', function (ev, display) {
-    console.log(ev, display);
-  });
 
   if (fs.existsSync(cacheDir)) {
     console.log('找到缓存文件夹');

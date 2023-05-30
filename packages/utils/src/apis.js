@@ -1,5 +1,7 @@
 import https from './https';
 import { renderProcess } from '@lanshu/render-process';
+import { getToken } from './token';
+import { TOKEN_TYPE } from './constant';
 
 const getTerminal = async () => await renderProcess.getStore('CLIENT_TERMINAL');
 
@@ -56,8 +58,10 @@ export const accountQueryPermision = (params) => {
   return https.post('/auth/account/queryPermision', params);
 };
 
-export const accountLoginOut = (params) => {
-  return https.post('/auth/account/loginOut', params);
+export const accountLoginOut = () => {
+  return https.post('/auth/account/loginOut', {
+    token: getToken(TOKEN_TYPE.IS_SYS),
+  });
 };
 
 export const accountCheckCaptcha = async (params) => {
@@ -94,6 +98,7 @@ export const accountUpdateUserInfo = async (params) => {
   return https.post('/auth/user/updateUserInfo', {
     ...params,
     terminal: await getTerminal(),
+    token: getToken(TOKEN_TYPE.IS_SYS),
   });
 };
 
@@ -101,6 +106,7 @@ export const accountUpdatePhone = async (params) => {
   return https.post('/auth/user/updatePhone', {
     ...params,
     terminal: await getTerminal(),
+    token: getToken(TOKEN_TYPE.IS_SYS),
   });
 };
 
@@ -118,4 +124,31 @@ export const managerRegionQuery = (params) => {
 
 export const managerRegionQueryAsTree = (params) => {
   return https.post('/manager/region/queryAsTree', params);
+};
+
+export const accessibleDeparts = async () => {
+  return https.post('/auth/platform/accessibleDeparts', {
+    token: getToken(TOKEN_TYPE.IS_SYS),
+    terminal: await getTerminal(),
+  });
+};
+
+export const findUserByDepartId = async (params) => {
+  return https.post('/auth/platform/findUserByDepartId', {
+    ...params,
+    terminal: await getTerminal(),
+  });
+};
+
+export const technicalSupportList = async () => {
+  return https.post('/auth/user/technicalSupportList', {
+    terminal: await getTerminal(),
+  });
+};
+
+export const queryLastAvailableByAppCode = async (params) => {
+  return https.post('/auth/appRelease/queryLastAvailableByAppCode', {
+    ...params,
+    terminal: await getTerminal(),
+  });
 };

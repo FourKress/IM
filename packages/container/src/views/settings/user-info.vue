@@ -243,7 +243,6 @@ export default {
       const params = {
         picture: avatar,
         nickName: nickname,
-        token: getToken(TOKEN_TYPE.IS_SYS),
       };
       params[key] = val;
       await Apis.accountUpdateUserInfo(params);

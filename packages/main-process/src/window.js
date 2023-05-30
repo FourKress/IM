@@ -2,6 +2,7 @@ import { BrowserWindow } from 'electron';
 import path from 'path';
 import { IS_MAC, CLIENT_TYPE, WINDOW_TYPE } from './utils';
 import checkDevices from './checkDevices';
+import { getScreenInfo } from './screen';
 
 const initLoginWindow = () => {
   const mainWindow = global.mainWindow;
@@ -12,13 +13,13 @@ const initLoginWindow = () => {
 };
 
 const initMainWindow = () => {
+  const { width, height } = getScreenInfo();
+  console.log('screenInfo', width, height);
   const mainWindow = global.mainWindow;
-  mainWindow.setSize(1920, 1080);
+  mainWindow.setSize(width, height);
   mainWindow.setResizable(true);
   mainWindow.setMaximizable(true);
-
   mainWindow.setMinimumSize(1024, 640);
-
   mainWindow.center();
 };
 

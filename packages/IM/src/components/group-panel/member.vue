@@ -179,6 +179,7 @@ export default {
   margin-top: 26px;
   display: flex;
   flex-direction: column;
+  padding: 0 20px;
 
   ::-webkit-scrollbar {
     display: none;

@@ -226,7 +226,7 @@ export default {
     async getAssetsPath() {
       let assetsPath = this.msgData?.url || this.msgData?.videoUrl;
       if (assetsPath) {
-        const msgId = this.msg?.msgId;
+        const msgId = this.msg?.msgId || `${this.msg?.cliMsgId}_${Date.now()}`;
         const key = `cache_${msgId}`;
         const storePath = (await window.$lanshuStore.getItem(key)) || '';
         console.log(storePath, msgId);

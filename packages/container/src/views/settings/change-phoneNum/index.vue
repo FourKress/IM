@@ -223,7 +223,6 @@ export default {
           }
           await Apis.accountUpdatePhone({
             newPhone: this.newPhoneNum,
-            token: getToken(TOKEN_TYPE.IS_SYS),
           })
           this.$loading({
             lock: true,

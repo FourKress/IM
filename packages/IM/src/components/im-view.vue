@@ -69,6 +69,7 @@
           >
             <MsgCard
               :isSelf="checkSelf(item)"
+              :imViewWidth="imViewWidth"
               :bubbleModel="bubbleModel"
               :msg="item"
             />
@@ -215,6 +216,7 @@ export default {
       bubbleModel: '',
       myGroupRole: GROUP_ROLE_TYPE_LOCAL.IS_DEFAULT,
       groupRoleManager: {},
+      imViewWidth: 210,
     };
   },
   watch: {
@@ -313,9 +315,9 @@ export default {
       trailing: false,
     });
 
-    const dragWrapper = document.querySelector('.im-view');
+    const imViewDom = document.querySelector('.im-view');
     //添加拖拽事件监听器
-    dragWrapper.addEventListener('drop', (e) => {
+    imViewDom.addEventListener('drop', (e) => {
       //阻止默认行为
       e.preventDefault();
       //获取文件列表
@@ -339,9 +341,20 @@ export default {
     });
 
     //阻止拖拽结束事件默认行为
-    dragWrapper.addEventListener('dragover', (e) => {
+    imViewDom.addEventListener('dragover', (e) => {
       e.preventDefault();
     });
+
+
+    const resizeObserver = new ResizeObserver((entries) => {
+      for (let entry of entries) {
+        const cr = entry.contentRect;
+        this.imViewWidth = cr.width
+      }
+    });
+
+    // 观察一个或多个元素
+    resizeObserver.observe(document.querySelector('.im-view'));
   },
   methods: {
     ...mapActions('IMStore', ['setDragFileList', 'setCurrentMsg']),
@@ -479,8 +492,9 @@ export default {
   background-color: $bg-IM-color;
   box-shadow: 0 4px 10px 0 rgba(51, 51, 51, 0.1);
   //border-radius: 10px 10px 0 0;
-  width: 500px;
-  min-width: 500px;
+  //width: 500px;
+  width: auto;
+  min-width: 380px;
   margin-left: 6px;
   display: flex;
   flex-direction: column;

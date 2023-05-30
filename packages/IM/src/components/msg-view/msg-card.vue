@@ -20,7 +20,7 @@
         slot="reference"
         class="card text"
         :class="classObject"
-        v-if="msgType === CHECK_MSG_TYPE.IS_TEXT"
+        v-if="isText"
         v-html="msgText"
       ></div>
 
@@ -32,7 +32,11 @@
     <div
       class="wrap img"
       v-if="isImage"
-      :style="{ width: `${size.width}px`, height: `${size.height}px` }"
+      :style="{
+        width: `${size.width}px`,
+        height: `${size.height}px`,
+        ...wrapStyle,
+      }"
     >
       <img :src="assetsPath" @click="handlePreview" />
     </div>
@@ -44,12 +48,17 @@
       controls
       preload="auto"
       poster
-      :style="{ width: `${size.width}px`, height: `${size.height}px` }"
+      :style="{
+        width: `${size.width}px`,
+        height: `${size.height}px`,
+        ...wrapStyle,
+      }"
       :src="assetsPath"
     ></video>
 
     <audio
       class="wrap"
+      :style="wrapStyle"
       v-if="msgType === CHECK_MSG_TYPE.IS_AUDIO"
       controls
       preload="auto"
@@ -59,7 +68,8 @@
     <div
       class="wrap file card"
       :class="classObject"
-      v-if="msgType === CHECK_MSG_TYPE.IS_FILE"
+      :style="{...wrapStyle, ...wrapFileStyle}"
+      v-if="isFile"
     >
       <div class="view">
         <LsIcon
@@ -178,6 +188,11 @@ export default {
       type: [Number, String],
       default: SESSION_BUBBLE_MODEL.IS_BETWEEN,
     },
+    imViewWidth: {
+      type: [Number, String],
+      required: true,
+      default: 210,
+    },
   },
   components: {
     LsIcon,
@@ -192,6 +207,14 @@ export default {
       cachePath: '',
       selectedText: '',
       visibleContextMenu: false,
+      imageMaxWidth: 210,
+      wrapStyle: {
+        maxWidth: '210px',
+        maxHeight: '210px',
+      },
+      wrapFileStyle: {
+        width: '210px',
+      },
     };
   },
   computed: {
@@ -245,24 +268,27 @@ export default {
     isVideo() {
       return this.msgType === this.CHECK_MSG_TYPE.IS_VIDEO;
     },
+    isFile() {
+      return this.msgType === this.CHECK_MSG_TYPE.IS_FILE;
+    },
     size() {
       if (!this.isImage && !this.isVideo) return;
       const { wide, high } = this.msgData;
       const ratio = high ? wide / high : 1;
-      if (wide > high && wide >= 500) {
+      if (wide > high && wide >= this.imageMaxWidth) {
         return {
-          width: 500,
-          height: 500 / ratio,
+          width: this.imageMaxWidth,
+          height: this.imageMaxWidth / ratio,
         };
-      } else if (high > wide && high >= 500) {
+      } else if (high > wide && high >= this.imageMaxWidth) {
         return {
-          width: 500 * ratio,
-          height: 500,
+          width: this.imageMaxWidth * ratio,
+          height: this.imageMaxWidth,
         };
       }
       return {
-        width: wide || 500,
-        height: high || 500,
+        width: wide || this.imageMaxWidth,
+        height: high || this.imageMaxWidth,
       };
     },
     classObject() {
@@ -280,6 +306,24 @@ export default {
         674: `${this.isSelf ? '对方无' : '未'}应答`,
       };
       return tipsMap[msgType];
+    },
+  },
+  watch: {
+    imViewWidth(val) {
+      if (!this.isImage && !this.isVideo && !this.isFile) return;
+      if (val <= 380) {
+        this.imageMaxWidth = 210;
+        this.wrapStyle = { maxWidth: '210px', maxHeight: '210px' };
+        this.wrapFileStyle = { width: '210px' };
+      } else if (val < 738 && val > 380) {
+        this.imageMaxWidth = 300;
+        this.wrapStyle = { maxWidth: '300px', maxHeight: '300px' };
+        this.wrapFileStyle = { width: '300px' };
+      } else {
+        this.imageMaxWidth = 500;
+        this.wrapStyle = { maxWidth: '500px', maxHeight: '500px' };
+        this.wrapFileStyle = { width: '340px' };
+      }
     },
   },
   mounted() {
@@ -324,7 +368,7 @@ export default {
     async getAssetsPath() {
       let assetsPath = this.msgData?.url || this.msgData?.videoUrl;
       if (assetsPath) {
-        const msgId = this.msg?.msgId;
+        const msgId = this.msg?.msgId || `${this.msg?.cliMsgId}_${Date.now()}`;
         const key = `cache_${msgId}`;
         const storePath = (await window.$lanshuStore.getItem(key)) || '';
         console.log(storePath, msgId);
@@ -448,8 +492,6 @@ export default {
 
   .wrap {
     display: block;
-    max-height: 500px;
-    max-width: 500px;
 
     &.img {
       cursor: pointer;
@@ -505,6 +547,7 @@ export default {
       .info {
         flex: 1;
         height: 40px;
+        max-width: calc(100% - 41px);
         display: flex;
         flex-direction: column;
         align-items: flex-start;
@@ -512,7 +555,7 @@ export default {
 
         .name {
           flex: 1;
-          max-width: 200px;
+          max-width: 85%;
           height: 20px;
           line-height: 20px;
           font-size: 14px;
