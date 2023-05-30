@@ -19,8 +19,8 @@ console.log(
 async function createWindow() {
   const win = new BrowserWindow({
     ...defaultWindowConfig,
-    width: 460,
-    height: 620,
+    width: 440,
+    height: 600,
     show: false,
   });
 

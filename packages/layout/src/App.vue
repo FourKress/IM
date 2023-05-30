@@ -139,11 +139,8 @@ body {
   width: 100vw;
   scroll-behavior: smooth;
   user-select: none;
-  border-radius: 16px;
   overflow: hidden;
-  padding: 10px;
   box-sizing: border-box;
-  background-color: rgba(0, 0, 0, 0);
 }
 
 #lanshu-app {
@@ -154,8 +151,5 @@ body {
   height: 100%;
   overflow: hidden;
   box-sizing: border-box;
-  background: #d8d8d8;
-  box-shadow: 0 0 10px 0 rgb(0 0 0 / 10%);
-  border-radius: 16px;
 }
 </style>

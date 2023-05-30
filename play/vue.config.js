@@ -140,4 +140,10 @@ module.exports = defineConfig({
       topLevelAwait: true,
     },
   },
+
+  devServer: {
+    client: {
+      overlay: false,
+    },
+  },
 });

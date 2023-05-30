@@ -17,7 +17,8 @@ class Mirco {
        */
       return {
         name: mergePathMark(d.appCode),
-        entry: '//localhost:5000/',
+        // entry: '//localhost:5000/',
+        entry: '//222.179.101.46:8123/',
         container,
       };
     });
@@ -43,8 +44,8 @@ class Mirco {
 
     console.log(routers);
     // TODO 暂时屏蔽
-    return [];
-    // return routers;
+    // return [];
+    return routers;
   }
 }
 

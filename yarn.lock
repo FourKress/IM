@@ -8402,10 +8402,10 @@ lilconfig@^2.0.3:
   resolved "http://172.16.2.250:8081/repository/npm-group/lilconfig/-/lilconfig-2.1.0.tgz#78e23ac89ebb7e1bfbf25b18043de756548e7f52"
   integrity sha512-utWOt/GHzuUxnLKxB6dk81RoOeoNeHgbrXiuGk4yyF5qlRz+iIVWu56E2fqGHFrXz0QNUhLB/8nKqvRH66JKGQ==
 
-lim-sdk-electron@2.6.19:
-  version "2.6.19"
-  resolved "http://172.16.3.249:8081/repository/npm-group/lim-sdk-electron/-/lim-sdk-electron-2.6.19.tgz#c99e3e3e50b063529fe0eaddf6ffcd922514d98a"
-  integrity sha512-FFCd6xLxN7UbWfJl9sWcwN/zS/XzYoyTKUYk7EnL4sZV/wFyhZbfw9oxiZwtPXjJL7QHPPv7J5YLC/Yxy+EUzw==
+lim-sdk-electron@2.6.23:
+  version "2.6.23"
+  resolved "http://172.16.3.249:8081/repository/npm-group/lim-sdk-electron/-/lim-sdk-electron-2.6.23.tgz#3afcdf0a8103ba7376a553f3478abaf38da3079e"
+  integrity sha512-13yi4ia8rAWKYOQusRuGWZp82CwgA5pU5lpLq9CNfkJoCVJVFOHoNeXkll+9gTjSyWZcJuQz4fAAndefXbu3BQ==
   dependencies:
     "@journeyapps/sqlcipher" "^5.3.1"
     axios "^1.3.4"

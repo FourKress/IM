@@ -5,7 +5,7 @@ import checkDevices from './checkDevices';
 
 const initLoginWindow = () => {
   const mainWindow = global.mainWindow;
-  mainWindow.setSize(460, 620);
+  mainWindow.setSize(440, 600);
   mainWindow.setResizable(false);
   mainWindow.setMaximizable(false);
   mainWindow.center();
@@ -13,9 +13,12 @@ const initLoginWindow = () => {
 
 const initMainWindow = () => {
   const mainWindow = global.mainWindow;
-  mainWindow.setSize(1940, 1100);
+  mainWindow.setSize(1920, 1080);
   mainWindow.setResizable(true);
   mainWindow.setMaximizable(true);
+
+  mainWindow.setMinimumSize(1024, 640);
+
   mainWindow.center();
 };
 
@@ -72,8 +75,6 @@ export const defaultWindowConfig = {
   // TODO 生产环境开启
   // devTools: false,
   frame: false,
-  hasShadow: false,
-  transparent: true,
   autoHideMenuBar: true,
   webPreferences: {
     webSecurity: false,
@@ -108,7 +109,7 @@ export const openTRTCWindow = async (type = CLIENT_TYPE.IS_PC) => {
         minWidth: 368,
         minHeight: 640,
       },
-      ratio: 368 / 640,
+      ratio: 388 / 660,
     },
   };
   const targetClient = configMap[type];

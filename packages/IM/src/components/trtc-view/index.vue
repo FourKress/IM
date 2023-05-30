@@ -263,12 +263,6 @@ export default {
     if (!isBeInvited) {
       this.startNetworkCall();
     }
-
-    this.$nextTick(() => {
-      document.body.style.cssText = 'padding: 0 !important';
-      document.querySelector('#lanshu-app').style.cssText =
-        '!important; box-shadow: none !important;';
-    });
   },
   methods: {
     secondToDate,
