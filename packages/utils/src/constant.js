@@ -12,7 +12,6 @@ export const CHECK_MSG_TYPE = {
   IS_CUSTOM: 'custom',
   IS_SEND_FILE: 'File',
   IS_SEND_BUSINESS_CARD: 'BusinessCard',
-  IS_CREATE_GROUP: 'createGroup',
   IS_TRTC: 'TRTC',
   IS_SYSTEM_NOTIFY: 'systemNotify',
 };
@@ -68,7 +67,7 @@ export const MSG_FORMAT_MAP = {
         false,
       );
     },
-    type: CHECK_MSG_TYPE.IS_CREATE_GROUP,
+    type: CHECK_MSG_TYPE.IS_SYSTEM_NOTIFY,
   },
   671: {
     label: (data) => getNetworkCallLabel(data),

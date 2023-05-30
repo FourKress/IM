@@ -13,10 +13,18 @@
         v-for="(item, index) in messageList"
         :key="`${index}_${item.msgId}`"
       >
-        <div class="tips-row" :style="{marginTop: !checkTimesInterval(
+        <div
+          class="tips-row"
+          :style="{
+            marginTop:
+              !checkTimesInterval(
                 item.timestamp,
                 messageList[Math.max(index - 1, 0)].timestamp,
-              ) && !BASE_MSG_TYPES.includes(item.msgType) ? '8px' : '0' }">
+              ) && !BASE_MSG_TYPES.includes(item.msgType)
+                ? '8px'
+                : '0',
+          }"
+        >
           <TimesTransform
             v-if="
               checkTimesInterval(
@@ -135,7 +143,8 @@ import {
   MSG_FORMAT_MAP,
   FriendMixins,
   SESSION_BUBBLE_MODEL,
-  SESSION_USER_TYPE, GROUP_ROLE_TYPE_LOCAL,
+  SESSION_USER_TYPE,
+  GROUP_ROLE_TYPE_LOCAL,
 } from '@lanshu/utils';
 import {
   LsIcon,
@@ -407,26 +416,26 @@ export default {
       const isSelf = this.checkSelf(item);
       if (isSelf) return;
 
-      await this.openFriendDialog(
-        event,
-        async () => {
-          const { fromUser } = item;
-          const friendInfo = (await IMGetOneFriend(fromUser))?.data || {};
-          if (friendInfo?.userId) {
-            this.friendPanelConfig = { isDetails: true };
-          } else {
-            this.friendPanelConfig = { isApply: true };
-          }
-
-          const userProfile = (await IMGetUserProfile(fromUser))?.data || {};
-          const { remark, desc } = friendInfo;
-          return  {
-            ...userProfile,
-            remark,
-            desc,
-          };
+      await this.openFriendDialog(event, async () => {
+        const { fromUser } = item;
+        const friendInfo = (await IMGetOneFriend(fromUser))?.data || {};
+        console.log(friendInfo);
+        if (friendInfo?.userId) {
+          this.friendPanelConfig = this.isGroup
+            ? { isPass: true }
+            : { isDetails: true };
+        } else {
+          this.friendPanelConfig = { isApply: true };
         }
-      );
+
+        const userProfile = (await IMGetUserProfile(fromUser))?.data || {};
+        const { remark, desc } = friendInfo;
+        return {
+          ...userProfile,
+          remark,
+          desc,
+        };
+      });
     },
 
     handlePushLocalMsg(msg) {

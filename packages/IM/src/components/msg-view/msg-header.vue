@@ -81,7 +81,7 @@
       <LsFriendPanel
         :friend-info="friendInfo"
         :position="position"
-        :config="{ isDetails: true }"
+        :config="friendPanelConfig"
         @update="handleCloseDialog"
       />
     </LsCardDialog>
@@ -128,6 +128,7 @@ export default {
       NETWORK_CALL_TYPE,
       showFriendDialog: false,
       members: [],
+      friendPanelConfig: {}
     };
   },
   mixins: [FriendMixins],
@@ -188,6 +189,15 @@ export default {
       await this.openFriendDialog(event, async () => {
         const { toUser } = this.session;
         const friendInfo = (await IMGetOneFriend(toUser))?.data || {};
+
+        if (friendInfo?.userId) {
+          this.friendPanelConfig = this.isGroup
+            ? { isPass: true }
+            : { isDetails: true };
+        } else {
+          this.friendPanelConfig = { isApply: true };
+        }
+
         const userProfile = (await IMGetUserProfile(toUser))?.data || {};
         const { remark, desc } = friendInfo;
         return {

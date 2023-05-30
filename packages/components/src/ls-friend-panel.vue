@@ -356,7 +356,7 @@ export default {
 <style scoped lang="scss">
 .friend-dialog {
   width: 372px;
-  min-height: 446px;
+  min-height: 346px;
   background: $bg-white-color;
   box-shadow: 0px 4px 20px 0px rgba(51, 51, 51, 0.1);
   border-radius: 12px;
@@ -436,6 +436,10 @@ export default {
       align-items: flex-start;
       margin-bottom: 19px;
       min-height: 20px;
+
+      &:last-child {
+        margin-bottom: 69px;
+      }
 
       ::v-deep .el-textarea__inner {
         font-family: inherit;
