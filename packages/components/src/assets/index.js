@@ -8,6 +8,7 @@ const updateBg = require('./images/update-bg.png');
 const updateBgSmall = require('./images/update-bg-small.png');
 const updateBgLogin = require('./images/update-bg-login.png');
 const emptyData = require('./images/empty-data.png');
+const emptyDataBook = require('./images/empty-data-book.png');
 const logo = require('./images/logo.png');
 
 // 统一导出静态资源
@@ -22,5 +23,6 @@ export default {
   updateBgSmall,
   updateBgLogin,
   emptyData,
+  emptyDataBook,
   logo,
 };

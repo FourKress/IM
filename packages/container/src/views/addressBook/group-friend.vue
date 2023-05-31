@@ -1,12 +1,17 @@
 <template>
-  <div class="group-friend">
+  <div class="group-friend" v-if="myGroupList.length || joinGroupList.length">
     <GroupList :list="myGroupList" title="我创建的群聊"></GroupList>
     <GroupList :list="joinGroupList" title="我加入的群聊"></GroupList>
+  </div>
+
+  <div class="empty-data" v-else>
+    <img :src="LsAssets.emptyDataBook" alt="" />
   </div>
 </template>
 
 <script>
 import { IMGetGroupList } from '@lanshu/im';
+import { LsAssets } from '@lanshu/components';
 import { mapGetters } from 'vuex';
 import GroupList from './group-list.vue';
 
@@ -17,6 +22,7 @@ export default {
   },
   data() {
     return {
+      LsAssets,
       groupList: [],
     };
   },
@@ -54,5 +60,19 @@ export default {
   padding: 0 20px;
   height: 100%;
   overflow-y: auto;
+}
+
+.empty-data {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  img {
+    display: block;
+    width: 200px;
+    height: 200px;
+  }
 }
 </style>

@@ -183,19 +183,19 @@
         <div class="dep-info">
           <div class="dep-row">
             <span class="label">电话</span>
-            <span class="text">aadsdsds</span>
+            <span class="text">{{ friendInfo.phone }}</span>
           </div>
           <div class="dep-row">
             <span class="label">组织</span>
-            <span class="text">aadsdsds</span>
+            <span class="text">{{ friendInfo.org }}</span>
           </div>
           <div class="dep-row">
             <span class="label">部门</span>
-            <span class="text">aadsdsds</span>
+            <span class="text">{{ friendInfo.dep }}</span>
           </div>
           <div class="dep-row">
             <span class="label">角色</span>
-            <span class="text">aadsdsds</span>
+            <span class="text">{{ friendInfo.roleCode }}</span>
           </div>
         </div>
       </template>

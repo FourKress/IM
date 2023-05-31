@@ -1,6 +1,6 @@
 <template>
   <div class="new-friend">
-    <div class="friend-list">
+    <div class="friend-list" v-if="friendList.length">
       <div
         class="item"
         v-for="item in friendList"
@@ -27,6 +27,11 @@
           }}
         </div>
       </div>
+
+    </div>
+
+    <div class="empty-data" v-else>
+      <img :src="LsAssets.emptyDataBook" alt="">
     </div>
 
     <LsCardDialog :visible.sync="showFriendDialog">
@@ -46,7 +51,7 @@
 </template>
 
 <script>
-import { LsCardDialog, LsFriendPanel } from '@lanshu/components';
+import { LsCardDialog, LsFriendPanel,LsAssets } from '@lanshu/components';
 import { FRIEND_AUTH_STATE, FriendMixins } from '@lanshu/utils';
 import { mapGetters, mapActions } from 'vuex';
 import {
@@ -65,6 +70,7 @@ export default {
   },
   data() {
     return {
+      LsAssets,
       FRIEND_AUTH_STATE,
       friendList: [],
       config: {},
@@ -239,6 +245,20 @@ export default {
           }
         }
       }
+    }
+  }
+
+  .empty-data {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    img {
+      display: block;
+      width: 200px;
+      height: 200px;
     }
   }
 }

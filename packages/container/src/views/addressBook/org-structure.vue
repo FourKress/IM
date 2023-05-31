@@ -135,7 +135,7 @@ export default {
     initData(depId) {
       console.log('depId', depId);
       this.userList = [];
-      this.selfDepList = []
+      this.selfDepList = [];
       this.selfDepList = this.depList.filter((d) => d.parentId === depId);
       this.getUserByDep(depId);
     },
@@ -159,15 +159,25 @@ export default {
 
     async handleFriend(user, event) {
       console.log(user);
+      const roleCodeMap = {
+        generalUser: '普通成员',
+        departAdmin: '部门管理员',
+        cooperateAdmin: '协作管理员',
+        orgAdmin: '组织管理员',
+        platformAdmin: '平台管理员',
+      };
+
       await this.openFriendDialog(
         event,
         async () => {
-          const { userId, nickName, picture } = user;
+          const { userId, nickName, picture, phone, roleCode } = user;
           this.friendPanelConfig = { isPass: true };
           return {
             userId,
             nickname: nickName,
             avatar: picture,
+            phone,
+            roleCode: roleCodeMap[roleCode],
           };
         },
         440,

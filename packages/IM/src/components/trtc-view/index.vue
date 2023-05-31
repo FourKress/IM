@@ -304,11 +304,8 @@ export default {
         .then((res) => {
           console.log('拨打回调', res);
           let waringText;
-          const { type, uuid, data } = res;
+          const { type, uuid } = res;
           this.callUUID = uuid;
-
-          const { platform = CLIENT_TYPE.IS_PC } = data;
-          this.isPc = platform === CLIENT_TYPE.IS_PC;
 
           switch (type) {
             case this.NETWORK_CALLBACK_TYPE.IS_TIMEOUT:
@@ -318,6 +315,10 @@ export default {
               waringText = '对方已拒绝';
               break;
             case this.NETWORK_CALLBACK_TYPE.IS_ANSWERED:
+
+              const { platform = CLIENT_TYPE.IS_PC } = res?.data || {};
+              this.isPc = platform === CLIENT_TYPE.IS_PC;
+
               this.handleEnterRoom();
               this.startTime();
               setInterval(() => {
@@ -681,6 +682,7 @@ export default {
     display: flex;
     align-items: center;
     justify-content: center;
+    transform: translateY(-20px);
 
     .btn {
       width: 56px;

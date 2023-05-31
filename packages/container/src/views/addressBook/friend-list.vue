@@ -40,6 +40,9 @@
           </div>
         </div>
       </div>
+      <div class="empty-data" v-else>
+        <img :src="LsAssets.emptyDataBook" alt="">
+      </div>
     </div>
 
     <LsCardDialog :visible.sync="showFriendDialog">
@@ -47,6 +50,7 @@
         :friend-info="friendInfo"
         :position="position"
         :config="{ isPass: true }"
+        :isBot="isBot"
         @sendMsg="handleSendMsg"
         @sendVideo="handleSendVideo"
         @sendAudio="handleSendAudio"
@@ -58,8 +62,7 @@
 
 <script>
 import { AddressBookMixins, FriendMixins } from '@lanshu/utils';
-import { LsCardDialog, LsFriendPanel } from '@lanshu/components';
-import { IMGetUserProfile } from '@lanshu/im';
+import { LsCardDialog, LsFriendPanel, LsAssets } from '@lanshu/components';
 import { mapGetters } from 'vuex';
 
 export default {
@@ -86,7 +89,9 @@ export default {
     },
   },
   data() {
-    return {};
+    return {
+      LsAssets,
+    };
   },
   created() {
     this.minScrollTop = 80;
@@ -102,17 +107,12 @@ export default {
       this.getFriendListData();
     },
     async handleFriend(item, event) {
+      console.log(item)
       await this.openFriendDialog(
         event,
         async () => {
-          const res = await IMGetUserProfile(item.userId);
-          const { birthday, description, sex, location } = res?.data || {};
           return {
             ...item,
-            birthday,
-            description,
-            sex,
-            location,
           };
         }
       );
@@ -236,6 +236,20 @@ export default {
           }
         }
       }
+    }
+  }
+
+  .empty-data {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    img {
+      display: block;
+      width: 200px;
+      height: 200px;
     }
   }
 }

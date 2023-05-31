@@ -1,5 +1,6 @@
 import { groupedPy, sortedPY } from '../pinyin';
 import { IMGetAllFriendList } from '@lanshu/im';
+import { Apis } from '../../lib/main';
 
 export default {
   data() {
@@ -40,8 +41,21 @@ export default {
   },
   methods: {
     async getFriendListData() {
-      if (this.isBot) return;
-      await IMGetAllFriendList().then((res) => {
+      if (this.isBot) {
+        const res = await Apis.technicalSupportList();
+        this.addressBookList = (res?.data || []).map((d) => {
+          const { id, nickName, picture } = d;
+          return {
+            ...d,
+            userId: id,
+            nickname: nickName,
+            avatar: picture,
+            checked: false,
+            isDefault: false,
+          };
+        });
+      } else {
+        const res = await IMGetAllFriendList();
         this.addressBookList = (res?.data || []).map((d) => {
           return {
             ...d,
@@ -49,8 +63,9 @@ export default {
             isDefault: false,
           };
         });
-        this.initPinYin();
-      });
+      }
+
+      this.initPinYin();
     },
     initPinYin() {
       // 数据转为拼音键值对 {A:[], B: []} 类型

@@ -279,7 +279,7 @@ export default {
         const breadCrumb = val[0];
         this.activeKey = `${breadCrumb.key}_Org`;
       }
-    }
+    },
   },
   mounted() {
     this.getDepList();
@@ -374,6 +374,7 @@ export default {
       let orgList = departsRes?.data || {};
 
       const subList = [];
+      let currentDep;
       orgList = orgList
         .filter((d) => {
           if (d.parentId === '0') return true;
@@ -428,6 +429,14 @@ export default {
 
       this.depList = subList;
       this.orgList = orgList;
+
+      if (orgList?.length) {
+        const org = orgList[0];
+        const dep = org.subList[0];
+        const item =
+          dep.children?.length > 1 ? dep.children[1] : dep.children[0];
+        this.handleSelectDep(item, dep, org);
+      }
 
       console.log(orgList, userDepList);
     },

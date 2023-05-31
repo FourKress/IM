@@ -79,6 +79,7 @@ export const defaultWindowConfig = {
   frame: false,
   autoHideMenuBar: true,
   webPreferences: {
+    webviewTag: true,
     webSecurity: false,
     nodeIntegration: true,
     contextIsolation: false,

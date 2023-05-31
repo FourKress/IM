@@ -9,7 +9,7 @@
     <!--      -->
     <!--    </el-popover>-->
     <el-popover
-      placement="right"
+      placement="top"
       width="40"
       trigger="manual"
       popper-class="context-menu-popover"

@@ -284,7 +284,7 @@ export default {
   .empty-data {
     height: 20px;
     font-size: 14px;
-    margin: 270px auto 0;
+    margin: 200px auto 0;
     text-align: center;
 
     .link {
