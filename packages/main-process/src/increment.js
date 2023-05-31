@@ -72,8 +72,16 @@ export default async (data) => {
           )}" "${resourcesPath}" "${downloads}" "蓝数IM.exe" "${app.getPath(
             'exe',
           )}"`,
-          version,
-        );
+        )
+          .then(() => {
+            global.store.set('VERSION', version);
+          })
+          .catch(() => {
+            global.mainWindow.webContents.send('mainProcessError', {
+              msg: '更新失败, 请重新打开应用',
+              type: 'DIALOG',
+            });
+          });
 
         // exec(
         //   `"${path.join(

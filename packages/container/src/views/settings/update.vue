@@ -60,7 +60,7 @@ export default {
   },
   async created() {
     this.selfUpdateNotify = this.updateNotify;
-    this.currentVersion = (await renderProcess.getStore('VERSION')) || '0.0.1';
+    this.currentVersion = await renderProcess.getStore('VERSION');
   },
   methods: {
     ...mapActions('globalStore', ['setUpdateNotify', 'setStartDownload', 'setUpdateInfo']),

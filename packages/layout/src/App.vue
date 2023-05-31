@@ -129,12 +129,10 @@ export default {
 
       const { version, model, decDirectory, title, content } = updateData;
       const currentVersion = await renderProcess.getStore('VERSION');
-      console.log(currentVersion)
+      console.log(version, currentVersion)
 
       const isNewVersion = compareVersion(version, currentVersion) === 1;
       if (!isNewVersion) return;
-
-      // await window.$lanshuStore.setItem('version', version);
 
       const updateInfo = {
         version,
