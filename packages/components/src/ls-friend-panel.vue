@@ -34,6 +34,7 @@
         class="more-btn"
         v-if="
           !isBot &&
+          !isDep &&
           !panelConfig.isApply &&
           !panelConfig.isAuth &&
           !panelConfig.isExpired
@@ -54,7 +55,11 @@
             <!--            </el-dropdown-item>-->
             <el-dropdown-item :command="IS_DELETE">
               <div class="send-down-row">
-                <LsIcon size="14" color="red" icon="pop_cd_sz"></LsIcon>
+                <LsIcon
+                  size="14"
+                  color="red"
+                  icon="ls-icon-icon_shanchu"
+                ></LsIcon>
                 <span style="color: red">删除好友</span>
               </div>
             </el-dropdown-item>
@@ -68,7 +73,10 @@
         <el-button
           class="action-btn left"
           @click="handleSendMsg"
-          :loading="isMsgAwait"
+          v-loading="isMsgAwait"
+          element-loading-text=""
+          element-loading-spinner="el-icon-loading"
+          element-loading-background="rgba(255, 255, 255, .7)"
         >
           <LsIcon
             render-svg
@@ -82,7 +90,10 @@
         <el-button
           class="action-btn"
           @click="handleSendAudio"
-          :loading="isAudioAwait"
+          v-loading="isAudioAwait"
+          element-loading-text=""
+          element-loading-spinner="el-icon-loading"
+          element-loading-background="rgba(255, 255, 255, .7)"
         >
           <LsIcon
             render-svg
@@ -96,7 +107,10 @@
         <el-button
           class="action-btn"
           @click="handleSendVideo"
-          :loading="isVideoAwait"
+          v-loading="isVideoAwait"
+          element-loading-text=""
+          element-loading-spinner="el-icon-loading"
+          element-loading-background="rgba(255, 255, 255, .7)"
         >
           <LsIcon
             render-svg
@@ -108,60 +122,83 @@
         </el-button>
       </div>
 
-      <div class="row">
-        <span class="label sign-label">个性签名</span>
-        <div class="input">
-          <div class="sign">{{ friendInfo.description }}</div>
+      <template v-if="!isDep">
+        <div class="row">
+          <span class="label sign-label">个性签名</span>
+          <div class="input">
+            <div class="sign">{{ friendInfo.description }}</div>
+          </div>
         </div>
-      </div>
-      <div class="row">
-        <span class="label">备注名</span>
-        <div class="input">
-          <el-input
-            class="friend-mark"
-            type="text"
-            :maxlength="10"
-            placeholder="输入备注"
-            :disabled="panelConfig.isExpired"
-            @change="handleSetRemarkOrDesc"
-            v-model="remark"
-          ></el-input>
+        <div class="row">
+          <span class="label">备注名</span>
+          <div class="input">
+            <el-input
+              class="friend-mark"
+              type="text"
+              :maxlength="10"
+              placeholder="输入备注"
+              :disabled="panelConfig.isExpired"
+              @change="handleSetRemarkOrDesc"
+              v-model="remark"
+            ></el-input>
+          </div>
         </div>
-      </div>
-      <div class="row">
-        <span class="label">描述</span>
-        <div class="input">
-          <el-input
-            type="textarea"
-            resize="none"
-            :maxlength="100"
-            :autosize="{ minRows: 1, maxRows: 3 }"
-            placeholder="输入描述"
-            :disabled="panelConfig.isExpired"
-            @change="handleSetRemarkOrDesc"
-            v-model="desc"
-          ></el-input>
+        <div class="row">
+          <span class="label">描述</span>
+          <div class="input">
+            <el-input
+              type="textarea"
+              resize="none"
+              :maxlength="100"
+              :autosize="{ minRows: 1, maxRows: 3 }"
+              placeholder="输入描述"
+              :disabled="panelConfig.isExpired"
+              @change="handleSetRemarkOrDesc"
+              v-model="desc"
+            ></el-input>
+          </div>
         </div>
-      </div>
-      <div class="row" v-if="!panelConfig.isPass && !panelConfig.isDetails">
-        <span class="label">招呼</span>
-        <div class="input">
-          <el-input
-            v-if="panelConfig.isApply"
-            class="msg"
-            type="textarea"
-            resize="none"
-            :maxlength="100"
-            :rows="3"
-            v-model="message"
-          ></el-input>
-          <div class="msg-list" v-else>
-            <div class="item">
-              {{ friendInfo.message }}
+        <div class="row" v-if="!panelConfig.isPass && !panelConfig.isDetails">
+          <span class="label">招呼</span>
+          <div class="input">
+            <el-input
+              v-if="panelConfig.isApply"
+              class="msg"
+              type="textarea"
+              resize="none"
+              :maxlength="100"
+              :rows="3"
+              v-model="message"
+            ></el-input>
+            <div class="msg-list" v-else>
+              <div class="item">
+                {{ friendInfo.message }}
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </template>
+
+      <template v-else>
+        <div class="dep-info">
+          <div class="dep-row">
+            <span class="label">电话</span>
+            <span class="text">aadsdsds</span>
+          </div>
+          <div class="dep-row">
+            <span class="label">组织</span>
+            <span class="text">aadsdsds</span>
+          </div>
+          <div class="dep-row">
+            <span class="label">部门</span>
+            <span class="text">aadsdsds</span>
+          </div>
+          <div class="dep-row">
+            <span class="label">角色</span>
+            <span class="text">aadsdsds</span>
+          </div>
+        </div>
+      </template>
 
       <el-button
         class="btn"
@@ -228,6 +265,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    isDep: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -282,7 +323,7 @@ export default {
       if (!this.friendInfo?.userId) {
         this.isLoading = true;
       }
-    }, 200)
+    }, 200);
     if (this.panelConfig.isApply) {
       this.message = `我是${this.userInfo.nickname}`;
     }
@@ -501,6 +542,25 @@ export default {
       }
     }
 
+    .dep-info {
+      margin-bottom: 40px;
+      .dep-row {
+        display: flex;
+        align-items: center;
+        font-size: 14px;
+        margin-bottom: 16px;
+
+        .label {
+          color: $minor-text-color;
+          padding-right: 26px;
+        }
+
+        .text {
+          color: $main-text-color;
+        }
+      }
+    }
+
     .btn {
       width: 100%;
       height: 48px;
@@ -549,7 +609,9 @@ export default {
         width: 100px;
         background: $bg-IM-color;
         height: 48px;
+        line-height: 48px;
         border-radius: 6px;
+        overflow: hidden;
         cursor: pointer;
         font-size: 16px;
         color: $main-text-color;
@@ -565,6 +627,8 @@ export default {
           display: flex;
           align-items: center;
           justify-content: center;
+
+          margin-left: 0;
 
           .btn-label {
             padding-left: 6px;

@@ -2,7 +2,11 @@
   <div id="lanshu-app">
     <MainLayout />
 
-    <LsCardDialog :visible.sync="visibleUpdate" background-color="rgba(0,0,0,.5)" :is-modal-close="false">
+    <LsCardDialog
+      :visible.sync="visibleUpdate"
+      background-color="rgba(0,0,0,.5)"
+      :is-modal-close="false"
+    >
       <LsUpdate :startDownload="startDownload" @cancel="handleCancelUpdate" />
     </LsCardDialog>
   </div>
@@ -14,7 +18,12 @@ import { ClientLogOut, IMSDKCallBackEvents } from '@lanshu/im';
 import { renderProcess } from '@lanshu/render-process';
 import { LsUpdate, LsCardDialog } from '@lanshu/components';
 import { mapActions, mapGetters } from 'vuex';
-import { WINDOW_TYPE } from '@lanshu/utils';
+import {
+  WINDOW_TYPE,
+  WIN_ACTION_TYPE,
+  Apis,
+  compareVersion,
+} from '@lanshu/utils';
 
 export default {
   name: 'App',
@@ -46,7 +55,7 @@ export default {
           const hasWindow = await renderProcess.hasWindow('TRTCWindow');
           if (hasWindow) {
             renderProcess.changeWindow(
-              this.WIN_ACTION_TYPE.IS_CLOSE,
+              WIN_ACTION_TYPE.IS_CLOSE,
               WINDOW_TYPE.IS_TRTC,
             );
           }
@@ -56,26 +65,32 @@ export default {
     },
   },
   created() {
-    renderProcess.updateClient((event, value) => {
-      this.$Lconfirm({
-        title: '应用更新',
-        content: '发现新版本，是否更新？',
-      }).then(() => {
-        event.sender.send('startUpdate', 'startUpdate');
-      });
-    });
     renderProcess.IMSDKListener((event, data) => {
       const { type, value } = data;
       console.log(type, value);
       IMSDKCallBackEvents[type](this, value);
     });
-    renderProcess.mainProcessError((event, msg) => {
-      this.$message.warning(msg);
+    renderProcess.mainProcessError((event, info) => {
+      const { msg, type } = info;
+      if (type === 'MESSAGE') {
+        this.$message.warning(msg);
+        return;
+      }
+      this.$Lconfirm({
+        title: '提示',
+        content: msg,
+        showCancelBtn: false,
+      }).then(() => {
+        renderProcess.changeWindow(
+          WIN_ACTION_TYPE.IS_CLOSE,
+          WINDOW_TYPE.IS_MAIN,
+        );
+      });
     });
+
+    this.handleGetVersion();
   },
   mounted() {
-    this.handleGetVersion();
-
     document.addEventListener('keydown', (event) => {
       const code = event.code;
       const keys = [
@@ -106,13 +121,28 @@ export default {
     ]),
 
     async handleGetVersion() {
-      // TODO 检查是否有新版本 强制OR非强制
-      const isUpdate = false;
+      const res = await Apis.queryLastAvailableByAppCode({
+        appCode: 'PC',
+      });
+      const updateData = res?.data;
+      if (!updateData) return;
+
+      const { version, model, decDirectory, title, content } = updateData;
+      const currentVersion = await renderProcess.getStore('VERSION');
+      console.log(currentVersion)
+
+      const isNewVersion = compareVersion(version, currentVersion) === 1;
+      if (!isNewVersion) return;
+
+      // await window.$lanshuStore.setItem('version', version);
+
       const updateInfo = {
-        version: '3.2.3',
-        isForced: false,
+        version,
+        isForced: model === 1,
+        fetchUrl: decDirectory,
+        title,
+        content,
       };
-      if (!isUpdate) return;
       this.setUpdateInfo(updateInfo);
       if (!updateInfo?.isForced) {
         this.setUpdateNotify(true);
@@ -120,9 +150,9 @@ export default {
       this.visibleUpdate = true;
     },
 
-    handleCancelUpdate () {
+    handleCancelUpdate() {
       this.visibleUpdate = false;
-    }
+    },
   },
 };
 </script>

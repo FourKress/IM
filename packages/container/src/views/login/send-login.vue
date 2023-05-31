@@ -9,7 +9,7 @@
           icon="a-icon_zuobian2x"
         ></LsIcon>
       </div>
-      <span class="right" @click="handleSwitchAuthCode">验证码登录</span>
+      <span class="right" v-if="!isSetPwd" @click="handleSwitchAuthCode">验证码登录</span>
     </div>
 
     <div class="title">

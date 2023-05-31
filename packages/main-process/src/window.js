@@ -6,6 +6,7 @@ import { getScreenInfo } from './screen';
 
 const initLoginWindow = () => {
   const mainWindow = global.mainWindow;
+  mainWindow.setMinimumSize(440, 600);
   mainWindow.setSize(440, 600);
   mainWindow.setResizable(false);
   mainWindow.setMaximizable(false);
@@ -158,7 +159,10 @@ export const openTRTCWindow = async (type = CLIENT_TYPE.IS_PC) => {
     const trtcCanBeClosed = global.store.get('TRTC_CAN_BE_CLOSED');
     if (!trtcCanBeClosed) {
       event.preventDefault();
-      TRTCWindow.webContents.send('mainProcessError', '请先结束当前通话');
+      TRTCWindow.webContents.send('mainProcessError', {
+        msg: '请先结束当前通话',
+        type: 'MESSAGE',
+      });
       return;
     }
   });

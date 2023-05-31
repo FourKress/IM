@@ -70,7 +70,7 @@ export default {
         {
           key: 'AccountCenter',
           label: '账号中心',
-          icon: 'sz_zhzx',
+          icon: 'ls-icon-icon_gerenxinxi',
         },
         // {
         //   key: 'Notify',

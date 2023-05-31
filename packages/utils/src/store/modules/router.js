@@ -1,7 +1,7 @@
 const state = {
   breadCrumbs: [],
   historyMainPath: '',
-  orgBreadCrumbs: [{ label: '测试' }, { label: '测试1' }, { label: '测试222' }],
+  orgBreadCrumbs: [],
 };
 
 const getters = {
@@ -26,14 +26,16 @@ const mutations = {
     data.historyMainPath = value;
   },
   addOrgBreadCrumb(data, value) {
-    const flag = data.orgBreadCrumbs.some((d) => d.path === value.path);
+    const flag = data.orgBreadCrumbs.some((d) => d.key === value.key);
     if (flag) return;
     data.orgBreadCrumbs.push(value);
   },
-  deleteOrgBreadCrumb(data, value) {
-    data.orgBreadCrumbs = data.orgBreadCrumbs.filter(
-      (d) => d.path !== value.path,
-    );
+  deleteOrgBreadCrumb(data, index) {
+    console.log(index);
+    data.orgBreadCrumbs = data.orgBreadCrumbs.splice(0, index + 1);
+  },
+  setOrgBreadCrumb(data, value) {
+    data.orgBreadCrumbs = value;
   },
   clearOrgBreadCrumb(data) {
     data.orgBreadCrumbs = [];
@@ -55,6 +57,9 @@ const actions = {
   },
   addOrgBreadCrumb({ commit }, value) {
     commit('addOrgBreadCrumb', value);
+  },
+  setOrgBreadCrumb({ commit }, value) {
+    commit('setOrgBreadCrumb', value);
   },
   deleteOrgBreadCrumb({ commit }, value) {
     commit('deleteOrgBreadCrumb', value);

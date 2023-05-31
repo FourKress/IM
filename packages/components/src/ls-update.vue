@@ -3,7 +3,8 @@
     <div class="top">
       <img class="img" v-if="isLogin" :src="LsAssets.updateBgLogin" alt="" />
       <img class="img" v-else :src="LsAssets.updateBg" alt="" />
-      <span class="tips" v-if="isLogin">{{startDownload ? '下载新版本' : '检测到新版本'}}
+      <span class="tips" v-if="isLogin">
+        {{ startDownload ? '下载新版本' : '检测到新版本' }}
       </span>
     </div>
 
@@ -17,19 +18,25 @@
             :percentage="downloadProgress"
           ></el-progress>
         </div>
-        <span class="tips" :class="isUpdateError && 'error'">{{isUpdateError ? '网络错误，请重试…' : '下载中，请耐心等待…'}}</span>
-        <span class="error-btn" v-if="isUpdateError" @click="handleStartUpdate">重新下载</span>
+        <span class="tips" :class="isUpdateError && 'error'">
+          {{ isUpdateError ? '网络错误，请重试…' : '下载中，请耐心等待…' }}
+        </span>
+        <span class="error-btn" v-if="isUpdateError" @click="handleStartUpdate">
+          重新下载
+        </span>
       </div>
     </template>
     <template v-else>
       <div class="container">
-        <div class="title">离开大陆就大撒大撒但是</div>
+        <div class="title">{{ updateInfo.title }}</div>
         <div class="text-wrap">
-          <div class="scroll-view" v-html="richText"></div>
+          <div class="scroll-view" v-html="updateInfo.content"></div>
         </div>
       </div>
       <div class="footer">
-        <span class="left btn" @click="handleClose">{{updateInfo.isForced ? '退出' : '跳过本次版本'}}</span>
+        <span class="left btn" @click="handleClose">
+          {{ updateInfo.isForced ? '退出' : '跳过本次版本' }}
+        </span>
         <span class="right btn" @click="handleStartUpdate">立即更新</span>
       </div>
     </template>
@@ -56,16 +63,14 @@ export default {
       WIN_ACTION_TYPE,
       downloadProgress: 0,
       isUpdateError: false,
-      richText:
-        'dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>',
     };
   },
   computed: {
     ...mapGetters('globalStore', ['updateInfo']),
 
     isLogin() {
-      return this.$route.name === 'Login'
-    }
+      return this.$route.name === 'Login';
+    },
   },
   created() {
     renderProcess.downloadProgress((event, progress) => {
@@ -82,7 +87,7 @@ export default {
 
     async handleClose() {
       if (!this.updateInfo.isForced) {
-        this.$emit('cancel')
+        this.$emit('cancel');
         return;
       }
       const hasWindow = await renderProcess.hasWindow('TRTCWindow');
@@ -92,12 +97,16 @@ export default {
           WINDOW_TYPE.IS_TRTC,
         );
       }
-      renderProcess.changeWindow(this.WIN_ACTION_TYPE.IS_CLOSE, WINDOW_TYPE.IS_MAIN);
+      renderProcess.changeWindow(
+        this.WIN_ACTION_TYPE.IS_CLOSE,
+        WINDOW_TYPE.IS_MAIN,
+      );
     },
     handleStartUpdate() {
       this.isUpdateError = false;
       this.setStartDownload(true);
-      renderProcess.checkForUpdates();
+      const { fetchUrl, version } = this.updateInfo;
+      renderProcess.checkForUpdates({ fetchUrl, version });
     },
   },
 };

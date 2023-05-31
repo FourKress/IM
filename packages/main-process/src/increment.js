@@ -12,7 +12,7 @@ let progress = 0;
 export default async (data) => {
   const resourcesPath = process.resourcesPath;
   const userDataPath = app.getPath('userData');
-  const { upDateExe, upDateUrl } = data;
+  const { upDateExe, upDateUrl, version } = data;
 
   electronLog.info(data);
   electronLog.info(resourcesPath);
@@ -72,6 +72,7 @@ export default async (data) => {
           )}" "${resourcesPath}" "${downloads}" "蓝数IM.exe" "${app.getPath(
             'exe',
           )}"`,
+          version,
         );
 
         // exec(

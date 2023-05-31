@@ -12,7 +12,6 @@
 //   setHotKey: (params) => ipcRenderer.send('setHotKey', params),
 //   setStore: (key, data) => ipcRenderer.send('setStore', key, data),
 //   getStore: (key) => ipcRenderer.invoke('getStore', key),
-//   updateClient: (callback) => ipcRenderer.on('updateClient', callback),
 //   IMSDKIPC: (provider, event, ...data) =>
 //     ipcRenderer.invoke('IMSDKIPC', provider, event, data),
 //   IMSDKListener: (callback) => ipcRenderer.on('IMSDKListener', callback),
@@ -32,7 +31,6 @@ window.electronAPI = {
   setHotKey: (params) => ipcRenderer.send('setHotKey', params),
   setStore: (key, data) => ipcRenderer.send('setStore', key, data),
   getStore: (key) => ipcRenderer.invoke('getStore', key),
-  updateClient: (callback) => ipcRenderer.on('updateClient', callback),
   IMSDK_INIT: (appId) => ipcRenderer.send('IMSDK_INIT', appId),
   IMSDKIPC: (provider, event, ...data) =>
     ipcRenderer.invoke('IMSDKIPC', provider, event, data),
@@ -47,7 +45,7 @@ window.electronAPI = {
   mainProcessError: (callback) => ipcRenderer.on('mainProcessError', callback),
   downloadProgress: (callback) => ipcRenderer.on('downloadProgress', callback),
   setAutoStart: (key, data) => ipcRenderer.send('setAutoStart', key, data),
-  checkForUpdates: () => ipcRenderer.send('checkForUpdates'),
+  checkForUpdates: (config) => ipcRenderer.send('checkForUpdates', config),
   activeSearch: (callback) => ipcRenderer.on('activeSearch', callback),
   getCacheFilePath: (fileName) =>
     ipcRenderer.invoke('getCacheFilePath', fileName),

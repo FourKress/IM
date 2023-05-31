@@ -20,7 +20,6 @@ export const getFileSize = electronAPI?.getFileSize;
 export const setHotKey = electronAPI?.setHotKey;
 export const getStore = electronAPI?.getStore;
 export const setStore = electronAPI?.setStore;
-export const updateClient = electronAPI?.updateClient;
 export const IMSDK_INIT = electronAPI?.IMSDK_INIT;
 export const IMSDKIPC = electronAPI?.IMSDKIPC;
 export const IMSDKNetworkCall = electronAPI?.IMSDKNetworkCall;

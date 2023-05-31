@@ -116,12 +116,16 @@ const initIpcMain = () => {
     });
 
     // 触发检查更新并且下载
-    ipcMain.on('checkForUpdates', async (_event) => {
-      console.log('检查更新');
+    ipcMain.on('checkForUpdates', async (_event, config) => {
+      console.log('检查更新', config);
       electronLog.info('检查更新, 增量更新');
+      electronLog.info(config);
+      const { version, fetchUrl } = config;
+
       await increment({
-        upDateUrl: 'http://172.16.4.65:7654/app.zip',
-        upDateExe: 'http://172.16.4.65:7654/update.exe',
+        upDateUrl: `${fetchUrl}app.zip`,
+        upDateExe: `${fetchUrl}update.exe`,
+        version,
       });
     });
 

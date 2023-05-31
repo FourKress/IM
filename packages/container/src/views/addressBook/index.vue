@@ -5,9 +5,9 @@
         <span>通讯录</span>
       </div>
 
-      <div class="nav-group">
+      <div class="nav-group" v-for="org in orgList" :key="org.id">
         <div class="nav-title">
-          <span class="label">组织管理</span>
+          <span class="label">{{ org.name }}</span>
           <span class="right-btn" @click="openOrgLink">
             <LsIcon
               icon="icon_tianjiahaoyou"
@@ -20,41 +20,41 @@
           </span>
         </div>
         <div class="org-panel-list">
-          <div class="org-panel-item" v-for="org in orgList">
+          <div class="org-panel-item" v-for="dep in org.subList">
             <div
               class="org-item"
-              @click="orgActiveKey = orgActiveKey === org.key ? null : org.key"
+              @click="orgActiveKey = orgActiveKey === dep.id ? null : dep.id"
             >
               <LsIcon
                 class="nav-icon"
                 render-svg
                 icon="ls-icon-icon_danwei"
               ></LsIcon>
-              <span class="label">{{ org.label }}</span>
+              <span class="label">{{ dep.name }}</span>
               <LsIcon
                 class="more-icon"
                 render-svg
                 width="14"
                 height="14"
                 :icon="`ls-icon-icon_${
-                  orgActiveKey === org.key ? 'down' : 'right'
+                  orgActiveKey === dep.id ? 'down' : 'right'
                 }`"
               ></LsIcon>
             </div>
 
-            <div class="org-sub-list" v-show="orgActiveKey === org.key">
+            <div class="org-sub-list" v-show="orgActiveKey === dep.id">
               <div
                 class="org-sub-item"
                 :class="activeKey === item.key && 'active'"
-                v-for="item in org.subList"
-                @click="handleSelectOrg(item)"
+                v-for="item in dep.children"
+                @click="handleSelectDep(item, dep, org)"
               >
                 <LsIcon
                   class="nav-icon"
                   render-svg
                   icon="ls-icon-icon_xiaji"
                 ></LsIcon>
-                <span class="label">{{ item.label }}</span>
+                <span class="label" v-html="item.label"></span>
               </div>
             </div>
           </div>
@@ -144,6 +144,8 @@
           :is="componentConfig.component"
           :key="componentConfig.key"
           :isBot="componentConfig.key === 'FriendListBot'"
+          :depId="componentConfig.depId"
+          :depList="componentConfig.depList"
         ></component>
       </div>
     </div>
@@ -167,7 +169,11 @@ import NewFriend from './new-friend.vue';
 import GroupFriend from './group-friend.vue';
 import FriendList from './friend-list.vue';
 import OrgStructure from './org-structure.vue';
-import { IM_GROUP_MEMBER_PANEL_TYPE, SESSION_USER_TYPE } from '@lanshu/utils';
+import {
+  Apis,
+  IM_GROUP_MEMBER_PANEL_TYPE,
+  SESSION_USER_TYPE,
+} from '@lanshu/utils';
 import { GroupMemberChat } from '@lanshu/im';
 import { renderProcess } from '@lanshu/render-process';
 
@@ -215,18 +221,8 @@ export default {
           icon: 'ls-icon-icon_jishuzhichi',
         },
       ],
-      orgList: [
-        {
-          label: '行政服务中心',
-          key: 'AdminServiceCenter',
-          subList: [],
-        },
-        {
-          label: '交通局',
-          key: 'TransportationBureau',
-          subList: [],
-        },
-      ],
+      orgList: [],
+      depList: [],
       addFriendConfig: {
         label: '添加好友',
         component: 'AddFriend',
@@ -239,6 +235,7 @@ export default {
   },
   computed: {
     ...mapGetters('IMStore', ['newFriendCount', 'sessionList']),
+    ...mapGetters('routerStore', ['orgBreadCrumbs']),
 
     rawMembers() {
       return this.sessionList.filter(
@@ -246,45 +243,70 @@ export default {
       );
     },
   },
+  watch: {
+    orgBreadCrumbs(val) {
+      if (val?.length === 1) {
+        const breadCrumb = val[0];
+        this.activeKey = `${breadCrumb.key}_Org`;
+      }
+    }
+  },
   mounted() {
-    this.orgList = this.orgList.map((d) => {
-      return {
-        ...d,
-        subList: [
-          {
-            label: '组织架构',
-            component: 'OrgStructure',
-            key: `${d.key}_OrgStructure`,
-          },
-          {
-            label: '我的部门',
-            component: 'MyDep',
-            key: `${d.key}_MyDep`,
-          },
-        ],
-      };
-    });
+    this.getDepList();
   },
   methods: {
     ...mapActions('IMStore', ['setMainSessionWindow']),
+    ...mapActions('routerStore', ['setOrgBreadCrumb', 'clearOrgBreadCrumb']),
 
     addFriend() {
       this.activeKey = null;
       this.setComponentConfig(this.addFriendConfig);
     },
     handleSelectNav(nav) {
+      this.clearOrgBreadCrumb();
       this.activeKey = nav.key;
-      this.setComponentConfig(nav);
+      this.setComponentConfig({
+        isOrg: false,
+        subLabel: '',
+        depId: '',
+        depList: [],
+        ...nav,
+      });
     },
 
-    handleSelectOrg(org) {
-      this.activeKey = org.key;
-      console.log(org);
+    handleSelectDep(item, dep, org) {
+      this.activeKey = item.key;
       this.handleSelectNav({
-        ...org,
+        ...item,
+        label: item.name,
         isOrg: true,
-        subLabel: '实打实大大',
+        subLabel: org.name,
+        depId: item.id,
+        depList: this.depList,
       });
+      this.clearOrgBreadCrumb();
+      if (item.key.includes('Dep')) {
+        const breadCrumb = item.myDeps?.map((d) => {
+          return {
+            label: d.name,
+            key: d.id,
+          };
+        });
+        this.setOrgBreadCrumb([
+          {
+            label: dep.name,
+            key: dep.id,
+          },
+          ...breadCrumb,
+        ]);
+      } else {
+        this.setOrgBreadCrumb([
+          {
+            label: item.name,
+            key: item.id,
+          },
+        ]);
+      }
     },
 
     setComponentConfig(nav) {
@@ -313,6 +335,86 @@ export default {
 
     openOrgLink() {
       renderProcess.openUrl('https://www.baidu.com');
+    },
+
+    async getDepList() {
+      const userDepRes = await Apis.userDepartList();
+      const userDepList = userDepRes?.data || [];
+      const departsRes = await Apis.accessibleDeparts();
+      let orgList = departsRes?.data || {};
+
+      const subList = [];
+      orgList = orgList
+        .filter((d) => {
+          if (d.parentId === '0') return true;
+          subList.push(d);
+          return false;
+        })
+        .map((o) => {
+          const depList = subList.filter((s) => s.parentId === o.id);
+
+          depList.forEach((d) => {
+            const { id, name } = d;
+
+            const component = 'OrgStructure';
+            const myDeps = this.recursionMyDep(subList, d, userDepList);
+
+            let myDep;
+            if (myDeps?.length) {
+              myDep = myDeps.slice(-1)[0];
+            }
+
+            o.subList = [];
+            o.subList.push({
+              ...d,
+              children: [
+                {
+                  label: '组织架构',
+                  component,
+                  key: `${id}_Org`,
+                  id,
+                  name,
+                },
+                ...(myDep?.id
+                  ? [
+                      {
+                        label: `我的部门 <span class="tag">(${myDep.name})</span>`,
+                        component,
+                        key: `${id}_Dep`,
+                        id: myDep.id,
+                        name: myDep.name,
+                        myDeps: myDeps,
+                      },
+                    ]
+                  : []),
+              ],
+            });
+          });
+
+          return {
+            ...o,
+          };
+        });
+
+      this.depList = subList;
+      this.orgList = orgList;
+
+      console.log(orgList, userDepList);
+    },
+
+    recursionMyDep(subDepList, dep, userDepList) {
+      const userDep = userDepList.find((u) => u.parentId === dep.id);
+      if (userDep) {
+        return [userDep];
+      }
+      const subDep = subDepList.find((d) => d.parentId === dep.id);
+      if (subDep) {
+        const result = this.recursionMyDep(subDepList, subDep, userDepList);
+        if (result) {
+          return [subDep, ...result];
+        }
+      }
+      return [];
     },
   },
 };
@@ -468,6 +570,12 @@ export default {
             .label {
               flex: 1;
               padding-left: 8px;
+
+              ::v-deep .tag {
+                font-size: 14px;
+                color: $minor-text-color;
+                padding-left: 6px;
+              }
             }
 
             .nav-icon {

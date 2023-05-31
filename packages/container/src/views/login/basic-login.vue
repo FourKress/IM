@@ -106,11 +106,12 @@ export default {
       renderProcess.openUrl('https://www.baidu.com' || url);
     },
     async handleLogin() {
-      if (!this.activeBtn) return;
       if (!this.protocolChecked) {
         this.$message.warning('请阅读并勾选《用户服务协议》《隐私协议》');
         return;
       }
+      if (!this.activeBtn) return;
+
       this.isAwait = true;
       const phoneNum = this.replacePhoneNum();
       const {

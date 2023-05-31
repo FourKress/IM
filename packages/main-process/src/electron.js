@@ -47,7 +47,10 @@ async function createWindow() {
     const hasGlobalWindow = global.TRTCWindow;
     if (!!hasGlobalWindow) {
       event.preventDefault();
-      win.webContents.send('mainProcessError', '请先结束当前通话');
+      win.webContents.send('mainProcessError', {
+        msg: '请先结束当前通话',
+        type: 'MESSAGE',
+      });
       return;
     }
   });
@@ -65,6 +68,10 @@ async function createWindow() {
 
 const initElectron = (terminal) => {
   global.store.set('CLIENT_TERMINAL', terminal);
+  if (!global.store.get('VERSION')) {
+    global.store.set('VERSION', '0.0.1');
+  }
+
   return new Promise((resolve, reject) => {
     try {
       protocol.registerSchemesAsPrivileged([

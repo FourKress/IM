@@ -23,11 +23,11 @@ export default {
   methods: {
     ...mapActions('IMStore', ['setMainSessionWindow', 'setRefreshMsg']),
 
-    async openFriendDialog(event, cb) {
+    async openFriendDialog(event, cb, computedHeight) {
       const { clientWidth, clientHeight } = document.body;
       // 网页宽度 - 面板宽度 = left的最大值，避免定位超出视图区
       const maxLeft = clientWidth - 400;
-      const maxHeight = clientHeight - 500;
+      const maxHeight = clientHeight - (computedHeight || 500);
       const { clientY, clientX } = event;
       this.position = {
         top: maxHeight >= clientY ? `${clientY}px` : `${maxHeight}px`,

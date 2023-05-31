@@ -14,7 +14,7 @@
       </el-checkbox>
     </InfoBlock>
 
-    <div class="tips">当前安装版本：{{ updateInfo.version }}</div>
+    <div class="tips">当前安装版本：{{ currentVersion }}</div>
 
     <template v-for="(info, index) in infos">
       <InfoBlock
@@ -31,6 +31,7 @@ import Card from './card';
 import InfoBlock from './info-block';
 import { mapActions, mapGetters } from 'vuex';
 import { renderProcess } from '@lanshu/render-process';
+import { Apis, compareVersion } from '@lanshu/utils';
 
 export default {
   name: 'Update-Card',
@@ -42,7 +43,7 @@ export default {
     return {
       autoUpdate: false,
       selfUpdateNotify: false,
-
+      currentVersion: '',
       infos: [
         {
           btnText: '立即更新',
@@ -57,11 +58,12 @@ export default {
   computed: {
     ...mapGetters('globalStore', ['updateNotify', 'updateInfo']),
   },
-  created() {
+  async created() {
     this.selfUpdateNotify = this.updateNotify;
+    this.currentVersion = (await renderProcess.getStore('VERSION')) || '0.0.1';
   },
   methods: {
-    ...mapActions('globalStore', ['setUpdateNotify', 'setStartDownload']),
+    ...mapActions('globalStore', ['setUpdateNotify', 'setStartDownload', 'setUpdateInfo']),
 
     handleCallback(info) {
       if (info?.fnc) {
@@ -73,14 +75,41 @@ export default {
     },
 
     handleUpdate() {
-      debugger
-      // TODO 检查是否有更新
-      const update = true;
-      if (update) {
-
+      const { fetchUrl, version } = this.updateInfo;
+      if (!fetchUrl && version) {
+        // this.setStartDownload(true);
+        // renderProcess.checkForUpdates({ fetchUrl, version });
+      } else {
+        this.handleGetVersion();
       }
+    },
+
+    async handleGetVersion() {
+      const res = await Apis.queryLastAvailableByAppCode({
+        appCode: 'PC',
+      });
+      const updateData = res?.data;
+      if (!updateData) return;
+
+      const { version, model, decDirectory, title, content } = updateData;
+
+      const isNewVersion = compareVersion(version, this.currentVersion) === 1;
+      if (!isNewVersion) {
+        this.$message.warning('当前已是最新版本');
+        return;
+      }
+
+      const updateInfo = {
+        version,
+        isForced: model === 1,
+        fetchUrl: decDirectory,
+        title,
+        content,
+      };
+      this.setUpdateInfo(updateInfo);
+      this.setUpdateNotify(true);
       this.setStartDownload(true);
-      renderProcess.checkForUpdates();
+      renderProcess.checkForUpdates({ fetchUrl: decDirectory, version });
     },
   },
 };

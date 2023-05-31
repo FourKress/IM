@@ -59,3 +59,26 @@ export const downloadFile = (url, name) => {
   };
   x.send();
 };
+
+export const compareVersion = function (version1, version2) {
+  const n = version1.length,
+    m = version2.length;
+  let i = 0,
+    j = 0;
+  while (i < n || j < m) {
+    let x = 0;
+    for (; i < n && version1[i] !== '.'; ++i) {
+      x = x * 10 + version1[i].charCodeAt() - '0'.charCodeAt();
+    }
+    ++i; // 跳过点号
+    let y = 0;
+    for (; j < m && version2.charAt(j) !== '.'; ++j) {
+      y = y * 10 + version2[j].charCodeAt() - '0'.charCodeAt();
+    }
+    ++j; // 跳过点号
+    if (x !== y) {
+      return x > y ? 1 : -1;
+    }
+  }
+  return 0;
+};

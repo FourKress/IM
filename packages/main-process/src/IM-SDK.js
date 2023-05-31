@@ -116,6 +116,7 @@ export const IMSDKInit = (appId) => {
       if (global.store.get('NETWORK_CALL_UUID') === uuid) return;
       global.store.set('NETWORK_CALL_UUID', uuid);
       console.log('setNetworkCallListener', uuid, type, data, userId, userType);
+      // TODO 后续从data里面取头像昵称
       const userInfo = await IMSDK.getUserProvider().getUserAttrbute(userId);
       const { avatar, nickname } = userInfo.data || {};
       await global.store.set('TRTC_SESSION', {

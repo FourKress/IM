@@ -42,9 +42,9 @@
           <img class="img" :src="LsAssets.updateBgSmall" alt="" />
         </div>
         <div class="container">
-          <div class="title">离开大陆就大撒大撒但是</div>
+          <div class="title">{{updateInfo.title}}</div>
           <div class="text-wrap">
-            <div class="scroll-view" v-html="richText"></div>
+            <div class="scroll-view" v-html="updateInfo.content"></div>
           </div>
         </div>
         <div class="footer">
@@ -76,12 +76,10 @@ export default {
       navList: [],
       visibleUpdate: false,
       LsAssets,
-      richText:
-        'dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>dddddd <br/>',
     };
   },
   computed: {
-    ...mapGetters('globalStore', ['updateNotify', 'systemUserInfo']),
+    ...mapGetters('globalStore', ['updateNotify', 'systemUserInfo', 'updateInfo']),
     ...mapGetters('IMStore', ['allUnreadCount', 'newFriendCount']),
   },
   watch: {
@@ -125,7 +123,8 @@ export default {
     handleStartUpdate() {
       this.visibleUpdate = false;
       this.setStartDownload(true);
-      renderProcess.checkForUpdates();
+      const { fetchUrl, version } = this.updateInfo;
+      renderProcess.checkForUpdates({ fetchUrl, version });
     },
 
     getBadge(item) {

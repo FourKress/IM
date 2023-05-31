@@ -152,3 +152,10 @@ export const queryLastAvailableByAppCode = async (params) => {
     terminal: await getTerminal(),
   });
 };
+
+export const userDepartList = async () => {
+  return https.post('/auth/depart/userDepartList', {
+    token: getToken(TOKEN_TYPE.IS_SYS),
+    terminal: await getTerminal(),
+  });
+};
