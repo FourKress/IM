@@ -97,6 +97,34 @@
       </div>
 
       <div class="nav-group">
+        <div class="nav-title">
+          <span class="label">群聊</span>
+
+          <span class="right-btn" @click="handleCreateGroup">
+            <LsIcon
+              icon="icon_tianjiahaoyou"
+              class="top-btn"
+              render-svg
+              width="12"
+              height="17"
+            ></LsIcon>
+            <span style="padding-left: 2px">创建群聊</span>
+          </span>
+        </div>
+        <div class="nav-list">
+          <div
+            class="nav-item"
+            :class="activeKey === item.key && 'active'"
+            v-for="(item, index) in groupList"
+            @click="handleSelectNav(item)"
+          >
+            <LsIcon class="nav-icon" render-svg :icon="item.icon"></LsIcon>
+            <span class="label">{{ item.label }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="nav-group">
         <div class="nav-title"></div>
         <div class="nav-list">
           <div
@@ -200,17 +228,19 @@ export default {
           key: 'NewFriend',
           icon: 'ls-icon-icon_xindehaoyou',
         },
-        // {
-        //   label: '群聊',
-        //   component: 'GroupFriend',
-        //   key: 'GroupFriend',
-        //   icon: 'ls-icon-icon_qunliao',
-        // },
         {
           label: '联系人',
           component: 'FriendList',
           key: 'FriendList',
           icon: 'ls-icon-icon_haoyou',
+        },
+      ],
+      groupList: [
+        {
+          label: '群聊',
+          component: 'GroupFriend',
+          key: 'GroupFriend',
+          icon: 'ls-icon-icon_qunliao',
         },
       ],
       botList: [

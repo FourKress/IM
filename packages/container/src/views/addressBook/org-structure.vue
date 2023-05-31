@@ -52,8 +52,8 @@
           </span>
           <span class="label">
             <span class="name">{{ item.name }}</span>
-            <span class="tag">
-              {{ roleCodeMap[item.roleCode] ? roleCodeMap[item.roleCode] : '' }}
+            <span class="tag" v-if="roleCodeMap[item.roleCode]">
+              {{ roleCodeMap[item.roleCode] }}
             </span>
           </span>
         </div>
@@ -67,6 +67,9 @@
         :config="friendPanelConfig"
         :isDep="true"
         @update="handleCloseDialog"
+        @sendMsg="handleSendMsg"
+        @sendVideo="handleSendVideo"
+        @sendAudio="handleSendAudio"
       />
     </LsCardDialog>
   </div>
@@ -115,11 +118,11 @@ export default {
       showFriendDialog: false,
       friendPanelConfig: {},
       roleCodeMap: {
-        generalUser: '普通成员',
+        // generalUser: '普通成员',
         departAdmin: '部门管理员',
-        cooperateAdmin: '协作管理员',
+        // cooperateAdmin: '协作管理员',
         orgAdmin: '组织管理员',
-        platformAdmin: '平台管理员',
+        // platformAdmin: '平台管理员',
       },
     };
   },
@@ -254,10 +257,6 @@ export default {
           font-size: 14px;
           display: flex;
           align-items: center;
-
-          .name {
-            min-width: 50px;
-          }
 
           .tag {
             width: 72px;

@@ -33,9 +33,9 @@
             placeholder="搜索"
           />
         </div>
-        <div class="add">
-          <LsIcon icon="navi_ss_add" render-svg></LsIcon>
-        </div>
+<!--        <div class="add">-->
+<!--          <LsIcon icon="navi_ss_add" render-svg></LsIcon>-->
+<!--        </div>-->
       </div>
     </div>
 
@@ -372,7 +372,7 @@ export default {
         flex: 1;
         height: 40px;
         padding: 0 8px;
-        border-right: 1px solid $split-line-color;
+        //border-right: 1px solid $split-line-color;
         font-size: 14px;
         cursor: pointer;
 
