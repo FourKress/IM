@@ -20,6 +20,7 @@ export default {
   },
   computed: {
     ...mapGetters('IMStore', ['userInfo', 'sessionList']),
+    ...mapGetters('globalStore', ['systemUserInfo']),
   },
   methods: {
     ...mapActions('IMStore', ['setMainSessionWindow', 'setRefreshMsg']),
@@ -38,10 +39,12 @@ export default {
       if (cb && typeof cb === 'function') {
         const friend = await cb();
 
-        const res = Apis.userDepartAndOrganization({ userId: friend.userId });
+        const res = await Apis.userDepartAndOrganization({
+          userId: friend.userId,
+        });
         const userDepInfo = res?.data || {};
 
-        if (userDepInfo.orgId === this.userInfo.orgId) {
+        if (userDepInfo.orgId === this.systemUserInfo?.currentOrg?.id) {
           const roleCodeMap = {
             generalUser: '普通成员',
             departAdmin: '部门管理员',
@@ -55,7 +58,7 @@ export default {
             phone,
             roleCode: roleCodeMap[roleCode],
             org: orgName,
-            dep: departList.join('/'),
+            dep: departList.map((d) => d.name)?.join('/'),
           };
         } else {
           this.friendInfo = friend;

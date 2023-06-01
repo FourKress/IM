@@ -177,6 +177,32 @@
             </div>
           </div>
         </div>
+
+        <el-button
+          class="btn"
+          v-if="panelConfig.isApply"
+          @click="handleSendApply"
+          :loading="isAwait"
+        >
+          发送申请
+        </el-button>
+
+        <el-button
+          class="btn"
+          v-if="panelConfig.isAuth"
+          @click="handleSendAuth"
+          :loading="isAwait"
+        >
+          通过验证
+        </el-button>
+
+        <template v-if="panelConfig.isExpired">
+          <div class="btn expired">通过验证</div>
+          <p class="expired-tips">
+            <span>好友申请已过期，你可以发起</span>
+            <span class="link" @click="handleResetApply">好友申请</span>
+          </p>
+        </template>
       </template>
 
       <template v-else>
@@ -198,32 +224,6 @@
             <span class="text">{{ friendInfo.roleCode }}</span>
           </div>
         </div>
-      </template>
-
-      <el-button
-        class="btn"
-        v-if="panelConfig.isApply"
-        @click="handleSendApply"
-        :loading="isAwait"
-      >
-        发送申请
-      </el-button>
-
-      <el-button
-        class="btn"
-        v-if="panelConfig.isAuth"
-        @click="handleSendAuth"
-        :loading="isAwait"
-      >
-        通过验证
-      </el-button>
-
-      <template v-if="panelConfig.isExpired">
-        <div class="btn expired">通过验证</div>
-        <p class="expired-tips">
-          <span>好友申请已过期，你可以发起</span>
-          <span class="link" @click="handleResetApply">好友申请</span>
-        </p>
       </template>
     </div>
   </div>
@@ -265,10 +265,6 @@ export default {
       type: Boolean,
       default: false,
     },
-    isDep: {
-      type: Boolean,
-      default: false,
-    },
   },
   data() {
     return {
@@ -305,6 +301,9 @@ export default {
         ...this.config,
       };
     },
+    isDep() {
+      return this.friendInfo?.org;
+    }
   },
 
   watch: {

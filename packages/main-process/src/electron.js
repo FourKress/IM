@@ -76,8 +76,10 @@ async function createWindow() {
 const initElectron = (terminal) => {
   global.store.set('CLIENT_TERMINAL', terminal);
   console.log('VERSION', global.store.get('VERSION'));
+
+  global.store.set('VERSION', '0.3.16');
   if (!global.store.get('VERSION')) {
-    global.store.set('VERSION', '0.0.1');
+    global.store.set('VERSION', '0.3.16');
   }
 
   return new Promise((resolve, reject) => {

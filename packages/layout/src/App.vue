@@ -121,6 +121,7 @@ export default {
     ]),
 
     async handleGetVersion() {
+      if (process.env.NODE_ENV === 'development') return;
       const res = await Apis.queryLastAvailableByAppCode({
         appCode: 'PC',
       });

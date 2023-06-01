@@ -457,8 +457,8 @@ export default {
     },
 
     getCheckedStatus(item) {
-      const key = this.isCreate ? 'toUser' : 'userId';
-      const isDefault = this.defaultMembers.some((c) => c[key] === item[key]);
+      const key = (this.isCreate || this.isAdd) ? 'toUser' : 'userId';
+      const isDefault = this.defaultMembers.some((c) => c.userId === item[key]);
       const flag = this.isAdd || this.isAddAdmin ? isDefault : false;
       return {
         ...item,

@@ -22,8 +22,8 @@
     <MsgTopAndSilence />
 
     <div class="row">
-      <div class="item">
-        <span class="label" @click="openHistoryMsg">聊天记录</span>
+      <div class="item" @click="openHistoryMsg">
+        <span class="label">聊天记录</span>
         <i class="el-icon-arrow-right" @click="openHistoryMsg"></i>
       </div>
     </div>
@@ -174,13 +174,6 @@ export default {
     font-size: 14px;
     color: #f65951;
     cursor: pointer;
-  }
-
-  ::v-deep .el-drawer__wrapper {
-    width: 300px;
-    position: absolute;
-    top: 0;
-    left: 0;
   }
 }
 </style>

@@ -60,10 +60,10 @@ export default {
 .drawer {
 
   ::v-deep .el-drawer__wrapper {
-    width: 300px;
+    width: 299px;
     position: absolute;
-    top: -54px;
-    left: -20px;
+    top: 0;
+    left: 0;
 
     .el-drawer__header {
       margin-bottom: 10px;

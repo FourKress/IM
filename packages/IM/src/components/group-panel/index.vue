@@ -99,6 +99,7 @@ export default {
   border-left: 1px solid $split-line-color;
   overflow: hidden;
   box-sizing: border-box;
+  position: relative;
 
   .top {
     width: 100%;
