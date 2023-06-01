@@ -159,3 +159,17 @@ export const userDepartList = async () => {
     terminal: await getTerminal(),
   });
 };
+
+export const userDepartAndOrganization = async (params) => {
+  return https.post('/auth/user/userDepartAndOrganization', {
+    ...params,
+    terminal: await getTerminal(),
+  });
+};
+
+export const userQueryByOrgId = async (params) => {
+  return https.post('/auth/user/userQueryByOrgId', {
+    ...params,
+    terminal: await getTerminal(),
+  });
+};

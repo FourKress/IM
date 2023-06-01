@@ -7,6 +7,7 @@ import {
   IMSendMessage,
 } from '@lanshu/im';
 import { renderProcess } from '@lanshu/render-process';
+import { Apis } from '@lanshu/utils';
 import { CLIENT_TYPE, NETWORK_CALL_TYPE } from '../constant';
 
 export default {
@@ -36,7 +37,29 @@ export default {
       this.showFriendDialog = true;
       if (cb && typeof cb === 'function') {
         const friend = await cb();
-        this.friendInfo = friend;
+
+        const res = Apis.userDepartAndOrganization({ userId: friend.userId });
+        const userDepInfo = res?.data || {};
+
+        if (userDepInfo.orgId === this.userInfo.orgId) {
+          const roleCodeMap = {
+            generalUser: '普通成员',
+            departAdmin: '部门管理员',
+            cooperateAdmin: '协作管理员',
+            orgAdmin: '组织管理员',
+            platformAdmin: '平台管理员',
+          };
+          const { phone, roleCode, orgName, departList = [] } = userDepInfo;
+          this.friendInfo = {
+            ...friend,
+            phone,
+            roleCode: roleCodeMap[roleCode],
+            org: orgName,
+            dep: departList.join('/'),
+          };
+        } else {
+          this.friendInfo = friend;
+        }
       }
     },
 

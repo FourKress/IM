@@ -7,7 +7,8 @@ const path = require('path');
 const AdmZip = require('adm-zip');
 // const exec = require('child_process').exec;
 
-let progress = 0;
+let exeProgress = 0;
+let zipProgress = 0;
 
 export default async (data) => {
   const resourcesPath = process.resourcesPath;
@@ -26,21 +27,27 @@ export default async (data) => {
         targetPath: userDataPath,
       },
       (result) => {
-        electronLog.info(result);
-        progress = result / 2;
-        global.mainWindow.webContents.send('downloadProgress', progress);
+        exeProgress = Math.ceil(Number(result) / 2);
+        electronLog.info(exeProgress);
+        global.mainWindow.webContents.send('downloadProgress', exeProgress);
       },
     ).catch((err) => {
       console.log(err);
       electronLog.info(err);
       global.mainWindow.webContents.send('downloadProgress', null);
+      return;
     });
   }
   // 提权的方案，这里简写了，正式项目请自行选择位置放update.exe
   const downloads = app.getPath('downloads');
+  electronLog.info('下载zip');
   downloadFile({ url: upDateUrl, targetPath: downloads }, (result) => {
-    progress = progress ? result / 2 : result;
-    global.mainWindow.webContents.send('downloadProgress', progress);
+    zipProgress = Math.ceil(exeProgress ? Number(result) / 2 : Number(result));
+    electronLog.info(zipProgress);
+    global.mainWindow.webContents.send(
+      'downloadProgress',
+      exeProgress + zipProgress,
+    );
   })
     .then(async (filePath) => {
       electronLog.info('下载更新包');
@@ -72,16 +79,8 @@ export default async (data) => {
           )}" "${resourcesPath}" "${downloads}" "蓝数IM.exe" "${app.getPath(
             'exe',
           )}"`,
-        )
-          .then(() => {
-            global.store.set('VERSION', version);
-          })
-          .catch(() => {
-            global.mainWindow.webContents.send('mainProcessError', {
-              msg: '更新失败, 请重新打开应用',
-              type: 'DIALOG',
-            });
-          });
+          version,
+        );
 
         // exec(
         //   `"${path.join(
