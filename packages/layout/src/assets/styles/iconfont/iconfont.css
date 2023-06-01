@@ -1,9 +1,9 @@
 @font-face {
   font-family: "ls-icon-font"; /* Project id 3760592 */
-  src: url('iconfont.woff2?t=1685340116615') format('woff2'),
-       url('iconfont.woff?t=1685340116615') format('woff'),
-       url('iconfont.ttf?t=1685340116615') format('truetype'),
-       url('iconfont.svg?t=1685340116615#ls-icon-font') format('svg');
+  src: url('iconfont.woff2?t=1685528125404') format('woff2'),
+       url('iconfont.woff?t=1685528125404') format('woff'),
+       url('iconfont.ttf?t=1685528125404') format('truetype'),
+       url('iconfont.svg?t=1685528125404#ls-icon-font') format('svg');
 }
 
 .ls-icon-font {
@@ -12,6 +12,30 @@
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.ls-icon-icon_chanye_normal:before {
+  content: "\e73b";
+}
+
+.ls-icon-icon_chanye_selected:before {
+  content: "\e73c";
+}
+
+.ls-icon-icon_yuqing_normal:before {
+  content: "\e73d";
+}
+
+.ls-icon-icon_yuqing_selected:before {
+  content: "\e73e";
+}
+
+.ls-icon-icon_zhengche_selected:before {
+  content: "\e73f";
+}
+
+.ls-icon-icon_zhengche_normal:before {
+  content: "\e740";
 }
 
 .ls-icon-icon_shengji:before {

@@ -65,6 +65,40 @@ const baseRoutes = [
       isFull: true,
     },
   },
+  {
+    name: 'PublicSentiment',
+    path: '/publicSentiment',
+    component: () => import('../views/webview/index'),
+    meta: {
+      isMenu: true,
+      name: '舆情',
+      disableIcon: 'ls-icon-icon_yuqing_normal',
+      activeIcon: 'ls-icon-icon_yuqing_selected',
+    },
+  },
+  {
+    name: 'Industry',
+    path: '/industry',
+    component: () => import('../views/webview/index'),
+    meta: {
+      isMenu: true,
+      name: '产业',
+      disableIcon: 'ls-icon-icon_chanye_normal',
+      activeIcon: 'ls-icon-icon_chanye_selected',
+    },
+  },
+  {
+    name: 'Policy',
+    path: '/policy',
+    component: () => import('../views/webview/index'),
+    meta: {
+      isMenu: true,
+      name: '政策',
+      disableIcon: 'ls-icon-icon_zhengche_normal',
+      activeIcon: 'ls-icon-icon_zhengche_selected',
+      webviewSrc: 'https://www.iconfont.cn/',
+    },
+  },
 ];
 
 export default baseRoutes;

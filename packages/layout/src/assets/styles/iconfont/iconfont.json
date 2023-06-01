@@ -6,6 +6,48 @@
   "description": "IM、政务通用",
   "glyphs": [
     {
+      "icon_id": "35778598",
+      "name": "icon_chanye_normal",
+      "font_class": "icon_chanye_normal",
+      "unicode": "e73b",
+      "unicode_decimal": 59195
+    },
+    {
+      "icon_id": "35778599",
+      "name": "icon_chanye_selected",
+      "font_class": "icon_chanye_selected",
+      "unicode": "e73c",
+      "unicode_decimal": 59196
+    },
+    {
+      "icon_id": "35778600",
+      "name": "icon_yuqing_normal",
+      "font_class": "icon_yuqing_normal",
+      "unicode": "e73d",
+      "unicode_decimal": 59197
+    },
+    {
+      "icon_id": "35778601",
+      "name": "icon_yuqing_selected",
+      "font_class": "icon_yuqing_selected",
+      "unicode": "e73e",
+      "unicode_decimal": 59198
+    },
+    {
+      "icon_id": "35778602",
+      "name": "icon_zhengche_selected",
+      "font_class": "icon_zhengche_selected",
+      "unicode": "e73f",
+      "unicode_decimal": 59199
+    },
+    {
+      "icon_id": "35778603",
+      "name": "icon_zhengche_normal",
+      "font_class": "icon_zhengche_normal",
+      "unicode": "e740",
+      "unicode_decimal": 59200
+    },
+    {
       "icon_id": "35722847",
       "name": "icon_shengji",
       "font_class": "icon_shengji",

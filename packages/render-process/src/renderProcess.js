@@ -40,3 +40,4 @@ export const setCacheDir = electronAPI?.setCacheDir;
 export const showItemInFolder = electronAPI?.showItemInFolder;
 export const previewAssets = electronAPI?.previewAssets;
 export const getFocusedWindow = electronAPI?.getFocusedWindow;
+export const webviewOpenUrl = electronAPI?.webviewOpenUrl;

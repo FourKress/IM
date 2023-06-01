@@ -64,6 +64,13 @@ async function createWindow() {
     // 每次启动程序，就检查更新
     // checkUpload();
   });
+
+  win.webContents.on('did-attach-webview', (event, webContents) => {
+    webContents.setWindowOpenHandler((details) => {
+      mainWindow.webContents.send('webviewOpenUrl', details.url);
+      return { action: 'deny' };
+    });
+  });
 }
 
 const initElectron = (terminal) => {

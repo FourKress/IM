@@ -44,8 +44,8 @@ class Mirco {
 
     console.log(routers);
     // TODO 暂时屏蔽
-    // return [];
-    return routers;
+    return [];
+    // return routers;
   }
 }
 

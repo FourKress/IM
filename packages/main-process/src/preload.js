@@ -56,4 +56,5 @@ window.electronAPI = {
     ipcRenderer.send('showItemInFolder', key, data),
   previewAssets: (key, data) => ipcRenderer.send('previewAssets', key, data),
   getFocusedWindow: (win) => ipcRenderer.invoke('getFocusedWindow', win),
+  webviewOpenUrl: (url) => ipcRenderer.on('webviewOpenUrl', url),
 };
