@@ -28,7 +28,6 @@ export default async (data) => {
       },
       (result) => {
         exeProgress = Math.ceil(Number(result) / 2);
-        electronLog.info(exeProgress);
         global.mainWindow.webContents.send('downloadProgress', exeProgress);
       },
     ).catch((err) => {
@@ -43,14 +42,12 @@ export default async (data) => {
   electronLog.info('下载zip');
   downloadFile({ url: upDateUrl, targetPath: downloads }, (result) => {
     zipProgress = Math.ceil(exeProgress ? Number(result) / 2 : Number(result));
-    electronLog.info(zipProgress);
     global.mainWindow.webContents.send(
       'downloadProgress',
       exeProgress + zipProgress,
     );
   })
     .then(async (filePath) => {
-      electronLog.info('下载更新包');
       electronLog.info(filePath);
       const zip = new AdmZip(filePath);
       zip.extractAllToAsync(downloads, true, (err) => {

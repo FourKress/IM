@@ -5,13 +5,12 @@ import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
 import { defaultWindowConfig } from './window';
 import store from './datastore';
 import trayEvent from './trayEvent';
-import electronLog from './log';
 
 global.store = store;
 
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
-electronLog.log(
+console.log(
   'process.env.WEBPACK_DEV_SERVER_URL',
   process.env.WEBPACK_DEV_SERVER_URL,
 );
@@ -76,7 +75,7 @@ async function createWindow() {
 
 const initElectron = (terminal) => {
   global.store.set('CLIENT_TERMINAL', terminal);
-  electronLog.log('VERSION', global.store.get('VERSION'));
+  console.log('VERSION', global.store.get('VERSION'));
   if (!global.store.get('VERSION')) {
     global.store.set('VERSION', '0.0.1');
   }
