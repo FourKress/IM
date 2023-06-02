@@ -1,9 +1,9 @@
 @font-face {
   font-family: "ls-icon-font"; /* Project id 3760592 */
-  src: url('iconfont.woff2?t=1685528125404') format('woff2'),
-       url('iconfont.woff?t=1685528125404') format('woff'),
-       url('iconfont.ttf?t=1685528125404') format('truetype'),
-       url('iconfont.svg?t=1685528125404#ls-icon-font') format('svg');
+  src: url('iconfont.woff2?t=1685697758125') format('woff2'),
+       url('iconfont.woff?t=1685697758125') format('woff'),
+       url('iconfont.ttf?t=1685697758125') format('truetype'),
+       url('iconfont.svg?t=1685697758125#ls-icon-font') format('svg');
 }
 
 .ls-icon-font {
@@ -12,6 +12,14 @@
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.ls-icon-icon_fanhui_hover:before {
+  content: "\e741";
+}
+
+.ls-icon-icon_fanhui:before {
+  content: "\e742";
 }
 
 .ls-icon-icon_chanye_normal:before {

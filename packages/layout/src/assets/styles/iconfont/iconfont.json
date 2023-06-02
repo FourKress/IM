@@ -6,6 +6,20 @@
   "description": "IM、政务通用",
   "glyphs": [
     {
+      "icon_id": "35806935",
+      "name": "icon_fanhui_hover",
+      "font_class": "icon_fanhui_hover",
+      "unicode": "e741",
+      "unicode_decimal": 59201
+    },
+    {
+      "icon_id": "35806936",
+      "name": "icon_fanhui",
+      "font_class": "icon_fanhui",
+      "unicode": "e742",
+      "unicode_decimal": 59202
+    },
+    {
       "icon_id": "35778598",
       "name": "icon_chanye_normal",
       "font_class": "icon_chanye_normal",

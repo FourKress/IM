@@ -73,22 +73,24 @@ export const changeWindow = (type, win) => {
   action && action();
 };
 
-export const defaultWindowConfig = {
-  frame: false,
-  autoHideMenuBar: true,
-  webPreferences: {
-    devTools: !!global.store.get('IS_DEVTOOLS'),
-    webviewTag: true,
-    webSecurity: false,
-    nodeIntegration: true,
-    contextIsolation: false,
-    backgroundThrottling: false,
-    preload: process.env.WEBPACK_DEV_SERVER_URL
-      ? path.join(process.cwd(), './src/preload.js')
-      : path.join(__dirname, 'preload.js'),
-  },
-  center: true,
-  icon: './icons/icon.ico',
+export const defaultWindowConfig = () => {
+  return {
+    frame: false,
+    autoHideMenuBar: true,
+    webPreferences: {
+      devTools: global.store.get('IS_DEVTOOLS'),
+      webviewTag: true,
+      webSecurity: false,
+      nodeIntegration: true,
+      contextIsolation: false,
+      backgroundThrottling: false,
+      preload: process.env.WEBPACK_DEV_SERVER_URL
+        ? path.join(process.cwd(), './src/preload.js')
+        : path.join(__dirname, 'preload.js'),
+    },
+    center: true,
+    icon: './icons/icon.ico',
+  };
 };
 
 export const openTRTCWindow = async (type = CLIENT_TYPE.IS_PC) => {
@@ -117,7 +119,7 @@ export const openTRTCWindow = async (type = CLIENT_TYPE.IS_PC) => {
   const targetClient = configMap[type];
   console.log(configMap, type, targetClient);
   let TRTCWindow = new BrowserWindow({
-    ...defaultWindowConfig,
+    ...defaultWindowConfig(),
     ...targetClient.size,
     alwaysOnTop: true,
   });

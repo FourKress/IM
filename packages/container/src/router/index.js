@@ -74,6 +74,7 @@ const baseRoutes = [
       name: '舆情',
       disableIcon: 'ls-icon-icon_yuqing_normal',
       activeIcon: 'ls-icon-icon_yuqing_selected',
+      webviewSrc: 'http://www.netinsight.com.cn/',
     },
   },
   {
