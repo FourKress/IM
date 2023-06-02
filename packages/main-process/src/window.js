@@ -74,10 +74,10 @@ export const changeWindow = (type, win) => {
 };
 
 export const defaultWindowConfig = {
-  devTools: global.store.get('IS_DEVTOOLS'),
   frame: false,
   autoHideMenuBar: true,
   webPreferences: {
+    devTools: !!global.store.get('IS_DEVTOOLS'),
     webviewTag: true,
     webSecurity: false,
     nodeIntegration: true,
