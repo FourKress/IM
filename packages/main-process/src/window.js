@@ -74,8 +74,7 @@ export const changeWindow = (type, win) => {
 };
 
 export const defaultWindowConfig = {
-  // TODO 生产环境开启
-  // devTools: false,
+  devTools: global.store.get('IS_DEVTOOLS'),
   frame: false,
   autoHideMenuBar: true,
   webPreferences: {
@@ -125,17 +124,15 @@ export const openTRTCWindow = async (type = CLIENT_TYPE.IS_PC) => {
 
   TRTCWindow.setAspectRatio(targetClient.ratio);
 
-  const isDevelopment = process.env.NODE_ENV !== 'production';
+  const isDevelopment = process.env.NODE_ENV === 'development';
   const loadURL = isDevelopment
     ? `${process.env.WEBPACK_DEV_SERVER_URL}#/TRTC`
     : 'app://./index.html/#/TRTC';
 
-  if (isDevelopment) {
-    if (!process.env.IS_TEST) TRTCWindow.webContents.openDevTools();
+  if (global.store.get('IS_DEVTOOLS')) {
+    TRTCWindow.webContents.openDevTools();
   }
   await TRTCWindow.loadURL(loadURL);
-  // TODO 临时打开
-  TRTCWindow.webContents.openDevTools();
 
   // const code = `sessionStorage.setItem("authKey", "${token}")`;
   // await TRTCWindow.webContents.executeJavaScript(code).then(async () => {

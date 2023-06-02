@@ -8,7 +8,7 @@ import trayEvent from './trayEvent';
 
 global.store = store;
 
-const isDevelopment = process.env.NODE_ENV !== 'production';
+const isDevelopment = process.env.NODE_ENV === 'development';
 
 console.log(
   'process.env.WEBPACK_DEV_SERVER_URL',
@@ -23,15 +23,16 @@ async function createWindow() {
     show: false,
   });
 
+  if (global.store.get('IS_DEVTOOLS')) {
+    win.webContents.openDevTools();
+  }
+
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     await win.loadURL(process.env.WEBPACK_DEV_SERVER_URL);
-    if (!process.env.IS_TEST) win.webContents.openDevTools();
   } else {
     createProtocol('app');
     await win.loadURL('app://./index.html');
   }
-  // TODO 临时打开
-  win.webContents.openDevTools();
 
   global.mainWindow = win;
 
@@ -67,18 +68,23 @@ async function createWindow() {
 
   win.webContents.on('did-attach-webview', (event, webContents) => {
     webContents.setWindowOpenHandler((details) => {
+      if (!details.url) return;
+      console.log(details.url);
       mainWindow.webContents.send('webviewOpenUrl', details.url);
       return { action: 'deny' };
     });
   });
 }
 
-const initElectron = (terminal) => {
+const initElectron = (config) => {
+  const { terminal, isDevtools = false, version = '0.0.1' } = config;
+
+  global.store.set('IS_DEVTOOLS', isDevelopment || isDevtools);
   global.store.set('CLIENT_TERMINAL', terminal);
   console.log('VERSION', global.store.get('VERSION'));
 
   if (!global.store.get('VERSION')) {
-    global.store.set('VERSION', '0.0.1');
+    global.store.set('VERSION', version);
   }
 
   return new Promise((resolve, reject) => {
@@ -116,7 +122,7 @@ const initElectron = (terminal) => {
       });
 
       app.on('ready', async () => {
-        if (isDevelopment && !process.env.IS_TEST) {
+        if (isDevelopment) {
           try {
             await installExtension(VUEJS_DEVTOOLS);
           } catch (e) {

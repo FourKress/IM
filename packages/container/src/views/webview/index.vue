@@ -23,6 +23,7 @@ export default {
   mounted() {
     const webview = document.querySelector('.webview');
     renderProcess.webviewOpenUrl((event, url) => {
+      console.log('webviewOpenUrl', url)
       webview.src = url;
     });
   },

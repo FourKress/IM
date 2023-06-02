@@ -3,7 +3,7 @@
     <Header />
     <ContainerView />
   </div>
-  <router-view v-else class="router-view 12" />
+  <router-view v-else class="router-view" />
 </template>
 
 <script>
