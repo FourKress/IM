@@ -64,7 +64,7 @@ export default {
       }
     },
   },
-  created() {
+  async created() {
     renderProcess.IMSDKListener((event, data) => {
       const { type, value } = data;
       console.log(type, value);
@@ -88,7 +88,11 @@ export default {
       });
     });
 
-    this.handleGetVersion();
+    const trtcSession = await renderProcess.getStore('TRTC_SESSION');
+
+    if (trtcSession) return;
+
+    await this.handleGetVersion();
   },
   mounted() {
     document.addEventListener('keydown', (event) => {

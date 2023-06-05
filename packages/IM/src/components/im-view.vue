@@ -217,6 +217,7 @@ export default {
       myGroupRole: GROUP_ROLE_TYPE_LOCAL.IS_DEFAULT,
       groupRoleManager: {},
       imViewWidth: 210,
+      resizeObserver: null
     };
   },
   watch: {
@@ -352,9 +353,9 @@ export default {
         this.imViewWidth = cr.width
       }
     });
-
+    this.resizeObserver = resizeObserver;
     // 观察一个或多个元素
-    resizeObserver.observe(document.querySelector('.im-view'));
+    this.resizeObserver.observe(document.querySelector('.im-view'));
   },
   methods: {
     ...mapActions('IMStore', ['setDragFileList', 'setCurrentMsg']),
@@ -483,6 +484,11 @@ export default {
       this.myGroupRole = role || GROUP_ROLE_TYPE_LOCAL.IS_NOT_AUTH;
     },
   },
+  beforeDestroy() {
+    if (this.resizeObserver) {
+      this.resizeObserver.observe(document.querySelector('.im-view'));
+    }
+  }
 };
 </script>
 

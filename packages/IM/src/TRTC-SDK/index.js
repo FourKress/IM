@@ -208,6 +208,14 @@ const trtcCloudInstance = () => {
     return trtcCloud.getCameraDevicesList();
   };
 
+  const getMicDevicesList = () => {
+    return trtcCloud.getMicDevicesList();
+  };
+
+  const getSpeakerDevicesList = () => {
+    return trtcCloud.getSpeakerDevicesList();
+  };
+
   const getNetworkQualityTips = (quality) => {
     if (
       [
@@ -266,6 +274,8 @@ const trtcCloudInstance = () => {
     setRemoteAudioVolume,
     getCameraDevicesList,
     getNetworkQualityTips,
+    getMicDevicesList,
+    getSpeakerDevicesList,
   };
 };
 

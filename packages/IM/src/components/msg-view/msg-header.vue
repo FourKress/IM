@@ -166,7 +166,7 @@ export default {
     },
 
     async handleStartTrtc(NETWORK_CALL_TYPE) {
-      const platform = CLIENT_TYPE.IS_PC;
+      const platform = CLIENT_TYPE.IS_MOBILE;
       await renderProcess.setStore('TRTC_SESSION', this.session);
       await renderProcess.setStore('TRTC_CALL_INFO', {
         type: NETWORK_CALL_TYPE,

@@ -81,7 +81,7 @@
             class="nav-item"
             :class="activeKey === item.key && 'active'"
             v-for="(item, index) in nvaList"
-            @click="handleSelectNav(item)"
+            @click="handleFriendNav(item)"
           >
             <LsIcon class="nav-icon" render-svg :icon="item.icon"></LsIcon>
             <span class="label">{{ item.label }}</span>
@@ -116,7 +116,7 @@
             class="nav-item"
             :class="activeKey === item.key && 'active'"
             v-for="(item, index) in groupList"
-            @click="handleSelectNav(item)"
+            @click="handleFriendNav(item)"
           >
             <LsIcon class="nav-icon" render-svg :icon="item.icon"></LsIcon>
             <span class="label">{{ item.label }}</span>
@@ -131,7 +131,7 @@
             class="nav-item"
             :class="activeKey === item.key && 'active'"
             v-for="item in botList"
-            @click="handleSelectNav(item)"
+            @click="handleFriendNav(item)"
           >
             <LsIcon class="nav-icon" render-svg :icon="item.icon"></LsIcon>
             <span class="label">{{ item.label }}</span>
@@ -221,6 +221,7 @@ export default {
     return {
       activeKey: null,
       orgActiveKey: null,
+      friendNavItem: {},
       nvaList: [
         {
           label: '新的联系人',
@@ -282,6 +283,15 @@ export default {
     },
   },
   mounted() {
+    this.orgActiveKey = sessionStorage.getItem('orgActiveKey') || '';
+    this.activeKey = sessionStorage.getItem('activeKey') || '';
+    this.friendNavItem = JSON.parse(sessionStorage.getItem('friendNavItem') || '{}');
+    if (!this.orgActiveKey && this.activeKey) {
+      this.handleFriendNav({
+        ...this.friendNavItem,
+        key: this.activeKey,
+      })
+    }
     this.getDepList();
   },
   methods: {
@@ -292,6 +302,7 @@ export default {
       this.activeKey = null;
       this.setComponentConfig(this.addFriendConfig);
     },
+
     handleSelectNav(nav) {
       this.clearOrgBreadCrumb();
       this.activeKey = nav.key;
@@ -304,7 +315,14 @@ export default {
       });
     },
 
+    handleFriendNav(nav) {
+      this.orgActiveKey = '';
+      this.friendNavItem = nav;
+      this.handleSelectNav(nav);
+    },
+
     handleSelectDep(item, dep, org) {
+      this.friendNavItem = {};
       this.activeKey = item.key;
       this.handleSelectNav({
         ...item,
@@ -431,11 +449,21 @@ export default {
       this.orgList = orgList;
 
       if (orgList?.length) {
-        const org = orgList[0];
-        const dep = org.subList[0];
-        const item =
-          dep.children?.length > 1 ? dep.children[1] : dep.children[0];
-        this.handleSelectDep(item, dep, org);
+        console.log('@@@@', this.orgActiveKey, this.activeKey);
+        if (!this.orgActiveKey && !this.activeKey) {
+          const org = orgList[0];
+          const dep = org.subList[0];
+          const item =
+            dep.children?.length > 1 ? dep.children[1] : dep.children[0];
+          this.handleSelectDep(item, dep, org);
+        } else if (this.orgActiveKey && this.activeKey) {
+          const org = orgList.find((d) =>
+            d.subList.some((s) => s.id === this.orgActiveKey),
+          );
+          const dep = org.subList.find((d) => d.id === this.orgActiveKey);
+          const item = dep.children?.find((d) => d.key === this.activeKey);
+          this.handleSelectDep(item, dep, org);
+        }
       }
 
       console.log(orgList, userDepList);
@@ -455,6 +483,12 @@ export default {
       }
       return [];
     },
+  },
+
+  destroyed() {
+    sessionStorage.setItem('orgActiveKey', this.orgActiveKey);
+    sessionStorage.setItem('activeKey', this.activeKey);
+    sessionStorage.setItem('friendNavItem', JSON.stringify(this.friendNavItem));
   },
 };
 </script>

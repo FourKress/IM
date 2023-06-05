@@ -115,11 +115,13 @@
     <div class="remote">
       <div class="remote-preview" ref="remoteTrtcContainer"></div>
 
-      <img
-        class="remote-bg"
-        :src="isPc ? LsAssets.trtcBgPc : LsAssets.trtcBgMobile"
-        alt=""
-      />
+      <div class="remote-bg">
+        <img
+          :style="{ width: `${maxSize}px`, height: `${maxSize}px` }"
+          :src="userInfo.avatar"
+          alt=""
+        />
+      </div>
     </div>
 
     <div class="tips-wrap" v-if="tipsInfo.visible" :class="tipsInfo.className">
@@ -193,11 +195,11 @@ export default {
       optPanelVisible: true,
       tipsInfo: {},
       isFull: false,
+      resizeObserver: null,
+      maxSize: 640,
     };
   },
   created() {
-    console.log(trtcCloud.getCameraDevicesList());
-
     this.subscribeEvents();
 
     renderProcess.TRTCListener((event, message) => {
@@ -225,6 +227,18 @@ export default {
   },
 
   async mounted() {
+    this.checkDevices();
+    const resizeObserver = new ResizeObserver((entries) => {
+      for (let entry of entries) {
+        const cr = entry.contentRect;
+        console.log(cr.height);
+        this.maxSize = Math.max(cr.width, cr.height, 640);
+      }
+    });
+    this.resizeObserver = resizeObserver;
+    // 观察一个或多个元素
+    this.resizeObserver.observe(document.querySelector('.trtc-view'));
+
     this.initMouseEvent();
 
     const userInfo = await renderProcess.getStore('TRTC_USER_INFO');
@@ -238,7 +252,7 @@ export default {
       isBeInvited,
       roomId,
       platform = CLIENT_TYPE.IS_PC,
-      uuid,
+      uuid,s
     } = trtcCallInfo;
 
     if (uuid) {
@@ -266,6 +280,35 @@ export default {
   },
   methods: {
     secondToDate,
+
+    checkDevices() {
+      const cameraDevicesList = trtcCloud.getCameraDevicesList();
+      const micDevicesList = trtcCloud.getMicDevicesList();
+      if (!cameraDevicesList?.length) {
+        this.tipsInfo = {
+          text: '未连接到摄像头，请检查设备或使用移动端',
+          visible: true,
+          className: 'info',
+        };
+        return;
+      }
+      if (!micDevicesList?.length) {
+        this.tipsInfo = {
+          text: '未连接到麦克风，请检查设备或使用移动端',
+          visible: true,
+          className: 'info',
+        };
+        return;
+      }
+      if (!micDevicesList?.length) {
+        this.tipsInfo = {
+          text: '未连接到扬声器，请检查设备或使用移动端',
+          visible: true,
+          className: 'info',
+        };
+        return;
+      }
+    },
 
     initMouseEvent() {
       this.debounceOptPanelVisible = lodash.debounce(
@@ -315,7 +358,6 @@ export default {
               waringText = '对方已拒绝';
               break;
             case this.NETWORK_CALLBACK_TYPE.IS_ANSWERED:
-
               const { platform = CLIENT_TYPE.IS_PC } = res?.data || {};
               this.isPc = platform === CLIENT_TYPE.IS_PC;
 
@@ -578,6 +620,13 @@ export default {
       trtcCloud.TRTC.off('onNetworkQuality', this.onNetworkQuality);
     },
   },
+
+  beforeDestroy() {
+    if (this.resizeObserver) {
+      this.resizeObserver.observe(document.querySelector('.trtc-view'));
+    }
+  },
+
   destroyed() {
     this.unsubscribeEvents();
     document
@@ -853,8 +902,28 @@ export default {
       left: 0;
       top: 0;
       z-index: -1;
-      border-radius: 16px;
       overflow: hidden;
+
+      &:before {
+        content: '';
+        z-index: 0;
+        position: absolute;
+        left: 0;
+        top: 0;
+        background: rgba(0, 0, 0, 0.88);
+        width: 100%;
+        height: 100%;
+      }
+
+      img {
+        display: block;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        z-index: -1;
+        filter: blur(30px);
+      }
     }
   }
 
@@ -868,7 +937,7 @@ export default {
     line-height: 36px;
     border-radius: 4px;
     font-size: 12px;
-    padding: 0 20px;
+    padding: 0 14px;
     box-sizing: border-box;
     border: 1px solid transparent;
 
@@ -879,6 +948,7 @@ export default {
     }
 
     &.info {
+      width: 255px;
       background: #bcc3cf;
       color: $main-text-color;
       border-color: transparent;
