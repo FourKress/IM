@@ -103,12 +103,6 @@
           alt=""
         />
         <img class="avatar" v-if="disCamStatus" :src="userInfo.avatar" alt="" />
-        <img
-          class="avatar"
-          v-if="!isEnterRoom && !disCamStatus"
-          :src="trtcSession.avatar"
-          alt=""
-        />
       </div>
     </div>
 
@@ -116,7 +110,9 @@
       <div class="remote-preview" ref="remoteTrtcContainer"></div>
 
       <div class="remote-bg">
+        <img class="avatar" :src="trtcSession.avatar" v-if="isEnterRoom && !disCamStatus" alt="">
         <img
+          class="bg"
           :style="{ width: `${maxSize}px`, height: `${maxSize}px` }"
           :src="userInfo.avatar"
           alt=""
@@ -915,7 +911,7 @@ export default {
         height: 100%;
       }
 
-      img {
+      .bg {
         display: block;
         position: absolute;
         left: 50%;
@@ -923,6 +919,19 @@ export default {
         transform: translate(-50%, -50%);
         z-index: -1;
         filter: blur(30px);
+      }
+
+      .avatar {
+        display: block;
+        width: 88px;
+        height: 88px;
+        border-radius: 8px;
+        overflow: hidden;
+        z-index: 1;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
       }
     }
   }
@@ -942,9 +951,11 @@ export default {
     border: 1px solid transparent;
 
     &.waring {
+      width: 98px;
       background: #fff4f4;
       border-color: #ff3b30;
       color: #ff3b30;
+      text-align: center;
     }
 
     &.info {
