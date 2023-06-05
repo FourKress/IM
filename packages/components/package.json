@@ -1,0 +1,27 @@
+{
+  "name": "@lanshu/components",
+  "version": "0.1.26",
+  "description": "组件库",
+  "keywords": [
+    "components"
+  ],
+  "author": "wudong <511970747@qq.com>",
+  "publishConfig": {
+    "registry": "http://172.16.3.249:8081/repository/npm-hosted/"
+  },
+  "license": "MIT",
+  "main": "lib/main.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "files": [
+    "lib",
+    "src"
+  ],
+  "scripts": {},
+  "dependencies": {
+    "@lanshu/utils": "^0.1.26",
+    "vuex": "^3.6.2"
+  },
+  "gitHead": "110050d723f2833ae3323f185abe4fc71a383a30"
+}

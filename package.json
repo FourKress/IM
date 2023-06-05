@@ -1,0 +1,70 @@
+{
+  "name": "lanshu",
+  "version": "0.1.20",
+  "private": true,
+  "author": "wudong <511970747@qq.com>",
+  "description": "客户端架构包 npm私有库管理",
+  "license": "MIT",
+  "publishConfig": {
+    "registry": "http://172.16.3.249:8081/repository/npm-hosted/"
+  },
+  "scripts": {},
+  "dependencies": {
+  },
+  "devDependencies": {
+    "lerna": "^6.0.1",
+    "prettier": "^2.7.1",
+    "sass": "^1.56.0",
+    "sass-loader": "^13.1.0"
+  },
+  "prettier": {
+    "singleQuote": true,
+    "endOfLine": "auto",
+    "semi": true,
+    "stylelintIntegration": true,
+    "eslintIntegration": true,
+    "trailingComma": "all",
+    "htmlWhitespaceSensitivity": "ignore"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ],
+  "workspaces": {
+    "packages": [
+      "packages/*",
+      "play"
+    ],
+    "nohoist": [
+      "**/vue",
+      "**/vuex",
+      "**/vue-router",
+      "**/core-js",
+      "**/@babel/core",
+      "**/@babel/eslint-parser",
+      "**/eslint",
+      "**/eslint-plugin-vue",
+      "**/style-resources-loader",
+      "**/vue-template-compiler",
+      "**/@vue/cli-service",
+      "**/@vue/cli-plugin-babel",
+      "**/@vue/cli-plugin-eslint",
+      "**/vue-cli-plugin-electron-builder",
+      "**/vue-cli-plugin-style-resources-loader",
+      "**/electron-devtools-installer",
+      "**/electron",
+      "**/electron-screenshots",
+      "**/react-screenshots",
+      "**/lim-sdk-electron",
+      "**/@lanshu/main-process",
+      "**/@lanshu/layout",
+      "**/@lanshu/render-process",
+      "**/trtc-electron-sdk",
+      "**/native-ext-loader",
+      "**/nock",
+      "**/aws-sdk",
+      "**/mock-aws-s3"
+    ]
+  }
+}

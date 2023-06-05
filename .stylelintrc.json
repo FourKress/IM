@@ -1,0 +1,23 @@
+{
+  "extends": ["stylelint-prettier/recommended", "stylelint-config-standard"],
+  "plugins": ["stylelint-prettier"],
+  "rules": {
+    "prettier/prettier": true,
+    "unit-case": null,
+    "no-descending-specificity": null,
+    "declaration-colon-newline-after": null,
+    "at-rule-no-unknown": [
+      true,
+      {
+        "ignoreAtRules": ["function", "if", "each", "include", "mixin"]
+      }
+    ],
+    "no-empty-source": [true, { "severity": "warning" }],
+    "font-family-no-missing-generic-family-keyword": [
+      true,
+      { "severity": "warning" }
+    ],
+    "declaration-block-trailing-semicolon": null,
+    "rule-empty-line-before": null
+  }
+}

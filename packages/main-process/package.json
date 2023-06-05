@@ -1,0 +1,40 @@
+{
+  "name": "@lanshu/main-process",
+  "version": "0.1.27",
+  "description": "客户端主进程",
+  "keywords": [
+    "main-process"
+  ],
+  "author": "wudong <511970747@qq.com>",
+  "publishConfig": {
+    "registry": "http://172.16.3.249:8081/repository/npm-hosted/"
+  },
+  "license": "MIT",
+  "main": "lib/main.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "files": [
+    "lib",
+    "src"
+  ],
+  "scripts": {},
+  "dependencies": {
+    "adm-zip": "^0.5.10",
+    "electron": "22.2.0",
+    "electron-log": "^4.4.1",
+    "electron-screenshots": "0.5.15",
+    "electron-store": "^8.1.0",
+    "electron-updater": "^5.3.0",
+    "fs-extra": "^11.1.1",
+    "lim-sdk-electron": "2.7.2",
+    "react-screenshots": "0.5.15",
+    "request": "^2.88.2",
+    "sudo-prompt": "^9.2.1"
+  },
+  "devDependencies": {
+    "electron-devtools-installer": "^3.1.0",
+    "vue-cli-plugin-electron-builder": "~2.1.1"
+  },
+  "gitHead": "110050d723f2833ae3323f185abe4fc71a383a30"
+}

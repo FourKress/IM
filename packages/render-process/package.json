@@ -1,0 +1,23 @@
+{
+  "name": "@lanshu/render-process",
+  "version": "0.1.26",
+  "description": "客户端渲染进程",
+  "keywords": [
+    "render-process"
+  ],
+  "author": "wudong <511970747@qq.com>",
+  "publishConfig": {
+    "registry": "http://172.16.3.249:8081/repository/npm-hosted/"
+  },
+  "license": "MIT",
+  "main": "lib/main.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "files": [
+    "lib",
+    "src"
+  ],
+  "scripts": {},
+  "gitHead": "110050d723f2833ae3323f185abe4fc71a383a30"
+}
