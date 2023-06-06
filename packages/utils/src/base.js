@@ -82,3 +82,15 @@ export const compareVersion = function (version1, version2) {
   }
   return 0;
 };
+
+export const dataURLtoBlob = (dataUrl) => {
+  let arr = dataUrl.split(','),
+    mime = arr[0].match(/:(.*?);/)[1],
+    bStr = atob(arr[1]),
+    n = bStr.length,
+    u8arr = new Uint8Array(n);
+  while (n--) {
+    u8arr[n] = bStr.charCodeAt(n);
+  }
+  return new Blob([u8arr], { type: mime });
+};

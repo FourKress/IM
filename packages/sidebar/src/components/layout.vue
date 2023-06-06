@@ -27,6 +27,7 @@
             v-for="(item, index) in topSessionList"
             :key="`${index}_${item.sessId}`"
             @click="handleMenuClick(item)"
+            v-contextMenu:[topSessionList[index]]="topContextMenuList"
           >
             <el-tooltip
               class="item"
@@ -75,7 +76,15 @@
             </div>
             <div class="msg-row">
               <span class="message">
-                <MsgTextType v-if="item.lastMsg" :lastMsg="item.lastMsg" :tempMsg="currentSession === item.sessId ? {} : historyTempMsgOBJ[item.sessId]" />
+                <MsgTextType
+                  v-if="item.lastMsg"
+                  :lastMsg="item.lastMsg"
+                  :tempMsg="
+                    currentSession === item.sessId
+                      ? {}
+                      : historyTempMsgOBJ[item.sessId]
+                  "
+                />
               </span>
 
               <span class="unread-count" v-if="item.unreadCount">
@@ -101,7 +110,7 @@ import {
   LsIcon,
   LsAssets,
 } from '@lanshu/components';
-import { IMClearUnreadCount, IMDelBySessId } from '@lanshu/im';
+import { IMClearUnreadCount, IMDelBySessId, IMSetTopStatus } from '@lanshu/im';
 
 const isAll = true;
 
@@ -118,15 +127,26 @@ export default {
       historyTempMsgOBJ: {},
       contextMenuList: [
         {
-          label: '不显示',
-          handler: this.handleHideSession
+          label: (session) => {
+            return session?.topState ? '取消置顶' : '置顶'
+          },
+          handler: this.setMsgTopStatus,
+          icon: (session) => {
+            return session?.topState ? 'ls-icon-quxiaozhiding' : 'ls-icon-zhiding'
+          },
         },
         {
-          label: '2222',
-          handler: () => {
-            console.log('33333333')
-          }
-        }
+          label: () => '不显示',
+          handler: this.handleHideSession,
+          icon: () => 'ls-icon-mimayincang'
+        },
+      ],
+      topContextMenuList: [
+        {
+          label: () => '取消置顶',
+          handler: this.setMsgTopStatus,
+          icon: () => 'ls-icon-quxiaozhiding',
+        },
       ]
     };
   },
@@ -210,18 +230,23 @@ export default {
       this.handleSetSessionWindow(sessId, session);
       setTimeout(async () => {
         await this.getHistoryTempMsg();
-      }, 300)
+      }, 300);
     },
     async getHistoryTempMsg() {
       // 获取切换时保存的临时类容
-      this.historyTempMsgOBJ = await window.$lanshuStore.getItem('tempMsgOBJ') ;
+      this.historyTempMsgOBJ = await window.$lanshuStore.getItem('tempMsgOBJ');
     },
 
     handleHideSession(session) {
-      console.log('handleHideSession', session)
-      IMDelBySessId(session.sessId)
-    }
+      IMDelBySessId(session.sessId);
+    },
 
+    setMsgTopStatus(session) {
+      const { topState } = session;
+      IMSetTopStatus(session.sessId, topState === 1 ? 0 : 1).then(() => {
+        console.log('TopStatus Success');
+      });
+    },
   },
 };
 </script>

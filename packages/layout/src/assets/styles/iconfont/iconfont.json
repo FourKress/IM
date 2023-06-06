@@ -6,6 +6,62 @@
   "description": "IM、政务通用",
   "glyphs": [
     {
+      "icon_id": "35836443",
+      "name": "下载",
+      "font_class": "xiazai",
+      "unicode": "e646",
+      "unicode_decimal": 58950
+    },
+    {
+      "icon_id": "35836444",
+      "name": "取消置顶",
+      "font_class": "quxiaozhiding",
+      "unicode": "e64b",
+      "unicode_decimal": 58955
+    },
+    {
+      "icon_id": "35831129",
+      "name": "翻译",
+      "font_class": "fanyi",
+      "unicode": "e644",
+      "unicode_decimal": 58948
+    },
+    {
+      "icon_id": "35831130",
+      "name": "复制",
+      "font_class": "fuzhi",
+      "unicode": "e645",
+      "unicode_decimal": 58949
+    },
+    {
+      "icon_id": "35831135",
+      "name": "置顶",
+      "font_class": "zhiding",
+      "unicode": "e647",
+      "unicode_decimal": 58951
+    },
+    {
+      "icon_id": "35831137",
+      "name": "已读",
+      "font_class": "yidu",
+      "unicode": "e648",
+      "unicode_decimal": 58952
+    },
+    {
+      "icon_id": "35831138",
+      "name": "删除",
+      "font_class": "shanchu",
+      "unicode": "e649",
+      "unicode_decimal": 58953
+    },
+    {
+      "icon_id": "35831143",
+      "name": "密码隐藏",
+      "font_class": "mimayincang",
+      "unicode": "e64a",
+      "unicode_decimal": 58954
+    },
+    {
       "icon_id": "35806935",
       "name": "icon_fanhui_hover",
       "font_class": "icon_fanhui_hover",

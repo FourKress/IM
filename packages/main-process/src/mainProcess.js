@@ -19,6 +19,7 @@ import electronLog from 'electron-log';
 import increment from './increment';
 import {
   getCacheDirInfo,
+  getCacheFile2Base64,
   getCacheFilePath,
   initCache,
   saveCacheFile,
@@ -141,16 +142,20 @@ const initIpcMain = () => {
       return await getCacheDirInfo();
     });
 
+    ipcMain.handle('getCacheFile2Base64', (_event, path) => {
+      return getCacheFile2Base64(path.replace('cache:///', ''));
+    });
+
     ipcMain.on('setCacheDir', async (_event, path) => {
       setCacheDir(path);
     });
 
     ipcMain.on('showItemInFolder', async (_event, path) => {
-      await shell.showItemInFolder(path);
+      await shell.showItemInFolder(path.replace('cache:///', ''));
     });
 
     ipcMain.on('previewAssets', async (_event, path) => {
-      await shell.openPath(path);
+      await shell.openPath(path.replace('cache:///', ''));
     });
 
     ipcMain.handle('getFocusedWindow', (_event, win) => {

@@ -35,7 +35,7 @@
 
 <script>
 import LsAssets from './assets';
-import { qrcode, domToImage } from '@lanshu/utils';
+import { qrcode, domToImage, dataURLtoBlob } from '@lanshu/utils';
 
 export default {
   name: 'Ls-qrcode-panel',
@@ -92,22 +92,10 @@ export default {
     );
   },
   methods: {
-    dataURLtoBlob(dataUrl) {
-      let arr = dataUrl.split(','),
-        mime = arr[0].match(/:(.*?);/)[1],
-        bStr = atob(arr[1]),
-        n = bStr.length,
-        u8arr = new Uint8Array(n);
-      while (n--) {
-        u8arr[n] = bStr.charCodeAt(n);
-      }
-      return new Blob([u8arr], { type: mime });
-    },
-
     async handleCopy() {
       this.isCopyLoading = true;
       const imageUrl = await this.getHtmlToImageUrl()
-      const blob = this.dataURLtoBlob(imageUrl);
+      const blob = dataURLtoBlob(imageUrl);
 
       await navigator.clipboard.write([
         new ClipboardItem({

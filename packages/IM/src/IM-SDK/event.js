@@ -45,11 +45,6 @@ export const IMSDK_Init = async (loginParams) => {
   const userAttribute = await IMGetUserAttribute(userId);
   storeInstance.commit('IMStore/setUserInfo', userAttribute.data);
   renderProcess.setStore('TRTC_USER_INFO', userAttribute.data);
-  const userProfile = await IMGetUserProfile(userId);
-  storeInstance.commit('IMStore/setUserProfile', userProfile.data);
-  await IMGetConvList(userId);
-  await IMGetTotalUnreadMessageCount();
-  await IMGetFriendRequestNoticeUnreadCount();
 };
 
 export const IMLogin = async (loginParams) =>

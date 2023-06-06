@@ -1,5 +1,5 @@
 <template>
-  <div class="trtc-view">
+  <div class="trtc-view" ref="TrtcView">
     <div class="top">
       <span class="btn" @click="handleWindowChange(WIN_ACTION_TYPE.IS_MIN)">
         <LsIcon icon="ls-icon-icon_zuixiaohua" size="14"></LsIcon>
@@ -110,7 +110,12 @@
       <div class="remote-preview" ref="remoteTrtcContainer"></div>
 
       <div class="remote-bg">
-        <img class="avatar" :src="trtcSession.avatar" v-if="isEnterRoom && !disCamStatus" alt="">
+        <img
+          class="avatar"
+          :src="trtcSession.avatar"
+          v-if="isEnterRoom && !disCamStatus"
+          alt=""
+        />
         <img
           class="bg"
           :style="{ width: `${maxSize}px`, height: `${maxSize}px` }"
@@ -233,7 +238,7 @@ export default {
     });
     this.resizeObserver = resizeObserver;
     // 观察一个或多个元素
-    this.resizeObserver.observe(document.querySelector('.trtc-view'));
+    this.resizeObserver.observe(this.$refs.TrtcView);
 
     this.initMouseEvent();
 
@@ -248,7 +253,8 @@ export default {
       isBeInvited,
       roomId,
       platform = CLIENT_TYPE.IS_PC,
-      uuid,s
+      uuid,
+      s,
     } = trtcCallInfo;
 
     if (uuid) {
@@ -311,9 +317,7 @@ export default {
         this.changeOptPanelVisible,
         3000,
       );
-      document
-        .querySelector('.trtc-view')
-        .addEventListener('mousemove', this.handleMouseMove);
+      this.$refs.TrtcView.addEventListener('mousemove', this.handleMouseMove);
     },
 
     getClassName(status) {
@@ -619,15 +623,13 @@ export default {
 
   beforeDestroy() {
     if (this.resizeObserver) {
-      this.resizeObserver.observe(document.querySelector('.trtc-view'));
+      this.resizeObserver.observe(this.$refs.TrtcView);
     }
   },
 
   destroyed() {
     this.unsubscribeEvents();
-    document
-      .querySelector('.trtc-view')
-      .removeEventListener('mousemove', this.handleMouseMove);
+    this.$refs.TrtcView.removeEventListener('mousemove', this.handleMouseMove);
   },
 };
 </script>

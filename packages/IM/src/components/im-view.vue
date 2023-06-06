@@ -1,5 +1,5 @@
 <template>
-  <div class="im-view">
+  <div class="im-view" ref="ImView">
     <MsgHeader
       v-bind="$props"
       v-on="$listeners"
@@ -216,7 +216,7 @@ export default {
       bubbleModel: '',
       myGroupRole: GROUP_ROLE_TYPE_LOCAL.IS_DEFAULT,
       groupRoleManager: {},
-      imViewWidth: 210,
+      imViewWidth: 500,
       resizeObserver: null
     };
   },
@@ -316,7 +316,7 @@ export default {
       trailing: false,
     });
 
-    const imViewDom = document.querySelector('.im-view');
+    const imViewDom = this.$refs.ImView;
     //添加拖拽事件监听器
     imViewDom.addEventListener('drop', (e) => {
       //阻止默认行为
@@ -350,12 +350,13 @@ export default {
     const resizeObserver = new ResizeObserver((entries) => {
       for (let entry of entries) {
         const cr = entry.contentRect;
+        console.log('resizeObserver', cr.width)
         this.imViewWidth = cr.width
       }
     });
     this.resizeObserver = resizeObserver;
     // 观察一个或多个元素
-    this.resizeObserver.observe(document.querySelector('.im-view'));
+    this.resizeObserver.observe(this.$refs.ImView);
   },
   methods: {
     ...mapActions('IMStore', ['setDragFileList', 'setCurrentMsg']),
@@ -397,6 +398,7 @@ export default {
           });
         } else {
           this.messageList = msgs;
+          console.log(this.$refs.messagePanel.scrollHeight)
           this.$nextTick(() => {
             this.$refs.messagePanel.scrollTop =
               this.$refs.messagePanel.scrollHeight;
@@ -486,7 +488,8 @@ export default {
   },
   beforeDestroy() {
     if (this.resizeObserver) {
-      this.resizeObserver.observe(document.querySelector('.im-view'));
+      console.log('@@!!!!', this.$refs.ImView)
+      this.resizeObserver.observe(this.$refs.ImView);
     }
   }
 };

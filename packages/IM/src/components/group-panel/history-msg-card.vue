@@ -264,14 +264,14 @@ export default {
 
     handleOpenDir() {
       console.log(this.cachePath);
-      renderProcess.showItemInFolder(this.cachePath.replace('cache:///', ''));
+      renderProcess.showItemInFolder(this.cachePath);
     },
 
     async handlePreview() {
       if (!this.assetsPath.includes('cache')) {
         await this.handleDownload()
       }
-      renderProcess.previewAssets(this.cachePath.replace('cache:///', ''))
+      renderProcess.previewAssets(this.cachePath)
     }
   },
 };

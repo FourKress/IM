@@ -34,6 +34,7 @@ export const setAutoStart = electronAPI?.setAutoStart;
 export const downloadProgress = electronAPI?.downloadProgress;
 export const activeSearch = electronAPI?.activeSearch;
 export const getCacheFilePath = electronAPI?.getCacheFilePath;
+export const getCacheFile2Base64 = electronAPI?.getCacheFile2Base64;
 export const saveCacheFile = electronAPI?.saveCacheFile;
 export const getCacheDirInfo = electronAPI?.getCacheDirInfo;
 export const setCacheDir = electronAPI?.setCacheDir;

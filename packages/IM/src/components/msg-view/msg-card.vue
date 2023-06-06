@@ -49,7 +49,7 @@
     <div
       class="wrap file card"
       :class="classObject"
-      :style="{...wrapStyle, ...wrapFileStyle}"
+      :style="{ ...wrapStyle, ...wrapFileStyle }"
       v-if="isFile"
     >
       <div class="view">
@@ -148,6 +148,7 @@ import {
   SESSION_BUBBLE_MODEL,
   lodash,
   secondToDate,
+  dataURLtoBlob,
 } from '@lanshu/utils';
 import { LsIcon } from '@lanshu/components';
 import { renderProcess } from '@lanshu/render-process';
@@ -172,7 +173,7 @@ export default {
     imViewWidth: {
       type: [Number, String],
       required: true,
-      default: 210,
+      default: 500,
     },
   },
   components: {
@@ -187,31 +188,34 @@ export default {
       assetsPath: '',
       cachePath: '',
       selectedText: '',
-      imageMaxWidth: 210,
+      imageMaxWidth: 500,
       wrapStyle: {
-        maxWidth: '210px',
-        maxHeight: '210px',
+        maxWidth: '500px',
+        maxHeight: '500px',
       },
       wrapFileStyle: {
-        width: '210px',
+        width: '500px',
       },
 
       textContextMenuList: [
         {
-          label: '复制',
-          handler: this.handleCopy
+          label: () => '复制',
+          handler: this.handleCopy,
+          icon: () => 'ls-icon-fuzhi'
         },
       ],
       imageContextMenuList: [
         {
-          label: '复制',
-          handler: this.handleCopy
+          label: () => '复制',
+          handler: this.handleCopyImage,
+          icon: () => 'ls-icon-fuzhi'
         },
         {
-          label: '下载',
-          handler: this.handleDownImage
+          label: () => '下载',
+          handler: this.handleDownImage,
+          icon: () => 'ls-icon-xiazai'
         },
-      ]
+      ],
     };
   },
   computed: {
@@ -396,29 +400,44 @@ export default {
     },
 
     handleOpenDir() {
-      renderProcess.showItemInFolder(this.cachePath.replace('cache:///', ''));
+      renderProcess.showItemInFolder(this.cachePath);
     },
 
     async handlePreview() {
       if (!this.assetsPath.includes('cache')) {
         await this.handleDownload();
       }
-      renderProcess.previewAssets(this.cachePath.replace('cache:///', ''));
+      renderProcess.previewAssets(this.cachePath);
     },
 
     async handleCopy() {
       this.selectedText = window.getSelection().toString();
       console.log(this.selectedText);
 
-      const text =
-        this.selectedText || this.$refs.MsgCard.innerText;
+      const text = this.selectedText || this.$refs.MsgCard.innerText;
       await navigator.clipboard.writeText(text);
       this.$message.success('复制成功');
     },
 
+    async handleCopyImage() {
+      if (!this.cachePath) {
+        await this.handleDownload();
+      }
+      const base64 = await renderProcess.getCacheFile2Base64(this.cachePath);
+      const blob = dataURLtoBlob(base64);
+
+      await navigator.clipboard.write([
+        new ClipboardItem({
+          [blob.type]: blob,
+        }),
+      ]);
+
+      this.$message.success('复制成功');
+    },
+
     handleDownImage() {
-      console.log('handleDownImage')
-    }
+      console.log('handleDownImage');
+    },
   },
 };
 </script>
