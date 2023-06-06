@@ -48,7 +48,7 @@ export default {
     userErrorMsg(msg) {
       if (msg) {
         this.setUserErrorMsg();
-        this.$Lconfirm({
+        this.$LConfirm({
           title: '提示',
           content: msg,
         }).then(async () => {
@@ -76,7 +76,7 @@ export default {
         this.$message.warning(msg);
         return;
       }
-      this.$Lconfirm({
+      this.$LConfirm({
         title: '提示',
         content: msg,
         showCancelBtn: false,

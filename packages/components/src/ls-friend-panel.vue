@@ -371,7 +371,7 @@ export default {
     handleCommand(command) {
       console.log(command);
       if (command === this.IS_DELETE) {
-        this.$Lconfirm({
+        this.$LConfirm({
           title: '提示',
           content: '你确定要删除该好友吗？',
         })

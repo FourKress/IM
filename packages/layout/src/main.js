@@ -4,9 +4,14 @@ import ElementUI, { Message } from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 import { baseRoutes } from '@lanshu/container';
 import { IMStore } from '@lanshu/im';
-import { generateRoute, generateStore, VuePrototype } from '@lanshu/utils';
+import {
+  generateRoute,
+  generateStore,
+  VuePrototype,
+  VueDirective,
+} from '@lanshu/utils';
 import App from './App';
-import { LsConfirm } from '@lanshu/components';
+import { LsConfirm, LsContextMenu } from '@lanshu/components';
 
 import 'element-ui/packages/theme-chalk/src/index.scss';
 import './assets/styles/index.scss';
@@ -16,7 +21,9 @@ Vue.config.unwrapInjectedRef = true;
 
 Vue.use(ElementUI);
 Vue.use(LsConfirm);
+Vue.use(LsContextMenu);
 Vue.use(VuePrototype);
+Vue.use(VueDirective);
 
 window.ClientMessage = Message;
 

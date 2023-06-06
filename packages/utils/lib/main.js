@@ -16,6 +16,7 @@ import RecoverAccountMixins from '../src/mixins/recoverAccount';
 import FriendMixins from '../src/mixins/friend';
 import https from '../src/https';
 import VuePrototype from '../src/VuePrototype';
+import VueDirective from '../src/VueDirective';
 import * as Apis from '../src/apis';
 
 export {
@@ -33,5 +34,6 @@ export {
   FriendMixins,
   https,
   VuePrototype,
+  VueDirective,
   Apis,
 };

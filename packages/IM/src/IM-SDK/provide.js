@@ -25,6 +25,7 @@ export const IMSDKConvProvider = {
     getByUserId: 'getByUserId',
     getBySessId: 'getBySessId',
     setTopBySessId: 'setTopBySessId',
+    delBySessId: 'delBySessId',
   },
 };
 

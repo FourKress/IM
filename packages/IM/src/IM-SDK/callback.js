@@ -120,7 +120,7 @@ export const IMSDKCallBackEvents = {
     console.log('@@@@@ KickOutedOffline');
     storeInstance.commit('IMStore/setAllSession', []);
     ctx
-      .$Lconfirm({
+      .$LConfirm({
         title: '提示',
         showCancelBtn: false,
         confirmBtnText: '确定',
@@ -163,7 +163,7 @@ export const IMSDKCallBackEvents = {
   UserTokenExpiredCallBack(ctx) {
     console.log('UserTokenExpiredCallBack');
     ctx
-      .$Lconfirm({
+      .$LConfirm({
         title: '提示',
         showCancelBtn: false,
         confirmBtnText: '确定',

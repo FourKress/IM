@@ -1,33 +1,13 @@
 <template>
   <div class="msg-card">
-    <!--    <el-popover placement="right" title="" width="200" trigger="hover">-->
-    <!--      <span>-->
-    <!--        <el-tooltip class="item" effect="dark" content="复制" placement="top">-->
-    <!--          <LsIcon render-svg icon="xx_srk_gd"></LsIcon>-->
-    <!--        </el-tooltip>-->
-    <!--      </span>-->
-    <!--      -->
-    <!--    </el-popover>-->
-    <el-popover
-      placement="top"
-      width="40"
-      trigger="manual"
-      popper-class="context-menu-popover"
-      v-model="visibleContextMenu"
-    >
-      <div
-        :ref="`MsgCard_${msg.msgId}`"
-        slot="reference"
-        class="card text"
-        :class="classObject"
-        v-if="isText"
-        v-html="msgText"
-      ></div>
-
-      <div class="menu-list">
-        <span class="item" @click="handleCopy">复制</span>
-      </div>
-    </el-popover>
+    <div
+      class="card text"
+      ref="MsgCard"
+      :class="classObject"
+      v-if="isText"
+      v-html="msgText"
+      v-contextMenu="textContextMenuList"
+    ></div>
 
     <div
       class="wrap img"
@@ -37,6 +17,7 @@
         height: `${size.height}px`,
         ...wrapStyle,
       }"
+      v-contextMenu="imageContextMenuList"
     >
       <img :src="assetsPath" @click="handlePreview" />
     </div>
@@ -206,7 +187,6 @@ export default {
       assetsPath: '',
       cachePath: '',
       selectedText: '',
-      visibleContextMenu: false,
       imageMaxWidth: 210,
       wrapStyle: {
         maxWidth: '210px',
@@ -215,6 +195,23 @@ export default {
       wrapFileStyle: {
         width: '210px',
       },
+
+      textContextMenuList: [
+        {
+          label: '复制',
+          handler: this.handleCopy
+        },
+      ],
+      imageContextMenuList: [
+        {
+          label: '复制',
+          handler: this.handleCopy
+        },
+        {
+          label: '下载',
+          handler: this.handleDownImage
+        },
+      ]
     };
   },
   computed: {
@@ -330,16 +327,6 @@ export default {
     this.getAssetsPath();
 
     this.$nextTick(() => {
-      const hasMsgCard = this.$refs[`MsgCard_${this.msg.msgId}`];
-      if (hasMsgCard) {
-        this.$refs[`MsgCard_${this.msg.msgId}`].addEventListener(
-          'contextmenu',
-          this.handleOpenContentMenu,
-        );
-
-        document.addEventListener('click', this.handleCloseContentMenu);
-      }
-
       if (this.linkArr.length) {
         const linKDomArr = [
           ...document.querySelectorAll(`.link-jump_${this.msg.msgId}`),
@@ -420,31 +407,17 @@ export default {
     },
 
     async handleCopy() {
-      this.visibleContextMenu = false;
+      this.selectedText = window.getSelection().toString();
+      console.log(this.selectedText);
+
       const text =
-        this.selectedText || this.$refs[`MsgCard_${this.msg.msgId}`].innerText;
+        this.selectedText || this.$refs.MsgCard.innerText;
       await navigator.clipboard.writeText(text);
       this.$message.success('复制成功');
     },
 
-    handleCloseContentMenu() {
-      this.visibleContextMenu = false;
-    },
-    handleOpenContentMenu() {
-      this.selectedText = window.getSelection().toString();
-      console.log(this.selectedText);
-      this.visibleContextMenu = true;
-    },
-  },
-  destroyed() {
-    const hasMsgCard = this.$refs[`MsgCard_${this.msg.msgId}`];
-    if (hasMsgCard) {
-      this.$refs[`MsgCard_${this.msg.msgId}`].removeEventListener(
-        'contextmenu',
-        this.handleOpenContentMenu(),
-      );
-
-      document.removeEventListener('click', this.handleCloseContentMenu);
+    handleDownImage() {
+      console.log('handleDownImage')
     }
   },
 };
@@ -602,25 +575,6 @@ export default {
             }
           }
         }
-      }
-    }
-  }
-}
-</style>
-
-<style lang="scss">
-.context-menu-popover {
-  min-width: 40px !important;
-
-  .menu-list {
-    text-align: center;
-    font-size: 12px;
-
-    .item {
-      cursor: pointer;
-
-      &:hover {
-        color: $primary-color;
       }
     }
   }

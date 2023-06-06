@@ -11,7 +11,8 @@ import LsUpdate from '../src/ls-update.vue';
 import LsUserTag from '../src/ls-user-tag.vue';
 import LsFriendPanel from '../src/ls-friend-panel.vue';
 import LsQrcodePanel from '../src/ls-qrcode-panel.vue';
-import LsSearchPanel from '../src/le-search-panel.vue';
+import LsSearchPanel from '../src/ls-search-panel.vue';
+import LsContextMenu from '../src/ls-context-menu';
 
 export {
   MsgTextType,
@@ -28,4 +29,5 @@ export {
   LsFriendPanel,
   LsQrcodePanel,
   LsSearchPanel,
+  LsContextMenu,
 };

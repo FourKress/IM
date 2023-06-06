@@ -17,7 +17,7 @@
   </LsDialog>
 </template>
 <script>
-import Expand from './expand';
+import Expand from '../utils/expand';
 import LsDialog from '../ls-dialog';
 
 export default {

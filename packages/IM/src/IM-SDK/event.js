@@ -538,3 +538,10 @@ export const IMSearchFriends = async (keywords) =>
     IMSDKFriendProvider.events.searchFriends,
     keywords,
   );
+
+export const IMDelBySessId = async (sessId) =>
+  await eventHOCFnc(
+    IMSDKConvProvider.provider,
+    IMSDKConvProvider.events.delBySessId,
+    sessId,
+  );

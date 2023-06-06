@@ -1,7 +1,7 @@
 export default {
   methods: {
     openDialog() {
-      this.$Lconfirm({
+      this.$LConfirm({
         showCancelBtn: false,
         confirmBtnText: '知道了',
         render: () => (

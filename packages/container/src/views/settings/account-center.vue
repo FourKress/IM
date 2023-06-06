@@ -132,7 +132,7 @@ export default {
       console.log(val);
     },
     changePhone() {
-      this.$Lconfirm({
+      this.$LConfirm({
         title: '确定要更换手机号码？',
         render: () => (
           <span>
@@ -158,7 +158,7 @@ export default {
     unbind(info) {
       console.log(info);
       if (info.value) {
-        this.$Lconfirm({
+        this.$LConfirm({
           title: '确定要解绑微信吗？',
           content: '解绑后将不能使用微信登录',
         })

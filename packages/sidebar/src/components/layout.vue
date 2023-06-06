@@ -58,6 +58,7 @@
           :key="`${index}_${item.sessId}`"
           :class="currentSession === item.sessId && 'active'"
           @click="handleMenuClick(item)"
+          v-contextMenu:[selfSessionList[index]]="contextMenuList"
         >
           <div class="img">
             <img :src="item.avatar" alt="" />
@@ -100,7 +101,7 @@ import {
   LsIcon,
   LsAssets,
 } from '@lanshu/components';
-import { IMClearUnreadCount } from '@lanshu/im';
+import { IMClearUnreadCount, IMDelBySessId } from '@lanshu/im';
 
 const isAll = true;
 
@@ -114,7 +115,19 @@ export default {
       selfSessionList: [],
       LsAssets,
       isScroll: true,
-      historyTempMsgOBJ: {}
+      historyTempMsgOBJ: {},
+      contextMenuList: [
+        {
+          label: '不显示',
+          handler: this.handleHideSession
+        },
+        {
+          label: '2222',
+          handler: () => {
+            console.log('33333333')
+          }
+        }
+      ]
     };
   },
   components: {
@@ -202,7 +215,13 @@ export default {
     async getHistoryTempMsg() {
       // 获取切换时保存的临时类容
       this.historyTempMsgOBJ = await window.$lanshuStore.getItem('tempMsgOBJ') ;
+    },
+
+    handleHideSession(session) {
+      console.log('handleHideSession', session)
+      IMDelBySessId(session.sessId)
     }
+
   },
 };
 </script>

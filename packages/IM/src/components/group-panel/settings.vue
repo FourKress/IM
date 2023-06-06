@@ -222,7 +222,7 @@ export default {
     },
 
     handleDeleteHistoryMsg() {
-      this.$Lconfirm({
+      this.$LConfirm({
         title: '确定清空聊天记录？',
         content: '聊天记录将在你的所有设备同步清空，不会影响其他群成员',
       }).then(() => {
@@ -235,7 +235,7 @@ export default {
     },
     handleOutGroup() {
       if (this.groupRole === GROUP_ROLE_TYPE.IS_OWNER) {
-        this.$Lconfirm({
+        this.$LConfirm({
           title: '提示',
           content: '你是群主，需要把群主转让后才能退出群聊',
           confirmBtnText: '去转让',
@@ -244,7 +244,7 @@ export default {
         });
         return;
       }
-      this.$Lconfirm({
+      this.$LConfirm({
         title: '确定退出群聊？',
         content: `你要退出“${this.actionWindow.nickname}”吗？退出后将无法查看历史记录且不会再收到此群聊的消息`,
       }).then(() => {
@@ -254,7 +254,7 @@ export default {
       });
     },
     handleRemoveGroup() {
-      this.$Lconfirm({
+      this.$LConfirm({
         title: '确定解散群聊？',
         content: '解散会移出所有群成员，且无法再查看此群聊的历史记录',
       }).then(() => {

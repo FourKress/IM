@@ -73,7 +73,7 @@ export default {
       this.$emit('createGroup');
     },
     handleDeleteHistoryMsg() {
-      this.$Lconfirm({
+      this.$LConfirm({
         title: '确定清空聊天记录？',
         content: '聊天记录清空后无法恢复，确认清空吗？',
       }).then(() => {
