@@ -108,12 +108,12 @@ export const openTRTCWindow = async (type = CLIENT_TYPE.IS_PC) => {
     },
     [CLIENT_TYPE.IS_MOBILE]: {
       size: {
-        width: 368,
+        width: 360,
         height: 640,
         minWidth: 368,
         minHeight: 640,
       },
-      ratio: 388 / 660,
+      ratio: 360 / 640,
     },
   };
   const targetClient = configMap[type];

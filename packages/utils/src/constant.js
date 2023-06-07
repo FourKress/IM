@@ -32,7 +32,9 @@ export const BASE_MSG_TYPES = [1, 2, 3, 4, 5, 6, 671, 672, 673, 674];
 export const MSG_FORMAT_MAP = {
   1: {
     label: (data) => {
-      return data?.content ? data.content.split('<br>')[0] : '';
+      const msg = data?.content ? data.content.split('<br>')[0] : '';
+      if (!msg) return msg;
+      return msg.replace(/&nbsp;/, '');
     },
     type: CHECK_MSG_TYPE.IS_TEXT,
   },

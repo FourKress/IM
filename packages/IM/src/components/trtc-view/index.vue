@@ -96,13 +96,14 @@
         :class="!isEnterRoom && 'full'"
         ref="localTrtcContainer"
       ></div>
-      <div class="local-bg" v-if="isEnterRoom">
+      <div class="local-bg">
         <img
           class="bg"
+          v-if="isEnterRoom"
           :src="isPc ? LsAssets.trtcMePc : LsAssets.trtcBgMobile"
           alt=""
         />
-        <img class="avatar" v-if="disCamStatus" :src="userInfo.avatar" alt="" />
+        <img class="avatar" v-if="disCamStatus || !isEnterRoom" :src="userInfo.avatar" alt="" />
       </div>
     </div>
 
@@ -113,7 +114,7 @@
         <img
           class="avatar"
           :src="trtcSession.avatar"
-          v-if="isEnterRoom && !disCamStatus"
+          v-if="isEnterRoom && (!disCamStatus || isNotUserVideo)"
           alt=""
         />
         <img
@@ -198,6 +199,7 @@ export default {
       isFull: false,
       resizeObserver: null,
       maxSize: 640,
+      isNotUserVideo: false,
     };
   },
   created() {
@@ -554,6 +556,7 @@ export default {
     onUserVideoAvailable(userId, available) {
       console.log(`onUserVideoAvailable ${userId} ${available}`);
       if (available === 1) {
+        this.isNotUserVideo = false;
         trtcCloud.startRemoteView(
           this.isPc,
           userId,
@@ -561,6 +564,7 @@ export default {
         );
       } else {
         trtcCloud.stopRemoteView(userId);
+        this.isNotUserVideo = true;
       }
     },
 
@@ -908,7 +912,7 @@ export default {
         position: absolute;
         left: 0;
         top: 0;
-        background: rgba(0, 0, 0, 0.88);
+        background: rgba(0, 0, 0, 0.8);
         width: 100%;
         height: 100%;
       }
@@ -920,7 +924,7 @@ export default {
         top: 50%;
         transform: translate(-50%, -50%);
         z-index: -1;
-        filter: blur(30px);
+        filter: blur(20px);
       }
 
       .avatar {

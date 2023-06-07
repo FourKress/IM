@@ -39,6 +39,7 @@ export default {
   methods: {
     handleClose() {
       if (!this.isModalClose) return;
+      this.$emit('close');
       this.$emit('update:visible', false);
     },
     handleRemoveDom() {

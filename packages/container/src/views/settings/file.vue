@@ -52,7 +52,7 @@ export default {
   },
   methods: {
     async selectFilePath() {
-      const dirPath = await renderProcess.openFile('openDirectory');
+      const dirPath = await renderProcess.openFileDialog('openDirectory');
       if (dirPath) {
         this.cacheDirPath = dirPath;
       }

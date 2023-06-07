@@ -66,7 +66,7 @@
       <LsFriendPanel
         :friend-info="friendInfo"
         :position="position"
-        :config="{ isApply: true }"
+        :config="friendPanelConfig"
         @sendApply="handleSendApply"
       />
     </LsCardDialog>
@@ -111,6 +111,7 @@ export default {
       friendList: [],
       isEmpty: false,
       isAwait: false,
+      friendPanelConfig: { isApply: true },
     };
   },
   computed: {
@@ -143,10 +144,14 @@ export default {
         });
     },
     async handleOpenFriendDialog(friendInfo, event) {
-      this.friendInfo = friendInfo;
       await this.openFriendDialog(event, async () => {
-        return this.friendInfo;
+        return {
+          ...friendInfo,
+        };
       });
+      if (this.friendInfo?.dep) {
+        this.friendPanelConfig = { isPass: true }
+      }
     },
     handleSendApply(addParams) {
       console.log(this.friendInfo, addParams);

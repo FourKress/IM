@@ -335,7 +335,7 @@ export default {
     .network_status {
       position: absolute;
       top: 0;
-      right: -345px;
+      right: -174px;
     }
   }
 

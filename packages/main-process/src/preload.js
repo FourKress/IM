@@ -2,7 +2,7 @@
 //
 // contextBridge.exposeInMainWorld('electronAPI', {
 //   changeWindow: (type) => ipcRenderer.send('changeWindow', type),
-//   openFile: (type) => ipcRenderer.invoke('openFile', type),
+//   openFileDialog: (type) => ipcRenderer.invoke('openFileDialog', type),
 //   startScreenshots: () => ipcRenderer.invoke('startScreenshots'),
 //   showMainWindow: (config) => ipcRenderer.send('showMainWindow', config),
 //   showLoginWindow: (delay) => ipcRenderer.send('showLoginWindow', delay),
@@ -21,7 +21,8 @@ const { ipcRenderer } = require('electron');
 
 window.electronAPI = {
   changeWindow: (type, win) => ipcRenderer.send('changeWindow', type, win),
-  openFile: (type) => ipcRenderer.invoke('openFile', type),
+  openFileDialog: (type) => ipcRenderer.invoke('openFileDialog', type),
+  saveFileDialog: (type) => ipcRenderer.invoke('saveFileDialog', type),
   startScreenshots: () => ipcRenderer.invoke('startScreenshots'),
   showMainWindow: (config) => ipcRenderer.send('showMainWindow', config),
   showLoginWindow: (delay) => ipcRenderer.send('showLoginWindow', delay),
@@ -59,4 +60,6 @@ window.electronAPI = {
   previewAssets: (key, data) => ipcRenderer.send('previewAssets', key, data),
   getFocusedWindow: (win) => ipcRenderer.invoke('getFocusedWindow', win),
   webviewOpenUrl: (url) => ipcRenderer.on('webviewOpenUrl', url),
+  copyFile: (sourcePath, targetPath) =>
+    ipcRenderer.invoke('copyFile', sourcePath, targetPath),
 };

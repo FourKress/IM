@@ -26,6 +26,7 @@ export default {
     ...mapActions('IMStore', ['setMainSessionWindow', 'setRefreshMsg']),
 
     async openFriendDialog(event, cb, computedHeight) {
+      this.friendInfo = {};
       const { clientWidth, clientHeight } = document.body;
       // 网页宽度 - 面板宽度 = left的最大值，避免定位超出视图区
       const maxLeft = clientWidth - 400;

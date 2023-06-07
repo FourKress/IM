@@ -66,7 +66,6 @@
         :position="position"
         :config="friendPanelConfig"
         :isDep="true"
-        @update="handleCloseDialog"
         @sendMsg="handleSendMsg"
         @sendVideo="handleSendVideo"
         @sendAudio="handleSendAudio"

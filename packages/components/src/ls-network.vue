@@ -30,7 +30,7 @@ export default {
 
 <style scoped lang="scss">
 .ls-network {
-  width: 280px;
+  width: 164px;
   height: 46px;
   background: #ffebea;
   border-radius: 4px;
@@ -40,6 +40,7 @@ export default {
   justify-content: center;
   font-size: 14px;
   font-weight: normal;
+  box-sizing: border-box;
   color: #f65951;
 
   .label {

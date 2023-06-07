@@ -411,6 +411,10 @@ export default {
           background: #e9f2ff;
         }
 
+        &:hover {
+          background-color: $bg-hover-grey-color;
+        }
+
         .img {
           width: 46px;
           height: 46px;

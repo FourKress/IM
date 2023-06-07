@@ -211,7 +211,7 @@ export default {
           icon: () => 'ls-icon-fuzhi'
         },
         {
-          label: () => '下载',
+          label: () => '另存为',
           handler: this.handleDownImage,
           icon: () => 'ls-icon-xiazai'
         },
@@ -435,8 +435,15 @@ export default {
       this.$message.success('复制成功');
     },
 
-    handleDownImage() {
+    async handleDownImage() {
       console.log('handleDownImage');
+      const dirPath = await renderProcess.saveFileDialog();
+      if (!dirPath) {
+        this.$message.warning('请选择保存文件夹');
+        return
+      }
+      await renderProcess.copyFile(this.cachePath, dirPath);
+      this.$message.success('保存成功')
     },
   },
 };

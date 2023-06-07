@@ -1,5 +1,11 @@
 import { ipcMain, app, shell, BrowserWindow } from 'electron';
-import { handleFileOpen, calcFileSize, deleteFile } from './utils';
+import {
+  handleFileOpen,
+  calcFileSize,
+  deleteFile,
+  handleSaveFileOpen,
+  copyFile,
+} from './utils';
 import { initScreenshots } from './screenshots';
 import {
   showLoginWindow,
@@ -24,7 +30,7 @@ import {
   initCache,
   saveCacheFile,
   setCacheDir,
-} from './cache';
+} from './file';
 
 const initIpcMain = () => {
   app.whenReady().then(async () => {
@@ -48,7 +54,8 @@ const initIpcMain = () => {
       changeWindow(type, win);
     });
 
-    ipcMain.handle('openFile', (_event, type) => handleFileOpen(type));
+    ipcMain.handle('openFileDialog', (_event, type) => handleFileOpen(type));
+    ipcMain.handle('saveFileDialog', (_event) => handleSaveFileOpen());
 
     ipcMain.handle('IMSDKIPC', (_event, provider, event, data) =>
       IMSDKEvent(provider, event, data),
@@ -160,6 +167,10 @@ const initIpcMain = () => {
 
     ipcMain.handle('getFocusedWindow', (_event, win) => {
       return !!BrowserWindow.getFocusedWindow();
+    });
+
+    ipcMain.handle('copyFile', async (_event, sourcePath, targetPath) => {
+      return await copyFile(sourcePath.replace('cache:///', ''), targetPath);
     });
   });
 };

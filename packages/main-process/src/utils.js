@@ -38,6 +38,23 @@ export const handleFileOpen = async (args) => {
   return filePaths[0];
 };
 
+export const handleSaveFileOpen = async () => {
+  const { canceled, filePath } = await dialog.showSaveDialog(
+    global.mainWindow,
+    {
+      filters: [{ name: 'Images', extensions: ['jpg', 'png', 'gif'] }],
+    },
+  );
+  if (canceled) {
+    return false;
+  }
+  return filePath;
+};
+
+export const copyFile = async (sourcePath, targetPath) => {
+  await fs.copyFileSync(sourcePath, targetPath);
+};
+
 export const calcFileSize = async (dirPath) => {
   let fileSize = 0;
   let error = null;

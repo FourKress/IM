@@ -4,7 +4,7 @@
       <span class="label">[草稿]</span>
       <span>{{ tempMsgText }}</span>
     </span>
-    <span v-else>{{ messageTextType }}</span>
+    <span v-else>{{ messageText }}</span>
   </span>
 </template>
 
@@ -28,7 +28,7 @@ export default {
     },
   },
   computed: {
-    messageTextType() {
+    messageText() {
       const { msgType, data } = this.lastMsg;
       if (!msgType && !data) return '暂无消息';
       const msgTypes = Object.keys(MSG_FORMAT_MAP);

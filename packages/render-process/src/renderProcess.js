@@ -10,7 +10,8 @@ export const changeWindow = (type, win) => {
   }
   electronAPI?.changeWindow(type, win);
 };
-export const openFile = electronAPI?.openFile;
+export const openFileDialog = electronAPI?.openFileDialog;
+export const saveFileDialog = electronAPI?.saveFileDialog;
 export const startScreenshots = electronAPI?.startScreenshots;
 export const showMainWindow = electronAPI?.showMainWindow;
 export const showLoginWindow = electronAPI?.showLoginWindow;
@@ -42,3 +43,4 @@ export const showItemInFolder = electronAPI?.showItemInFolder;
 export const previewAssets = electronAPI?.previewAssets;
 export const getFocusedWindow = electronAPI?.getFocusedWindow;
 export const webviewOpenUrl = electronAPI?.webviewOpenUrl;
+export const copyFile = electronAPI?.copyFile;
