@@ -93,9 +93,11 @@ export default {
   created() {
     // 获取入口传入的Menu项
     const pluginMenu = JSON.parse(localStorage.getItem('menu') || '[]');
+    console.log(pluginMenu)
 
     this.navList = [...BaseRoutes, ...micro.getRoutes()]
       .filter((r) => r?.meta?.isMenu)
+      .concat(pluginMenu)
       .map((r) => {
         const meta = r?.meta;
         return {
@@ -105,7 +107,6 @@ export default {
           activeIcon: meta?.activeIcon,
         };
       })
-      .concat(pluginMenu);
   },
   methods: {
     ...mapActions('globalStore', ['setStartDownload']),

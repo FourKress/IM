@@ -125,6 +125,9 @@ export default {
     ]),
 
     async handleGetVersion() {
+      const currentVersion = await renderProcess.getStore('VERSION');
+      if (currentVersion === 'NEVER') return;
+
       const res = await Apis.queryLastAvailableByAppCode({
         appCode: 'PC',
       });
@@ -135,7 +138,7 @@ export default {
       if (!updateData) return;
 
       const { version, model, decDirectory, title, content } = updateData;
-      const currentVersion = await renderProcess.getStore('VERSION');
+
       console.log(version, currentVersion)
 
       const isNewVersion = compareVersion(version, currentVersion) === 1;
