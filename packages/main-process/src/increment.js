@@ -1,7 +1,9 @@
+import { app } from 'electron';
+
 import downloadFile from './downloadFile';
 import electronLog from './log';
 import sudoPrompt from './sudoPrompt';
-import { app } from 'electron';
+
 const fse = require('fs-extra');
 const path = require('path');
 const AdmZip = require('adm-zip');

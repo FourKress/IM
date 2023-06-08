@@ -79,7 +79,6 @@ export default {
         return;
       }
       this.downloadProgress = progress;
-      console.log(progress);
     });
   },
   methods: {

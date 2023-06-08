@@ -23,15 +23,15 @@ async function createWindow() {
     show: false,
   });
 
-  if (global.store.get('IS_DEVTOOLS')) {
-    win.webContents.openDevTools();
-  }
-
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     await win.loadURL(process.env.WEBPACK_DEV_SERVER_URL);
   } else {
     createProtocol('app');
     await win.loadURL('app://./index.html');
+  }
+
+  if (global.store.get('IS_DEVTOOLS')) {
+    win.webContents.openDevTools();
   }
 
   global.mainWindow = win;
