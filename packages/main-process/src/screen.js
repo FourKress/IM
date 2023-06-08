@@ -1,6 +1,10 @@
 import { screen } from 'electron';
 
 export const getScreenInfo = () => {
+  // 外部控制的窗口默认大小
+  const windowsSize = global.store.get('DEFAULT_WINDOWS_SIZE');
+  if (windowsSize) return windowsSize;
+
   const {
     size: { width, height },
   } = screen.getPrimaryDisplay();

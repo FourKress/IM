@@ -77,8 +77,14 @@ async function createWindow() {
 }
 
 const initElectron = (config) => {
-  const { terminal, isDevtools = false, version = '0.0.1' } = config;
+  const {
+    terminal,
+    isDevtools = false,
+    version = '0.0.1',
+    windowsSize = '',
+  } = config;
 
+  global.store.set('DEFAULT_WINDOWS_SIZE', windowsSize);
   global.store.set('IS_DEVTOOLS', isDevelopment || isDevtools);
   global.store.set('CLIENT_TERMINAL', terminal);
   console.log('VERSION', global.store.get('VERSION'));
