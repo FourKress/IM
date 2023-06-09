@@ -14,7 +14,7 @@ const initLoginWindow = () => {
   mainWindow.center();
 };
 
-export const initMainWindow = () => {
+const initMainWindow = () => {
   const { width, height } = getScreenInfo();
   electronLog.info(`screenInfo ${width} ${height}`);
   const mainWindow = global.mainWindow;

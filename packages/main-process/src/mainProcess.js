@@ -10,7 +10,6 @@ import { initScreenshots } from './screenshots';
 import {
   showLoginWindow,
   showMainWindow,
-  initMainWindow,
   changeWindow,
   openTRTCWindow,
 } from './window';
@@ -79,7 +78,7 @@ const initIpcMain = () => {
       showMainWindow();
 
       screen.on('display-metrics-changed', function () {
-        initMainWindow();
+        showMainWindow();
       });
     });
 
