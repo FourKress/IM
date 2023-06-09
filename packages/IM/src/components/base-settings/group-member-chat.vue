@@ -516,7 +516,7 @@ export default {
       display: flex;
       flex-direction: column;
       box-sizing: border-box;
-      padding: 10px 20px 0;
+      padding-top: 10px;
 
       .input-row {
         width: 242px;
@@ -525,7 +525,7 @@ export default {
         background-color: $bg-white-color;
         border-radius: 6px;
         padding-left: 14px;
-        margin-bottom: 10px;
+        margin: 0 auto 10px;
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -565,6 +565,8 @@ export default {
         height: 28px;
         line-height: 20px;
         margin-bottom: 20px;
+        padding: 0 20px;
+        box-sizing: border-box;
 
         .action {
           flex: 1;
@@ -749,6 +751,12 @@ export default {
         }
       }
 
+      .list {
+        padding: 0 20px;
+        overflow-x: hidden;
+        overflow-y: auto;
+      }
+
       .scroll-view {
         .item {
           width: 242px;
@@ -803,6 +811,8 @@ export default {
         align-items: center;
         justify-content: flex-end;
         margin-bottom: 20px;
+        box-sizing: border-box;
+        padding: 0 20px;
 
         .btn {
           width: 88px;
