@@ -12,7 +12,6 @@ module.exports = defineConfig({
       ],
       preload: {
         preload: './src/preload.js',
-        webviewPreload: './src/views/webview/preload.js',
       },
       nodeIntegration: true,
 
