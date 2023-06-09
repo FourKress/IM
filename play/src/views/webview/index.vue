@@ -10,6 +10,7 @@
       class="webview"
       v-if="webviewSrc"
       :src="webviewSrc"
+      :key="webviewSrc"
       allowpopups
       :preload="preloadPath"
     ></webview>
@@ -138,6 +139,9 @@ export default {
   watch: {
     $route() {
       this.getSrc();
+      setTimeout(() => {
+        this.handleWebviewListener();
+      });
     },
   },
   async created() {
@@ -152,6 +156,26 @@ export default {
     });
 
     setTimeout(() => {
+      this.handleWebviewListener();
+    });
+  },
+  methods: {
+    getSrc() {
+      this.historySrcList = [];
+      const {
+        webviewSrc,
+        preloadConfig = {},
+        isNavPage = false,
+      } = this.$route?.meta || {};
+
+      this.isNavPage = isNavPage;
+      this.isLoading = !isNavPage;
+      this.webviewSrc = webviewSrc;
+
+      this.preloadConfig = preloadConfig;
+    },
+
+    handleWebviewListener() {
       const webview = document.querySelector('.webview');
       webview.addEventListener('did-finish-load', () => {
         console.log('webview did-finish-load');
@@ -174,25 +198,8 @@ export default {
         if (!message.includes('WEBVIEW_IPC')) return;
         console.log(message);
       });
-    });
-  },
-  methods: {
-    getSrc() {
-      this.historySrcList = [];
-      const {
-        webviewSrc,
-        preloadConfig = {},
-        isNavPage = false,
-      } = this.$route?.meta || {};
-      if (isNavPage) {
-        this.isLoading = false;
-        this.isNavPage = isNavPage;
-      } else {
-        this.isLoading = true;
-        this.webviewSrc = webviewSrc;
-      }
-      this.preloadConfig = preloadConfig;
     },
+
     handleBack() {
       const backPath = this.historySrcList.pop();
       if (backPath === 'NAV_PAGE') {
@@ -208,7 +215,7 @@ export default {
       setTimeout(() => {
         this.isNavPage = false;
         this.isLoading = false;
-      }, 1000)
+      }, 200)
       this.historySrcList.push('NAV_PAGE');
       this.webviewSrc = `${webviewSrc}${nav.link}`;
     },
@@ -223,6 +230,10 @@ export default {
   display: flex;
   position: relative;
 
+  ::v-deep .el-loading-mask {
+    z-index: 4;
+  }
+
   .webview {
     flex: 1;
     display: flex;
@@ -235,7 +246,7 @@ export default {
     right: 10px;
     width: 28px;
     height: 28px;
-    z-index: 9;
+    z-index: 2;
     opacity: 0.6;
   }
 
@@ -243,7 +254,7 @@ export default {
     position: absolute;
     left: 0;
     top: 0;
-    z-index: 10;
+    z-index: 3;
     width: 100%;
     height: 100%;
     background-color: #fff;

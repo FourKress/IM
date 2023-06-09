@@ -64,10 +64,10 @@ ipcRenderer.on('WEBVIEW_LOGIN', (_event, config = {}) => {
         }`,
       );
       if (!(rememberInput && rememberInput.checked)) {
-        rememberInput.checked = true;
         if (classNameArr.pop() !== 'input') {
           rememberDOM.click();
         }
+        rememberInput.checked = true;
       }
     }
 
@@ -81,10 +81,10 @@ ipcRenderer.on('WEBVIEW_LOGIN', (_event, config = {}) => {
         }`,
       );
       if (!(agreementInput && agreementInput.checked)) {
-        agreementInput.checked = true;
         if (classNameArr.pop() !== 'input') {
           agreementDOM.click();
         }
+        agreementInput.checked = true;
       }
     }
 
