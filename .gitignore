@@ -28,3 +28,4 @@ play/dist_electron
 play/build
 play/custom-install/FilesToInstall
 play/custom-install/Output
+*.7z
