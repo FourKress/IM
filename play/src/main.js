@@ -9,7 +9,7 @@ console.log(__dirname, process.cwd());
 window.webviewPreload = `file://${
   isDevelopment
     ? `${process.cwd()}\\src\\views\\webview\\preload.js`
-    : `${__dirname}\\preload.js`
+    : `${__dirname}\\webviewPreload.js`
 }`;
 
 Layout({

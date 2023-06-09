@@ -10,7 +10,10 @@ module.exports = defineConfig({
         'lim-sdk-electron',
         'trtc-electron-sdk',
       ],
-      preload: './src/preload.js',
+      preload: {
+        preload: './src/preload.js',
+        webviewPreload: './src/views/webview/preload.js',
+      },
       nodeIntegration: true,
 
       customFileProtocol: '../',

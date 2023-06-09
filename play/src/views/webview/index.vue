@@ -185,6 +185,7 @@ export default {
         isNavPage = false,
       } = this.$route?.meta || {};
       if (isNavPage) {
+        this.isLoading = false;
         this.isNavPage = isNavPage;
       } else {
         this.isLoading = true;

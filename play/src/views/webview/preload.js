@@ -58,8 +58,12 @@ ipcRenderer.on('WEBVIEW_LOGIN', (_event, config = {}) => {
       const classNameArr = rememberEl.split(' ');
       const rememberDOM = document.querySelector(rememberEl);
       const rememberInput = document.querySelector(`${classNameArr[0]} input`);
-      console.log(`WEBVIEW_IPC: rememberChecked: ${rememberInput?.checked}`);
-      if (!rememberInput?.checked) {
+      console.log(
+        `WEBVIEW_IPC: rememberChecked: ${
+          rememberInput && rememberInput.checked
+        }`,
+      );
+      if (!(rememberInput && rememberInput.checked)) {
         rememberInput.checked = true;
         if (classNameArr.pop() !== 'input') {
           rememberDOM.click();
@@ -71,8 +75,12 @@ ipcRenderer.on('WEBVIEW_LOGIN', (_event, config = {}) => {
       const classNameArr = agreementEl.split(' ');
       const agreementDOM = document.querySelector(agreementEl);
       const agreementInput = document.querySelector(`${classNameArr[0]} input`);
-      console.log(`WEBVIEW_IPC: agreementChecked: ${agreementInput?.checked}`);
-      if (!agreementInput?.checked) {
+      console.log(
+        `WEBVIEW_IPC: agreementChecked: ${
+          agreementInput && agreementInput.checked
+        }`,
+      );
+      if (!(agreementInput && agreementInput.checked)) {
         agreementInput.checked = true;
         if (classNameArr.pop() !== 'input') {
           agreementDOM.click();

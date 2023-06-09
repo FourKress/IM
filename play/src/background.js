@@ -2,7 +2,7 @@ import { initElectron, initIpcMain } from '@lanshu/main-process';
 
 initElectron({
   terminal: 'government',
-  isDevtools: false,
+  isDevtools: true,
   version: 'NEVER',
   windowsSize: {
     width: 1600,
