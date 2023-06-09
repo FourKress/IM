@@ -1,4 +1,4 @@
-import { ipcMain, app, shell, BrowserWindow } from 'electron';
+import { ipcMain, app, shell, BrowserWindow, screen } from 'electron';
 import {
   handleFileOpen,
   calcFileSize,
@@ -10,6 +10,7 @@ import { initScreenshots } from './screenshots';
 import {
   showLoginWindow,
   showMainWindow,
+  initMainWindow,
   changeWindow,
   openTRTCWindow,
 } from './window';
@@ -76,6 +77,10 @@ const initIpcMain = () => {
     ipcMain.on('showMainWindow', (_event, config) => {
       initHotKeys();
       showMainWindow();
+
+      screen.on('display-metrics-changed', function () {
+        initMainWindow();
+      });
     });
 
     ipcMain.on('showLoginWindow', (_event, delay) => {
@@ -125,7 +130,6 @@ const initIpcMain = () => {
 
     // 触发检查更新并且下载
     ipcMain.on('checkForUpdates', async (_event, config) => {
-      console.log('检查更新', config);
       electronLog.info('检查更新, 增量更新');
       electronLog.info(config);
       const { version, fetchUrl } = config;

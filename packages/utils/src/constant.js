@@ -34,7 +34,7 @@ export const MSG_FORMAT_MAP = {
     label: (data) => {
       const msg = data?.content ? data.content.split('<br>')[0] : '';
       if (!msg) return msg;
-      return msg.replace(/&nbsp;/, '');
+      return msg.replace(/&nbsp;/g, ' ');
     },
     type: CHECK_MSG_TYPE.IS_TEXT,
   },

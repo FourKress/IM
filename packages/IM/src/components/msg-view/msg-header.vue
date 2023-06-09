@@ -6,7 +6,7 @@
       </div>
       <div class="info">
         <span class="name">{{ session.nickname }}</span>
-        <span v-if="isGroup">({{ members.length }})</span>
+        <span v-if="isGroup">({{ memberCount }})</span>
         <!--        <span class="tips">顶顶顶顶</span>-->
       </div>
     </div>
@@ -100,7 +100,7 @@ import {
 } from '@lanshu/utils';
 import { renderProcess } from '@lanshu/render-process';
 import {
-  IMGetGroupMemberList,
+  IMGetGroupCurrentMemberCount,
   IMGetOneFriend,
   IMGetUserProfile,
 } from '../../IM-SDK';
@@ -127,7 +127,7 @@ export default {
       IM_HEADER_MORE_BTN_KEY,
       NETWORK_CALL_TYPE,
       showFriendDialog: false,
-      members: [],
+      memberCount: 0,
       friendPanelConfig: {}
     };
   },
@@ -147,13 +147,11 @@ export default {
   },
   watch: {
     refreshMembers() {
-      this.getGroupMemberList();
+      this.getGroupCurrentMemberCount();
     },
   },
-  mounted() {
-    if (this.isGroup) {
-      this.getGroupMemberList();
-    }
+  created() {
+    this.getGroupCurrentMemberCount();
   },
   methods: {
     ...mapActions('IMStore', ['removeSessionWindowList']),
@@ -206,13 +204,18 @@ export default {
           desc,
         };
       });
+
+      if (this.friendInfo?.dep) {
+        this.friendPanelConfig = { isPass: true }
+      }
     },
 
-    getGroupMemberList() {
-      // nextSeq默认从0开始
-      IMGetGroupMemberList(this.session.toUser, 0).then((res) => {
-        const { members = [] } = res;
-        this.members = members;
+    getGroupCurrentMemberCount() {
+      if (!this.isGroup) return;
+      IMGetGroupCurrentMemberCount(this.session.toUser).then((res) => {
+        console.log(res, 'IMGetGroupCurrentMemberCount')
+        const { memberCount = 0 } = res;
+        this.memberCount = memberCount;
       });
     },
   },

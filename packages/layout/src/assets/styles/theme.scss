@@ -87,7 +87,7 @@ $--color-primary: $primary-color;
   display: none;
 } /* 滚动条的滑轨背景颜色 */
 ::-webkit-scrollbar-thumb {
-  background-color: $tips-text-color;
+  background-color: #D8D8D8;
 } /* 滑块颜色 */
 ::-webkit-scrollbar-button {
   display: none;

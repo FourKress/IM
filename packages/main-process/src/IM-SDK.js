@@ -1,6 +1,6 @@
 import { app, BrowserWindow } from 'electron';
 import fs from 'fs';
-import electronLog from './log';
+import { electronLog, sdkLog } from './log';
 import { openTRTCWindow } from './window';
 import { CLIENT_TYPE } from './utils';
 import trayEvent from './trayEvent';
@@ -20,7 +20,7 @@ export const IMSDKInit = (appId) => {
   );
 
   IMSDK.getMainProvider().setNetworkChangeCallBack((state) => {
-    console.log('setNetworkChangeCallBack', state);
+    electronLog.info(`setNetworkChangeCallBack: ${state}`);
     // state 网络状态 0：正在连接、-1：连接断开、1：连接成功
     global.mainWindow.webContents.send('IMSDKListener', {
       type: 'Network',
@@ -60,6 +60,7 @@ export const IMSDKInit = (appId) => {
   });
 
   IMSDK.getMainProvider().setLogOutCallBack((level, str) => {
+    sdkLog.info(`${level}： ${str}`);
     global.mainWindow.webContents.send('IMSDKListener', {
       type: 'LogOutCallBack',
       value: {
@@ -115,7 +116,9 @@ export const IMSDKInit = (appId) => {
     async (uuid, type, data, userId, userType) => {
       if (global.store.get('NETWORK_CALL_UUID') === uuid) return;
       global.store.set('NETWORK_CALL_UUID', uuid);
-      console.log('setNetworkCallListener', uuid, type, data, userId, userType);
+      electronLog.info(
+        `setNetworkChangeCallBack: ${uuid} ${type} ${data} ${userId} ${userType}`,
+      );
       // TODO 后续从data里面取头像昵称
       const userInfo = await IMSDK.getUserProvider().getUserAttrbute(userId);
       const { avatar, nickname } = userInfo.data || {};
@@ -134,14 +137,14 @@ export const IMSDKInit = (appId) => {
         roomId,
         uuid,
       });
-      console.log('openTRTCWindow');
+      electronLog.info('openTRTCWindow');
       await openTRTCWindow(platform);
     },
   );
 
   IMSDK.getMainProvider().setFriendAddRequestUpdateListener(
     (friendAddRequestCount) => {
-      console.log(friendAddRequestCount, 'friendAddRequestCount');
+      electronLog.info(`friendAddRequestCount: ${friendAddRequestCount}`);
       global.mainWindow.webContents.send('IMSDKListener', {
         type: 'FriendAddRequestUpdateListener',
         value: friendAddRequestCount,
@@ -150,7 +153,7 @@ export const IMSDKInit = (appId) => {
   );
 
   IMSDK.getMainProvider().setFriendDelListener((userId, delUerId) => {
-    console.log(userId, delUerId, 'FriendDelListener');
+    electronLog.info(`FriendDelListener: ${userId} ${delUerId}`);
     global.mainWindow.webContents.send('IMSDKListener', {
       type: 'FriendDelListener',
       value: {
@@ -161,7 +164,7 @@ export const IMSDKInit = (appId) => {
   });
 
   IMSDK.getMainProvider().setUserTokenExpiredCallBack(() => {
-    console.log('UserTokenExpiredCallBack');
+    electronLog.info('UserTokenExpiredCallBack');
     global.mainWindow.webContents.send('IMSDKListener', {
       type: 'UserTokenExpiredCallBack',
       value: '',
@@ -171,7 +174,7 @@ export const IMSDKInit = (appId) => {
   // 改所有除了我的群昵称的信息时触发
   IMSDK.getMainProvider().setUserNicknameAvatarUpdateListener(
     (userId, nickname, avatar) => {
-      console.log('UserNicknameAvatarUpdateListener');
+      electronLog.info('UserNicknameAvatarUpdateListener');
       global.mainWindow.webContents.send('IMSDKListener', {
         type: 'UserNicknameAvatarUpdateListener',
         value: {
@@ -186,7 +189,7 @@ export const IMSDKInit = (appId) => {
   // 群成员信息变更回调
   IMSDK.getMainProvider().setGroupUserAttributeChangedCallBack(
     (groupId, userId, avatar, nickname) => {
-      console.log('GroupUserAttributeChangedCallBack');
+      electronLog.info('GroupUserAttributeChangedCallBack');
       global.mainWindow.webContents.send('IMSDKListener', {
         type: 'GroupUserAttributeChangedCallBack',
         value: {
@@ -200,7 +203,7 @@ export const IMSDKInit = (appId) => {
   );
 
   IMSDK.getMainProvider().setGroupMemberDeleteCallBack((groupId) => {
-    console.log('GroupMemberDeleteCallBack', groupId);
+    electronLog.info(`GroupMemberDeleteCallBack: ${groupId}`);
     global.mainWindow.webContents.send('IMSDKListener', {
       type: 'GroupMemberDeleteCallBack',
       value: {
@@ -208,10 +211,37 @@ export const IMSDKInit = (appId) => {
       },
     });
   });
+
+  IMSDK.getMainProvider().setGroupMemberCountChangesListener(
+    (groupId, groupMemberCount) => {
+      electronLog.info(
+        `GroupMemberCountChangesListener: ${groupId} ${groupMemberCount}`,
+      );
+      global.mainWindow.webContents.send('IMSDKListener', {
+        type: 'GroupMemberCountChangesListener',
+        value: {
+          groupId,
+          groupMemberCount,
+        },
+      });
+    },
+  );
+
+  IMSDK.getMainProvider().setGroupRoleManagerUpgradeListener(
+    (groupRoleManager = {}) => {
+      electronLog.info(`GroupRoleManagerUpgradeListener: ${groupRoleManager}`);
+      global.mainWindow.webContents.send('IMSDKListener', {
+        type: 'GroupRoleManagerUpgradeListener',
+        value: {
+          groupRoleManager,
+        },
+      });
+    },
+  );
 };
 
 export const IMSDKEvent = async (provider, event, data) => {
-  console.log(event, data);
+  electronLog.info(`${event} ${data}`);
   try {
     let res;
     if (event === 'uploadFile') {
@@ -226,7 +256,7 @@ export const IMSDKEvent = async (provider, event, data) => {
         await fs.writeFileSync(writePath, dataBuffer);
         filePath = writePath;
       }
-      console.log(filePath);
+
       const file = fs.createReadStream(filePath);
       res = await global.IMSDK[provider]()[event](file);
       if (isBase64) {
@@ -244,7 +274,7 @@ export const IMSDKEvent = async (provider, event, data) => {
 };
 
 export const IMSDKNetworkCallEvent = async (event, data) => {
-  console.log(event, data);
+  electronLog.info(`${event} ${data}`);
   try {
     const provider = global.IMSDK.getNetworkPhoneProvider();
     const res = await provider[event](...data, (uuid, state) => {
@@ -253,7 +283,7 @@ export const IMSDKNetworkCallEvent = async (event, data) => {
     electronLog.info(JSON.stringify(res));
     return res;
   } catch (e) {
-    electronLog.info(JSON.stringify(e));
+    electronLog.error(JSON.stringify(e));
     return e;
   }
 };

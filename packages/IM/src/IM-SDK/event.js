@@ -540,3 +540,10 @@ export const IMDelBySessId = async (sessId) =>
     IMSDKConvProvider.events.delBySessId,
     sessId,
   );
+
+export const IMGetGroupCurrentMemberCount = async (groupId) =>
+  await eventHOCFnc(
+    IMSDKGroupProvider.provider,
+    IMSDKGroupProvider.events.getGroupCurrentMemberCount,
+    groupId,
+  );

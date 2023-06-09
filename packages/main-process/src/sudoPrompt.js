@@ -1,4 +1,4 @@
-import log from './log';
+import { electronLog } from './log';
 
 const sudo = require('sudo-prompt');
 const options = {
@@ -9,17 +9,17 @@ export default (shell, version) => {
   return new Promise((resolve, reject) => {
     const currentVersion = global.store.get('VERSION');
 
-    log.info(shell);
-    log.info(currentVersion);
-    log.info(version);
+    electronLog.info(shell);
+    electronLog.info(currentVersion);
+    electronLog.info(version);
 
     global.store.set('VERSION', version);
 
     sudo.exec(shell, options, function (error, stdout) {
-      log.info('sudoPrompt action');
+      electronLog.info('sudoPrompt action');
 
       if (error) {
-        log.info('sudoPrompt error:' + error);
+        electronLog.info('sudoPrompt error:' + error);
         global.store.set('VERSION', currentVersion);
         global.mainWindow.webContents.send('mainProcessError', {
           msg: '更新失败, 请重新打开应用',
@@ -29,7 +29,7 @@ export default (shell, version) => {
         reject(error);
         return;
       }
-      log.info('sudoPrompt stdout: ' + stdout);
+      electronLog.error('sudoPrompt stdout: ' + stdout);
       resolve(stdout);
     });
   });

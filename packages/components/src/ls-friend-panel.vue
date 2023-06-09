@@ -5,9 +5,9 @@
     v-loading="isLoading"
     element-loading-text="加载中"
     element-loading-spinner="el-icon-loading"
-    element-loading-background="rgba(255, 255, 255, 0.8)"
+    element-loading-background="rgba(255, 255, 255, 1)"
   >
-    <div class="top">
+    <div class="top" v-if="!isLoading">
       <img :src="LsAssets.topBg" alt="" />
 
       <div class="info">
@@ -32,13 +32,7 @@
 
       <div
         class="more-btn"
-        v-if="
-          !isBot &&
-          !isDep &&
-          !panelConfig.isApply &&
-          !panelConfig.isAuth &&
-          !panelConfig.isExpired
-        "
+        v-if="!isBot && !isDep && panelConfig.isDetails && panelConfig.isPass"
       >
         <el-dropdown
           trigger="click"
@@ -68,7 +62,7 @@
       </div>
     </div>
 
-    <div class="wrap">
+    <div class="wrap" v-if="!isLoading">
       <div class="btn-list" v-if="panelConfig.isPass">
         <el-button
           class="action-btn left"
@@ -303,7 +297,7 @@ export default {
     },
     isDep() {
       return this.friendInfo?.org;
-    }
+    },
   },
 
   watch: {
@@ -318,11 +312,10 @@ export default {
   },
 
   mounted() {
-    setTimeout(() => {
-      if (!this.friendInfo?.userId) {
-        this.isLoading = true;
-      }
-    }, 200);
+    console.log('mounted:', JSON.stringify(this.friendInfo));
+    if (!this.friendInfo?.userId) {
+      this.isLoading = true;
+    }
     if (this.panelConfig.isApply) {
       this.message = `我是${this.userInfo.nickname}`;
     }

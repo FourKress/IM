@@ -5,15 +5,11 @@ import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
 import { defaultWindowConfig } from './window';
 import store from './datastore';
 import trayEvent from './trayEvent';
+import { electronLog } from './log';
 
 global.store = store;
 
 const isDevelopment = process.env.NODE_ENV === 'development';
-
-console.log(
-  'process.env.WEBPACK_DEV_SERVER_URL',
-  process.env.WEBPACK_DEV_SERVER_URL,
-);
 
 async function createWindow() {
   const win = new BrowserWindow({
@@ -69,7 +65,6 @@ async function createWindow() {
   win.webContents.on('did-attach-webview', (event, webContents) => {
     webContents.setWindowOpenHandler((details) => {
       if (!details.url) return;
-      console.log(details.url);
       mainWindow.webContents.send('webviewOpenUrl', details.url);
       return { action: 'deny' };
     });
@@ -87,7 +82,7 @@ const initElectron = (config) => {
   global.store.set('DEFAULT_WINDOWS_SIZE', windowsSize);
   global.store.set('IS_DEVTOOLS', isDevelopment || isDevtools);
   global.store.set('CLIENT_TERMINAL', terminal);
-  console.log('VERSION', global.store.get('VERSION'));
+  electronLog.info(`VERSION: ${global.store.get('VERSION')}`);
 
   if (!global.store.get('VERSION')) {
     global.store.set('VERSION', version);

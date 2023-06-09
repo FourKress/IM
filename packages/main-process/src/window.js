@@ -3,6 +3,7 @@ import path from 'path';
 import { IS_MAC, CLIENT_TYPE, WINDOW_TYPE } from './utils';
 import checkDevices from './checkDevices';
 import { getScreenInfo } from './screen';
+import { electronLog } from './log';
 
 const initLoginWindow = () => {
   const mainWindow = global.mainWindow;
@@ -13,9 +14,9 @@ const initLoginWindow = () => {
   mainWindow.center();
 };
 
-const initMainWindow = () => {
+export const initMainWindow = () => {
   const { width, height } = getScreenInfo();
-  console.log('screenInfo', width, height);
+  electronLog.info(`screenInfo ${width} ${height}`);
   const mainWindow = global.mainWindow;
   mainWindow.setSize(width, height);
   mainWindow.setResizable(true);
@@ -117,7 +118,7 @@ export const openTRTCWindow = async (type = CLIENT_TYPE.IS_PC) => {
     },
   };
   const targetClient = configMap[type];
-  console.log(configMap, type, targetClient);
+
   let TRTCWindow = new BrowserWindow({
     ...defaultWindowConfig(),
     ...targetClient.size,
@@ -168,7 +169,7 @@ export const openTRTCWindow = async (type = CLIENT_TYPE.IS_PC) => {
   });
 
   TRTCWindow.on('closed', () => {
-    console.log('TRTCWindow Close');
+    electronLog.info('TRTCWindow Close');
     TRTCWindow = null;
     global.TRTCWindow = null;
     global.store.delete('TRTC_SESSION');

@@ -1,6 +1,6 @@
 import { app, protocol } from 'electron';
 import downloadFile from './downloadFile';
-import electronLog from './log';
+import { electronLog } from './log';
 import { calcFileSize } from './utils';
 
 const fs = require('fs');
@@ -22,9 +22,9 @@ export const initCache = () => {
   global.store.set('CACHE_DIR', cacheDir);
 
   if (fs.existsSync(cacheDir)) {
-    console.log('找到缓存文件夹');
+    electronLog.info('找到缓存文件夹');
   } else {
-    console.log('未找到缓存文件夹');
+    electronLog.info('未找到缓存文件夹');
     fs.mkdirSync(cacheDir);
   }
   registerFileProtocol();
@@ -48,14 +48,14 @@ export const getCacheFilePath = (fileName) => {
     const cacheDir = global.store.get('CACHE_DIR');
     const filePath = path.resolve(cacheDir, fileName);
     if (fs.existsSync(filePath)) {
-      console.log('找到缓存文件');
+      electronLog.info(`找到缓存文件 ${fileName}`);
       return `cache:///${filePath}`;
     } else {
-      console.log('未找到缓存文件');
+      electronLog.info(`未找到缓存文件 ${fileName}`);
       return '';
     }
   } catch (e) {
-    console.log('查找缓存文件失败');
+    electronLog.info(`查找缓存文件失败 ${fileName}`);
     return '';
   }
 };
@@ -69,10 +69,9 @@ export const saveCacheFile = async (data) => {
     targetPath: cacheDir,
     fileName: type ? `${fileName}.${type}` : fileName,
   }).catch((err) => {
-    console.log(err);
-    electronLog.info(err);
+    electronLog.error(`saveCacheFile ${err}`);
   });
-  console.log('path', path);
+  electronLog.info(`saveCacheFile ${path}`);
 };
 
 export const getCacheFile2Base64 = (fileName) => {

@@ -392,7 +392,6 @@ export default {
       let orgList = departsRes?.data || {};
 
       const subList = [];
-      let currentDep;
       orgList = orgList
         .filter((d) => {
           if (d.parentId === '0') return true;
@@ -401,7 +400,7 @@ export default {
         })
         .map((o) => {
           const depList = subList.filter((s) => s.parentId === o.id);
-
+          console.log(depList)
           depList.forEach((d) => {
             const { id, name } = d;
 
@@ -413,7 +412,9 @@ export default {
               myDep = myDeps.slice(-1)[0];
             }
 
-            o.subList = [];
+            if (!o?.subList) {
+              o.subList = [];
+            }
             o.subList.push({
               ...d,
               children: [

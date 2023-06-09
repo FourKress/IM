@@ -1,4 +1,4 @@
-import electronLog from './log';
+import { electronLog } from './log';
 
 const request = require('request');
 const fs = require('fs');
@@ -22,7 +22,6 @@ function download(url, targetPath, cb = () => {}) {
     req.on('data', (chunk) => {
       cur += chunk.length;
       const progress = ((100 * cur) / len).toFixed(2);
-      electronLog.info(progress);
       status = 'progressing';
       cb(status, progress);
     });
@@ -57,7 +56,7 @@ function download(url, targetPath, cb = () => {}) {
       }
     });
   } catch (error) {
-    console.log(error);
+    electronLog.error(`download ${error}`);
   }
 }
 
@@ -65,7 +64,7 @@ function removeFile(targetPath) {
   try {
     fse.removeSync(targetPath);
   } catch (error) {
-    console.log(error);
+    electronLog.error(`removeFile ${error}`);
   }
 }
 
@@ -89,6 +88,7 @@ export default async function downloadFile(
         resolve(filePath);
       }
       if (status === 'error') {
+        electronLog.error(result);
         reject(result);
       }
       if (status === 'progressing') {

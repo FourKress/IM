@@ -68,6 +68,7 @@ export const IMSDKGroupProvider = {
     setGroupMemberAdminRole: 'setGroupMemberAdminRole',
     getAllAdminList: 'getAllAdminList',
     setGroupRemark: 'setGroupRemark',
+    getGroupCurrentMemberCount: 'getGroupCurrentMemberCount',
   },
 };
 

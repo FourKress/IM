@@ -1,7 +1,7 @@
 // 检查并申请设备权限：麦克风、摄像头、屏幕录制
 import { systemPreferences } from 'electron';
 import { IS_MAC } from './utils';
-import electronLog from './log';
+import { electronLog } from './log';
 
 const checkDevices = async () => {
   const cameraPrivilege = systemPreferences.getMediaAccessStatus('camera');

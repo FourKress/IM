@@ -47,6 +47,18 @@ const startNotification = lodash.debounce(async function (message) {
   };
 }, 800);
 
+// 检查是否是当前会话
+const getCurrentSession = (id) => {
+  const mainSessionWindow = storeInstance.getters['IMStore/mainSessionWindow'];
+  const isCurrent =
+    mainSessionWindow?.toUser && id && mainSessionWindow?.toUser === id;
+
+  return {
+    isCurrent,
+    session: mainSessionWindow,
+  };
+};
+
 export const IMSDKCallBackEvents = {
   Network: (ctx, state) => {
     console.log('@@@@@ Network');
@@ -90,12 +102,9 @@ export const IMSDKCallBackEvents = {
 
     console.log('@@@@@ AddReceiveNewMessage');
 
-    const mainSessionWindow =
-      storeInstance.getters['IMStore/mainSessionWindow'];
+    const { session, isCurrent } = getCurrentSession(sessId);
     const sessionWindowList =
       storeInstance.getters['IMStore/sessionWindowList'];
-
-    const isCurrentSessionWindow = mainSessionWindow.sessId === sessId;
 
     const isNotSystemNotify =
       MSG_FORMAT_MAP[msgType]?.type &&
@@ -106,15 +115,15 @@ export const IMSDKCallBackEvents = {
       startNotification(message);
     }
 
-    if (!mainSessionWindow?.sessId && !sessionWindowList?.length) return;
+    if (!session?.sessId && !sessionWindowList?.length) return;
 
     storeInstance.commit('IMStore/setCurrentMsg', message);
 
-    if (!isCurrentSessionWindow) return;
+    if (!isCurrent) return;
 
     if (location.hash !== '#/') return;
 
-    await IMClearUnreadCount(sessId, [mainSessionWindow, ...sessionWindowList]);
+    await IMClearUnreadCount(sessId, [session, ...sessionWindowList]);
   },
   KickOutedOffline(ctx) {
     console.log('@@@@@ KickOutedOffline');
@@ -153,9 +162,9 @@ export const IMSDKCallBackEvents = {
   },
   FriendDelListener(ctx, info) {
     console.log('FriendDelListener', info);
-    const mainSessionWindow =
-      storeInstance.getters['IMStore/mainSessionWindow'];
-    if (mainSessionWindow.toUser === info.delUerId) {
+    const { delUerId } = info;
+
+    if (getCurrentSession(delUerId).isCurrent) {
       storeInstance.commit('IMStore/setMainSessionWindow', {});
     }
     storeInstance.commit('IMStore/setRefreshAddressBook', Date.now());
@@ -176,17 +185,12 @@ export const IMSDKCallBackEvents = {
   UserNicknameAvatarUpdateListener(ctx, info) {
     console.log('UserNicknameAvatarUpdateListener', info);
     const { userId, nickname, avatar } = info;
-    const mainSessionWindow =
-      storeInstance.getters['IMStore/mainSessionWindow'];
-    console.log(mainSessionWindow);
 
-    if (
-      mainSessionWindow?.toUser &&
-      userId &&
-      mainSessionWindow?.toUser === userId
-    ) {
+    const currentSession = getCurrentSession(userId);
+
+    if (currentSession.isCurrent) {
       storeInstance.commit('IMStore/setMainSessionWindow', {
-        ...mainSessionWindow,
+        ...currentSession.session,
         nickname,
         avatar,
       });
@@ -203,5 +207,21 @@ export const IMSDKCallBackEvents = {
   GroupMemberDeleteCallBack(ctx, info) {
     console.log(info);
     storeInstance.commit('IMStore/setGroupMemberDeleteCallBack', info);
+  },
+
+  GroupMemberCountChangesListener(ctx, info) {
+    const { groupId } = info;
+    if (getCurrentSession(groupId).isCurrent) {
+      storeInstance.commit('IMStore/setRefreshMembers', Date.now());
+    }
+  },
+
+  GroupRoleManagerUpgradeListener(ctx, info) {
+    const {
+      groupRoleManager: { groupId },
+    } = info;
+    if (getCurrentSession(groupId).isCurrent) {
+      storeInstance.commit('IMStore/setRefreshGroupRoleManager', Date.now());
+    }
   },
 };

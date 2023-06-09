@@ -21,7 +21,6 @@ export const handleStartCapture = async (screenshots) => {
     });
     screenshots.on('cancel', () => {
       globalShortcut.unregister('esc');
-      console.log('capture', 'cancel1');
       resolve();
     });
     screenshots.on('save', (e, buffer, bounds) => {

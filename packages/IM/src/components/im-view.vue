@@ -452,6 +452,10 @@ export default {
           desc,
         };
       });
+
+      if (this.friendInfo?.dep) {
+        this.friendPanelConfig = { isPass: true }
+      }
     },
 
     handlePushLocalMsg(msg) {

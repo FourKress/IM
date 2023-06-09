@@ -1,7 +1,7 @@
 import { app } from 'electron';
 
 import downloadFile from './downloadFile';
-import electronLog from './log';
+import { electronLog } from './log';
 import sudoPrompt from './sudoPrompt';
 
 const fse = require('fs-extra');
@@ -33,8 +33,7 @@ export default async (data) => {
         global.mainWindow.webContents.send('downloadProgress', exeProgress);
       },
     ).catch((err) => {
-      console.log(err);
-      electronLog.info(err);
+      electronLog.error(err);
       global.mainWindow.webContents.send('downloadProgress', null);
       return;
     });
@@ -94,16 +93,13 @@ export default async (data) => {
         //       electronLog.info(error);
         //       return;
         //     }
-        //     electronLog.info('stdout');
-        //     electronLog.info(stdout);
-        //     console.log('stdout: ' + stdout);
+        //     electronLog.info(`stdout ${stdout}`);
         //   },
         // );
       });
     })
     .catch((err) => {
-      electronLog.info(err);
-      console.log(err);
+      electronLog.error(err);
       global.mainWindow.webContents.send('downloadProgress', null);
     });
 };
