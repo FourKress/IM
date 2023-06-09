@@ -96,14 +96,13 @@
         :class="!isEnterRoom && 'full'"
         ref="localTrtcContainer"
       ></div>
-      <div class="local-bg">
+      <div class="local-bg" v-if="isEnterRoom">
         <img
           class="bg"
-          v-if="isEnterRoom"
           :src="isPc ? LsAssets.trtcMePc : LsAssets.trtcBgMobile"
           alt=""
         />
-        <img class="avatar" v-if="disCamStatus || !isEnterRoom" :src="userInfo.avatar" alt="" />
+        <img class="avatar" v-if="disCamStatus || !isVideoCall || callTime" :src="userInfo.avatar" alt="" />
       </div>
     </div>
 
