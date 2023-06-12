@@ -362,7 +362,6 @@ export default {
         const msgId = this.msg?.msgId || `${this.msg?.cliMsgId}_${Date.now()}`;
         const key = `cache_${msgId}`;
         const storePath = (await window.$lanshuStore.getItem(key)) || '';
-        console.log(storePath, msgId);
         // 未产生缓存
         if (!storePath) {
           if (this.msgType !== this.CHECK_MSG_TYPE.IS_FILE) {
@@ -385,7 +384,6 @@ export default {
               console.log('文件缓存下载成功');
             });
           }
-          console.log('assetsPath', assetsPath);
         }
       }
       this.assetsPath = assetsPath;
@@ -412,8 +410,6 @@ export default {
 
     async handleCopy() {
       this.selectedText = window.getSelection().toString();
-      console.log(this.selectedText);
-
       const text = this.selectedText || this.$refs.MsgCard.innerText;
       await navigator.clipboard.writeText(text);
       this.$message.success('复制成功');
@@ -436,7 +432,6 @@ export default {
     },
 
     async handleDownImage() {
-      console.log('handleDownImage');
       const dirPath = await renderProcess.saveFileDialog();
       if (!dirPath) {
         this.$message.warning('请选择保存文件夹');

@@ -41,7 +41,7 @@ export default {
       deep: true,
       handler(val) {
         const preview = val?.preview;
-        const timer = preview ? 100 : 1;
+        const timer = (preview || this.tempMsgText === preview) ? 300 : 1;
         setTimeout(() => {
           this.tempMsgText = this.tempMsg?.preview;
         }, timer);

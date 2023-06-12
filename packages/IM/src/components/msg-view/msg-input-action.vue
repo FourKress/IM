@@ -168,11 +168,6 @@ export default {
       return emptyMsg || this.noSendAuth;
     },
     noSendAuth() {
-      console.log(
-        this.isGroup &&
-          (!this.groupRole ||
-            this.groupRoleManager.whoCanSendMessage > this.groupRole),
-      );
       return (
         (this.isGroup &&
           (this.groupRole === GROUP_ROLE_TYPE_LOCAL.IS_DEFAULT ||
@@ -299,6 +294,7 @@ export default {
       const innerHTML = element.innerHTML;
       if (!innerHTML || !innerHTML.replace(/<br>/g, '')) {
         this.message = '';
+        this.messageText = '';
         this.$nextTick(() => {
           this.$refs.msgInput.focus();
         });
@@ -671,11 +667,12 @@ export default {
       }
     },
   },
-  async destroyed() {
+  async beforeDestroy() {
     document.removeEventListener('click', this.handleGlobalClick);
     document.onkeydown = null;
     const sessId = this.session.sessId;
-    console.log('%%%%%%%%%%%%', this.message, this.messageText);
+    console.log('%%%%%%%%%%%%', this.message);
+    console.log('%%%%%%%%%%%%',this.messageText);
     const historyTempMsgOBJ = await window.$lanshuStore.getItem('tempMsgOBJ');
     let tempMsg = '';
     if (this.messageText) {
