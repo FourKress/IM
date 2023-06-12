@@ -1,6 +1,6 @@
 <template>
   <div id="client-header">
-    <div class="header-container drag">
+    <div id="header-container" class="drag">
       <div class="header_user">
         <el-badge is-dot :hidden="!updateNotify">
           <div class="avatar" @click="openDialog">
@@ -270,7 +270,7 @@ export default {
   box-sizing: border-box;
   position: relative;
 
-  .header-container {
+  #header-container {
     height: 68px;
     box-sizing: border-box;
     padding: 0 20px 0 12px;
@@ -426,7 +426,7 @@ export default {
   overflow: hidden;
   position: fixed;
   top: 10px;
-  left: 71px;
+  left: 72px;
   z-index: 9;
 
   .top {
