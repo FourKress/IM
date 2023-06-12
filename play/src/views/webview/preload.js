@@ -88,10 +88,10 @@ ipcRenderer.on('WEBVIEW_LOGIN', (_event, config = {}) => {
       }
     }
 
-    await sleep(100);
+    await sleep(200);
     document.querySelector(loginBtnEl).click();
 
     await sleep(awaitTime);
     ipcRenderer.sendToHost('WEBVIEW_IPC', `SUCCESS`);
-  }, 3000);
+  }, 1000);
 });

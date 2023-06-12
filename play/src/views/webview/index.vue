@@ -137,8 +137,8 @@ export default {
     LsIcon,
   },
   watch: {
-    $route() {
-      this.getSrc();
+    $route(val) {
+      this.getSrc(val?.meta);
       setTimeout(() => {
         this.handleWebviewListener();
       });
@@ -146,7 +146,7 @@ export default {
   },
   async created() {
     this.preloadPath = window.webviewPreload;
-    this.getSrc();
+    this.getSrc(this.$route?.meta);
   },
   mounted() {
     renderProcess.webviewOpenUrl((event, url) => {
@@ -160,13 +160,13 @@ export default {
     });
   },
   methods: {
-    getSrc() {
+    getSrc(routeMeta = {}) {
       this.historySrcList = [];
       const {
         webviewSrc,
         preloadConfig = {},
         isNavPage = false,
-      } = this.$route?.meta || {};
+      } = routeMeta;
 
       this.isNavPage = isNavPage;
       this.isLoading = !isNavPage;
@@ -185,7 +185,6 @@ export default {
         webview.insertCSS(`
           ${this.preloadConfig.insertCSS}
         `)
-        webview.openDevTools();
       })
 
       webview.addEventListener('did-finish-load', () => {
