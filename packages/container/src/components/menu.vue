@@ -1,6 +1,5 @@
 <template>
   <div id="client-menu">
-    <div class="block"></div>
     <div class="menu-panel">
       <div
         class="menu-item"
@@ -146,13 +145,10 @@ export default {
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
+  margin: -15px 0 0 1px;
 
   ::-webkit-scrollbar {
     display: none;
-  }
-
-  .block {
-    height: 42px;
   }
 
   .menu-panel {
