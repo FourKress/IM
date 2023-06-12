@@ -8,7 +8,7 @@ const routes = [
       name: '舆情',
       disableIcon: 'ls-icon-icon_yuqing_normal',
       activeIcon: 'ls-icon-icon_yuqing_selected',
-      webviewSrc: 'http://www.netinsight.com.cn/',
+      webviewSrc: 'http://www.netinsight.com.cn/customIndex',
       preloadConfig: {
         userEl: '#inputEmail',
         userName: 'ycqxcbuser',
@@ -17,6 +17,11 @@ const routes = [
         rememberEl: '.mySame input',
         loginBtnEl: '.buttonCim button',
         awaitTime: 2000,
+        insertCSS: `
+          .logo {
+            display: none !important;
+          }
+        `,
       },
     },
   },
@@ -39,6 +44,11 @@ const routes = [
         agreementEl: '.service-agreement .el-checkbox__inner',
         loginBtnEl: '.pwd-login button',
         awaitTime: 2000,
+        insertCSS: `
+          .copyright_box {
+            display: none !important;
+          }
+        `,
       },
     },
   },

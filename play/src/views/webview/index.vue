@@ -177,6 +177,17 @@ export default {
 
     handleWebviewListener() {
       const webview = document.querySelector('.webview');
+
+      webview.addEventListener('dom-ready', () => {
+        console.log('webview dom-ready');
+        const insertCSS = this.preloadConfig.insertCSS;
+        if (!insertCSS) return;
+        webview.insertCSS(`
+          ${this.preloadConfig.insertCSS}
+        `)
+        webview.openDevTools();
+      })
+
       webview.addEventListener('did-finish-load', () => {
         console.log('webview did-finish-load');
         webview.addEventListener('ipc-message', async (event) => {
