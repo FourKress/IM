@@ -48,7 +48,7 @@ export default {
       }
     },
     setClassName(className) {
-      const hearerSearch = document.querySelector('#client-header');
+      const hearerSearch = document.querySelector('.header-container');
       if (hearerSearch) {
         // 控制头部拖拽效果
         hearerSearch.className = `${className}`;
