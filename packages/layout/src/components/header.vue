@@ -1,46 +1,48 @@
 <template>
-  <div id="client-header" class="drag">
-    <div class="header_user">
-      <el-badge is-dot :hidden="!updateNotify">
-        <div class="avatar" @click="openDialog">
-          <img :src="userProfile.avatar" class="img" alt="" />
-        </div>
-      </el-badge>
-      <!--      <div class="user-info">-->
-      <!--        <p class="name">{{ userInfo.nickname }}</p>-->
-      <!--        <div class="position">-->
-      <!--          <span>线上综窗</span>-->
-      <!--          <span class="down-icon"></span>-->
-      <!--        </div>-->
-      <!--      </div>-->
+  <div id="client-header">
+    <div class="header-container drag">
+      <div class="header_user">
+        <el-badge is-dot :hidden="!updateNotify">
+          <div class="avatar" @click="openDialog">
+            <img :src="userProfile.avatar" class="img" alt="" />
+          </div>
+        </el-badge>
+        <!--      <div class="user-info">-->
+        <!--        <p class="name">{{ userInfo.nickname }}</p>-->
+        <!--        <div class="position">-->
+        <!--          <span>线上综窗</span>-->
+        <!--          <span class="down-icon"></span>-->
+        <!--        </div>-->
+        <!--      </div>-->
 
-      <div class="network_status">
-        <LsNetwork />
+        <div class="network_status">
+          <LsNetwork />
+        </div>
       </div>
-    </div>
 
-    <div class="hearer-search">
-      <div class="search" @click="handleSearch">
-        <div class="query-icon">
-          <LsIcon icon="navi_ss_icon" render-svg></LsIcon>
+      <div class="hearer-search">
+        <div class="search" @click="handleSearch">
+          <div class="query-icon">
+            <LsIcon icon="navi_ss_icon" render-svg></LsIcon>
+          </div>
+          <div class="input-panel">
+            <el-input
+              v-model="keywords"
+              readonly
+              clearable
+              type="text"
+              placeholder="搜索"
+            />
+          </div>
+          <!--        <div class="add">-->
+          <!--          <LsIcon icon="navi_ss_add" render-svg></LsIcon>-->
+          <!--        </div>-->
         </div>
-        <div class="input-panel">
-          <el-input
-            v-model="keywords"
-            readonly
-            clearable
-            type="text"
-            placeholder="搜索"
-          />
-        </div>
-<!--        <div class="add">-->
-<!--          <LsIcon icon="navi_ss_add" render-svg></LsIcon>-->
-<!--        </div>-->
       </div>
-    </div>
 
-    <div class="header_action">
-      <WindowOperate />
+      <div class="header_action">
+        <WindowOperate />
+      </div>
     </div>
 
     <LsCardDialog :visible.sync="showSettingsDialog">
@@ -101,10 +103,7 @@
           </div>
           <div class="row">
             <span class="label" @click="goToSettings">设置</span>
-            <el-badge
-              is-dot
-              :hidden="!updateNotify"
-            ></el-badge>
+            <el-badge is-dot :hidden="!updateNotify"></el-badge>
           </div>
           <div class="row">
             <span class="label">下载手机版</span>
@@ -267,19 +266,24 @@ export default {
   height: 90px;
   min-height: 90px;
   background: $gradient-header-color;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 20px 22px 12px;
+  padding-bottom: 22px;
   box-sizing: border-box;
   position: relative;
 
-  &.drag {
-    -webkit-app-region: drag !important;
-  }
+  .header-container {
+    height: 68px;
+    box-sizing: border-box;
+    padding: 0 20px 0 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    &.drag {
+      -webkit-app-region: drag !important;
+    }
 
-  &.no-drag {
-    -webkit-app-region: no-drag !important;
+    &.no-drag {
+      -webkit-app-region: no-drag !important;
+    }
   }
 
   .header_user {

@@ -93,5 +93,5 @@ ipcRenderer.on('WEBVIEW_LOGIN', (_event, config = {}) => {
 
     await sleep(awaitTime);
     ipcRenderer.sendToHost('WEBVIEW_IPC', `SUCCESS`);
-  }, 1000);
+  }, config.reloadAwaitTime || 1000);
 });

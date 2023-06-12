@@ -138,6 +138,7 @@ export default {
   },
   watch: {
     $route(val) {
+      console.log('route: ', val?.meta);
       this.getSrc(val?.meta);
       setTimeout(() => {
         this.handleWebviewListener();
@@ -146,6 +147,7 @@ export default {
   },
   async created() {
     this.preloadPath = window.webviewPreload;
+    console.log('route: ', this.$route?.meta);
     this.getSrc(this.$route?.meta);
   },
   mounted() {
@@ -153,6 +155,10 @@ export default {
       console.log('webviewOpenUrl', url);
       this.historySrcList.push(this.webviewSrc);
       this.webviewSrc = url;
+
+      setTimeout(() => {
+        this.handleWebviewListener();
+      });
     });
 
     setTimeout(() => {
@@ -162,11 +168,7 @@ export default {
   methods: {
     getSrc(routeMeta = {}) {
       this.historySrcList = [];
-      const {
-        webviewSrc,
-        preloadConfig = {},
-        isNavPage = false,
-      } = routeMeta;
+      const { webviewSrc, preloadConfig = {}, isNavPage = false } = routeMeta;
 
       this.isNavPage = isNavPage;
       this.isLoading = !isNavPage;
@@ -184,8 +186,8 @@ export default {
         if (!insertCSS) return;
         webview.insertCSS(`
           ${this.preloadConfig.insertCSS}
-        `)
-      })
+        `);
+      });
 
       webview.addEventListener('did-finish-load', () => {
         console.log('webview did-finish-load');
@@ -215,7 +217,11 @@ export default {
       if (backPath === 'NAV_PAGE') {
         this.isNavPage = true;
       } else {
-        this.webviewSrc = this.historySrcList.pop();
+        this.webviewSrc = backPath;
+
+        setTimeout(() => {
+          this.handleWebviewListener();
+        });
       }
     },
 
@@ -225,7 +231,7 @@ export default {
       setTimeout(() => {
         this.isNavPage = false;
         this.isLoading = false;
-      }, 200)
+      }, 200);
       this.historySrcList.push('NAV_PAGE');
       this.webviewSrc = `${webviewSrc}${nav.link}`;
     },

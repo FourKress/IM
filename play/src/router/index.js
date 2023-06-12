@@ -17,6 +17,7 @@ const routes = [
         rememberEl: '.mySame input',
         loginBtnEl: '.buttonCim button',
         awaitTime: 2000,
+        reloadAwaitTime: 2000,
         insertCSS: `
           .logo {
             display: none !important;
@@ -34,7 +35,7 @@ const routes = [
       name: '产业',
       disableIcon: 'ls-icon-icon_chanye_normal',
       activeIcon: 'ls-icon-icon_chanye_selected',
-      webviewSrc: 'https://ib.dataelite.trs.com.cn/home-page/index?',
+      webviewSrc: 'https://ib.dataelite.trs.com.cn/home-page/index',
       preloadConfig: {
         userEl: '.password-input input[type="text"]',
         userName: 'tianxing82@outlook.com',
