@@ -28,5 +28,5 @@ play/dist_electron
 play/build
 play/custom-install/FilesToInstall
 play/custom-install/Output
-play/custom-install/SetupScripts/skin.zip
+play/custom-install/SetupScripts/nim/skin.zip
 play/custom-install/SetupScripts/*.7z
