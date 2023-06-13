@@ -5,6 +5,7 @@
         class="context_menu-item"
         v-for="(item, index) in menuList"
         :key="index"
+        v-if="!item.hide || !item.hide(menuItemParams)"
         @click="contextMenuSure(item)"
       >
         <LsIcon :icon="item.icon(menuItemParams)" color="#777777"></LsIcon>

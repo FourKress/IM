@@ -208,7 +208,10 @@ export default {
         {
           label: () => '复制',
           handler: this.handleCopyImage,
-          icon: () => 'ls-icon-fuzhi'
+          icon: () => 'ls-icon-fuzhi',
+          hide: () => {
+            return this.assetsPath.includes('gif') ? true : false;
+          },
         },
         {
           label: () => '另存为',
@@ -421,6 +424,8 @@ export default {
       }
       const base64 = await renderProcess.getCacheFile2Base64(this.cachePath);
       const blob = dataURLtoBlob(base64);
+
+      console.log('122')
 
       await navigator.clipboard.write([
         new ClipboardItem({

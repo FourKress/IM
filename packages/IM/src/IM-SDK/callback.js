@@ -48,10 +48,10 @@ const startNotification = lodash.debounce(async function (message) {
 }, 800);
 
 // 检查是否是当前会话
-const getCurrentSession = (id) => {
+const getCurrentSession = (key, id) => {
   const mainSessionWindow = storeInstance.getters['IMStore/mainSessionWindow'];
   const isCurrent =
-    mainSessionWindow?.toUser && id && mainSessionWindow?.toUser === id;
+    mainSessionWindow[key] && id && mainSessionWindow[key] === id;
 
   return {
     isCurrent,
@@ -102,7 +102,7 @@ export const IMSDKCallBackEvents = {
 
     console.log('@@@@@ AddReceiveNewMessage');
 
-    const { session, isCurrent } = getCurrentSession(sessId);
+    const { session, isCurrent } = getCurrentSession('sessId', sessId);
     const sessionWindowList =
       storeInstance.getters['IMStore/sessionWindowList'];
 
@@ -118,6 +118,8 @@ export const IMSDKCallBackEvents = {
     if (!session?.sessId && !sessionWindowList?.length) return;
 
     storeInstance.commit('IMStore/setCurrentMsg', message);
+
+    console.log('@########', isCurrent, location.hash);
 
     if (!isCurrent) return;
 
@@ -164,7 +166,7 @@ export const IMSDKCallBackEvents = {
     console.log('FriendDelListener', info);
     const { delUerId } = info;
 
-    if (getCurrentSession(delUerId).isCurrent) {
+    if (getCurrentSession('toUser', delUerId).isCurrent) {
       storeInstance.commit('IMStore/setMainSessionWindow', {});
     }
     storeInstance.commit('IMStore/setRefreshAddressBook', Date.now());
@@ -186,7 +188,7 @@ export const IMSDKCallBackEvents = {
     console.log('UserNicknameAvatarUpdateListener', info);
     const { userId, nickname, avatar } = info;
 
-    const currentSession = getCurrentSession(userId);
+    const currentSession = getCurrentSession('toUser', userId);
 
     if (currentSession.isCurrent) {
       storeInstance.commit('IMStore/setMainSessionWindow', {
@@ -211,7 +213,7 @@ export const IMSDKCallBackEvents = {
 
   GroupMemberCountChangesListener(ctx, info) {
     const { groupId } = info;
-    if (getCurrentSession(groupId).isCurrent) {
+    if (getCurrentSession('toUser', groupId).isCurrent) {
       storeInstance.commit('IMStore/setRefreshMembers', Date.now());
     }
   },
@@ -220,7 +222,7 @@ export const IMSDKCallBackEvents = {
     const {
       groupRoleManager: { groupId },
     } = info;
-    if (getCurrentSession(groupId).isCurrent) {
+    if (getCurrentSession('toUser', groupId).isCurrent) {
       storeInstance.commit('IMStore/setRefreshGroupRoleManager', Date.now());
     }
   },

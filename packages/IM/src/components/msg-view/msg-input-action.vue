@@ -282,7 +282,7 @@ export default {
         // 在最末尾处换行时，需要两次才能换行，需要特殊处理
         const wrapArr = innerText.split('\n');
         const lastText = wrapArr.pop();
-        if (lastText && endOffset === lastText.length) {
+        if (lastText && (endOffset === lastText.length || endOffset === 1)) {
           setTimeout(() => {
             this.handleCtrlEnterSend();
           });
