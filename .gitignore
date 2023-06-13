@@ -30,3 +30,4 @@ play/custom-install/FilesToInstall
 play/custom-install/Output
 play/custom-install/SetupScripts/nim/skin.zip
 play/custom-install/SetupScripts/*.7z
+play/custom-install/SetupScripts/*.7z.*
