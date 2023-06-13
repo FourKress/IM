@@ -41,8 +41,8 @@ const startNotification = lodash.debounce(async function (message) {
     if (!targetSession) return;
     storeInstance.commit('IMStore/setMainSessionWindow', targetSession);
     renderProcess.changeWindow(WIN_ACTION_TYPE.IS_SHOW, WINDOW_TYPE.IS_MAIN);
-    if (location.hash === '#/') return;
     IMClearUnreadCount(message.sessId);
+    if (location.hash === '#/') return;
     routeInstance.push('/');
   };
 }, 800);
