@@ -11,11 +11,12 @@ fse.copySync(installOriginPath, installTargetPath);
 const batPath = path.join(cwdPath, '/build-nim.bat');
 const bat = child_process.spawn(batPath, {
   cwd: cwdPath,
+  // stdio: 'inherit',
 });
 
 console.log('自定义安装包 生成中 请等待...');
 
-bat.on('exit', (code) => {
+bat.on('close', (code) => {
   console.log(`Child exited with code ${code}`);
   if (code === 0) {
     console.log('自定义安装包 生成完毕。');
