@@ -278,7 +278,6 @@ export default {
 
   .panel-container {
     width: 360px;
-    transform: translateY(-100px);
 
     .back-icon {
       width: 30px;

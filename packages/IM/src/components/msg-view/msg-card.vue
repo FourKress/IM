@@ -194,14 +194,14 @@ export default {
         maxHeight: '500px',
       },
       wrapFileStyle: {
-        width: '500px',
+        width: '340px',
       },
 
       textContextMenuList: [
         {
           label: () => '复制',
           handler: this.handleCopy,
-          icon: () => 'ls-icon-fuzhi'
+          icon: () => 'ls-icon-fuzhi',
         },
       ],
       imageContextMenuList: [
@@ -216,7 +216,7 @@ export default {
         {
           label: () => '另存为',
           handler: this.handleDownImage,
-          icon: () => 'ls-icon-xiazai'
+          icon: () => 'ls-icon-xiazai',
         },
       ],
     };
@@ -314,26 +314,15 @@ export default {
   },
   watch: {
     imViewWidth(val) {
-      if (!this.isImage && !this.isVideo && !this.isFile) return;
-      if (val <= 380) {
-        this.imageMaxWidth = 210;
-        this.wrapStyle = { maxWidth: '210px', maxHeight: '210px' };
-        this.wrapFileStyle = { width: '210px' };
-      } else if (val < 738 && val > 380) {
-        this.imageMaxWidth = 300;
-        this.wrapStyle = { maxWidth: '300px', maxHeight: '300px' };
-        this.wrapFileStyle = { width: '300px' };
-      } else {
-        this.imageMaxWidth = 500;
-        this.wrapStyle = { maxWidth: '500px', maxHeight: '500px' };
-        this.wrapFileStyle = { width: '340px' };
-      }
+      this.initSize(val);
     },
   },
   mounted() {
     this.getAssetsPath();
 
     this.$nextTick(() => {
+      this.initSize(this.imViewWidth);
+
       if (this.linkArr.length) {
         const linKDomArr = [
           ...document.querySelectorAll(`.link-jump_${this.msg.msgId}`),
@@ -425,7 +414,7 @@ export default {
       const base64 = await renderProcess.getCacheFile2Base64(this.cachePath);
       const blob = dataURLtoBlob(base64);
 
-      console.log('122')
+      console.log('122');
 
       await navigator.clipboard.write([
         new ClipboardItem({
@@ -440,10 +429,27 @@ export default {
       const dirPath = await renderProcess.saveFileDialog();
       if (!dirPath) {
         this.$message.warning('请选择保存文件夹');
-        return
+        return;
       }
       await renderProcess.copyFile(this.cachePath, dirPath);
-      this.$message.success('保存成功')
+      this.$message.success('保存成功');
+    },
+
+    initSize(imViewWidth) {
+      if (!this.isImage && !this.isVideo && !this.isFile) return;
+      if (imViewWidth <= 380) {
+        this.imageMaxWidth = 210;
+        this.wrapStyle = { maxWidth: '210px', maxHeight: '210px' };
+        this.wrapFileStyle = { width: '210px' };
+      } else if (imViewWidth < 738 && imViewWidth > 380) {
+        this.imageMaxWidth = 300;
+        this.wrapStyle = { maxWidth: '300px', maxHeight: '300px' };
+        this.wrapFileStyle = { width: '300px' };
+      } else {
+        this.imageMaxWidth = 500;
+        this.wrapStyle = { maxWidth: '500px', maxHeight: '500px' };
+        this.wrapFileStyle = { width: '340px' };
+      }
     },
   },
 };

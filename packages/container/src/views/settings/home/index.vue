@@ -175,14 +175,15 @@ export default {
   overflow: hidden;
 
   .nav {
-    width: 400px;
+    max-width: 400px;
+    width: 200px;
     height: 100%;
     background: #f9fafc;
     padding: 20px;
     box-sizing: border-box;
 
     &-item {
-      width: 360px;
+      width: 100%;
       height: 56px;
       display: flex;
       align-items: center;

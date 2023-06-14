@@ -15,6 +15,10 @@
     </InfoBlock>
 
     <div class="tips">当前安装版本：{{ currentVersion }}</div>
+    <div class="tips" v-if="updateInfo.version">
+      最新版本：
+      <el-badge is-dot>{{ updateInfo.version }} </el-badge>
+    </div>
 
     <template v-for="(info, index) in infos">
       <InfoBlock
@@ -59,26 +63,33 @@ export default {
     ...mapGetters('globalStore', ['updateNotify', 'updateInfo']),
   },
   async created() {
-    this.selfUpdateNotify = this.updateNotify;
+    this.selfUpdateNotify = await renderProcess.getStore('UPDATE_NOTIFY');
     this.currentVersion = await renderProcess.getStore('VERSION');
   },
   methods: {
-    ...mapActions('globalStore', ['setUpdateNotify', 'setStartDownload', 'setUpdateInfo']),
+    ...mapActions('globalStore', [
+      'setUpdateNotify',
+      'setStartDownload',
+      'setUpdateInfo',
+    ]),
 
     handleCallback(info) {
       if (info?.fnc) {
         info.fnc(info);
       }
     },
-    handleChange() {
-      this.setUpdateNotify(this.selfUpdateNotify);
+    async handleChange() {
+      await renderProcess.setStore('UPDATE_NOTIFY', this.selfUpdateNotify);
+      if (this.updateInfo.version) {
+        this.setUpdateNotify(this.selfUpdateNotify);
+      }
     },
 
     handleUpdate() {
       const { fetchUrl, version } = this.updateInfo;
-      if (!fetchUrl && version) {
-        // this.setStartDownload(true);
-        // renderProcess.checkForUpdates({ fetchUrl, version });
+      if (fetchUrl && version) {
+        this.setStartDownload(true);
+        renderProcess.checkForUpdates({ fetchUrl, version });
       } else {
         this.handleGetVersion();
       }
@@ -107,7 +118,11 @@ export default {
         content,
       };
       this.setUpdateInfo(updateInfo);
-      this.setUpdateNotify(true);
+
+      const UPDATE_NOTIFY = await renderProcess.getStore('UPDATE_NOTIFY');
+      if (!updateInfo?.isForced && UPDATE_NOTIFY) {
+        this.setUpdateNotify(true);
+      }
       this.setStartDownload(true);
       renderProcess.checkForUpdates({ fetchUrl: decDirectory, version });
     },

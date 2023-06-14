@@ -152,7 +152,9 @@ export default {
         content,
       };
       this.setUpdateInfo(updateInfo);
-      if (!updateInfo?.isForced) {
+
+      const UPDATE_NOTIFY = await renderProcess.getStore('UPDATE_NOTIFY');
+      if (!updateInfo?.isForced && UPDATE_NOTIFY) {
         this.setUpdateNotify(true);
       }
       this.visibleUpdate = true;

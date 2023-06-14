@@ -47,7 +47,7 @@
           </div>
         </div>
         <div class="footer">
-          <span class="left btn">更新日志</span>
+          <span class="left btn" @click="jumpUpdateLogs">更新日志</span>
           <span class="right btn" @click="handleStartUpdate">立即更新</span>
         </div>
       </div>
@@ -109,6 +109,10 @@ export default {
   },
   methods: {
     ...mapActions('globalStore', ['setStartDownload']),
+    ...mapActions('routerStore', [
+      'addBreadCrumbs',
+      'setHistoryMainPath',
+    ]),
 
     handleMenuSwitch(path) {
       if (this.activePath === path) return;
@@ -132,6 +136,16 @@ export default {
       if (item.path === '/') return this.allUnreadCount;
       if (item.path === '/addressBook') return this.newFriendCount;
     },
+
+    jumpUpdateLogs() {
+      this.setHistoryMainPath(this.$route.path);
+      this.visibleUpdate = false;
+      this.addBreadCrumbs({
+        title: '更新日志',
+        path: '/settings/updateLogs',
+      });
+      this.$router.push('/settings/updateLogs');
+    }
   },
 };
 </script>

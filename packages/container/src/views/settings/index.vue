@@ -7,7 +7,7 @@
         v-for="(item, index) in breadCrumbs"
         :key="item.path"
       >
-        <span class="card-icon" v-if='index === 0'>
+        <span class="card-icon" v-if="item.path === '/settings/home'">
           <LsIcon
             render-svg
             width="20"
