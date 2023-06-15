@@ -262,7 +262,7 @@ export default {
 
   .container {
     width: 980px;
-    height: 680px;
+    height: 580px;
     background: $bg-white-color;
     border-radius: 20px;
     margin: 8px auto 0;

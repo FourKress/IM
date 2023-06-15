@@ -100,18 +100,18 @@ export default {
   computed: {
     ...mapGetters('routerStore', ['orgBreadCrumbs']),
   },
+  watch: {
+    orgBreadCrumbs: {
+      deep: true,
+      handler(val) {
+        if (!val?.length) return;
+        const current = val.slice(-1)[0];
+        this.initData(current.key);
+      }
+    }
+  },
   data() {
     return {
-      orgList: [
-        {
-          name: '子部门',
-          id: 11,
-        },
-        {
-          name: '搜索',
-          id: 33,
-        },
-      ],
       selfDepList: [],
       userList: [],
       showFriendDialog: false,
@@ -150,7 +150,6 @@ export default {
         label: dep.name,
         key: dep.id,
       });
-      this.initData(dep.id);
     },
 
     async handleFriend(user, event) {
@@ -171,7 +170,6 @@ export default {
 
     handleBreadCrumbs(item, index) {
       if (index === this.orgBreadCrumbs.length - 1) return;
-      this.initData(item.key);
       this.deleteOrgBreadCrumb(index);
     },
   },

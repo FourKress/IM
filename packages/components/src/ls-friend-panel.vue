@@ -82,6 +82,7 @@
         </el-button>
 
         <el-button
+          v-if="userInfo.userId !== friendInfo.userId"
           class="action-btn"
           @click="handleSendAudio"
           v-loading="isAudioAwait"
@@ -99,6 +100,7 @@
         </el-button>
 
         <el-button
+          v-if="userInfo.userId !== friendInfo.userId"
           class="action-btn"
           @click="handleSendVideo"
           v-loading="isVideoAwait"
