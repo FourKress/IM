@@ -7,6 +7,7 @@ import {
   SESSION_USER_TYPE,
   lodash,
   WIN_ACTION_TYPE,
+  MODAL_DIALOG_TYPE,
 } from '@lanshu/utils';
 import { IMClearUnreadCount, ClientLogOut, IMGetGroupAttribute } from './event';
 import { renderProcess } from '@lanshu/render-process';
@@ -36,14 +37,34 @@ const startNotification = lodash.debounce(async function (message) {
     body: NOTIFICATION_BODY,
     icon: NOTIFICATION_ICON,
   }).onclick = () => {
+    const modalDialog = storeInstance.getters['globalStore/modalDialog'];
+    const { type = '', visible = false } = modalDialog;
+    console.log('modalDialog', modalDialog);
+    // 存在全局操作弹窗
+    if (type === MODAL_DIALOG_TYPE.IS_DIALOG && visible) {
+      renderProcess.changeWindow(WIN_ACTION_TYPE.IS_SHOW, WINDOW_TYPE.IS_MAIN);
+      return;
+    }
+
     const sessionList = storeInstance.getters['IMStore/sessionList'];
     const targetSession = sessionList.find((d) => d.sessId === message.sessId);
     if (!targetSession) return;
     storeInstance.commit('IMStore/setMainSessionWindow', targetSession);
     renderProcess.changeWindow(WIN_ACTION_TYPE.IS_SHOW, WINDOW_TYPE.IS_MAIN);
     IMClearUnreadCount(message.sessId);
+
     if (location.hash === '#/') return;
-    routeInstance.push('/');
+
+    // 处理全局遮罩
+    if (type === MODAL_DIALOG_TYPE.IS_MODAL && visible) {
+      storeInstance.commit('globalStore/setModalDialog', {
+        type: MODAL_DIALOG_TYPE.IS_MODAL,
+        visible: false,
+      });
+    }
+    setTimeout(() => {
+      routeInstance.push('/');
+    });
   };
 }, 800);
 

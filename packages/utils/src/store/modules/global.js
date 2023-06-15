@@ -7,6 +7,7 @@ const state = {
   updateNotify: JSON.parse(localStorage.getItem('updateNotify') || 'false'),
   searchHistory: JSON.parse(localStorage.getItem('searchHistory') || '[]'),
   isMaxWindow: false,
+  modalDialog: {},
 };
 
 const getters = {
@@ -18,6 +19,7 @@ const getters = {
   updateNotify: (state) => state.updateNotify,
   searchHistory: (state) => state.searchHistory,
   isMaxWindow: (state) => state.isMaxWindow,
+  modalDialog: (state) => state.modalDialog,
 };
 
 const mutations = {
@@ -54,6 +56,9 @@ const mutations = {
   setIsMaxWindow(data, value) {
     data.isMaxWindow = value;
   },
+  setModalDialog(data, value) {
+    data.modalDialog = value;
+  },
 };
 
 const actions = {
@@ -80,6 +85,9 @@ const actions = {
   },
   setIsMaxWindow({ commit }, value) {
     commit('setIsMaxWindow', value);
+  },
+  setModalDialog({ commit }, value) {
+    commit('setModalDialog', value);
   },
 };
 

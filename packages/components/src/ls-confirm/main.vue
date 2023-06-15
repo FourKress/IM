@@ -10,7 +10,7 @@
     @close="dialogClose"
     :showCancelBtn="showCancelBtn"
   >
-    <div slot='content'>
+    <div slot="content">
       <Expand v-if="render" :render="render"></Expand>
       <div v-if="content" v-html="content"></div>
     </div>
@@ -19,6 +19,7 @@
 <script>
 import Expand from '../utils/expand';
 import LsDialog from '../ls-dialog';
+import { storeInstance, MODAL_DIALOG_TYPE } from '@lanshu/utils';
 
 export default {
   components: { Expand, LsDialog },
@@ -53,6 +54,11 @@ export default {
 
       this.visible = true;
 
+      storeInstance.commit('globalStore/setModalDialog', {
+          type: MODAL_DIALOG_TYPE.IS_DIALOG,
+          visible: this.visible,
+      })
+
       // 增加链式调用方式
       return new Promise((resolve, reject) => {
         this.promiseStatus = { resolve, reject };
@@ -60,14 +66,24 @@ export default {
     },
 
     dialogSure() {
+      this.handleClose();
       this.promiseStatus && this.promiseStatus.resolve(true);
     },
     dialogCancel() {
+      this.handleClose();
       this.promiseStatus && this.promiseStatus.reject({ isCancel: true });
     },
     dialogClose() {
+      this.handleClose();
       this.promiseStatus && this.promiseStatus.reject({ isClose: true });
     },
+
+    handleClose() {
+      storeInstance.commit('globalStore/setModalDialog', {
+        type: MODAL_DIALOG_TYPE.IS_DIALOG,
+        visible: false,
+      })
+    }
   },
   watch: {
     visible(value) {

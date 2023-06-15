@@ -399,12 +399,10 @@ export default {
         })
         .map((o) => {
           const depList = subList.filter((s) => s.parentId === o.id);
-          console.log('depList', depList)
           depList.forEach((d) => {
             const { id, name } = d;
 
             const component = 'OrgStructure';
-            console.log('recursionMyDep', d)
             const myDeps = this.recursionMyDep(subList, d, userDepList);
 
             let myDep;
@@ -478,9 +476,7 @@ export default {
       }
       const subDep = subDepList.find((d) => d.parentId === dep.id);
       if (subDep) {
-        console.log(subDep)
         const result = this.recursionMyDep(subDepList, subDep, userDepList);
-        console.log(result)
         if (result) {
           return [subDep, ...result];
         }

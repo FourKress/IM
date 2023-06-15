@@ -435,7 +435,7 @@ export default {
 
     initSize(imViewWidth) {
       if (!this.isImage && !this.isVideo && !this.isFile) return;
-      if (imViewWidth <= 380) {
+      if (imViewWidth <= 490) {
         this.imageMaxWidth = 210;
         this.wrapStyle = { maxWidth: '210px', maxHeight: '210px' };
         this.wrapFileStyle = { width: '210px' };

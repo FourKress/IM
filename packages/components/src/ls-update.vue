@@ -80,6 +80,7 @@ export default {
       }
       this.downloadProgress = progress;
     });
+    document.addEventListener('keydown', this.handleKeydown);
   },
   methods: {
     ...mapActions('globalStore', ['setStartDownload']),
@@ -107,7 +108,15 @@ export default {
       const { fetchUrl, version } = this.updateInfo;
       renderProcess.checkForUpdates({ fetchUrl, version });
     },
+
+    handleKeydown(event) {
+      event.preventDefault();
+    },
   },
+
+  beforeDestroy() {
+    document.removeEventListener('keydown', this.handleKeydown);
+  }
 };
 </script>
 

@@ -1,10 +1,18 @@
 <template>
-  <div class="ls-card-dialog" :style="{backgroundColor: backgroundColor}" v-if="visible" @click.self.stop="handleClose">
+  <div
+    class="ls-card-dialog"
+    :style="{ backgroundColor: backgroundColor }"
+    v-if="visible"
+    @click.self.stop="handleClose"
+  >
     <slot></slot>
   </div>
 </template>
 
 <script>
+import { mapActions, mapGetters } from 'vuex';
+import { MODAL_DIALOG_TYPE } from '@lanshu/utils';
+
 export default {
   name: 'Ls-card-dialog',
   props: {
@@ -22,12 +30,21 @@ export default {
       default: 'transparent',
     },
   },
+  computed: {
+    ...mapGetters('globalStore', ['modalDialog']),
+  },
   watch: {
     visible(val) {
+      console.log('Ls-card-dialog', val)
+      this.setModalDialog({
+        type: MODAL_DIALOG_TYPE.IS_MODAL,
+        visible: val,
+      });
       if (val) {
         this.setClassName('no-drag');
         document.querySelector('#lanshu-app').appendChild(this.$el);
       } else {
+        console.log('2222');
         const cardDialogDom = document.querySelectorAll('.ls-card-dialog');
         if (cardDialogDom.length === 1) {
           this.setClassName('drag');
@@ -35,12 +52,26 @@ export default {
         this.handleRemoveDom();
       }
     },
+
+    modalDialog: {
+      deep: true,
+      handler(val) {
+        if (val.type === MODAL_DIALOG_TYPE.IS_MODAL && !val.visible) {
+          this.handleEmit();
+        }
+      },
+    }
   },
   methods: {
-    handleClose() {
-      if (!this.isModalClose) return;
+    ...mapActions('globalStore', ['setModalDialog']),
+
+    handleEmit() {
       this.$emit('close');
       this.$emit('update:visible', false);
+    },
+    handleClose() {
+      if (!this.isModalClose) return;
+      this.handleEmit();
     },
     handleRemoveDom() {
       if (this.$el && this.$el.parentNode) {
