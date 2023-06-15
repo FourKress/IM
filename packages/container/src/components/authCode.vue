@@ -78,7 +78,6 @@ export default {
     initData() {
       // 读取历史倒计时
       this.countdown = this.codeCountdown;
-      console.log(this.countdown, 'this.countdown')
       if (this.countdown) {
         this.handleCountdown();
       } else {

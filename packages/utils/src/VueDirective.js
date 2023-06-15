@@ -14,7 +14,6 @@ const handleOpenContentMenu = (el, binding, vnode) => {
         },
       })
       .then((menuItem) => {
-        console.log('then', menuItem);
         if (!menuItem) return;
         menuItem.handler && menuItem.handler(arg);
       });

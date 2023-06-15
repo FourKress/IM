@@ -53,9 +53,6 @@ export default {
           btnText: '立即更新',
           fnc: (info) => this.handleUpdate(info),
         },
-        {
-          btnText: '更新日志',
-        },
       ],
     };
   },

@@ -132,7 +132,6 @@ export default {
     ...mapActions('routerStore', ['addOrgBreadCrumb', 'deleteOrgBreadCrumb']),
 
     initData(depId) {
-      console.log('depId', depId);
       this.userList = [];
       this.selfDepList = [];
       this.selfDepList = this.depList.filter((d) => d.parentId === depId);
@@ -144,11 +143,9 @@ export default {
         departId: depId,
       });
       this.userList = res?.data || [];
-      console.log(res);
     },
 
     handleOrg(dep) {
-      console.log(dep);
       this.addOrgBreadCrumb({
         label: dep.name,
         key: dep.id,
@@ -157,7 +154,6 @@ export default {
     },
 
     async handleFriend(user, event) {
-      console.log(user);
       await this.openFriendDialog(
         event,
         async () => {
@@ -262,7 +258,7 @@ export default {
             height: 20px;
             background: #e2eeff;
             font-size: 12px;
-            color: #0066ff;
+            color: $primary-color;
             border-radius: 3px;
             text-align: center;
             line-height: 20px;

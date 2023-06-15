@@ -228,7 +228,6 @@ export default {
         if (val?.sessId === oldVal?.sessId) return;
         // TODO 临时处理手动创建会话时 mainSessionWindow 的更新问题
         if (val && val?.nickname) {
-          console.log('111 session', val);
           this.initData();
         }
       },
@@ -239,7 +238,6 @@ export default {
       async handler(msg) {
         if (!this?.session?.sessId) return;
         if (msg?.sessId === this?.session?.sessId) {
-          console.log('2222 currentMsg', msg);
           this.getMessageList();
           this.setCurrentMsg({});
         }
@@ -247,12 +245,10 @@ export default {
     },
     refreshMsg(val) {
       if (val) {
-        console.log('3333 refreshMsg', val);
         this.getMessageList();
       }
     },
     refreshGroupRoleManager() {
-      console.log('refreshGroupRoleManager');
       this.getGroupRoleManagerList();
       this.getMyGroupMemberInfo();
     },
@@ -323,12 +319,10 @@ export default {
       e.preventDefault();
       //获取文件列表
       const files = e.dataTransfer.files;
-      console.log(files);
 
       if (files?.length > 0) {
         //获取文件路径
         const path = files[0].path;
-        console.log('path:', path);
         // 禁止发言
         if (
           this.isGroup &&
@@ -350,7 +344,6 @@ export default {
     const resizeObserver = new ResizeObserver((entries) => {
       for (let entry of entries) {
         const cr = entry.contentRect;
-        console.log('resizeObserver', cr.width)
         this.imViewWidth = cr.width
       }
     });
@@ -382,10 +375,8 @@ export default {
       if (!isContinue) {
         this.nextSeq = 0;
       }
-      console.log(sessId, this.nextSeq);
       // 拉取SDK缓存消息，每次sdk最多返回20条消息
       IMGetMessageList(sessId, this.nextSeq).then((res) => {
-        console.log('拉取成功', res.data);
         const { msgs, nextSeq, hasNext } = res?.data || {};
         this.hasNext = hasNext;
         this.nextSeq = nextSeq;
@@ -398,7 +389,6 @@ export default {
           });
         } else {
           this.messageList = msgs;
-          console.log(this.$refs.messagePanel.scrollHeight)
           this.$nextTick(() => {
             this.$refs.messagePanel.scrollTop =
               this.$refs.messagePanel.scrollHeight;
@@ -428,14 +418,12 @@ export default {
     ),
 
     async handleFriend(item, event) {
-      console.log(item);
       const isSelf = this.checkSelf(item);
       if (isSelf) return;
 
       await this.openFriendDialog(event, async () => {
         const { fromUser } = item;
         const friendInfo = (await IMGetOneFriend(fromUser))?.data || {};
-        console.log(friendInfo);
         if (friendInfo?.userId) {
           this.friendPanelConfig = this.isGroup
             ? { isPass: true }
@@ -477,7 +465,6 @@ export default {
     getGroupRoleManagerList() {
       IMGetGroupRoleManagerList(this.session.toUser)
         .then((res) => {
-          console.log(res.data);
           this.groupRoleManager = res?.data || {};
         })
         .catch((err) => {
@@ -492,7 +479,6 @@ export default {
   },
   beforeDestroy() {
     if (this.resizeObserver) {
-      console.log('@@!!!!', this.$refs.ImView)
       this.resizeObserver.observe(this.$refs.ImView);
     }
   }

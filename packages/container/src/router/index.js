@@ -55,11 +55,6 @@ const baseRoutes = [
         path: 'devices',
         component: () => import('../views/settings/devices/index'),
       },
-      {
-        name: 'UpdateLogs',
-        path: 'updateLogs',
-        component: () => import('../views/settings/update-logs/index'),
-      },
     ],
   },
   {

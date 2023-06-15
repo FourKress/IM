@@ -123,7 +123,6 @@ export default {
           ...msgData,
         );
         IMSendMessage(msg).finally(() => {
-          console.log('发送成功');
           this.setRefreshMsg(Date.now());
         });
       });

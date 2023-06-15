@@ -144,6 +144,7 @@ export default {
         });
     },
     async handleOpenFriendDialog(friendInfo, event) {
+      // TODO 需要提前判断是否已经是好友关系
       await this.openFriendDialog(event, async () => {
         return {
           ...friendInfo,
@@ -154,7 +155,6 @@ export default {
       }
     },
     handleSendApply(addParams) {
-      console.log(this.friendInfo, addParams);
       IMFriendAddRequest(...addParams).then(() => {
         this.handleCloseDialog();
       });
@@ -180,7 +180,7 @@ export default {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    box-shadow: 0 0 0 1px #0066ff;
+    box-shadow: 0 0 0 1px $primary-color;
 
     .input-panel {
       flex: 1;

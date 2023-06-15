@@ -171,14 +171,12 @@ export default {
     sessionList: {
       deep: true,
       handler(val) {
-        console.log('sessionList', val);
         this.initData();
       },
     },
     mainSessionWindow: {
       deep: true,
       handler(val) {
-        console.log(val, 'mainSessionWindow');
         if (this.isScroll) {
           this.$refs.sidebarMenu.scrollTop = 0;
         }
@@ -243,9 +241,7 @@ export default {
 
     setMsgTopStatus(session) {
       const { topState } = session;
-      IMSetTopStatus(session.sessId, topState === 1 ? 0 : 1).then(() => {
-        console.log('TopStatus Success');
-      });
+      IMSetTopStatus(session.sessId, topState === 1 ? 0 : 1)
     },
   },
 };

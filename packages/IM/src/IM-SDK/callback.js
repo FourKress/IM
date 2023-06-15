@@ -61,11 +61,9 @@ const getCurrentSession = (key, id) => {
 
 export const IMSDKCallBackEvents = {
   Network: (ctx, state) => {
-    console.log('@@@@@ Network');
     storeInstance.commit('IMStore/setIMNetworkStatus', state);
   },
   DataSync: (ctx, state) => {
-    console.log('@@@@@ DataSync');
     // 1、同步中，2、同步完成，3、同步失败
     const map = {
       1: '同步中',
@@ -78,11 +76,9 @@ export const IMSDKCallBackEvents = {
     });
   },
   UpdateConvList: (ctx, convList) => {
-    console.log('@@@@@ UpdateConvList');
     storeInstance.commit('IMStore/setAllSession', convList);
   },
   ConvTotalUnreadMessageCount: (ctx, AllUnreadCount) => {
-    console.log('@@@@@ ConvTotalUnreadMessageCount');
     storeInstance.commit('IMStore/setAllUnreadCount', AllUnreadCount);
   },
   MessageSendingStateCallBack: (ctx, msgInfo) => {
@@ -99,8 +95,6 @@ export const IMSDKCallBackEvents = {
   AddReceiveNewMessage: async (ctx, msgInfo) => {
     const { message, silence, isFocused } = msgInfo;
     const { sessId, msgType } = message;
-
-    console.log('@@@@@ AddReceiveNewMessage');
 
     const { session, isCurrent } = getCurrentSession('sessId', sessId);
     const sessionWindowList =
@@ -119,8 +113,6 @@ export const IMSDKCallBackEvents = {
 
     storeInstance.commit('IMStore/setCurrentMsg', message);
 
-    console.log('@########', isCurrent, location.hash);
-
     if (!isCurrent) return;
 
     if (location.hash !== '#/') return;
@@ -128,7 +120,6 @@ export const IMSDKCallBackEvents = {
     await IMClearUnreadCount(sessId, [session, ...sessionWindowList]);
   },
   KickOutedOffline(ctx) {
-    console.log('@@@@@ KickOutedOffline');
     storeInstance.commit('IMStore/setAllSession', []);
     ctx
       .$LConfirm({
@@ -152,18 +143,15 @@ export const IMSDKCallBackEvents = {
     console.info('日志', info);
   },
   FriendAddRequestUpdateListener(ctx, friendAddRequestCount) {
-    console.log('新好友：', friendAddRequestCount);
     storeInstance.commit(
       'IMStore/setNewFriendCount',
       Number(friendAddRequestCount),
     );
   },
   RefreshMsg(ctx, sessId) {
-    console.log('RefreshMsg', sessId);
     storeInstance.commit('IMStore/setRefreshMsg', Date.now());
   },
   FriendDelListener(ctx, info) {
-    console.log('FriendDelListener', info);
     const { delUerId } = info;
 
     if (getCurrentSession('toUser', delUerId).isCurrent) {
@@ -172,7 +160,6 @@ export const IMSDKCallBackEvents = {
     storeInstance.commit('IMStore/setRefreshAddressBook', Date.now());
   },
   UserTokenExpiredCallBack(ctx) {
-    console.log('UserTokenExpiredCallBack');
     ctx
       .$LConfirm({
         title: '提示',
@@ -185,7 +172,6 @@ export const IMSDKCallBackEvents = {
       });
   },
   UserNicknameAvatarUpdateListener(ctx, info) {
-    console.log('UserNicknameAvatarUpdateListener', info);
     const { userId, nickname, avatar } = info;
 
     const currentSession = getCurrentSession('toUser', userId);
@@ -202,12 +188,10 @@ export const IMSDKCallBackEvents = {
   },
 
   GroupUserAttributeChangedCallBack(ctx, info) {
-    console.log(info);
     storeInstance.commit('IMStore/setGroupUserAttributeChanged', info);
   },
 
   GroupMemberDeleteCallBack(ctx, info) {
-    console.log(info);
     storeInstance.commit('IMStore/setGroupMemberDeleteCallBack', info);
   },
 

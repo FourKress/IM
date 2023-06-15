@@ -6,7 +6,6 @@ class Mirco {
   getConfigs = () => {
     const appList =
       storeInstance.getters['globalStore/systemUserInfo']?.appList || [];
-    console.log(appList);
 
     return appList.map((d) => {
       /**
@@ -26,7 +25,6 @@ class Mirco {
   getRoutes() {
     const appList =
       storeInstance.getters['globalStore/systemUserInfo']?.appList || [];
-    console.log(appList);
 
     const routers = appList.map((d) => {
       const key = mergePathMark(d.appCode);

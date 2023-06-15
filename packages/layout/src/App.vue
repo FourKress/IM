@@ -67,7 +67,6 @@ export default {
   async created() {
     renderProcess.IMSDKListener((event, data) => {
       const { type, value } = data;
-      console.log(type, value);
       IMSDKCallBackEvents[type](this, value);
     });
     renderProcess.mainProcessError((event, info) => {
@@ -138,8 +137,6 @@ export default {
       if (!updateData) return;
 
       const { version, model, decDirectory, title, content } = updateData;
-
-      console.log(version, currentVersion)
 
       const isNewVersion = compareVersion(version, currentVersion) === 1;
       if (!isNewVersion) return;

@@ -671,8 +671,6 @@ export default {
     document.removeEventListener('click', this.handleGlobalClick);
     document.onkeydown = null;
     const sessId = this.session.sessId;
-    console.log('%%%%%%%%%%%%', this.message);
-    console.log('%%%%%%%%%%%%',this.messageText);
     const historyTempMsgOBJ = await window.$lanshuStore.getItem('tempMsgOBJ');
     let tempMsg = '';
     if (this.messageText) {

@@ -414,8 +414,6 @@ export default {
       const base64 = await renderProcess.getCacheFile2Base64(this.cachePath);
       const blob = dataURLtoBlob(base64);
 
-      console.log('122');
-
       await navigator.clipboard.write([
         new ClipboardItem({
           [blob.type]: blob,

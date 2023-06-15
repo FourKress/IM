@@ -28,7 +28,6 @@ function download(url, targetPath, cb = () => {}) {
     req.on('end', function () {
       if (req.response.statusCode === 200) {
         if (len === cur) {
-          console.log(targetPath + ' Download complete ');
           status = 'completed';
           cb(status, 100);
         } else {

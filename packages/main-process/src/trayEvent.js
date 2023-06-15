@@ -32,15 +32,6 @@ class TrayEvent {
     });
 
     const trayContextMenu = Menu.buildFromTemplate([
-      // {
-      //   label: '测试',
-      //   click: () => {
-      //     console.log(2222);
-      //   },
-      // },
-      // {
-      //   type: 'separator',
-      // },
       {
         label: '退出',
         role: 'quit',

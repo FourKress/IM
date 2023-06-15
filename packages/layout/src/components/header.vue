@@ -105,15 +105,15 @@
             <span class="label" @click="goToSettings">设置</span>
             <el-badge is-dot :hidden="!updateNotify"></el-badge>
           </div>
-          <div class="row">
-            <span class="label">下载手机版</span>
-          </div>
-          <div class="row">
-            <span class="label">帮助与客服</span>
-          </div>
-          <div class="row split">
-            <span class="label">关于北象</span>
-          </div>
+<!--          <div class="row">-->
+<!--            <span class="label">下载手机版</span>-->
+<!--          </div>-->
+<!--          <div class="row">-->
+<!--            <span class="label">帮助与客服</span>-->
+<!--          </div>-->
+<!--          <div class="row split">-->
+<!--            <span class="label">关于北象</span>-->
+<!--          </div>-->
           <div class="row disabled">
             <span class="label" @click="handleLogOut">退出北象</span>
           </div>
@@ -418,7 +418,7 @@ export default {
 
 .settings-dialog {
   width: 372px;
-  height: 570px;
+  height: 420px;
   background: $bg-white-color;
   box-shadow: 0px 4px 20px 0px rgba(51, 51, 51, 0.1);
   border-radius: 12px;
@@ -450,9 +450,10 @@ export default {
     ::v-deep .el-input__inner {
       border: none;
       background: transparent;
+      background: $bg-hover-grey-color;
 
       &:hover {
-        background: $bg-hover-grey-color;
+        background: #eee;
       }
     }
 
