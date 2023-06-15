@@ -371,7 +371,6 @@ export default {
       this.visibleGroupMember = false;
     },
     handleCroupConfirm(session) {
-      console.log(session);
       this.handleGroupClose();
       if (session) {
         this.$nextTick(() => {
@@ -400,11 +399,12 @@ export default {
         })
         .map((o) => {
           const depList = subList.filter((s) => s.parentId === o.id);
-          console.log(depList)
+          console.log('depList', depList)
           depList.forEach((d) => {
             const { id, name } = d;
 
             const component = 'OrgStructure';
+            console.log('recursionMyDep', d)
             const myDeps = this.recursionMyDep(subList, d, userDepList);
 
             let myDep;
@@ -450,7 +450,6 @@ export default {
       this.orgList = orgList;
 
       if (orgList?.length) {
-        console.log('@@@@', this.orgActiveKey, this.activeKey);
         if (!this.orgActiveKey && !this.activeKey) {
           const org = orgList[0];
           const dep = org.subList[0];
@@ -466,18 +465,22 @@ export default {
           this.handleSelectDep(item, dep, org);
         }
       }
-
-      console.log(orgList, userDepList);
     },
 
     recursionMyDep(subDepList, dep, userDepList) {
+      // 所属部门只有一个 且 属于顶级部门
+      if (userDepList.length === 1 && userDepList[0].id === dep.id) {
+        return []
+      }
       const userDep = userDepList.find((u) => u.parentId === dep.id);
       if (userDep) {
         return [userDep];
       }
       const subDep = subDepList.find((d) => d.parentId === dep.id);
       if (subDep) {
+        console.log(subDep)
         const result = this.recursionMyDep(subDepList, subDep, userDepList);
+        console.log(result)
         if (result) {
           return [subDep, ...result];
         }
