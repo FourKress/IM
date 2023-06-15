@@ -22,7 +22,7 @@
     "aws-sdk": "^2.1320.0",
     "core-js": "^3.8.3",
     "electron-screenshots": "0.5.15",
-    "lim-sdk-electron": "2.7.19",
+    "lim-sdk-electron": "2.7.20",
     "mock-aws-s3": "^4.0.2",
     "nock": "^13.3.0",
     "trtc-electron-sdk": "10.3.406",
