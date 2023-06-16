@@ -25,29 +25,36 @@
           class="active-row"
           v-if="
             !(this.isDel || this.isDelAdmin || this.isAddAdmin) &&
-            !(tabType === isAddress && staffName)
+            !(tabType === TAB_TYPE.IS_FRIEND && staffName)
           "
         >
           <div class="action">
             <span
               class="btn"
-              :class="tabType === !isAddress && 'active'"
-              @click="handleClick(!isAddress)"
+              :class="tabType === TAB_TYPE.IS_SESSION && 'active'"
+              @click="handleClick(TAB_TYPE.IS_SESSION)"
             >
               最近联系
             </span>
             <span
               class="btn"
-              :class="tabType === isAddress && 'active'"
-              @click="handleClick(isAddress)"
+              :class="tabType === TAB_TYPE.IS_ORG && 'active'"
+              @click="handleClick(TAB_TYPE.IS_ORG)"
             >
-              通讯录
+              组织架构
+            </span>
+            <span
+              class="btn"
+              :class="tabType === TAB_TYPE.IS_FRIEND && 'active'"
+              @click="handleClick(TAB_TYPE.IS_FRIEND)"
+            >
+              好友
             </span>
           </div>
         </div>
         <div class="py-nav" v-if="!staffName">
           <span
-            v-if="tabType === isAddress"
+            v-if="[TAB_TYPE.IS_FRIEND, TAB_TYPE.IS_ORG].includes(tabType)"
             v-for="item in pyList"
             :key="item"
             :class="pinyinKey === item && 'active'"
@@ -59,7 +66,7 @@
         <div class="list selected-scroll-view">
           <div
             class="scroll-view"
-            v-if="tabType !== isAddress && selfSessionList.length"
+            v-if="tabType === TAB_TYPE.IS_SESSION && selfSessionList.length"
           >
             <div
               class="item"
@@ -87,7 +94,10 @@
 
           <div
             class="scroll-view"
-            v-if="tabType === isAddress && addressBookList.length"
+            v-if="
+              [TAB_TYPE.IS_FRIEND, TAB_TYPE.IS_ORG].includes(tabType) &&
+              pyBookList.length
+            "
           >
             <div
               class="group-panel"
@@ -104,7 +114,7 @@
                 :class="selectName === item.nickname && 'active'"
                 v-for="item in group"
                 v-if="item.nickname && item.nickname.includes(staffName)"
-                :key="item.nickname"
+                :key="item.toUser"
               >
                 <el-checkbox
                   v-model="item.checked"
@@ -199,11 +209,12 @@
 
 <script>
 import { LsIcon } from '@lanshu/components';
-import { mapActions } from 'vuex';
+import { mapGetters, mapActions } from 'vuex';
 import {
   IM_GROUP_MEMBER_PANEL_TYPE,
   AddressBookMixins,
   lodash,
+  Apis,
 } from '@lanshu/utils';
 import {
   IMAdminDelGroupMembers,
@@ -212,7 +223,11 @@ import {
   IMSetGroupMemberAdminRole,
 } from '../../IM-SDK';
 
-const isAddress = false;
+const TAB_TYPE = {
+  IS_FRIEND: 1,
+  IS_SESSION: 2,
+  IS_ORG: 3,
+};
 
 export default {
   name: 'Group-member-chat',
@@ -242,16 +257,20 @@ export default {
   data() {
     return {
       IM_GROUP_MEMBER_PANEL_TYPE,
-      isAddress,
-      tabType: !isAddress,
+      TAB_TYPE,
+      tabType: TAB_TYPE.IS_SESSION,
       selfSessionList: [],
       selectList: [],
       selectName: null,
       staffName: '',
       groupName: '',
+      orgUsers: [],
+      pyBookList: [],
     };
   },
   computed: {
+    ...mapGetters('globalStore', ['systemUserInfo']),
+
     groupTitle() {
       if (this.isDel) return '删除群成员';
       if (this.isAdd) return '添加群成员';
@@ -408,16 +427,35 @@ export default {
     async handleClick(type) {
       this.staffName = '';
       this.tabType = type;
-      if (type === this.isAddress && !this.scrollView) {
+      if ([this.TAB_TYPE.IS_FRIEND, this.TAB_TYPE.IS_ORG].includes(type)) {
         // 注册滚动事件的处理
         this.handleRegisterScroll();
-        await this.getFriendListData();
-        const addressBookList = this.addressBookList.map((d) => {
-          d.toUser = d.userId;
-          return this.getCheckedStatus(d);
-        });
-        this.addressBookList = addressBookList;
-        this.initPinYin();
+        let pyBookList = [];
+        if (type === this.TAB_TYPE.IS_ORG) {
+          if (!this.orgUsers?.length) {
+            const { data: orgUsers } = await Apis.userQueryByOrgId({
+              orgId: this.systemUserInfo?.currentOrg?.id,
+            });
+            this.orgUsers = orgUsers;
+          }
+          pyBookList = this.orgUsers.map((d) => {
+            d.toUser = d.userId;
+            d.nickname = d.name;
+            d.avatar = d.picture;
+            return this.getCheckedStatus(d);
+          });
+        } else {
+          if (!this.addressBookList?.length) {
+            await this.getFriendListData();
+          }
+          pyBookList = this.addressBookList.map((d) => {
+            d.toUser = d.userId;
+            return this.getCheckedStatus(d);
+          });
+        }
+
+        this.pyBookList = pyBookList;
+        this.initPinYin(this.pyBookList);
       }
     },
 
@@ -433,7 +471,7 @@ export default {
     },
     handleUnSelect(item, index) {
       this.selectList.splice(index, 1);
-      if (this.tabType === isAddress) {
+      if (this.tabType === this.TAB_TYPE.IS_FRIEND) {
         Object.keys(this.addressBookPYObj).forEach((key) => {
           this.addressBookPYObj[key] = this.handleUnCheck(
             this.addressBookPYObj[key],
@@ -457,7 +495,7 @@ export default {
     },
 
     getCheckedStatus(item) {
-      const key = (this.isCreate || this.isAdd) ? 'toUser' : 'userId';
+      const key = this.isCreate || this.isAdd ? 'toUser' : 'userId';
       const isDefault = this.defaultMembers.some((c) => c.userId === item[key]);
       const flag = this.isAdd || this.isAddAdmin ? isDefault : false;
       return {
@@ -635,11 +673,12 @@ export default {
 
       .py-nav {
         width: 10px;
-        right: 10px;
+        right: 4px;
         top: 50%;
         transform: translateY(-50%);
         font-size: 12px;
         position: absolute;
+        z-index: 2;
         color: $minor-text-color;
         display: flex;
         flex-direction: column;
@@ -647,7 +686,7 @@ export default {
 
         span {
           cursor: pointer;
-          line-height: 13px;
+          line-height: 14px;
 
           &.active {
             color: $primary-color;
@@ -661,6 +700,7 @@ export default {
         overflow-x: hidden;
         transform: translate3d(0, 0, 0);
         scroll-behavior: smooth;
+        padding: 0 20px;
 
         .scroll-view {
           .group-panel {

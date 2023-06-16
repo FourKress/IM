@@ -64,12 +64,11 @@ export default {
           };
         });
       }
-
-      this.initPinYin();
+      this.initPinYin(this.addressBookList);
     },
-    initPinYin() {
+    initPinYin(pyBookList) {
       // 数据转为拼音键值对 {A:[], B: []} 类型
-      const addressBookPYObj = groupedPy(sortedPY(this.addressBookList));
+      const addressBookPYObj = groupedPy(sortedPY(pyBookList));
       this.pinyinKey = Object.keys(addressBookPYObj)[0];
       this.addressBookPYObj = addressBookPYObj;
     },
