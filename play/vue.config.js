@@ -32,7 +32,7 @@ module.exports = defineConfig({
           });
 
         config.plugin('html').tap((args) => {
-          args[0].title = '蓝数IM';
+          args[0].title = '北象IM';
           return args;
         });
 
@@ -41,7 +41,7 @@ module.exports = defineConfig({
 
       builderOptions: {
         appId: 'com.lanshu.app',
-        productName: '蓝数IM', //项目名，也是生成的安装文件名，即aDemo.exe
+        productName: 'IM', //项目名，也是生成的安装文件名，即aDemo.exe
         copyright: 'Copyright © 2023', //版权信息
         directories: {
           output: 'build', //输出文件路径
@@ -72,7 +72,7 @@ module.exports = defineConfig({
           installerHeaderIcon: './icons/icon.ico', // 安装时头部图标
           createDesktopShortcut: true, // 是否创建桌面图标
           createStartMenuShortcut: true, // 是否创建开始菜单图标
-          shortcutName: '蓝数IM', // 快捷方式名称
+          shortcutName: '北象IM', // 快捷方式名称
           runAfterFinish: true, //是否安装完成后运行
         },
         win: {

@@ -466,7 +466,7 @@ export default {
             position: relative;
 
             .message {
-              width: 145px;
+              width: 140px;
               font-size: 12px;
               color: $tips-text-color;
 
