@@ -66,7 +66,7 @@ export default async (data) => {
           `"${path.join(
             app.getPath('userData'),
             './update.exe',
-          )}" "${resourcesPath}" "${downloads}" "蓝数IM.exe" "${app.getPath(
+          )}" "${resourcesPath}" "${downloads}" "北象IM.exe" "${app.getPath(
             'exe',
           )}"`,
         );
@@ -74,7 +74,7 @@ export default async (data) => {
           `"${path.join(
             app.getPath('userData'),
             './update.exe',
-          )}" "${resourcesPath}" "${downloads}" "蓝数IM.exe" "${app.getPath(
+          )}" "${resourcesPath}" "${downloads}" "北象IM.exe" "${app.getPath(
             'exe',
           )}"`,
           version,
@@ -84,7 +84,7 @@ export default async (data) => {
         //   `"${path.join(
         //     app.getPath('userData'),
         //     './update.exe',
-        //   )}" "${resourcesPath}" "${downloads}" "蓝数IM.exe" "${app.getPath(
+        //   )}" "${resourcesPath}" "${downloads}" "北象IM.exe" "${app.getPath(
         //     'exe',
         //   )}"`,
         //   function (error, stdout, stderr) {

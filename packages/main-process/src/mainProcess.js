@@ -36,7 +36,7 @@ const initIpcMain = () => {
   app.whenReady().then(async () => {
     // win环境 开启通知
     if (process.platform === 'win32') {
-      app.setAppUserModelId('蓝数IM');
+      app.setAppUserModelId('北象IM');
     }
 
     // 初始化缓存

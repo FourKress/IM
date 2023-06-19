@@ -113,7 +113,7 @@ export default {
       tempLink.href = imageUrl;
       tempLink.setAttribute(
         'download',
-        `${this.qrcodeInfo.nickname}的蓝数IM二维码`,
+        `${this.qrcodeInfo.nickname}的北象IM二维码`,
       );
       document.body.appendChild(tempLink);
       tempLink.click();

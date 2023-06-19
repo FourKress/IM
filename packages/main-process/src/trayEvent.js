@@ -15,7 +15,7 @@ class TrayEvent {
 
   init() {
     this.tray.setImage(trayIconPath);
-    this.tray.setToolTip('蓝数IM');
+    this.tray.setToolTip('北象IM');
   }
 
   setTray() {
