@@ -382,17 +382,17 @@ export default {
         this.nextSeq = nextSeq;
         if (isContinue && this.messageList?.length) {
           this.messageList.unshift(...msgs);
-          this.$nextTick(() => {
+          setTimeout(() => {
             const currentScrollHeight = this.$refs.messagePanel.scrollHeight;
             this.$refs.messagePanel.scrollTop =
               currentScrollHeight - this.preScrollHeight + this.scrollTop;
-          });
+          }, 1);
         } else {
           this.messageList = msgs;
-          this.$nextTick(() => {
+          setTimeout(() => {
             this.$refs.messagePanel.scrollTop =
               this.$refs.messagePanel.scrollHeight;
-          });
+          }, 1);
         }
       });
     },
