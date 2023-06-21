@@ -86,7 +86,6 @@ export default {
     };
   },
   computed: {
-    ...mapGetters('globalStore', ['updateNotify']),
     ...mapGetters('IMStore', ['allUnreadCount', 'newFriendCount']),
   },
   watch: {

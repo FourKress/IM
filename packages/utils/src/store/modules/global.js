@@ -4,7 +4,7 @@ const state = {
   codeCountdown: 0,
   updateInfo: {},
   startDownload: false,
-  updateNotify: false,
+  updateNotify: true,
   searchHistory: JSON.parse(localStorage.getItem('searchHistory') || '[]'),
   isMaxWindow: false,
   modalDialog: {},

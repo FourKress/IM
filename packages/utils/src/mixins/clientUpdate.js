@@ -8,7 +8,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters('globalStore', ['systemUserInfo', 'updateInfo']),
+    ...mapGetters('globalStore', ['updateNotify', 'updateInfo']),
   },
 
   methods: {
