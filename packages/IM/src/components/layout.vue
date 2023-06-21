@@ -6,7 +6,7 @@
 
     <ImView
       v-if="mainSessionWindow.sessId"
-      :key="mainSessionWindow.sessId"
+      :key="mainSessionWindow.sessId || ''"
       :session="mainSessionWindow"
       :recordrtc="recordrtc"
       isMainSession
@@ -14,7 +14,7 @@
     />
     <!--  协同  -->
     <template v-for="item in sessionWindowList">
-      <ImView :key="item.sessId" :session="item" :recordrtc="recordrtc" />
+      <ImView :key="item.sessId || ''" :session="item" :recordrtc="recordrtc" />
     </template>
 
     <Settings
