@@ -94,3 +94,11 @@ export const dataURLtoBlob = (dataUrl) => {
   }
   return new Blob([u8arr], { type: mime });
 };
+
+export const setHeaderClassName = (className) => {
+  const hearerSearch = document.querySelector('#client-header');
+  if (hearerSearch) {
+    // 控制头部拖拽效果
+    hearerSearch.className = `${className}`;
+  }
+};

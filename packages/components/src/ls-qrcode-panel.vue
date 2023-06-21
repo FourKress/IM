@@ -2,7 +2,7 @@
   <div class="qrcode-dialog" :style="position">
     <div class="main-wrap">
       <div class="top">
-        <img :src="LsAssets.topBg" alt="" />
+        <img :src="LsAssets.cardTopBg" alt="" />
       </div>
       <div class="info">
         <div class="avatar">
@@ -86,7 +86,6 @@ export default {
         if (error) {
           this.$message.error('二维码生成失败!');
         }
-        console.log(url);
         this.qrcodeUrl = url;
       },
     );

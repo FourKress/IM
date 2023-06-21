@@ -9,7 +9,11 @@
         @click="handleMenuSwitch(item.path)"
       >
         <span class="btn-icon">
-          <img v-if="item.activeIcon.includes('http')" :src="item.activeIcon" alt="">
+          <img
+            v-if="item.activeIcon.includes('http')"
+            :src="item.activeIcon"
+            alt=""
+          />
           <LsIcon
             v-else
             render-svg
@@ -31,7 +35,12 @@
       </div>
     </div>
     <div class="update" v-if="updateNotify" @click="handleUpdate">
-      <LsIcon icon="ls-icon-icon_shengji" width="28" height="28" render-svg></LsIcon>
+      <LsIcon
+        icon="ls-icon-icon_shengji"
+        width="28"
+        height="28"
+        render-svg
+      ></LsIcon>
       <span class="label">新版本</span>
     </div>
 
@@ -41,7 +50,7 @@
           <img class="img" :src="LsAssets.updateBgSmall" alt="" />
         </div>
         <div class="container">
-          <div class="title">{{updateInfo.title}}</div>
+          <div class="title">{{ updateInfo.title }}</div>
           <div class="text-wrap">
             <div class="scroll-view" v-html="updateInfo.content"></div>
           </div>
@@ -55,12 +64,12 @@
 </template>
 
 <script>
-import BaseRoutes from '../router';
+import { mapGetters } from 'vuex';
 import { LsIcon, LsCardDialog, LsAssets } from '@lanshu/components';
-import { renderProcess } from '@lanshu/render-process';
-import { mapGetters, mapActions } from 'vuex';
-import micro from '../micro';
 import { MICRO_APP_PATH_MARK } from '@lanshu/micro';
+import { ClientUpdateMixins } from '@lanshu/utils';
+import micro from '../micro';
+import BaseRoutes from '../router';
 
 export default {
   name: 'MainMenu',
@@ -68,16 +77,16 @@ export default {
     LsIcon,
     LsCardDialog,
   },
+  mixins: [ClientUpdateMixins],
   data() {
     return {
       activePath: '/',
       navList: [],
-      visibleUpdate: false,
       LsAssets,
     };
   },
   computed: {
-    ...mapGetters('globalStore', ['updateNotify', 'systemUserInfo', 'updateInfo']),
+    ...mapGetters('globalStore', ['updateNotify']),
     ...mapGetters('IMStore', ['allUnreadCount', 'newFriendCount']),
   },
   watch: {
@@ -85,6 +94,7 @@ export default {
       const { path = '' } = val;
       const isMicro = path.includes(MICRO_APP_PATH_MARK);
       const regExp = new RegExp('\/[a-zA-Z]+' + MICRO_APP_PATH_MARK, 'g');
+      // 微应用路由，只需用第一级路由进行标识，确定菜单的计划效果
       this.activePath = isMicro ? path.match(regExp)[0] : path;
     },
   },
@@ -92,6 +102,8 @@ export default {
     // 获取入口传入的Menu项
     const pluginMenu = JSON.parse(localStorage.getItem('menu') || '[]');
 
+    // BaseRoutes 基础的菜单列表
+    // micro.getRoutes() 微应用的菜单列表
     this.navList = [...BaseRoutes, ...micro.getRoutes()]
       .filter((r) => r?.meta?.isMenu)
       .concat(pluginMenu)
@@ -103,29 +115,17 @@ export default {
           disableIcon: meta?.disableIcon,
           activeIcon: meta?.activeIcon,
         };
-      })
+      });
   },
   methods: {
-    ...mapActions('globalStore', ['setStartDownload']),
-
     handleMenuSwitch(path) {
       if (this.activePath === path) return;
       this.activePath = path;
       this.$router.push(path);
     },
 
-    handleUpdate() {
-      this.visibleUpdate = true;
-    },
-
-    handleStartUpdate() {
-      this.visibleUpdate = false;
-      this.setStartDownload(true);
-      const { fetchUrl, version } = this.updateInfo;
-      renderProcess.checkForUpdates({ fetchUrl, version });
-    },
-
     getBadge(item) {
+      // / ==> 消息，/addressBook ==> 通讯录，这两个菜单需要渲染未读数量
       if (!['/', '/addressBook'].includes(item.path)) return 0;
       if (item.path === '/') return this.allUnreadCount;
       if (item.path === '/addressBook') return this.newFriendCount;

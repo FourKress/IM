@@ -45,6 +45,7 @@ export default {
   computed: {
     iconClass() {
       const { icon } = this;
+      // 兼容icon写法，可写全名或者省略 ls-icon 前缀
       return icon.includes('ls-icon') ? icon : `ls-icon-${icon}`;
     },
     svgStyle() {

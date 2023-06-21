@@ -48,7 +48,7 @@
     <LsCardDialog :visible.sync="showSettingsDialog">
       <div class="settings-dialog">
         <div class="top">
-          <img :src="LsAssets.topBg" alt="" />
+          <img :src="LsAssets.cardTopBg" alt="" />
         </div>
         <div class="info">
           <div class="avatar">

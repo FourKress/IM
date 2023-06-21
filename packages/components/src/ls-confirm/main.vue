@@ -54,6 +54,7 @@ export default {
 
       this.visible = true;
 
+      // 打开时设置全局的dialog、右键菜单的打开状态
       storeInstance.commit('globalStore/setModalDialog', {
           type: MODAL_DIALOG_TYPE.IS_DIALOG,
           visible: this.visible,
@@ -79,6 +80,7 @@ export default {
     },
 
     handleClose() {
+      // 关闭时设置全局的dialog、右键菜单的打开状态
       storeInstance.commit('globalStore/setModalDialog', {
         type: MODAL_DIALOG_TYPE.IS_DIALOG,
         visible: false,

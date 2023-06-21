@@ -39,12 +39,15 @@ export default {
     },
   },
   mounted() {
+    // 微应用加载loading的挂载容器
     this.loadingTarget = '.view-container';
+    // 订阅微应用的通信数据变化
     MicroSharedObservable.subscribe();
   },
   methods: {},
 
   destroyed() {
+    // 取消订阅微应用的通信数据变化
     MicroSharedObservable.unsubscribe();
   },
 };

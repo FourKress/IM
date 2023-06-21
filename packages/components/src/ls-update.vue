@@ -90,6 +90,7 @@ export default {
         this.$emit('cancel');
         return;
       }
+      // 当有音视频聊天窗口时，需要关闭音视频聊天窗口
       const hasWindow = await renderProcess.hasWindow('TRTCWindow');
       if (hasWindow) {
         renderProcess.changeWindow(

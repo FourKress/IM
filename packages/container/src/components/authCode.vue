@@ -76,7 +76,7 @@ export default {
     ...mapActions('globalStore', ['setCodeCountdown']),
 
     initData() {
-      // 读取历史倒计时
+      // 读取历史倒计时，存在时继续计时，不存在则开始计时
       this.countdown = this.codeCountdown;
       if (this.countdown) {
         this.handleCountdown();
@@ -87,6 +87,7 @@ export default {
 
     handleInput(val, index) {
       if (!val) return;
+      // 为输入到最后一位时，下一位输入框自动聚焦
       if (index !== 3) {
         this.$refs[`codeRef_${index + 1}`][0].focus();
       }
@@ -123,6 +124,7 @@ export default {
     },
     handleClearCode() {
       this.codeList = this.codeList.map(() => '');
+      // 清除验证码时，自动聚焦
       this.$refs[`codeRef_0`] && this.$refs[`codeRef_0`][0].focus();
     },
   },

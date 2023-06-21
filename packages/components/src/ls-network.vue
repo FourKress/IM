@@ -23,7 +23,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters('IMStore', ['userInfo', 'IM_Network_Status']),
+    ...mapGetters('IMStore', ['IM_Network_Status']),
   },
 };
 </script>

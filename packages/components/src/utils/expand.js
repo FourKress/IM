@@ -1,3 +1,5 @@
+// JSX Render渲染器
+
 export default {
   props: {
     render: Function,

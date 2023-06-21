@@ -11,7 +11,7 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex';
-import { MODAL_DIALOG_TYPE } from '@lanshu/utils';
+import { MODAL_DIALOG_TYPE, setHeaderClassName } from '@lanshu/utils';
 
 export default {
   name: 'Ls-card-dialog',
@@ -35,19 +35,20 @@ export default {
   },
   watch: {
     visible(val) {
-      console.log('Ls-card-dialog', val)
+      // 实时设置全局的dialog、右键菜单的打开状态
       this.setModalDialog({
         type: MODAL_DIALOG_TYPE.IS_MODAL,
         visible: val,
       });
       if (val) {
-        this.setClassName('no-drag');
+        // 打开时，头部禁止拖动
+        setHeaderClassName('no-drag');
         document.querySelector('#lanshu-app').appendChild(this.$el);
       } else {
-        console.log('2222');
         const cardDialogDom = document.querySelectorAll('.ls-card-dialog');
+        // 关闭时，恢复头部拖动功能
         if (cardDialogDom.length === 1) {
-          this.setClassName('drag');
+          setHeaderClassName('drag');
         }
         this.handleRemoveDom();
       }
@@ -56,6 +57,7 @@ export default {
     modalDialog: {
       deep: true,
       handler(val) {
+        // 在特定情况下，根据全局的dialog状态，执行关闭处理
         if (val.type === MODAL_DIALOG_TYPE.IS_MODAL && !val.visible) {
           this.handleEmit();
         }
@@ -76,13 +78,6 @@ export default {
     handleRemoveDom() {
       if (this.$el && this.$el.parentNode) {
         this.$el.parentNode.removeChild(this.$el);
-      }
-    },
-    setClassName(className) {
-      const hearerSearch = document.querySelector('.header-container');
-      if (hearerSearch) {
-        // 控制头部拖拽效果
-        hearerSearch.className = `${className}`;
       }
     },
   },

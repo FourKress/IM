@@ -42,6 +42,7 @@ export default {
       const currentContextMenu = document.querySelector(
         '.context_menu-popover',
       );
+      // 已存在右键菜单，立即关闭
       if (currentContextMenu) {
         this.closeFnc(currentContextMenu);
       }

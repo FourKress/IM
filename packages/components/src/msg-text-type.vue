@@ -32,6 +32,7 @@ export default {
       const { msgType, data } = this.lastMsg;
       if (!msgType && !data) return '暂无消息';
       const msgTypes = Object.keys(MSG_FORMAT_MAP);
+      // 不满足消息类型时，默认未知消息
       if (!msgTypes.includes(String(msgType))) return '未知消息';
       return `${MSG_FORMAT_MAP[msgType]?.label(data)}`;
     },
@@ -41,6 +42,7 @@ export default {
       deep: true,
       handler(val) {
         const preview = val?.preview;
+        // 存在草稿消息时，需要做延迟渲染，避免草稿消息的残留
         const timer = (preview || this.tempMsgText === preview) ? 300 : 1;
         setTimeout(() => {
           this.tempMsgText = this.tempMsg?.preview;

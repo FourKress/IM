@@ -8,7 +8,7 @@
     element-loading-background="rgba(255, 255, 255, 1)"
   >
     <div class="top" v-if="!isLoading">
-      <img :src="LsAssets.topBg" alt="" />
+      <img :src="LsAssets.cardTopBg" alt="" />
 
       <div class="info">
         <div class="avatar">
@@ -249,14 +249,20 @@ export default {
       required: true,
       default: () => {
         return {
+          // 超期
           isExpired: false,
+          // 好友申请
           isApply: false,
+          // 验证好友申请
           isAuth: false,
+          // 已通过，可发起聊天
           isPass: false,
+          // 好友详情
           isDetails: false,
         };
       },
     },
+    // 技术支持
     isBot: {
       type: Boolean,
       default: false,
@@ -297,6 +303,7 @@ export default {
         ...this.config,
       };
     },
+    // 是组织架构用户
     isDep() {
       return this.friendInfo?.org;
     },
@@ -314,13 +321,14 @@ export default {
   },
 
   mounted() {
-    console.log('mounted:', JSON.stringify(this.friendInfo));
     if (!this.friendInfo?.userId) {
       this.isLoading = true;
     }
+    // 申请好友时，默认打招呼的内容
     if (this.panelConfig.isApply) {
       this.message = `我是${this.userInfo.nickname}`;
     }
+    // 是好友详情和发起聊天时，回显好友备注remark和描述desc
     if (this.panelConfig.isDetails || this.panelConfig.isPass) {
       const { remark = '', desc = '' } = this.friendInfo;
       this.remark = remark;
@@ -328,6 +336,7 @@ export default {
     }
   },
   methods: {
+    // 计算年龄
     calculateAgeByBirthday,
 
     handleSendAuth() {
@@ -364,7 +373,6 @@ export default {
       this.$emit('resetApply');
     },
     handleCommand(command) {
-      console.log(command);
       if (command === this.IS_DELETE) {
         this.$LConfirm({
           title: '提示',
@@ -380,6 +388,7 @@ export default {
       }
     },
     async handleSetRemarkOrDesc() {
+      // 是好友详情和发起聊天时，设置好友备注remark和描述desc
       if (!this.panelConfig.isPass && !this.panelConfig.isDetails) return;
       await IMSetRemarkOrDesc(this.friendInfo.userId, this.remark, this.desc);
       this.$emit('update');

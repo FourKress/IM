@@ -8,7 +8,7 @@
       <LsIcon
         render-svg
         class="tag-icon"
-        :icon="`ls-icon-${sex === 1 ? 'nan' : 'nv'}`"
+        :icon="`ls-icon-${sex === this.SEX_TYPE.IS_MAN ? 'nan' : 'nv'}`"
         height="13"
         width="13"
         v-if="sex && unSex"
@@ -20,7 +20,7 @@
 </template>
 
 <script>
-import { Apis } from '@lanshu/utils';
+import { Apis, SEX_TYPE } from '@lanshu/utils';
 import LsIcon from './ls-icon.vue';
 
 export default {
@@ -51,11 +51,12 @@ export default {
   },
   computed: {
     unSex() {
-      return this.sex !== 3;
+      return this.sex !== this.SEX_TYPE.IS_UNKNOWN;
     },
   },
   data() {
     return {
+      SEX_TYPE,
       addressLabel: '',
     };
   },

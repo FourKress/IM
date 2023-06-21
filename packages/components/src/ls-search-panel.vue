@@ -90,7 +90,7 @@
 
 <script>
 import { LsIcon } from '@lanshu/components';
-import { lodash } from '@lanshu/utils';
+import { lodash, setHeaderClassName } from '@lanshu/utils';
 import { mapActions, mapGetters } from 'vuex';
 import { IMGetAllFriendList, IMGetByUserId, IMGetGroupList } from '@lanshu/im';
 
@@ -130,13 +130,15 @@ export default {
   watch: {
     visible(val) {
       if (val) {
-        this.setClassName('no-drag');
+        // 打开时，头部禁止拖动
+        setHeaderClassName('no-drag');
         this.getData();
         this.$nextTick(() => {
           this.$refs.searchInput.focus();
         });
       } else {
-        this.setClassName('drag');
+        // 关闭时，恢复头部拖动功能
+        setHeaderClassName('drag');
       }
     },
     tabType() {
@@ -176,7 +178,6 @@ export default {
         if (remark && remark.includes(keywords)) return true;
         return false;
       });
-      console.log(originData, searchData);
 
       this.searchData = searchData;
 
@@ -237,14 +238,6 @@ export default {
         session = res.data;
       }
       await this.setMainSessionWindow(session);
-    },
-
-    setClassName(className) {
-      const hearerSearch = document.querySelector('#client-header');
-      if (hearerSearch) {
-        // 控制头部拖拽效果
-        hearerSearch.className = `${className}`;
-      }
     },
   },
 };
