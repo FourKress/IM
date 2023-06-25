@@ -63,6 +63,12 @@ export default {
   computed: {
     ...mapGetters('IMStore', ['actionWindow']),
   },
+  watch: {
+    visible(val) {
+      if (!val) return;
+      this.visibleHistoryMsgDrawer = false;
+    }
+  },
   methods: {
     ...mapActions('IMStore', ['setRefreshMsg']),
 

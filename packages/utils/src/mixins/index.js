@@ -4,6 +4,7 @@ import FriendMixins from './friend';
 import PhoneNumMixins from './phoneNum';
 import RecoverAccountMixins from './recoverAccount';
 import StartSessionMixins from './startSession';
+import MsgCardMixins from './msgCard';
 
 export {
   AddressBookMixins,
@@ -12,4 +13,5 @@ export {
   PhoneNumMixins,
   RecoverAccountMixins,
   StartSessionMixins,
+  MsgCardMixins,
 };

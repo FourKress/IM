@@ -129,7 +129,13 @@ export default {
   computed: {
     ...mapGetters('IMStore', ['actionWindow']),
   },
-  watch: {},
+  watch: {
+    visibleDrawer(val) {
+      if (!val) {
+        this.handleChooseTab(TAB_TYPE.IS_KEYWORDS)
+      }
+    }
+  },
   mounted() {
     this.throttleGetHistoryMsgList = lodash.throttle(
       this.getHistoryMsgList,
@@ -139,21 +145,17 @@ export default {
         trailing: false,
       },
     );
+    this.throttleGetHistoryMsgList(false);
   },
   methods: {
     handleChooseTab(type) {
       this.historyMsgList = []
       this.keywords = '';
       this.tabType = type;
-      if (type !== TAB_TYPE.IS_KEYWORDS) {
-        this.throttleGetHistoryMsgList(false);
-      }
+      this.throttleGetHistoryMsgList(false);
     },
 
-    handleSearchKeywords: lodash.debounce(function (val) {
-      if (!val) {
-        return;
-      }
+    handleSearchKeywords: lodash.debounce(function () {
       this.nextSeq = 0;
       this.getHistoryMsgList();
     }, 400),
@@ -166,8 +168,6 @@ export default {
       }
 
       const isKeywords = this.tabType === TAB_TYPE.IS_KEYWORDS;
-
-      if (isKeywords && !this.keywords) return;
 
       const fetchFnc = isKeywords ? IMSearchMessageOfText : IMSearchMessageByMsgType;
 
