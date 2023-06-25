@@ -25,7 +25,7 @@
               ref="authCode"
               :phoneNum="phoneNum"
               :newPhoneNum="newPhoneNum"
-              scene="updatePhone"
+              :scene="SCENE_TYPE.IS_UPDATE_PHONE"
               @inputComplete="handleInputComplete"
             />
 
@@ -91,9 +91,11 @@
 import {
   phoneEncryption,
   formatPhoneNum,
+  unFormatPhoneNum,
   PhoneNumMixins,
   RecoverAccountMixins,
-  Apis, getToken, TOKEN_TYPE,
+  Apis,
+  SCENE_TYPE,
 } from '@lanshu/utils';
 import { ClientLogOut } from '@lanshu/im';
 import { LsIcon } from '@lanshu/components';
@@ -109,6 +111,7 @@ export default {
   mixins: [RecoverAccountMixins, PhoneNumMixins],
   data() {
     return {
+      SCENE_TYPE,
       phoneNum: '',
       newPhoneNum: '',
       step: 0,
@@ -182,18 +185,11 @@ export default {
     )}，有效期5分钟`;
   },
   methods: {
-    async sendCaptcha(phone) {
-      await Apis.accountSendCaptcha({
-        phone,
-        scene: 'updatePhone',
-      });
-    },
-
     async checkCaptcha(phoneNum, codes) {
       await Apis.accountCheckCaptcha({
         phone: this.phoneNum,
         captcha: codes,
-        scene: 'updatePhone',
+        scene: this.SCENE_TYPE.IS_UPDATE_PHONE,
       });
     },
 
@@ -223,12 +219,12 @@ export default {
           }
           await Apis.accountUpdatePhone({
             newPhone: this.newPhoneNum,
-          })
+          });
           this.$loading({
             lock: true,
             text: '',
             spinner: 'none',
-            background: 'transparent'
+            background: 'transparent',
           });
 
           this.step = 3;
@@ -250,7 +246,7 @@ export default {
 
     async handleAuth() {
       if (!this.validPhoneNum) return;
-      this.newPhoneNum = this.replacePhoneNum();
+      this.newPhoneNum = unFormatPhoneNum(this.form.phoneNum);
       this.step = 2;
     },
   },

@@ -1,14 +1,14 @@
 import { mapGetters, mapActions } from 'vuex';
 import {
-  IMGetByUserId,
   IMAgreeFriendAddRequest,
   IMFriendAddRequest,
   IMSDKMessageProvider,
   IMSendMessage,
 } from '@lanshu/im';
 import { renderProcess } from '@lanshu/render-process';
-import { Apis } from '@lanshu/utils';
 import { CLIENT_TYPE, NETWORK_CALL_TYPE } from '../constant';
+import * as Apis from '../apis';
+import StartSessionMixins from './startSession';
 
 export default {
   data() {
@@ -18,12 +18,12 @@ export default {
       position: {},
     };
   },
+  mixins: [StartSessionMixins],
   computed: {
-    ...mapGetters('IMStore', ['userInfo', 'sessionList']),
     ...mapGetters('globalStore', ['systemUserInfo']),
   },
   methods: {
-    ...mapActions('IMStore', ['setMainSessionWindow', 'setRefreshMsg']),
+    ...mapActions('IMStore', ['setRefreshMsg']),
 
     async openFriendDialog(event, cb, computedHeight) {
       this.friendInfo = {};
@@ -86,19 +86,7 @@ export default {
         fnc && fnc(session);
       });
     },
-    async startSession(userId) {
-      let session;
-      const storeSession = this.sessionList.find((d) => d.toUser === userId);
-      if (storeSession) {
-        session = storeSession;
-      } else {
-        const res = await IMGetByUserId(userId);
-        if (!res?.data) return;
-        session = res.data;
-      }
-      await this.setMainSessionWindow(session);
-      return session;
-    },
+
     async startTrtc(session, NETWORK_CALL_TYPE) {
       await renderProcess.setStore('TRTC_SESSION', session);
       await renderProcess.setStore('TRTC_CALL_INFO', {

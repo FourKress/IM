@@ -54,7 +54,7 @@
 
 <script>
 import { renderProcess } from '@lanshu/render-process';
-import { formatPhoneNum, PhoneNumMixins, Apis } from '@lanshu/utils';
+import { formatPhoneNum, unFormatPhoneNum, PhoneNumMixins, Apis } from '@lanshu/utils';
 import { LsAssets } from '@lanshu/components';
 
 export default {
@@ -113,7 +113,7 @@ export default {
       if (!this.activeBtn) return;
 
       this.isAwait = true;
-      const phoneNum = this.replacePhoneNum();
+      const phoneNum = unFormatPhoneNum(this.form.phoneNum);
       const {
         data: { code, msg },
       } = await Apis.accountCheckStatus({

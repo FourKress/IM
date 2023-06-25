@@ -37,7 +37,6 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
-      console.log(micro.getConfigs())
       startQiankun(micro.getConfigs(), {
         beforeLoadHandler: (app) => {
           console.log('主应用 beforeLoadHandler')

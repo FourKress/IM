@@ -76,6 +76,7 @@
 <script>
 import {
   formatPhoneNum,
+  unFormatPhoneNum,
   regexUtils,
   PhoneNumMixins,
   FriendMixins,
@@ -120,6 +121,7 @@ export default {
   watch: {
     'form.phoneNum': function (val, oldVal) {
       if (!val) this.handleClearSearch();
+
       const phoneNum = formatPhoneNum(val, oldVal);
       if (phoneNum) {
         this.form.phoneNum = phoneNum;
@@ -133,7 +135,7 @@ export default {
     handleSearch() {
       if (!this.validPhoneNum) return;
       this.isAwait = true;
-      IMSearchUserProfileOfPhone(this.replacePhoneNum(this.form.phoneNum))
+      IMSearchUserProfileOfPhone(unFormatPhoneNum(this.form.phoneNum))
         .then(({ data }) => {
           this.isAwait = false;
           this.friendList = data;
@@ -144,18 +146,19 @@ export default {
         });
     },
     async handleOpenFriendDialog(friendInfo, event) {
-      // TODO 需要提前判断是否已经是好友关系
       await this.openFriendDialog(event, async () => {
         return {
           ...friendInfo,
         };
       });
+      // 属于组织架构人员, 可直接发起聊天
       if (this.friendInfo?.dep) {
         this.friendPanelConfig = { isPass: true }
       }
     },
     handleSendApply(addParams) {
       IMFriendAddRequest(...addParams).then(() => {
+        this.$message.success('添加好友成功')
         this.handleCloseDialog();
       });
     },

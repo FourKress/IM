@@ -19,7 +19,7 @@
 </template>
 
 <script>
-import Expand from './expand';
+import { Expand } from '@lanshu/components';
 
 export default {
   name: 'info-block',

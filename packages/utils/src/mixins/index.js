@@ -3,6 +3,7 @@ import ClientUpdateMixins from './clientUpdate';
 import FriendMixins from './friend';
 import PhoneNumMixins from './phoneNum';
 import RecoverAccountMixins from './recoverAccount';
+import StartSessionMixins from './startSession';
 
 export {
   AddressBookMixins,
@@ -10,4 +11,5 @@ export {
   FriendMixins,
   PhoneNumMixins,
   RecoverAccountMixins,
+  StartSessionMixins,
 };

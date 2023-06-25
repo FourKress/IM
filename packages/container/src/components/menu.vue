@@ -65,11 +65,11 @@
 
 <script>
 import { mapGetters } from 'vuex';
+import BaseRoutes from '../router';
 import { LsIcon, LsCardDialog, LsAssets } from '@lanshu/components';
 import { MICRO_APP_PATH_MARK } from '@lanshu/micro';
 import { ClientUpdateMixins } from '@lanshu/utils';
 import micro from '../micro';
-import BaseRoutes from '../router';
 
 export default {
   name: 'MainMenu',

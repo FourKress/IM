@@ -24,7 +24,7 @@
       <AuthCode
         ref="authCode"
         :phoneNum="phoneNum"
-        :scene="this.isSetPwd ? 'setPassword' : 'login'"
+        :scene="sceneType"
         @inputComplete="handleInputComplete"
         @submit.native.prevent
         @keyup.enter.native="handleLogin"
@@ -44,7 +44,7 @@
 </template>
 
 <script>
-import { PhoneNumMixins, phoneEncryption, Apis } from '@lanshu/utils';
+import { PhoneNumMixins, phoneEncryption, Apis, SCENE_TYPE, } from '@lanshu/utils';
 import { LsIcon } from '@lanshu/components';
 import AuthCode from '../../components/authCode';
 import LoginMixins from './loginMixins';
@@ -68,6 +68,7 @@ export default {
   },
   data() {
     return {
+      SCENE_TYPE,
       isAuthCodeComplete: false,
       codes: '',
       isAwait: false,
@@ -75,8 +76,12 @@ export default {
   },
   computed: {
     phoneText() {
+      // 手机号加密
       return phoneEncryption(this.phoneNum);
     },
+    sceneType() {
+      return this.isSetPwd ? this.SCENE_TYPE.IS_SET_PWD : this.SCENE_TYPE.IS_LOGIN
+    }
   },
   methods: {
     backLogin() {
@@ -111,7 +116,7 @@ export default {
         Apis.accountCheckCaptcha({
           phone: this.phoneNum,
           captcha: this.codes,
-          scene: this.isSetPwd ? 'setPassword' : 'login',
+          scene: this.sceneType,
         })
           .then(() => {
             this.$emit(

@@ -28,15 +28,17 @@ export default {
   },
   computed: {
     ...mapGetters('IMStore', ['userInfo', 'userNicknameAvatarUpdate']),
-
+    // 我创建的群聊
     myGroupList() {
       return this.groupList.filter((d) => d.owner === this.userInfo.userId);
     },
+    // 我加入的群聊
     joinGroupList() {
       return this.groupList.filter((d) => d.owner !== this.userInfo.userId);
     },
   },
   watch: {
+    // 群头像昵称更改通知
     userNicknameAvatarUpdate() {
       this.getGroupList();
     },

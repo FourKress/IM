@@ -90,7 +90,7 @@
 
 <script>
 import { LsIcon } from '@lanshu/components';
-import { lodash, setHeaderClassName } from '@lanshu/utils';
+import { lodash, setHeaderClassName, StartSessionMixins, } from '@lanshu/utils';
 import { mapActions, mapGetters } from 'vuex';
 import { IMGetAllFriendList, IMGetByUserId, IMGetGroupList } from '@lanshu/im';
 
@@ -109,12 +109,12 @@ export default {
       required: true,
     },
   },
+  mixins: [StartSessionMixins],
   components: {
     LsIcon,
   },
   computed: {
     ...mapGetters('globalStore', ['searchHistory']),
-    ...mapGetters('IMStore', ['sessionList']),
   },
   data() {
     return {
@@ -147,7 +147,6 @@ export default {
   },
   methods: {
     ...mapActions('globalStore', ['setSearchHistory']),
-    ...mapActions('IMStore', ['setMainSessionWindow']),
 
     handleChooseTab(type) {
       this.tabType = type;
@@ -226,18 +225,6 @@ export default {
         }
         this.handleClose();
       });
-    },
-    async startSession(userId) {
-      let session;
-      const storeSession = this.sessionList.find((d) => d.toUser === userId);
-      if (storeSession) {
-        session = storeSession;
-      } else {
-        const res = await IMGetByUserId(userId);
-        if (!res?.data) return;
-        session = res.data;
-      }
-      await this.setMainSessionWindow(session);
     },
   },
 };

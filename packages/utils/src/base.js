@@ -1,3 +1,4 @@
+// 手机号加密
 export const phoneEncryption = (phoneNum) => {
   if (!phoneNum) return;
   const regExp = new RegExp(/([\s\S]{3})\d*([\s\S]{4})/);
@@ -5,6 +6,7 @@ export const phoneEncryption = (phoneNum) => {
   return phoneNum.replace(regExp, replaceValue);
 };
 
+// 手机号格式化
 export const formatPhoneNum = (newPhoneNum, oldPhoneNum) => {
   if (oldPhoneNum?.length > newPhoneNum?.length) return;
   if (newPhoneNum) {
@@ -22,6 +24,12 @@ export const formatPhoneNum = (newPhoneNum, oldPhoneNum) => {
       return phoneNum;
     }
   }
+};
+
+// 取消手机号格式化
+export const unFormatPhoneNum = (phoneNum) => {
+  if (!phoneNum) return phoneNum;
+  return phoneNum.replace(/ /g, '');
 };
 
 // 求次幂
@@ -60,29 +68,6 @@ export const downloadFile = (url, name) => {
   x.send();
 };
 
-export const compareVersion = function (version1, version2) {
-  const n = version1.length,
-    m = version2.length;
-  let i = 0,
-    j = 0;
-  while (i < n || j < m) {
-    let x = 0;
-    for (; i < n && version1[i] !== '.'; ++i) {
-      x = x * 10 + version1[i].charCodeAt() - '0'.charCodeAt();
-    }
-    ++i; // 跳过点号
-    let y = 0;
-    for (; j < m && version2.charAt(j) !== '.'; ++j) {
-      y = y * 10 + version2[j].charCodeAt() - '0'.charCodeAt();
-    }
-    ++j; // 跳过点号
-    if (x !== y) {
-      return x > y ? 1 : -1;
-    }
-  }
-  return 0;
-};
-
 export const dataURLtoBlob = (dataUrl) => {
   let arr = dataUrl.split(','),
     mime = arr[0].match(/:(.*?);/)[1],
@@ -95,6 +80,7 @@ export const dataURLtoBlob = (dataUrl) => {
   return new Blob([u8arr], { type: mime });
 };
 
+// 设置header的class,用于控制窗体拖动
 export const setHeaderClassName = (className) => {
   const hearerSearch = document.querySelector('#client-header');
   if (hearerSearch) {

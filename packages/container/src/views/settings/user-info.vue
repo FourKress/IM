@@ -46,7 +46,7 @@
 import { mapGetters, mapActions } from 'vuex';
 import { LsIcon } from '@lanshu/components';
 import { IMSetUserProfile, IMGetUserProfile } from '@lanshu/im';
-import { Apis, getToken, TOKEN_TYPE } from '@lanshu/utils';
+import { Apis } from '@lanshu/utils';
 import Card from './card';
 import InfoBlock from './info-block';
 
@@ -258,7 +258,6 @@ export default {
 
     async handleUserProfile(params) {
       const res = await IMSetUserProfile(...params);
-      console.log(res.data);
       await this.setUserProfile(res.data);
     },
 

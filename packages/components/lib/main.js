@@ -13,6 +13,7 @@ import LsFriendPanel from '../src/ls-friend-panel.vue';
 import LsQrcodePanel from '../src/ls-qrcode-panel.vue';
 import LsSearchPanel from '../src/ls-search-panel.vue';
 import LsContextMenu from '../src/ls-context-menu';
+import Expand from '../src/utils/expand';
 
 export {
   MsgTextType,
@@ -30,4 +31,5 @@ export {
   LsQrcodePanel,
   LsSearchPanel,
   LsContextMenu,
+  Expand,
 };

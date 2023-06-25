@@ -80,6 +80,7 @@ export default {
     ...mapGetters('IMStore', ['newFriendCount']),
   },
   watch: {
+    // 新好友申请数量变更通知
     newFriendCount() {
       this.initData();
     },
@@ -100,6 +101,7 @@ export default {
     initData() {
       this.queryFriendRequestNotice();
       if (this.newFriendCount > 0) {
+        // 清除未读数，延迟500毫米，避免看不到未读数
         IMClearFriendRequestNoticeUnreadCount().then(() => {
           setTimeout(() => {
             this.setNewFriendCount(0);
@@ -111,7 +113,6 @@ export default {
     queryFriendRequestNotice() {
       this.handleCloseDialog();
       IMQueryFriendRequestNotice(0).then((res) => {
-        console.log(res);
         this.friendList = res?.data;
       });
     },

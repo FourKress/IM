@@ -1,4 +1,5 @@
-import { regexUtils } from '../../lib/main';
+import regexUtils from '../regex';
+import { unFormatPhoneNum } from '../base';
 
 export default {
   data() {
@@ -7,25 +8,19 @@ export default {
 
   computed: {
     validPhoneNum() {
-      return regexUtils.phone.test(this.replacePhoneNum());
+      return regexUtils.phone.test(unFormatPhoneNum(this.form.phoneNum));
     },
   },
 
   methods: {
     validateFormValue(rule, value, callback) {
-      if (!value || !this.replacePhoneNum()) {
+      if (!value || !unFormatPhoneNum(value)) {
         return callback(new Error('请输入有效的电话号码'));
       }
-      if (!regexUtils.phone.test(this.replacePhoneNum())) {
+      if (!regexUtils.phone.test(unFormatPhoneNum(value))) {
         return callback(new Error('请输入有效的电话号码'));
       }
       return callback();
-    },
-
-    replacePhoneNum() {
-      const phoneNum = this.form.phoneNum;
-      if (!phoneNum) return phoneNum;
-      return phoneNum.replace(/ /g, '');
     },
   },
 };

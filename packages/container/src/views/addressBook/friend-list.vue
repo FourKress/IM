@@ -82,6 +82,7 @@ export default {
     ...mapGetters('IMStore', ['refreshAddressBook']),
   },
   watch: {
+    // 刷新列表通知
     refreshAddressBook(val) {
       if (val) {
         this.handleUpdate()
@@ -94,6 +95,7 @@ export default {
     };
   },
   created() {
+    // 设置最大最小滚动距离
     this.minScrollTop = 80;
     this.maxScrollTop = 120;
   },
@@ -107,7 +109,7 @@ export default {
       this.getFriendListData();
     },
     async handleFriend(item, event) {
-      console.log(item)
+      // 打开好友面板
       await this.openFriendDialog(
         event,
         async () => {

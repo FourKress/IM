@@ -21,8 +21,7 @@ import { mapActions, mapGetters } from 'vuex';
 import {
   WINDOW_TYPE,
   WIN_ACTION_TYPE,
-  Apis,
-  compareVersion,
+  fetchVersion,
 } from '@lanshu/utils';
 
 export default {
@@ -124,36 +123,9 @@ export default {
     ]),
 
     async handleGetVersion() {
-      const currentVersion = await renderProcess.getStore('VERSION');
-      if (currentVersion === 'NEVER') return;
-
-      const res = await Apis.queryLastAvailableByAppCode({
-        appCode: 'PC',
-      });
-
       if (process.env.NODE_ENV === 'development') return;
-
-      const updateData = res?.data;
-      if (!updateData) return;
-
-      const { version, model, decDirectory, title, content } = updateData;
-
-      const isNewVersion = compareVersion(version, currentVersion) === 1;
-      if (!isNewVersion) return;
-
-      const updateInfo = {
-        version,
-        isForced: model === 1,
-        fetchUrl: decDirectory,
-        title,
-        content,
-      };
-      this.setUpdateInfo(updateInfo);
-
-      const UPDATE_NOTIFY = await renderProcess.getStore('UPDATE_NOTIFY');
-      if (!updateInfo?.isForced && UPDATE_NOTIFY) {
-        this.setUpdateNotify(true);
-      }
+      const updateInfo = await fetchVersion();
+      if (!updateInfo?.version) return;
       this.visibleUpdate = true;
     },
 

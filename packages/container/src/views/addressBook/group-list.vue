@@ -1,6 +1,6 @@
 <template>
   <div class="row">
-    <div class="title">{{title}}（{{ list.length }}）</div>
+    <div class="title">{{ title }}（{{ list.length }}）</div>
     <div class="list">
       <div
         class="item"
@@ -11,8 +11,9 @@
         <div class="left">
           <img class="img" :src="item.avatar" alt="" />
           <div class="info">
-            <span class="name">{{ item.remark ? item.remark : item.nickname }}</span>
-            <!--              <span class="tips">sadjdja</span>-->
+            <span class="name">
+              {{ item.remark ? item.remark : item.nickname }}
+            </span>
           </div>
         </div>
       </div>
@@ -21,8 +22,8 @@
 </template>
 
 <script>
-import { IMGetByUserId } from '@lanshu/im';
 import { mapActions, mapGetters } from 'vuex';
+import { StartSessionMixins } from '@lanshu/utils';
 
 export default {
   name: 'Group-list',
@@ -36,24 +37,13 @@ export default {
       required: true,
     },
   },
+  mixins: [StartSessionMixins],
   computed: {
     ...mapGetters('IMStore', ['sessionList']),
   },
   methods: {
     ...mapActions('IMStore', ['setMainSessionWindow']),
 
-    async startSession(userId) {
-      let session;
-      const storeSession = this.sessionList.find((d) => d.toUser === userId);
-      if (storeSession) {
-        session = storeSession;
-      } else {
-        const res = await IMGetByUserId(userId);
-        if (!res?.data) return;
-        session = res.data;
-      }
-      await this.setMainSessionWindow(session);
-    },
     async handleJumpGroup(group) {
       const { groupId } = group;
       await this.startSession(groupId);

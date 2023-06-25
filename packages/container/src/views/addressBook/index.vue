@@ -333,6 +333,7 @@ export default {
         depList: this.depList,
       });
       this.clearOrgBreadCrumb();
+      // Dep ===> 是否存在我的部门
       if (item.key.includes('Dep')) {
         const breadCrumb = item.myDeps?.map((d) => {
           return {
@@ -391,6 +392,7 @@ export default {
       let orgList = departsRes?.data || {};
 
       const subList = [];
+      // parentId === 0, 属于顶级组织
       orgList = orgList
         .filter((d) => {
           if (d.parentId === '0') return true;
@@ -403,6 +405,7 @@ export default {
             const { id, name } = d;
 
             const component = 'OrgStructure';
+            // 递归查找我的部门
             const myDeps = this.recursionMyDep(subList, d, userDepList);
 
             let myDep;
@@ -448,6 +451,7 @@ export default {
       this.orgList = orgList;
 
       if (orgList?.length) {
+        // orgActiveKey activeKey 同时存在，者根据两种定位菜单导航，否则默认找我的部门或者第一级菜单
         if (!this.orgActiveKey && !this.activeKey) {
           const org = orgList[0];
           const dep = org.subList[0];

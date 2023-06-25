@@ -215,3 +215,9 @@ export const SEX_TYPE = {
   IS_WOMAN: 2,
   IS_UNKNOWN: 3,
 };
+
+export const SCENE_TYPE = {
+  IS_LOGIN: 'login',
+  IS_SET_PWD: 'setPassword',
+  IS_UPDATE_PHONE: 'updatePhone',
+};
