@@ -1,11 +1,5 @@
 import { renderProcess } from '@lanshu/render-process';
-import {
-  storeInstance,
-  removeToken,
-  Apis,
-  getToken,
-  TOKEN_TYPE,
-} from '@lanshu/utils';
+import { storeInstance, removeToken, Apis, TOKEN_TYPE } from '@lanshu/utils';
 import {
   IMSDKConvProvider,
   IMSDKFileProvider,

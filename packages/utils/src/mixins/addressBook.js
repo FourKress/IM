@@ -1,6 +1,6 @@
-import { groupedPy, sortedPY } from '../pinyin';
 import { IMGetAllFriendList } from '@lanshu/im';
-import { Apis } from '../../lib/main';
+import { groupedPy, sortedPY } from '../pinyin';
+import * as Apis from '../apis';
 
 export default {
   data() {

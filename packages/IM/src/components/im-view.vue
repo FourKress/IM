@@ -152,9 +152,9 @@ import {
   LsAssets,
   LsCardDialog,
   LsFriendPanel,
+  TimesTransform,
 } from '@lanshu/components';
 import { renderProcess } from '@lanshu/render-process';
-import { TimesTransform } from '@lanshu/components';
 import MsgCard from './msg-view/msg-card';
 import MsgHeader from './msg-view/msg-header';
 import MsgInputAction from './msg-view/msg-input-action';
