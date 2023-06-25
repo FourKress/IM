@@ -41,7 +41,7 @@ module.exports = defineConfig({
 
       builderOptions: {
         appId: 'com.lanshu.app',
-        productName: 'IM', //项目名，也是生成的安装文件名，即aDemo.exe
+        productName: '北象IM', //项目名，也是生成的安装文件名，即Demo.exe
         copyright: 'Copyright © 2023', //版权信息
         directories: {
           output: 'build', //输出文件路径
