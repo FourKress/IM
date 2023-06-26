@@ -493,7 +493,7 @@ export default {
   //border-radius: 10px 10px 0 0;
   //width: 500px;
   width: auto;
-  min-width: 379px;
+  min-width: 399px;
   margin-left: 6px;
   display: flex;
   flex-direction: column;

@@ -115,7 +115,7 @@ export default {
     const resizeObserver = new ResizeObserver((entries) => {
       for (let entry of entries) {
         const cr = entry.contentRect;
-        this.isPosition = cr.width <= 680;
+        this.isPosition = cr.width <= 700;
       }
     });
     this.resizeObserver = resizeObserver;
@@ -189,11 +189,11 @@ export default {
 
 <style scoped lang="scss">
 #client-im {
-  flex: 1;
+  //flex: 1;
   height: 100%;
   border-left: 1px solid $split-line-color;
   box-shadow: 4px 0 10px -4px rgb(51 51 51 / 10%);
-  min-width: 380px;
+  min-width: 400px;
   box-sizing: border-box;
   display: flex;
   justify-content: flex-start;

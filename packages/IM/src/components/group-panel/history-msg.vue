@@ -45,6 +45,8 @@
             placeholder="搜索关键字"
             v-model="keywords"
             @change="handleSearchKeywords"
+            @submit.native.prevent
+            @keyup.enter.native="handleSearchKeywords"
           >
             <i slot="prefix" class="el-input__icon el-icon-search"></i>
           </el-input>
@@ -131,7 +133,7 @@ export default {
   },
   watch: {
     visibleDrawer(val) {
-      if (!val) {
+      if (val) {
         this.handleChooseTab(TAB_TYPE.IS_KEYWORDS)
       }
     }

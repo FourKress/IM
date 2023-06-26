@@ -1,8 +1,10 @@
 <template>
   <div class="main-view">
     <MainSideBar />
-    <MainIM />
-    <MainPlugIn v-if="hasPlugin" />
+    <div class="main-panel">
+      <MainIM />
+      <MainPlugIn v-if="hasPlugin" />
+    </div>
   </div>
 </template>
 
@@ -60,7 +62,17 @@ export default {
   display: flex;
   background-color: transparent !important;
   padding: 0 !important;
-
   overflow-x: auto;
+
+  .main-panel {
+    height: 100%;
+    flex: 1;
+    display: flex;
+  }
+
+  #client-im, #client-plugIn {
+    flex: 1 1 0;
+    min-width: 400px;
+  }
 }
 </style>

@@ -13,9 +13,7 @@ export default {
 
 <style scoped lang="scss">
 #client-plugIn {
-  width: 400px;
-  min-width: 400px;
-  background-color: $bg-white-color;
+  width: auto;
   box-shadow: 0 4px 10px 0 rgba(51, 51, 51, 0.1);
   border-radius: 10px 10px 0 0;
   margin-left: 6px;
