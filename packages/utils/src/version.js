@@ -40,8 +40,8 @@ export const fetchVersion = async (isTips = false) => {
   const { version, model, decDirectory, title, content } = updateData;
 
   const isNewVersion = compareVersion(version, currentVersion) === 1;
-  if (isTips && !isNewVersion) {
-    window.ClientMessage.warning('当前已是最新版本');
+  if (!isNewVersion) {
+    if (isTips) window.ClientMessage.warning('当前已是最新版本');
     return;
   }
 

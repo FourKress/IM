@@ -89,7 +89,7 @@ export default {
     },
 
     async handleGetVersion() {
-      const updateInfo = await fetchVersion(false);
+      const updateInfo = await fetchVersion(true);
       if (!updateInfo?.version) return;
       this.setStartDownload(true);
       const { fetchUrl, version } = updateInfo;
