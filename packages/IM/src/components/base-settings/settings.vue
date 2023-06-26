@@ -1,5 +1,5 @@
 <template>
-  <div class="im-settings" v-if="visible">
+  <div class="im-settings" :style="isPosition && positionCss" v-if="visible">
     <div class="top">
       <span class="label">设置</span>
       <LsIcon
@@ -39,7 +39,7 @@ import { mapActions, mapGetters } from 'vuex';
 import { LsIcon } from '@lanshu/components';
 import { IMClearMessage } from '../../IM-SDK';
 import MsgTopAndSilence from './msgTopAndSilence';
-import HistoryMsg from "../group-panel/history-msg";
+import HistoryMsg from '../group-panel/history-msg';
 
 export default {
   name: 'IM-Settings',
@@ -49,6 +49,10 @@ export default {
       default: false,
       required: true,
     },
+    isPosition: {
+      type: Boolean,
+      default: false,
+    }
   },
   components: {
     LsIcon,
@@ -58,6 +62,11 @@ export default {
   data() {
     return {
       visibleHistoryMsgDrawer: false,
+      positionCss: {
+        position: 'absolute',
+        top: 0,
+        right: 0,
+      },
     };
   },
   computed: {
@@ -67,7 +76,7 @@ export default {
     visible(val) {
       if (!val) return;
       this.visibleHistoryMsgDrawer = false;
-    }
+    },
   },
   methods: {
     ...mapActions('IMStore', ['setRefreshMsg']),
@@ -93,15 +102,16 @@ export default {
 
     openHistoryMsg() {
       this.visibleHistoryMsgDrawer = true;
-    }
+    },
   },
 };
 </script>
 
 <style scoped lang="scss">
 .im-settings {
-  width: 300px;
-  min-width: 300px;
+  height: 100%;
+  width: 299px;
+  min-width: 299px;
   background-color: $bg-white-color;
   padding: 22px 20px 0 20px;
   border-left: 1px solid $split-line-color;

@@ -1,5 +1,5 @@
 <template>
-  <div id="client-im">
+  <div id="client-im" ref="ClientIM">
     <div class="empty-bg" v-if="!mainSessionWindow.sessId">
       <img :src="LsAssets.emptyData" alt="" />
     </div>
@@ -19,11 +19,13 @@
 
     <Settings
       :visible.sync="visibleSettings"
+      :isPosition="isPosition"
       @createGroup="handleCreateGroup"
     />
     <GroupPanel
       :visible.sync="visibleGroupSettings"
       :isMember="isMember"
+      :isPosition="isPosition"
       @changeGroupMember="handleChangeGroupMember"
     ></GroupPanel>
 
@@ -78,6 +80,8 @@ export default {
       defaultMembers: [],
       defaultGroup: null,
       rawMembers: [],
+      isPosition: false,
+      resizeObserver: null,
     };
   },
   computed: {
@@ -107,6 +111,15 @@ export default {
   created() {},
   mounted() {
     this.recordrtc = new Recordrtc();
+
+    const resizeObserver = new ResizeObserver((entries) => {
+      for (let entry of entries) {
+        const cr = entry.contentRect;
+        this.isPosition = cr.width <= 680;
+      }
+    });
+    this.resizeObserver = resizeObserver;
+    this.resizeObserver.observe(this.$refs.ClientIM);
   },
   methods: {
     ...mapActions('IMStore', ['setActionWindow', 'setMainSessionWindow']),
@@ -165,6 +178,12 @@ export default {
       this.handleGroupClose();
     },
   },
+
+  beforeDestroy() {
+    if (this.resizeObserver) {
+      this.resizeObserver.observe(this.$refs.ClientIM);
+    }
+  }
 };
 </script>
 
@@ -174,7 +193,8 @@ export default {
   height: 100%;
   border-left: 1px solid $split-line-color;
   box-shadow: 4px 0 10px -4px rgb(51 51 51 / 10%);
-  min-width: 500px;
+  min-width: 380px;
+  box-sizing: border-box;
   display: flex;
   justify-content: flex-start;
   overflow-x: auto;

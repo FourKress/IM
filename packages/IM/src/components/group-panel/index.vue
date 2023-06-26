@@ -91,8 +91,8 @@ export default {
 
 <style scoped lang="scss">
 .im-group-settings {
-  width: 300px;
-  min-width: 300px;
+  width: 299px;
+  min-width: 299px;
   height: 100%;
   background-color: $bg-white-color;
   padding-top: 22px;
