@@ -2,8 +2,10 @@
   <div class="history-msg-card">
     <div
       class="text"
+      ref="MsgCard"
       v-if="msgType === CHECK_MSG_TYPE.IS_TEXT"
       v-html="msgText"
+      v-contextMenu="textContextMenuList"
     ></div>
 
     <div
@@ -11,9 +13,9 @@
       style="cursor: pointer"
       v-if="isImage"
       :style="{ width: `${size.width}px`, height: `${size.height}px` }"
-      @click="handlePreview"
+      v-contextMenu="imageContextMenuList"
     >
-      <img :src="assetsPath" />
+      <img :src="assetsPath" @click="handlePreview" />
     </div>
 
     <div

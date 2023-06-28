@@ -144,11 +144,9 @@ import {
   NETWORK_CALL_TYPE,
   SESSION_BUBBLE_MODEL,
   secondToDate,
-  dataURLtoBlob,
   MsgCardMixins,
 } from '@lanshu/utils';
 import { LsIcon } from '@lanshu/components';
-import { renderProcess } from '@lanshu/render-process';
 
 export default {
   name: 'Msg-card',
@@ -181,7 +179,6 @@ export default {
     return {
       NETWORK_CALL_TYPE,
       SESSION_BUBBLE_MODEL,
-      selectedText: '',
       imageMaxWidth: 500,
       wrapStyle: {
         maxWidth: '500px',
@@ -190,29 +187,6 @@ export default {
       wrapFileStyle: {
         width: '340px',
       },
-
-      textContextMenuList: [
-        {
-          label: () => '复制',
-          handler: this.handleCopy,
-          icon: () => 'ls-icon-fuzhi',
-        },
-      ],
-      imageContextMenuList: [
-        {
-          label: () => '复制',
-          handler: this.handleCopyImage,
-          icon: () => 'ls-icon-fuzhi',
-          hide: () => {
-            return this.assetsPath.includes('gif') ? true : false;
-          },
-        },
-        {
-          label: () => '另存为',
-          handler: this.handleDownImage,
-          icon: () => 'ls-icon-xiazai',
-        },
-      ],
     };
   },
   computed: {
@@ -244,39 +218,6 @@ export default {
     });
   },
   methods: {
-    async handleCopy() {
-      this.selectedText = window.getSelection().toString();
-      const text = this.selectedText || this.$refs.MsgCard.innerText;
-      await navigator.clipboard.writeText(text);
-      this.$message.success('复制成功');
-    },
-
-    async handleCopyImage() {
-      if (!this.cachePath) {
-        await this.handleDownload();
-      }
-      const base64 = await renderProcess.getCacheFile2Base64(this.cachePath);
-      const blob = dataURLtoBlob(base64);
-
-      await navigator.clipboard.write([
-        new ClipboardItem({
-          [blob.type]: blob,
-        }),
-      ]);
-
-      this.$message.success('复制成功');
-    },
-
-    async handleDownImage() {
-      const dirPath = await renderProcess.saveFileDialog();
-      if (!dirPath) {
-        this.$message.warning('请选择保存文件夹');
-        return;
-      }
-      await renderProcess.copyFile(this.cachePath, dirPath);
-      this.$message.success('保存成功');
-    },
-
     initSize(imViewWidth) {
       if (!this.isImage && !this.isVideo && !this.isFile) return;
       if (imViewWidth <= 490) {

@@ -57,7 +57,7 @@
           ref="historyMsgList"
           @scroll="handleScroll"
         >
-          <div class="scroll-view">
+          <div class="scroll-view" v-if="historyMsgList.length">
             <div class="item" v-for="msg in historyMsgList">
               <div class="img">
                 <img :src="msg.fromAvatar" alt="" />
@@ -80,6 +80,10 @@
               </div>
             </div>
           </div>
+
+          <div class="empty-bg" v-else>
+            <img :src="LsAssets.emptyData" alt="" />
+          </div>
         </div>
       </div>
     </Drawer>
@@ -87,7 +91,7 @@
 </template>
 
 <script>
-import { LsIcon, TimesTransform } from '@lanshu/components';
+import { LsIcon, TimesTransform, LsAssets } from '@lanshu/components';
 import { lodash, MSG_FORMAT_MAP } from '@lanshu/utils';
 import { mapGetters } from 'vuex';
 import {
@@ -116,6 +120,7 @@ export default {
   },
   data() {
     return {
+      LsAssets,
       MSG_FORMAT_MAP,
       TAB_TYPE,
       tabType: TAB_TYPE.IS_KEYWORDS,
@@ -358,6 +363,20 @@ export default {
             }
           }
         }
+      }
+
+      .empty-bg {
+
+        img {
+          display: block;
+          width: 200px;
+          height: 200px;
+          position: absolute;
+          left: 50%;
+          top: 50%;
+          transform: translate(-50%, -60%);
+        }
+
       }
     }
   }
