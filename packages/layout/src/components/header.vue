@@ -131,6 +131,7 @@
         :qrcodeInfo="{
           ...userInfo,
           qrcodeId: userInfo.userId,
+          qrcodeType: 'user',
         }"
       />
     </LsCardDialog>

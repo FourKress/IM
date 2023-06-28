@@ -46,7 +46,7 @@
             <el-select
               placeholder="请选择"
               size="small"
-              :disabled="isDisabled"
+              :disabled="isDisabled || groupRoleManager.whoCanSetGroupInfo > groupRole"
               v-model="groupRoleManager.whoCanSetGroupInfo"
               @change="
                 (val) => handleGroupRoleChange(val, 'whoCanSetGroupInfo')
@@ -55,6 +55,7 @@
               <el-option
                 v-for="(opt, i) in options"
                 :key="i"
+                :disabled="opt.value > groupRole"
                 :label="opt.label"
                 :value="opt.value"
               ></el-option>
@@ -64,7 +65,7 @@
             <el-select
               placeholder="请选择"
               size="small"
-              :disabled="isDisabled"
+              :disabled="isDisabled || groupRoleManager.whoCanAddGroupMemberOrShareGroup > groupRole"
               v-model="groupRoleManager.whoCanAddGroupMemberOrShareGroup"
               @change="
                 (val) =>
@@ -74,6 +75,7 @@
               <el-option
                 v-for="(opt, i) in options"
                 :key="i"
+                :disabled="opt.value > groupRole"
                 :label="opt.label"
                 :value="opt.value"
               ></el-option>
@@ -84,13 +86,14 @@
             <el-select
               placeholder="请选择"
               size="small"
-              :disabled="isDisabled"
+              :disabled="isDisabled || groupRoleManager.whoCanSendMessage > groupRole"
               v-model="groupRoleManager.whoCanSendMessage"
               @change="(val) => handleGroupRoleChange(val, 'whoCanSendMessage')"
             >
               <el-option
                 v-for="(opt, i) in options"
                 :key="i"
+                :disabled="opt.value > groupRole"
                 :label="opt.label"
                 :value="opt.value"
               ></el-option>
@@ -100,7 +103,7 @@
             <el-select
               placeholder="请选择"
               size="small"
-              :disabled="isDisabled"
+              :disabled="isDisabled || groupRoleManager.whoCanStartNetworkCall > groupRole"
               v-model="groupRoleManager.whoCanStartNetworkCall"
               @change="
                 (val) => handleGroupRoleChange(val, 'whoCanStartNetworkCall')
@@ -109,6 +112,7 @@
               <el-option
                 v-for="(opt, i) in options"
                 :key="i"
+                :disabled="opt.value > groupRole"
                 :label="opt.label"
                 :value="opt.value"
               ></el-option>
@@ -119,13 +123,14 @@
             <el-select
               placeholder="请选择"
               size="small"
-              :disabled="isDisabled"
+              :disabled="isDisabled || groupRoleManager.whoCanSendFile > groupRole"
               v-model="groupRoleManager.whoCanSendFile"
               @change="(val) => handleGroupRoleChange(val, 'whoCanSendFile')"
             >
               <el-option
                 v-for="(opt, i) in options"
                 :key="i"
+                :disabled="opt.value > groupRole"
                 :label="opt.label"
                 :value="opt.value"
               ></el-option>

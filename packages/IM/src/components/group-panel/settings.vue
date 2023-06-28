@@ -80,6 +80,7 @@
         :qrcodeInfo="{
           ...actionWindow,
           qrcodeId: actionWindow.toUser,
+          qrcodeType: 'group',
         }"
       />
     </LsCardDialog>

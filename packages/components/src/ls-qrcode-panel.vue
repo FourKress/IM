@@ -49,6 +49,7 @@ export default {
       default: () => {
         return {
           qrcodeId: '',
+          qrcodeType: '',
           nickname: '',
           avatar: '',
         };
@@ -75,7 +76,7 @@ export default {
   },
   mounted() {
     qrcode.toDataURL(
-      `app://share/${this.qrcodeInfo.qrcodeId}`,
+      `app://${this.qrcodeInfo.qrcodeType}/${this.qrcodeInfo.qrcodeId}`,
       {
         errorCorrectionLevel: 'H',
         width: 160,
