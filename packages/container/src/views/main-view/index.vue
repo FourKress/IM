@@ -1,8 +1,8 @@
 <template>
   <div className="main-view">
-    <MainSideBar/>
+    <MainSideBar />
     <div className="main-panel">
-      <MainIM/>
+      <MainIM />
       <MainPlugIn
         v-for="plugin in plugins"
         v-if="plugin.visible"
@@ -14,14 +14,14 @@
 </template>
 
 <script>
-import {MainSideBar} from '@lanshu/sidebar';
-import {MainIM} from '@lanshu/im';
-import {MainPlugIn} from '@lanshu/plugin';
-import {startQiankun} from '@lanshu/micro';
-import {mapGetters} from 'vuex';
+import { MainSideBar } from '@lanshu/sidebar';
+import { MainIM } from '@lanshu/im';
+import { MainPlugIn } from '@lanshu/plugin';
+import { startQiankun } from '@lanshu/micro';
+import { mapGetters } from 'vuex';
 import micro from '../../micro';
-import {renderProcess} from '@lanshu/render-process';
-import {CLIENT_TERMINAL} from '@lanshu/utils';
+import { renderProcess } from '@lanshu/render-process';
+import { CLIENT_TERMINAL } from '@lanshu/utils';
 
 export default {
   name: 'MainView',
@@ -52,12 +52,12 @@ export default {
             };
           });
         }
-      }
-    }
+      },
+    },
   },
   async created() {
     // 获取入口是否传入Plugins项
-    const plugins = JSON.parse(localStorage.getItem('plugins') || '[]')
+    const plugins = JSON.parse(localStorage.getItem('plugins') || '[]');
     const isGovernment =
       (await renderProcess.getStore('CLIENT_TERMINAL')) ===
       CLIENT_TERMINAL.IS_GOVERNMENT;
