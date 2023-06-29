@@ -36,7 +36,7 @@
           ></LsIcon>
         </el-tooltip>
       </div>
-      <div class="btn" v-if="settings && (!isGroup || groupRole > 0)">
+      <div class="btn" v-if="isSettings && (!isGroup || groupRole > 0)">
         <el-dropdown trigger="click" @command="handleCommand">
           <el-tooltip class="item" effect="dark" content="更多" placement="top">
             <LsIcon render-svg icon="a-icon_more2x"></LsIcon>
@@ -118,7 +118,7 @@ export default {
     },
   },
   inject: {
-    settings: {
+    isSettings: {
       default: true,
     },
   },

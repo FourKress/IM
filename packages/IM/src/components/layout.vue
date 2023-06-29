@@ -59,14 +59,14 @@ import {
 export default {
   name: 'MainIM',
   props: {
-    settings: {
+    isSettings: {
       type: Boolean,
       default: true,
     }
   },
   provide() {
     return {
-      settings: this.settings,
+      isSettings: this.isSettings,
     }
   },
   components: {
@@ -200,7 +200,7 @@ export default {
 
 <style scoped lang="scss">
 #client-im {
-  //flex: 1;
+  flex: 1 1 0;
   height: 100%;
   border-left: 1px solid $split-line-color;
   box-shadow: 4px 0 10px -4px rgb(51 51 51 / 10%);

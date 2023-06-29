@@ -1,7 +1,7 @@
 <template>
-  <div className="main-view">
+  <div class="main-view">
     <MainSideBar />
-    <div className="main-panel">
+    <div class="main-panel">
       <MainIM />
       <MainPlugIn
         v-for="plugin in plugins"
@@ -96,12 +96,6 @@ export default {
     height: 100%;
     flex: 1;
     display: flex;
-  }
-
-  #client-im,
-  .client-plugIn {
-    flex: 1 1 0;
-    min-width: 400px;
   }
 }
 </style>

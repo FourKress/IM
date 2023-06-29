@@ -3,7 +3,7 @@ import localforage from 'localforage';
 import ElementUI, { Message } from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 import { baseRoutes } from '@lanshu/container';
-import { IMStore } from '@lanshu/im';
+import { IMStore, SynergyView } from '@lanshu/im';
 import {
   generateRoute,
   generateStore,
@@ -24,6 +24,8 @@ Vue.use(LsConfirm);
 Vue.use(LsContextMenu);
 Vue.use(VuePrototype);
 Vue.use(VueDirective);
+
+Vue.component(SynergyView.name, SynergyView);
 
 window.ClientMessage = Message;
 
