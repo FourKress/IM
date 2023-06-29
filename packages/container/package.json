@@ -1,6 +1,6 @@
 {
   "name": "@lanshu/container",
-  "version": "0.1.29",
+  "version": "0.1.30",
   "description": "客户端视图容器",
   "keywords": [
     "container"
@@ -20,13 +20,13 @@
   ],
   "scripts": {},
   "dependencies": {
-    "@lanshu/components": "^0.1.29",
-    "@lanshu/im": "^0.1.29",
+    "@lanshu/components": "^0.1.30",
+    "@lanshu/im": "^0.1.30",
     "@lanshu/micro": "^0.1.4",
-    "@lanshu/plugin": "^0.1.29",
+    "@lanshu/plugin": "^0.1.30",
     "@lanshu/render-process": "^0.1.29",
-    "@lanshu/sidebar": "^0.1.29",
-    "@lanshu/utils": "^0.1.29",
+    "@lanshu/sidebar": "^0.1.30",
+    "@lanshu/utils": "^0.1.30",
     "vuex": "^3.6.2"
   },
   "gitHead": "110050d723f2833ae3323f185abe4fc71a383a30"
