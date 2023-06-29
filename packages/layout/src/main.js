@@ -29,18 +29,30 @@ window.ClientMessage = Message;
 
 const Layout = (config = {}) => {
   return new Promise(async (resolve) => {
-    const { menu, routes, plugin, store } = config;
+    const { menu, routes, plugins = [], store } = config;
     if (menu) {
       localStorage.setItem('menu', JSON.stringify(menu));
     } else {
       localStorage.removeItem('menu');
     }
 
-    if (plugin) {
-      localStorage.setItem('hasPlugin', 'true');
-      Vue.component('plugin', plugin);
+    if (plugins?.length) {
+      localStorage.setItem(
+        'plugins',
+        JSON.stringify(
+          plugins.map((d) => {
+            return {
+              key: d.name,
+              visible: false,
+            };
+          }),
+        ),
+      );
+      plugins.forEach((d) => {
+        Vue.component(d.name, d);
+      });
     } else {
-      localStorage.removeItem('hasPlugin');
+      localStorage.removeItem('plugins');
     }
 
     const completeRoutes = [...baseRoutes];

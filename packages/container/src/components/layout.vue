@@ -14,7 +14,7 @@
 import MainMenu from './menu';
 import { MicroSharedObservable, microLoadingMixins } from '@lanshu/micro';
 import { MICRO_CONTAINER } from '@lanshu/utils';
-import { mapGetters } from 'vuex';
+import { mapGetters, mapActions } from 'vuex';
 
 export default {
   name: 'MainLayout',
@@ -35,16 +35,20 @@ export default {
       deep: true,
       handler(val) {
         console.log('microSharedState', val);
+        const { EVENT_IPC = {} } = val;
+        if (EVENT_IPC?.type === 'openMicro') {
+          this.setOpenMicroApp(EVENT_IPC.value);
+        }
       },
     },
   },
   mounted() {
-    // 微应用加载loading的挂载容器
-    this.loadingTarget = '.view-container';
     // 订阅微应用的通信数据变化
     MicroSharedObservable.subscribe();
   },
-  methods: {},
+  methods: {
+    ...mapActions('globalStore', ['setOpenMicroApp']),
+  },
 
   destroyed() {
     // 取消订阅微应用的通信数据变化

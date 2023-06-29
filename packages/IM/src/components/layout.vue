@@ -58,6 +58,17 @@ import {
 
 export default {
   name: 'MainIM',
+  props: {
+    settings: {
+      type: Boolean,
+      default: true,
+    }
+  },
+  provide() {
+    return {
+      settings: this.settings,
+    }
+  },
   components: {
     ImView,
     Settings,

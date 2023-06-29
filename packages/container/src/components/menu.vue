@@ -64,7 +64,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 import BaseRoutes from '../router';
 import { LsIcon, LsCardDialog, LsAssets } from '@lanshu/components';
 import { MICRO_APP_PATH_MARK } from '@lanshu/micro';
@@ -91,10 +91,17 @@ export default {
   watch: {
     $route(val) {
       const { path = '' } = val;
-      const isMicro = path.includes(MICRO_APP_PATH_MARK);
+      const isMicro = this.checkMicroRouter(path);
       const regExp = new RegExp('\/[a-zA-Z]+' + MICRO_APP_PATH_MARK, 'g');
-      // 微应用路由，只需用第一级路由进行标识，确定菜单的计划效果
-      this.activePath = isMicro ? path.match(regExp)[0] : path;
+      // 微应用路由，只需用第一级路由进行标识，确定菜单的激活效果
+      if (isMicro) {
+        const targetNav = this.navList.find((d) =>
+          d.path.includes(path.match(regExp)[0]),
+        );
+        this.activePath = targetNav.path;
+      } else {
+        this.activePath = path;
+      }
     },
   },
   created() {
@@ -117,9 +124,16 @@ export default {
       });
   },
   methods: {
+    ...mapActions('microVuexStore', ['setMicroLoadingTarget']),
+
     handleMenuSwitch(path) {
       if (this.activePath === path) return;
       this.activePath = path;
+      const isMicro = this.checkMicroRouter(path);
+      if (isMicro) {
+        // 设置微应用加载动画挂载节点
+        this.setMicroLoadingTarget('.view-container');
+      }
       this.$router.push(path);
     },
 
@@ -128,6 +142,11 @@ export default {
       if (!['/', '/addressBook'].includes(item.path)) return 0;
       if (item.path === '/') return this.allUnreadCount;
       if (item.path === '/addressBook') return this.newFriendCount;
+    },
+
+    checkMicroRouter(path) {
+      if (!path || path === '/') return false;
+      return path.includes(MICRO_APP_PATH_MARK);
     },
   },
 };

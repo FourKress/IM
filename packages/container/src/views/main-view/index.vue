@@ -1,21 +1,27 @@
 <template>
-  <div class="main-view">
-    <MainSideBar />
-    <div class="main-panel">
-      <MainIM />
-      <MainPlugIn v-if="hasPlugin" />
+  <div className="main-view">
+    <MainSideBar/>
+    <div className="main-panel">
+      <MainIM/>
+      <MainPlugIn
+        v-for="plugin in plugins"
+        v-if="plugin.visible"
+        :key="plugin.key"
+        :component="plugin.key"
+      />
     </div>
   </div>
 </template>
 
 <script>
-import { MainSideBar } from '@lanshu/sidebar';
-import { MainIM } from '@lanshu/im';
-import { MainPlugIn } from '@lanshu/plugin';
-import { startQiankun } from '@lanshu/micro';
+import {MainSideBar} from '@lanshu/sidebar';
+import {MainIM} from '@lanshu/im';
+import {MainPlugIn} from '@lanshu/plugin';
+import {startQiankun} from '@lanshu/micro';
+import {mapGetters} from 'vuex';
 import micro from '../../micro';
-import { renderProcess } from '@lanshu/render-process';
-import { CLIENT_TERMINAL } from '@lanshu/utils';
+import {renderProcess} from '@lanshu/render-process';
+import {CLIENT_TERMINAL} from '@lanshu/utils';
 
 export default {
   name: 'MainView',
@@ -26,29 +32,51 @@ export default {
   },
   data() {
     return {
-      hasPlugin: false,
+      plugins: [],
     };
   },
+  computed: {
+    ...mapGetters('globalStore', ['openMicroApp']),
+  },
+  watch: {
+    openMicroApp: {
+      deep: true,
+      handler(val) {
+        if (val?.appName) {
+          this.plugins = this.plugins.map((d) => {
+            if (d.key === val?.appName) {
+              d.visible = true;
+            }
+            return {
+              ...d,
+            };
+          });
+        }
+      }
+    }
+  },
   async created() {
-    // 获取入口是否传入Plugin项
-    const hasPlugin = JSON.parse(localStorage.getItem('hasPlugin') || 'false');
+    // 获取入口是否传入Plugins项
+    const plugins = JSON.parse(localStorage.getItem('plugins') || '[]')
     const isGovernment =
       (await renderProcess.getStore('CLIENT_TERMINAL')) ===
       CLIENT_TERMINAL.IS_GOVERNMENT;
-    this.hasPlugin = hasPlugin && isGovernment;
+    if (plugins?.length && isGovernment) {
+      this.plugins = plugins;
+    }
   },
   mounted() {
     this.$nextTick(() => {
       startQiankun(micro.getConfigs(), {
         beforeLoadHandler: (app) => {
-          console.log('主应用 beforeLoadHandler')
+          console.log('主应用 beforeLoadHandler');
         },
         afterMountHandler: () => {
-          console.log('主应用 afterMountHandler')
+          console.log('主应用 afterMountHandler');
         },
         globalErrorHandler: () => {
           window.ClientMessage.error('微应用加载失败，请检查应用是否可运行');
-          console.log('主应用 globalErrorHandler')
+          console.log('主应用 globalErrorHandler');
         },
       });
     });
@@ -70,7 +98,8 @@ export default {
     display: flex;
   }
 
-  #client-im, #client-plugIn {
+  #client-im,
+  .client-plugIn {
     flex: 1 1 0;
     min-width: 400px;
   }

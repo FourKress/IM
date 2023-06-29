@@ -8,6 +8,7 @@ const state = {
   searchHistory: JSON.parse(localStorage.getItem('searchHistory') || '[]'),
   isMaxWindow: false,
   modalDialog: {},
+  openMicroApp: '',
 };
 
 const getters = {
@@ -20,6 +21,7 @@ const getters = {
   searchHistory: (state) => state.searchHistory,
   isMaxWindow: (state) => state.isMaxWindow,
   modalDialog: (state) => state.modalDialog,
+  openMicroApp: (state) => state.openMicroApp,
 };
 
 const mutations = {
@@ -59,6 +61,9 @@ const mutations = {
   setModalDialog(data, value) {
     data.modalDialog = value;
   },
+  setOpenMicroApp(data, value) {
+    data.openMicroApp = value;
+  },
 };
 
 const actions = {
@@ -88,6 +93,9 @@ const actions = {
   },
   setModalDialog({ commit }, value) {
     commit('setModalDialog', value);
+  },
+  setOpenMicroApp({ commit }, value) {
+    commit('setOpenMicroApp', value);
   },
 };
 
