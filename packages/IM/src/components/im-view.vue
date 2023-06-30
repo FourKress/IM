@@ -6,8 +6,8 @@
       :groupRole="myGroupRole"
       :groupRoleManager="groupRoleManager"
     >
-      <template v-if="$slots.header">
-        <Expand :render="() => $slots.header[0]"></Expand>
+      <template slot="rightBtn">
+        <slot name="header"></slot>
       </template>
     </MsgHeader>
 
@@ -157,7 +157,6 @@ import {
   LsCardDialog,
   LsFriendPanel,
   TimesTransform,
-  Expand,
 } from '@lanshu/components';
 import { renderProcess } from '@lanshu/render-process';
 import MsgCard from './msg-view/msg-card';
@@ -184,7 +183,6 @@ export default {
     LsIcon,
     LsCardDialog,
     LsFriendPanel,
-    Expand,
   },
   mixins: [FriendMixins],
   props: {
@@ -206,6 +204,10 @@ export default {
       type: Boolean,
       default: true,
     },
+    isSmallEditor: {
+      type: Boolean,
+      default: false,
+    }
   },
   data() {
     return {

@@ -1,5 +1,5 @@
 <template>
-  <div class="action-panel">
+  <div class="action-panel" :class="isSmallEditor && 'small-action'">
     <div class="input-panel">
       <div class="options-row">
         <el-popover
@@ -108,7 +108,8 @@ import {
   KEY_CODE,
   CHECK_MSG_TYPE,
   SESSION_USER_TYPE,
-  lodash, GROUP_ROLE_TYPE_LOCAL,
+  lodash,
+  GROUP_ROLE_TYPE_LOCAL,
 } from '@lanshu/utils';
 import { renderProcess } from '@lanshu/render-process';
 import { LsIcon } from '@lanshu/components';
@@ -134,6 +135,10 @@ export default {
     isFocus: {
       type: Boolean,
       default: true,
+    },
+    isSmallEditor: {
+      type: Boolean,
+      default: false,
     },
   },
   components: {
@@ -162,8 +167,9 @@ export default {
       return this.$attrs.recordrtc;
     },
     placeholder() {
-      if (this.isGroup && (this.groupRole !== GROUP_ROLE_TYPE_LOCAL.IS_DEFAULT)) {
-        if (this.groupRole === GROUP_ROLE_TYPE_LOCAL.IS_NOT_AUTH) return '您不是该群成员！';
+      if (this.isGroup && this.groupRole !== GROUP_ROLE_TYPE_LOCAL.IS_DEFAULT) {
+        if (this.groupRole === GROUP_ROLE_TYPE_LOCAL.IS_NOT_AUTH)
+          return '您不是该群成员！';
         if (this.noSendAuth) return '群主已禁言';
       }
       return `发送给 ${this.session.nickname || ''}...`;
@@ -191,18 +197,20 @@ export default {
   },
   async mounted() {
     this.$nextTick(() => {
-      setTimeout(async() => {
+      setTimeout(async () => {
         if (this.isFocus) {
           this.$refs.msgInput.focus();
         }
         this.windowRange = window.getSelection()?.getRangeAt(0);
         // 获取切换时保存的临时类容
-        const historyTempMsgOBJ = await window.$lanshuStore.getItem('tempMsgOBJ');
+        const historyTempMsgOBJ = await window.$lanshuStore.getItem(
+          'tempMsgOBJ',
+        );
         const tempMsg = historyTempMsgOBJ?.[this.session.sessId];
         if (tempMsg?.preview) {
           this.handleTargetInsert(tempMsg.rawMsg);
         }
-      }, 300)
+      }, 300);
     });
 
     document.addEventListener('click', this.handleGlobalClick);
@@ -700,11 +708,9 @@ export default {
 <style scoped lang="scss">
 .action-panel {
   width: 100%;
-  min-height: 160px;
   box-sizing: border-box;
 
   .input-panel {
-    min-height: 160px;
     box-sizing: border-box;
     background: $bg-white-color;
     padding: 0 0px 16px 20px;
@@ -776,6 +782,21 @@ export default {
           color: $tips-text-color;
           font-size: 14px;
         }
+      }
+    }
+  }
+
+  &.small-action {
+    .options-row {
+      height: 40px;
+    }
+
+    .input-textarea {
+      min-height: 22px;
+      max-height: 44px;
+
+      .editor-container {
+        min-height: 22px;
       }
     }
   }

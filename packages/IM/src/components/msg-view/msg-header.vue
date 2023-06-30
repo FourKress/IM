@@ -74,9 +74,7 @@
         </el-dropdown>
       </div>
 
-      <div class="btn" v-if="$slots.header">
-        <slot name="header"></slot>
-      </div>
+      <slot name="rightBtn"></slot>
     </div>
 
     <LsCardDialog :visible.sync="showFriendDialog">
@@ -290,7 +288,7 @@ export default {
     align-items: center;
     justify-content: flex-end;
 
-    .btn {
+    ::v-deep .btn {
       margin-right: 20px;
       cursor: pointer;
       width: 16px;

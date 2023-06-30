@@ -165,6 +165,7 @@ export default {
     }, 400),
 
     getSearchResult(keywords) {
+      if (!keywords) return
       const dataMap = {
         [TAB_TYPE.IS_ALL]: [...this.groupData, ...this.addressBooKData],
         [TAB_TYPE.IS_GROUP]: this.groupData,
