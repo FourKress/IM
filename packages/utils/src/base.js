@@ -82,7 +82,7 @@ export const dataURLtoBlob = (dataUrl) => {
 
 // 设置header的class,用于控制窗体拖动
 export const setHeaderClassName = (className) => {
-  const hearerSearch = document.querySelector('#client-header');
+  const hearerSearch = document.querySelector('#header-container');
   if (hearerSearch) {
     // 控制头部拖拽效果
     hearerSearch.className = `${className}`;

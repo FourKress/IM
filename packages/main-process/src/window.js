@@ -8,6 +8,9 @@ import { electronLog } from './log';
 const initLoginWindow = () => {
   const mainWindow = global.mainWindow;
   mainWindow.setMinimumSize(440, 600);
+  if (mainWindow.isMaximized()) {
+    mainWindow.unmaximize();
+  }
   mainWindow.setSize(440, 600);
   mainWindow.setResizable(false);
   mainWindow.setMaximizable(false);
