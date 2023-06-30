@@ -1,6 +1,6 @@
 <template>
   <div class="file-dialog">
-    <div class="title">发送给: {{ mainSessionWindow.nickname }}</div>
+    <div class="title">发送给: {{ session.nickname }}</div>
     <div class="main">
       <div class="list">
         <div class="scroll-view">
@@ -71,7 +71,6 @@
 
 <script>
 import { LsIcon } from '@lanshu/components';
-import { mapGetters } from 'vuex';
 import { getFileSize, getObjectURL, CHECK_MSG_TYPE } from '@lanshu/utils';
 
 export default {
@@ -81,6 +80,11 @@ export default {
       type: Array,
       required: true,
       default: [],
+    },
+    session: {
+      type: Object,
+      default: () => {},
+      require: true,
     },
   },
   components: {
@@ -93,9 +97,7 @@ export default {
       isUpload: false,
     };
   },
-  computed: {
-    ...mapGetters('IMStore', ['mainSessionWindow']),
-  },
+
   mounted() {
     this.fileList = this.files.map((d) => {
       const { name, size, type } = d;

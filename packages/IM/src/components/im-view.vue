@@ -1,5 +1,5 @@
 <template>
-  <div class="im-view" ref="ImView">
+  <div class="im-view" :ref="refsName">
     <MsgHeader
       v-bind="$props"
       v-on="$listeners"
@@ -302,6 +302,9 @@ export default {
     isGroup() {
       return this.session.toUserType === SESSION_USER_TYPE.IS_GROUP;
     },
+    refsName() {
+      return `ImView_${this.session.sessId}`
+    }
   },
   async mounted() {
     this.bubbleModel =
@@ -312,7 +315,7 @@ export default {
       trailing: false,
     });
 
-    const imViewDom = this.$refs.ImView;
+    const imViewDom = this.$refs[this.refsName];
     //添加拖拽事件监听器
     imViewDom.addEventListener('drop', (e) => {
       //阻止默认行为
@@ -331,7 +334,10 @@ export default {
           this.$message.warning('暂无权限！');
           return;
         }
-        this.setDragFileList(files);
+        this.setDragFileList({
+          sessId: this.session.sessId,
+          files,
+        });
       }
     });
 
@@ -349,7 +355,7 @@ export default {
     });
     this.resizeObserver = resizeObserver;
     // 观察一个或多个元素
-    this.resizeObserver.observe(this.$refs.ImView);
+    this.resizeObserver.observe(this.$refs[this.refsName]);
   },
   methods: {
     ...mapActions('IMStore', ['setDragFileList', 'setCurrentMsg']),
@@ -479,7 +485,7 @@ export default {
   },
   beforeDestroy() {
     if (this.resizeObserver) {
-      this.resizeObserver.observe(this.$refs.ImView);
+      this.resizeObserver.observe(this.$refs[this.refsName]);
     }
   }
 };

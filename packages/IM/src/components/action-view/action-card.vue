@@ -1,12 +1,7 @@
 <template>
   <div>
     <el-dropdown placement="top" trigger="click">
-      <el-tooltip
-        class="item"
-        effect="dark"
-        content="更多"
-        placement="top"
-      >
+      <el-tooltip class="item" effect="dark" content="更多" placement="top">
         <LsIcon render-svg icon="xx_srk_gd"></LsIcon>
       </el-tooltip>
       <input
@@ -32,23 +27,24 @@
             <span>文件</span>
           </div>
         </el-dropdown-item>
-<!--        <el-dropdown-item>-->
-<!--          <div class="send-down-row">-->
-<!--            <LsIcon render-svg icon="pop_cd_sb"></LsIcon>-->
-<!--            <span>OCR识别</span>-->
-<!--          </div>-->
-<!--        </el-dropdown-item>-->
-<!--        <el-dropdown-item>-->
-<!--          <div class="send-down-row">-->
-<!--            <LsIcon render-svg icon="pop_cd_mp"></LsIcon>-->
-<!--            <span>名片</span>-->
-<!--          </div>-->
-<!--        </el-dropdown-item>-->
+        <!--        <el-dropdown-item>-->
+        <!--          <div class="send-down-row">-->
+        <!--            <LsIcon render-svg icon="pop_cd_sb"></LsIcon>-->
+        <!--            <span>OCR识别</span>-->
+        <!--          </div>-->
+        <!--        </el-dropdown-item>-->
+        <!--        <el-dropdown-item>-->
+        <!--          <div class="send-down-row">-->
+        <!--            <LsIcon render-svg icon="pop_cd_mp"></LsIcon>-->
+        <!--            <span>名片</span>-->
+        <!--          </div>-->
+        <!--        </el-dropdown-item>-->
       </el-dropdown-menu>
     </el-dropdown>
     <LsCardDialog :visible.sync="visibleFileDialog" :isModalClose="false">
       <FileDialog
         :files="files"
+        :session="session"
         @close="handleFileClose"
         @confirm="handleFileConfirm"
       />
@@ -105,11 +101,13 @@ export default {
   watch: {
     dragFileList(val) {
       console.log(val, 'dragFileList');
-      if (val?.length) {
-        this.files = [...val];
+      const { sessId, files } = val;
+      if (sessId !== this.session.sessId) return;
+      if (sessId && files?.length) {
+        this.files = [...files];
         this.visibleFileDialog = true;
         this.$nextTick(() => {
-          this.setDragFileList([]);
+          this.setDragFileList({});
         });
       }
     },
@@ -121,7 +119,7 @@ export default {
       if (this.noGroupAuth) {
         this.$message.warning('暂无权限！');
         return;
-      };
+      }
 
       this.$refs.fileInput.value = '';
       this.accept = isFile ? '' : 'image/*,audio/*,video/*';
