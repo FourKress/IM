@@ -66,16 +66,18 @@
           </span>
         </div>
       </div>
-      <div
-        class="input-textarea"
-        :contenteditable="!noSendAuth"
-        @keyup.enter.exact="handleEnterSend"
-        @keyup.ctrl.enter.exact="handleCtrlEnterSend"
-        ref="msgInput"
-        :placeholder="placeholder"
-        @input="handleInput"
-        @blur="handleBlur"
-      ></div>
+      <div class="input-textarea">
+        <div
+          class="editor-container"
+          :contenteditable="!noSendAuth"
+          @keyup.enter.exact="handleEnterSend"
+          @keyup.ctrl.enter.exact="handleCtrlEnterSend"
+          ref="msgInput"
+          :placeholder="placeholder"
+          @input="handleInput"
+          @blur="handleBlur"
+        ></div>
+      </div>
     </div>
 
     <!--      <video-->
@@ -128,6 +130,10 @@ export default {
     groupRoleManager: {
       type: Object,
       default: () => {},
+    },
+    isFocus: {
+      type: Boolean,
+      default: true,
     },
   },
   components: {
@@ -186,7 +192,9 @@ export default {
   async mounted() {
     this.$nextTick(() => {
       setTimeout(async() => {
-        this.$refs.msgInput.focus();
+        if (this.isFocus) {
+          this.$refs.msgInput.focus();
+        }
         this.windowRange = window.getSelection()?.getRangeAt(0);
         // 获取切换时保存的临时类容
         const historyTempMsgOBJ = await window.$lanshuStore.getItem('tempMsgOBJ');
@@ -198,7 +206,7 @@ export default {
     });
 
     document.addEventListener('click', this.handleGlobalClick);
-    document.querySelector('.input-textarea').addEventListener('paste', (e) => {
+    this.$refs.msgInput.addEventListener('paste', (e) => {
       this.handleBlur(e);
       e.preventDefault();
       let text;
@@ -254,7 +262,7 @@ export default {
       try {
         const classNames = (event.target.className || '')?.split(' ');
         if (
-          !classNames.some((c) => ['input-textarea', 'emoji-btn'].includes(c))
+          !classNames.some((c) => ['editor-container', 'emoji-btn'].includes(c))
         ) {
           this.emojiVisible = false;
         }
@@ -748,18 +756,26 @@ export default {
       height: 100%;
       min-height: 92px;
       line-height: 21px;
-      border: none;
-      outline: none;
       font-size: 14px;
       overflow-y: auto;
-      white-space: normal;
-      word-break: break-all;
       max-height: 340px;
 
-      &:empty::before {
-        content: attr(placeholder);
-        color: $tips-text-color;
+      .editor-container {
+        width: 100%;
+        height: 100%;
+        min-height: 92px;
+        line-height: 21px;
         font-size: 14px;
+        border: none;
+        outline: none;
+        white-space: normal;
+        word-break: break-all;
+
+        &:empty::before {
+          content: attr(placeholder);
+          color: $tips-text-color;
+          font-size: 14px;
+        }
       }
     }
   }

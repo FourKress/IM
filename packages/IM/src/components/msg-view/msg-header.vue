@@ -14,24 +14,22 @@
       <!--      <div class="btn" @click="handleCloseSession">-->
       <!--        <LsIcon render-svg icon="a-icon_sp2x"></LsIcon>-->
       <!--      </div>-->
-      <div class="btn">
+      <div class="btn" v-if="!isGroup">
         <el-tooltip class="item" effect="dark" content="视频" placement="top">
           <!--        || groupRoleManager.whoCanStartNetworkCall <= groupRole-->
           <LsIcon
             render-svg
             icon="a-icon_sp2x"
-            v-if="!isGroup"
             @click="handleStartTrtc(NETWORK_CALL_TYPE.IS_VIDEO)"
           ></LsIcon>
         </el-tooltip>
       </div>
-      <div class="btn">
+      <div class="btn" v-if="!isGroup">
         <el-tooltip class="item" effect="dark" content="语音" placement="top">
           <!--        || groupRoleManager.whoCanStartNetworkCall <= groupRole-->
           <LsIcon
             render-svg
             icon="a-icon_yy2x"
-            v-if="!isGroup"
             @click="handleStartTrtc(NETWORK_CALL_TYPE.IS_AUDIO)"
           ></LsIcon>
         </el-tooltip>
@@ -74,6 +72,10 @@
             </el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
+      </div>
+
+      <div class="btn" v-if="$slots.header">
+        <slot name="header"></slot>
       </div>
     </div>
 

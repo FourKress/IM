@@ -5,7 +5,11 @@
       v-on="$listeners"
       :groupRole="myGroupRole"
       :groupRoleManager="groupRoleManager"
-    />
+    >
+      <template v-if="$slots.header">
+        <Expand :render="() => $slots.header[0]"></Expand>
+      </template>
+    </MsgHeader>
 
     <div class="message-panel" ref="messagePanel" @scroll="handleScroll">
       <div
@@ -153,6 +157,7 @@ import {
   LsCardDialog,
   LsFriendPanel,
   TimesTransform,
+  Expand,
 } from '@lanshu/components';
 import { renderProcess } from '@lanshu/render-process';
 import MsgCard from './msg-view/msg-card';
@@ -179,6 +184,7 @@ export default {
     LsIcon,
     LsCardDialog,
     LsFriendPanel,
+    Expand,
   },
   mixins: [FriendMixins],
   props: {
@@ -195,6 +201,10 @@ export default {
       type: Object,
       default: () => {},
       require: true,
+    },
+    isFocus: {
+      type: Boolean,
+      default: true,
     },
   },
   data() {
@@ -217,7 +227,7 @@ export default {
       myGroupRole: GROUP_ROLE_TYPE_LOCAL.IS_DEFAULT,
       groupRoleManager: {},
       imViewWidth: 500,
-      resizeObserver: null
+      resizeObserver: null,
     };
   },
   watch: {
@@ -303,8 +313,8 @@ export default {
       return this.session.toUserType === SESSION_USER_TYPE.IS_GROUP;
     },
     refsName() {
-      return `ImView_${this.session.sessId}`
-    }
+      return `ImView_${this.session.sessId}`;
+    },
   },
   async mounted() {
     this.bubbleModel =
@@ -346,11 +356,10 @@ export default {
       e.preventDefault();
     });
 
-
     const resizeObserver = new ResizeObserver((entries) => {
       for (let entry of entries) {
         const cr = entry.contentRect;
-        this.imViewWidth = cr.width
+        this.imViewWidth = cr.width;
       }
     });
     this.resizeObserver = resizeObserver;
@@ -389,7 +398,7 @@ export default {
         if (isContinue && this.messageList?.length) {
           this.messageList.unshift(...msgs);
           setTimeout(() => {
-            const currentScrollHeight = this.$refs.messagePanel.scrollHeight;
+            const currentScrollHeight = this.$refs.messagePanel?.scrollHeight;
             this.$refs.messagePanel.scrollTop =
               currentScrollHeight - this.preScrollHeight + this.scrollTop;
           }, 1);
@@ -397,7 +406,7 @@ export default {
           this.messageList = msgs;
           setTimeout(() => {
             this.$refs.messagePanel.scrollTop =
-              this.$refs.messagePanel.scrollHeight;
+              this.$refs.messagePanel?.scrollHeight;
           }, 1);
         }
       });
@@ -411,7 +420,7 @@ export default {
           scrollTop <= 500 &&
           (scrollTop <= this.scrollTop || this.scrollTop === 0)
         ) {
-          this.preScrollHeight = this.$refs.messagePanel.scrollHeight;
+          this.preScrollHeight = this.$refs.messagePanel?.scrollHeight;
           this.scrollTop = scrollTop;
           this.throttleGetMessageList(true);
         }
@@ -448,7 +457,7 @@ export default {
       });
 
       if (this.friendInfo?.dep) {
-        this.friendPanelConfig = { isPass: true }
+        this.friendPanelConfig = { isPass: true };
       }
     },
 
@@ -456,7 +465,7 @@ export default {
       this.messageList.push(msg);
       this.$nextTick(() => {
         this.$refs.messagePanel.scrollTop =
-          this.$refs.messagePanel.scrollHeight;
+          this.$refs.messagePanel?.scrollHeight;
       });
     },
     handleRefreshMsg() {
@@ -487,7 +496,7 @@ export default {
     if (this.resizeObserver) {
       this.resizeObserver.observe(this.$refs[this.refsName]);
     }
-  }
+  },
 };
 </script>
 

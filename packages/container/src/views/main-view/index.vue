@@ -93,6 +93,7 @@ export default {
   overflow-x: auto;
 
   .main-panel {
+    max-width: calc(100% - 265px);
     height: 100%;
     flex: 1;
     display: flex;
