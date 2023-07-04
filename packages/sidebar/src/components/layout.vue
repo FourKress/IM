@@ -128,17 +128,19 @@ export default {
       contextMenuList: [
         {
           label: (session) => {
-            return session?.topState ? '取消置顶' : '置顶'
+            return session?.topState ? '取消置顶' : '置顶';
           },
           handler: this.setMsgTopStatus,
           icon: (session) => {
-            return session?.topState ? 'ls-icon-quxiaozhiding' : 'ls-icon-zhiding'
+            return session?.topState
+              ? 'ls-icon-quxiaozhiding'
+              : 'ls-icon-zhiding';
           },
         },
         {
           label: () => '不显示',
           handler: this.handleHideSession,
-          icon: () => 'ls-icon-mimayincang'
+          icon: () => 'ls-icon-mimayincang',
         },
       ],
       topContextMenuList: [
@@ -147,7 +149,7 @@ export default {
           handler: this.setMsgTopStatus,
           icon: () => 'ls-icon-quxiaozhiding',
         },
-      ]
+      ],
     };
   },
   components: {
@@ -241,7 +243,7 @@ export default {
 
     setMsgTopStatus(session) {
       const { topState } = session;
-      IMSetTopStatus(session.sessId, topState === 1 ? 0 : 1)
+      IMSetTopStatus(session.sessId, topState === 1 ? 0 : 1);
     },
   },
 };
@@ -441,8 +443,8 @@ export default {
 
             .name {
               height: 20px;
-              width: 80px;
-              max-width: 80px;
+              width: 120px;
+              max-width: 120px;
               overflow: hidden;
               text-overflow: ellipsis;
               white-space: nowrap;
