@@ -260,7 +260,6 @@ export default {
       roomId,
       platform = CLIENT_TYPE.IS_PC,
       uuid,
-      s,
     } = trtcCallInfo;
 
     if (uuid) {
@@ -349,6 +348,8 @@ export default {
       IMStartNetworkCall(this.toUser, this.toUserType, this.callType, {
         roomId: this.roomId,
         platform: this.platform,
+        avatar: this.userInfo.avatar,
+        nickName: this.userInfo.nickname,
       })
         .then((res) => {
           console.log('拨打回调', res);

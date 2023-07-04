@@ -7,10 +7,17 @@ import trayEvent from './trayEvent';
 
 const { LimMain, LogLevel } = require('lim-sdk-electron');
 
+const envMap = {
+  production: 'prod',
+  test: 'test',
+  development: 'test',
+};
+
 export const IMSDKInit = (appId) => {
   const limMain = new LimMain({ appId });
   const IMSDK = limMain.init({
     filePath: `${app.getPath('userData')}/`,
+    env: envMap[process.env.NODE_ENV],
   });
 
   global.IMSDK = IMSDK;
@@ -113,15 +120,13 @@ export const IMSDKInit = (appId) => {
   });
 
   IMSDK.getMainProvider().setNetworkCallListener(
-    async (uuid, type, data, userId, userType) => {
+    async (uuid, type, data = {}, userId, userType) => {
       if (global.store.get('NETWORK_CALL_UUID') === uuid) return;
       global.store.set('NETWORK_CALL_UUID', uuid);
       electronLog.info(
         `setNetworkChangeCallBack: ${uuid} ${type} ${data} ${userId} ${userType}`,
       );
-      // TODO 后续从data里面取头像昵称
-      const userInfo = await IMSDK.getUserProvider().getUserAttrbute(userId);
-      const { avatar, nickname } = userInfo.data || {};
+      const { platform = CLIENT_TYPE.IS_PC, roomId, avatar, nickname } = data;
       await global.store.set('TRTC_SESSION', {
         toUser: userId,
         toUserType: userType,
@@ -129,7 +134,6 @@ export const IMSDKInit = (appId) => {
         avatar,
         nickname,
       });
-      const { platform = CLIENT_TYPE.IS_PC, roomId } = data || {};
       await global.store.set('TRTC_CALL_INFO', {
         type,
         isBeInvited: true,

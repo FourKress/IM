@@ -27,18 +27,17 @@
           }}
         </div>
       </div>
-
     </div>
 
     <div class="empty-data" v-else>
-      <img :src="LsAssets.emptyDataBook" alt="">
+      <img :src="LsAssets.emptyDataBook" alt="" />
     </div>
 
     <LsCardDialog :visible.sync="showFriendDialog">
       <LsFriendPanel
         :friend-info="friendInfo"
         :position="position"
-        :config="config"
+        :config="friendPanelConfig"
         @sendAuth="handleSendAuth"
         @sendMsg="handleSendMsg"
         @sendVideo="handleSendVideo"
@@ -51,7 +50,7 @@
 </template>
 
 <script>
-import { LsCardDialog, LsFriendPanel,LsAssets } from '@lanshu/components';
+import { LsCardDialog, LsFriendPanel, LsAssets } from '@lanshu/components';
 import { FRIEND_AUTH_STATE, FriendMixins } from '@lanshu/utils';
 import { mapGetters, mapActions } from 'vuex';
 import {
@@ -73,7 +72,7 @@ export default {
       LsAssets,
       FRIEND_AUTH_STATE,
       friendList: [],
-      config: {},
+      friendPanelConfig: {},
     };
   },
   computed: {
@@ -139,28 +138,29 @@ export default {
     },
 
     async handleFriend(item, event) {
-      await this.openFriendDialog(
-        event,
-        async () => {
-          const { toUser, state, message, id } = item;
-          const config = this.getConfig(state);
-          this.config = config;
-          const userProfile = (await IMGetUserProfile(toUser))?.data || {};
-          let friendInfo = {};
-          if (state === FRIEND_AUTH_STATE.IS_AGREE) {
-            friendInfo = (await IMGetOneFriend(toUser))?.data || {};
-          }
-          const { remark, desc } = friendInfo;
-
-          return {
-            ...userProfile,
-            remark,
-            desc,
-            message,
-            noticeId: id,
-          };
+      await this.openFriendDialog(event, async () => {
+        const { toUser, state, message, id } = item;
+        const config = this.getConfig(state);
+        this.friendPanelConfig = config;
+        const userProfile = (await IMGetUserProfile(toUser))?.data || {};
+        let friendInfo = {};
+        if (state === FRIEND_AUTH_STATE.IS_AGREE) {
+          friendInfo = (await IMGetOneFriend(toUser))?.data || {};
         }
-      );
+        const { remark, desc } = friendInfo;
+
+        return {
+          ...userProfile,
+          remark,
+          desc,
+          message,
+          noticeId: id,
+        };
+      });
+
+      if (this.friendInfo?.dep) {
+        this.friendPanelConfig = { isPass: true };
+      }
     },
   },
 };

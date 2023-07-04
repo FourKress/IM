@@ -173,7 +173,7 @@ export default {
       await renderProcess.setStore('TRTC_SESSION', this.session);
       await renderProcess.setStore('TRTC_CALL_INFO', {
         type: NETWORK_CALL_TYPE,
-        roomId: Date.now(),
+        roomId: Number(Date.now().toString().substring(4, 13)),
         isBeInvited: false,
         platform,
       });
