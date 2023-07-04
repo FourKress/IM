@@ -186,10 +186,6 @@ export default {
   },
   mixins: [FriendMixins],
   props: {
-    isMainSession: {
-      type: Boolean,
-      default: false,
-    },
     session: {
       type: Object,
       default: () => {},
@@ -207,7 +203,7 @@ export default {
     isSmallEditor: {
       type: Boolean,
       default: false,
-    }
+    },
   },
   data() {
     return {

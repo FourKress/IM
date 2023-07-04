@@ -7,8 +7,6 @@ const state = {
   sessionList: [],
   // 主会话窗口
   mainSessionWindow: {},
-  // 其余会话窗口
-  sessionWindowList: [],
   // 网络状态
   IM_Network_Status: 0,
   // 数据同步状态
@@ -44,7 +42,6 @@ const getters = {
   userProfile: (state) => state.userProfile,
   sessionList: (state) => state.sessionList,
   mainSessionWindow: (state) => state.mainSessionWindow,
-  sessionWindowList: (state) => state.sessionWindowList,
   IM_Network_Status: (state) => state.IM_Network_Status,
   IM_DataSync_Status: (state) => state.IM_DataSync_Status,
   currentMsg: (state) => state.currentMsg,
@@ -79,16 +76,6 @@ const mutations = {
   },
   setMainSessionWindow(data, value) {
     data.mainSessionWindow = value;
-  },
-  addSessionWindowList(data, value) {
-    if (data.sessionWindowList.some((d) => d.sessId === value.sessId)) return;
-    data.sessionWindowList.push(value);
-  },
-  removeSessionWindowList(data, value) {
-    const sessionWindowList = data.sessionWindowList.filter(
-      (d) => d.sessId !== value.sessId,
-    );
-    data.sessionWindowList = sessionWindowList;
   },
   setIMNetworkStatus(data, value) {
     data.IM_Network_Status = value;
@@ -147,12 +134,7 @@ const actions = {
   setMainSessionWindow({ commit }, value) {
     commit('setMainSessionWindow', value);
   },
-  addSessionWindowList({ commit }, value) {
-    commit('addSessionWindowList', value);
-  },
-  removeSessionWindowList({ commit }, value) {
-    commit('removeSessionWindowList', value);
-  },
+
   setIMNetworkStatus({ commit }, value) {
     commit('setIMNetworkStatus', value);
   },

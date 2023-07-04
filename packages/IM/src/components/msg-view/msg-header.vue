@@ -11,9 +11,6 @@
       </div>
     </div>
     <div class="right">
-      <!--      <div class="btn" @click="handleCloseSession">-->
-      <!--        <LsIcon render-svg icon="a-icon_sp2x"></LsIcon>-->
-      <!--      </div>-->
       <div class="btn" v-if="!isGroup">
         <el-tooltip class="item" effect="dark" content="视频" placement="top">
           <!--        || groupRoleManager.whoCanStartNetworkCall <= groupRole-->
@@ -89,7 +86,7 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex';
+import { mapGetters } from 'vuex';
 import { LsIcon, LsCardDialog, LsFriendPanel } from '@lanshu/components';
 import {
   IM_HEADER_MORE_BTN_KEY,
@@ -159,8 +156,6 @@ export default {
     this.getGroupCurrentMemberCount();
   },
   methods: {
-    ...mapActions('IMStore', ['removeSessionWindowList']),
-
     handleCommand(command) {
       this.$emit('moreCallback', {
         command,
@@ -179,11 +174,6 @@ export default {
       });
 
       renderProcess.openTRTCWindow(platform);
-    },
-
-    handleCloseSession() {
-      if (this.isMainSession) return;
-      this.removeSessionWindowList(this.session);
     },
 
     async handleFriend(event) {

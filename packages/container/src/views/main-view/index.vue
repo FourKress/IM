@@ -7,11 +7,17 @@
     >
       <MainIM />
       <MainPlugIn
-        v-for="plugin in plugins"
-        v-if="plugin.visible"
-        :key="plugin.key"
-        :component="plugin.key"
+        v-if="synergyPlugin.visible"
+        :key="synergyPlugin.key"
+        :component="synergyPlugin.key"
       />
+      <template v-for="plugin in plugins">
+        <MainPlugIn
+          v-if="plugin.visible"
+          :key="plugin.key"
+          :component="plugin.key"
+        />
+      </template>
     </div>
   </div>
 </template>
@@ -22,9 +28,9 @@ import { MainIM } from '@lanshu/im';
 import { MainPlugIn } from '@lanshu/plugin';
 import { startQiankun } from '@lanshu/micro';
 import { mapGetters } from 'vuex';
-import micro from '../../micro';
 import { renderProcess } from '@lanshu/render-process';
 import { CLIENT_TERMINAL } from '@lanshu/utils';
+import micro from '../../micro';
 
 export default {
   name: 'MainView',
@@ -36,6 +42,10 @@ export default {
   data() {
     return {
       plugins: [],
+      synergyPlugin: {
+        visible: false,
+        key: 'SynergyView',
+      },
     };
   },
   computed: {

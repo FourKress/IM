@@ -161,7 +161,6 @@ export default {
     ...mapGetters('IMStore', [
       'sessionList',
       'mainSessionWindow',
-      'sessionWindowList',
       'allUnreadCount',
       'IM_DataSync_Status',
     ]),

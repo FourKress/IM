@@ -94,7 +94,7 @@ export const ClientLogOut = async () => {
   window.location.reload();
   renderProcess.showLoginWindow(1000);
 };
-export const IMClearUnreadCount = async (sessId, sessionWindowList) => {
+export const IMClearUnreadCount = async (sessId) => {
   const res = await eventHOCFnc(
     IMSDKConvProvider.provider,
     IMSDKConvProvider.events.clearUnreadCount,
@@ -105,13 +105,7 @@ export const IMClearUnreadCount = async (sessId, sessionWindowList) => {
     'IMStore/setAllSession',
     sessionList.map((d) => {
       let unreadCount;
-      if (sessionWindowList?.length) {
-        unreadCount = sessionWindowList.some((s) => s.sessId === sessId)
-          ? 0
-          : d.unreadCount;
-      } else {
-        unreadCount = d.sessId === sessId ? 0 : d.unreadCount;
-      }
+      unreadCount = d.sessId === sessId ? 0 : d.unreadCount;
 
       return {
         ...d,

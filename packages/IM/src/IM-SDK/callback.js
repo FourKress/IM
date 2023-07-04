@@ -106,10 +106,8 @@ export const IMSDKCallBackEvents = {
     const { sendState, msg } = msgInfo;
     const mainSessionWindow =
       storeInstance.getters['IMStore/mainSessionWindow'];
-    const sessionWindowList =
-      storeInstance.getters['IMStore/sessionWindowList'];
 
-    if (!mainSessionWindow?.sessId && !sessionWindowList?.length) return;
+    if (!mainSessionWindow?.sessId) return;
     if (mainSessionWindow.sessId !== msg.sessId) return;
     storeInstance.commit('IMStore/setRefreshMsg', Date.now());
   },
@@ -118,8 +116,6 @@ export const IMSDKCallBackEvents = {
     const { sessId, msgType } = message;
 
     const { session, isCurrent } = getCurrentSession('sessId', sessId);
-    const sessionWindowList =
-      storeInstance.getters['IMStore/sessionWindowList'];
 
     const isNotSystemNotify =
       MSG_FORMAT_MAP[msgType]?.type &&
@@ -130,7 +126,7 @@ export const IMSDKCallBackEvents = {
       startNotification(message);
     }
 
-    if (!session?.sessId && !sessionWindowList?.length) return;
+    if (!session?.sessId) return;
 
     storeInstance.commit('IMStore/setCurrentMsg', message);
 
@@ -138,7 +134,7 @@ export const IMSDKCallBackEvents = {
 
     if (location.hash !== '#/') return;
 
-    await IMClearUnreadCount(sessId, [session, ...sessionWindowList]);
+    await IMClearUnreadCount(sessId, [session]);
   },
   KickOutedOffline(ctx) {
     storeInstance.commit('IMStore/setAllSession', []);

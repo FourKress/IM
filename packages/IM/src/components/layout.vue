@@ -9,13 +9,8 @@
       :key="mainSessionWindow.sessId || ''"
       :session="mainSessionWindow"
       :recordrtc="recordrtc"
-      isMainSession
       @moreCallback="handleMoreCallback"
     />
-    <!--  协同  -->
-    <template v-for="item in sessionWindowList">
-      <ImView :key="item.sessId || ''" :session="item" :recordrtc="recordrtc" />
-    </template>
 
     <Settings
       :visible.sync="visibleSettings"
@@ -62,12 +57,12 @@ export default {
     isSettings: {
       type: Boolean,
       default: true,
-    }
+    },
   },
   provide() {
     return {
       isSettings: this.isSettings,
-    }
+    };
   },
   components: {
     ImView,
@@ -98,7 +93,6 @@ export default {
   computed: {
     ...mapGetters('IMStore', [
       'mainSessionWindow',
-      'sessionWindowList',
       'actionWindow',
       'sessionList',
     ]),
@@ -194,7 +188,7 @@ export default {
     if (this.resizeObserver) {
       this.resizeObserver.observe(this.$refs.ClientIM);
     }
-  }
+  },
 };
 </script>
 
