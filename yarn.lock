@@ -1173,10 +1173,10 @@
     "@jridgewell/resolve-uri" "3.1.0"
     "@jridgewell/sourcemap-codec" "1.4.14"
 
-"@lanshu/micro@^0.1.4":
-  version "0.1.4"
-  resolved "http://172.16.3.249:8081/repository/npm-group/@lanshu/micro/-/micro-0.1.4.tgz#dd7fcde27bd511e7a8120d56a61ca9f820c8b5d9"
-  integrity sha512-e48D9UYySvr9CmFC+uTEiACZwz+/7YuuRe/Y7/FKo8Mn+CXhMrRbr0AEtQCKD6Ka3WwCtpPag1SfRqE0FlHhIw==
+"@lanshu/micro@^0.2.0":
+  version "0.2.1"
+  resolved "http://172.16.3.249:8081/repository/npm-group/@lanshu/micro/-/micro-0.2.1.tgz#62b655e9f3736a0c06756da123a4e444d5747c29"
+  integrity sha512-paYAO1PvzEiI3+/Fooyu8UacBPhnll0Y6VSOqrlFGhwz3rOmxWgjf88QuczdWPvoKcQ7XqULaDqQftnhoU2P6A==
   dependencies:
     qiankun "^2.10.5"
     redux "^4.2.1"
@@ -2739,6 +2739,14 @@
   version "1.1.0"
   resolved "http://172.16.3.249:8081/repository/npm-group/@yarnpkg/lockfile/-/lockfile-1.1.0.tgz#e77a97fbd345b76d83245edcd17d393b1b41fb31"
   integrity sha512-GpSwvyXOcOOlV70vbnzjj4fW5xW/FdUF6nQEt1ENy7m4ZCczi1+/buVUPAqmGfqznsORNFzUMjctTIp8a9tuCQ==
+
+"@yarnpkg/parsers@^3.0.0-rc.18":
+  version "3.0.0-rc.48.1"
+  resolved "http://172.16.3.249:8081/repository/npm-group/@yarnpkg/parsers/-/parsers-3.0.0-rc.48.1.tgz#8636c24c02c888f2602a464edfd7fb113d75e937"
+  integrity sha512-qEewJouhRvaecGjbkjz9kMKn96UASbDodNrE5MYy2TrXkHcisIkbMxZdGBYfAq+s1dFtCSx/5H4k5bEkfakM+A==
+  dependencies:
+    js-yaml "^3.10.0"
+    tslib "^2.4.0"
 
 "@zkochan/js-yaml@0.0.6":
   version "0.0.6"
@@ -8394,7 +8402,7 @@ lilconfig@^2.0.3:
   resolved "http://172.16.3.249:8081/repository/npm-group/lilconfig/-/lilconfig-2.1.0.tgz#78e23ac89ebb7e1bfbf25b18043de756548e7f52"
   integrity sha512-utWOt/GHzuUxnLKxB6dk81RoOeoNeHgbrXiuGk4yyF5qlRz+iIVWu56E2fqGHFrXz0QNUhLB/8nKqvRH66JKGQ==
 
-lim-sdk-electron@^2.7.26:
+lim-sdk-electron@2.7.26:
   version "2.7.26"
   resolved "http://172.16.3.249:8081/repository/npm-group/lim-sdk-electron/-/lim-sdk-electron-2.7.26.tgz#d9c2d9733cf183fefbc46341e7f99671c6c513f7"
   integrity sha512-hG2KW15nrDRj8JwDwkUYLeBD73gXVCniMI+QXU6BfA1ewtkRc+rm1JmkqMR4fVUk1JSF8JEbaxSJQgxwmIN57g==
@@ -9755,7 +9763,7 @@ nx@15.9.3, "nx@>=15.5.2 < 16":
     "@nrwl/tao" "15.9.3"
     "@parcel/watcher" "2.0.4"
     "@yarnpkg/lockfile" "^1.1.0"
-    "@yarnpkg/parsers" "3.0.0-rc.18"
+    "@yarnpkg/parsers" "^3.0.0-rc.18"
     "@zkochan/js-yaml" "0.0.6"
     axios "^1.0.0"
     chalk "^4.1.0"
