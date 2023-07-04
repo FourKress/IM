@@ -135,6 +135,7 @@ export default {
       groupRoleManager: {},
       groupQrcodeVisible: false,
       qrcodePosition: {},
+      groupNickname: '',
     };
   },
   computed: {
@@ -165,6 +166,7 @@ export default {
     async getGroupInfo() {
       const res = await IMGetGroupAttribute(this.actionWindow.toUser);
       const { nickname, avatar, groupId, remark } = res?.data || {};
+      this.groupNickname = nickname;
       this.groupInfo = {
         ...this.groupInfo,
         nickname,
@@ -207,6 +209,10 @@ export default {
     },
 
     handleChangeGroupName(val) {
+      if (!val) {
+        this.groupInfo.nickname = this.groupNickname;
+        return;
+      }
       IMSetGroupAttribute(this.groupInfo.groupId, val, this.groupInfo.avatar);
     },
 

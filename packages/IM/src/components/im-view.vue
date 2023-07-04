@@ -239,7 +239,7 @@ export default {
       handler(val, oldVal) {
         if (val?.sessId === oldVal?.sessId) return;
         // TODO 临时处理手动创建会话时 mainSessionWindow 的更新问题
-        if (val && val?.nickname) {
+        if (val && (val?.nickname || val?.sessId)) {
           this.initData();
         }
       },
