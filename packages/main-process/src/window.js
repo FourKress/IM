@@ -4,6 +4,7 @@ import { IS_MAC, CLIENT_TYPE, WINDOW_TYPE } from './utils';
 import checkDevices from './checkDevices';
 import { getScreenInfo } from './screen';
 import { electronLog } from './log';
+import { shieldHotKeys } from './hotKey';
 
 const initLoginWindow = () => {
   const mainWindow = global.mainWindow;
@@ -140,11 +141,6 @@ export const openTRTCWindow = async (type = CLIENT_TYPE.IS_PC) => {
   }
   await TRTCWindow.loadURL(loadURL);
 
-  // const code = `sessionStorage.setItem("authKey", "${token}")`;
-  // await TRTCWindow.webContents.executeJavaScript(code).then(async () => {
-  //   await TRTCWindow.loadURL(loadURL);
-  // });
-
   global.TRTCWindow = TRTCWindow;
 
   TRTCWindow.hookWindowMessage(278, () => {
@@ -178,4 +174,7 @@ export const openTRTCWindow = async (type = CLIENT_TYPE.IS_PC) => {
     global.store.delete('TRTC_SESSION');
     global.store.delete('TRTC_CAN_BE_CLOSED');
   });
+
+  // 屏蔽浏览器快捷键
+  shieldHotKeys(TRTCWindow);
 };

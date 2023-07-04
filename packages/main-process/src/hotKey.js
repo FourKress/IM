@@ -81,3 +81,11 @@ export const handleHotKey = (params) => {
     });
   }
 };
+
+// 屏蔽浏览器快捷键
+export const shieldHotKeys = (win) => {
+  win.webContents.on('before-input-event', (event, input) => {
+    const { code, control } = input;
+    if (code === 'F11' || (code === 'KeyR' && control)) event.preventDefault();
+  });
+};

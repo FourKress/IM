@@ -6,6 +6,7 @@ import { defaultWindowConfig } from './window';
 import store from './datastore';
 import trayEvent from './trayEvent';
 import { electronLog } from './log';
+import { shieldHotKeys } from './hotKey';
 
 global.store = store;
 
@@ -58,8 +59,6 @@ async function createWindow() {
 
   win.on('ready-to-show', () => {
     win.show();
-    // 每次启动程序，就检查更新
-    // checkUpload();
   });
 
   win.webContents.on('did-attach-webview', (event, webContents) => {
@@ -69,6 +68,9 @@ async function createWindow() {
       return { action: 'deny' };
     });
   });
+
+  // 屏蔽浏览器快捷键
+  shieldHotKeys(win);
 }
 
 const initElectron = (config) => {

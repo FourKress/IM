@@ -18,11 +18,7 @@ import { ClientLogOut, IMSDKCallBackEvents } from '@lanshu/im';
 import { renderProcess } from '@lanshu/render-process';
 import { LsUpdate, LsCardDialog } from '@lanshu/components';
 import { mapActions, mapGetters } from 'vuex';
-import {
-  WINDOW_TYPE,
-  WIN_ACTION_TYPE,
-  fetchVersion,
-} from '@lanshu/utils';
+import { WINDOW_TYPE, WIN_ACTION_TYPE, fetchVersion } from '@lanshu/utils';
 
 export default {
   name: 'App',
@@ -33,7 +29,6 @@ export default {
   },
   data() {
     return {
-      keys: [],
       visibleUpdate: false,
     };
   },
@@ -92,29 +87,7 @@ export default {
 
     await this.handleGetVersion();
   },
-  mounted() {
-    document.addEventListener('keydown', (event) => {
-      const code = event.code;
-      const keys = [
-        'ShiftRight',
-        'ShiftLeft',
-        'ControlRight',
-        'ControlLeft',
-        'KeyR',
-        'KeyI',
-      ];
-      if (keys.includes(code)) {
-        this.keys.push(code);
-        if (this.keys.every((d) => keys.includes(d))) {
-          // event.preventDefault();
-          return;
-        }
-      }
-    });
-    document.addEventListener('keyup', () => {
-      this.keys = [];
-    });
-  },
+  mounted() {},
   methods: {
     ...mapActions('globalStore', [
       'setUserErrorMsg',
