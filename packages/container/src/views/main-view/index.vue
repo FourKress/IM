@@ -1,7 +1,10 @@
 <template>
   <div class="main-view">
     <MainSideBar />
-    <div class="main-panel">
+    <div
+      class="main-panel"
+      :style="{ maxWidth: `calc(100% - ${sessionList.length ? 265 : 0}px)` }"
+    >
       <MainIM />
       <MainPlugIn
         v-for="plugin in plugins"
@@ -36,6 +39,8 @@ export default {
     };
   },
   computed: {
+    ...mapGetters('IMStore', ['sessionList']),
+
     ...mapGetters('globalStore', ['openMicroApp']),
   },
   watch: {
@@ -93,7 +98,6 @@ export default {
   overflow-x: auto;
 
   .main-panel {
-    max-width: calc(100% - 265px);
     height: 100%;
     flex: 1;
     display: flex;

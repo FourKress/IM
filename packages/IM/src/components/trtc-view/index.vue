@@ -102,7 +102,12 @@
           :src="isPc ? LsAssets.trtcMePc : LsAssets.trtcBgMobile"
           alt=""
         />
-        <img class="avatar" v-if="disCamStatus || !isVideoCall || callTime" :src="userInfo.avatar" alt="" />
+        <img
+          class="avatar"
+          v-if="disCamStatus || !isVideoCall || callTime"
+          :src="userInfo.avatar"
+          alt=""
+        />
       </div>
     </div>
 
@@ -843,7 +848,6 @@ export default {
       display: block;
       width: 100%;
       height: 100%;
-      border-radius: 6px;
       overflow: hidden;
 
       &.full {
