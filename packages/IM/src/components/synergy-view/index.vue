@@ -1,16 +1,32 @@
 <template>
-  <div class="synergy">
+  <div class="synergy" :style="getPanelStyle">
     <div class="top">
-      <span class="left">协同</span>
-      <span class="nav-list"></span>
-      <span class="right"></span>
+      <span class="title">协同</span>
+      <span class="list" v-if="!collapse">
+        <span class="add item">
+          <LsIcon render-svg width="14" height="14" icon="navi_ss_add"></LsIcon>
+        </span>
+      </span>
+      <span class="right" @click="handleCollapse">
+        <LsIcon
+          render-svg
+          width="12"
+          height="20"
+          :icon="collapse ? 'ls-icon-a-Union22x' : 'ls-icon-a-Union12x'"
+        ></LsIcon>
+      </span>
     </div>
-    <div class="container">
-      <div class="scroll-view">
+    <div class="container" ref="SynergyContainer">
+      <div class="scroll-view" v-if="!collapse">
         <div
           class="session"
-          :style="session.style || getStyle"
-          v-for="session in synergySessionList"
+          :class="{
+            active: selectSynergy === session.sessId,
+            [`session_${formatSessId(session.sessId)}`]: true,
+          }"
+          v-for="session in _sessionList"
+          :style="getStyle(session) || getBasicStyle"
+          @click="handleSelectSynergy(session)"
         >
           <ImView
             v-if="session.sessId"
@@ -18,24 +34,43 @@
             :session="session"
             :isFocus="false"
             :isSmallEditor="true"
+            :headerStyle="{
+              backgroundColor: '#E7EAF3',
+            }"
           >
             <template slot="header">
-              <div class="btn">
+              <div class="btn" v-if="_sessionList.length > 1">
                 <LsIcon
                   render-svg
                   icon="ls-icon-icon_quanpin"
-                  @click="handleFull(session)"
+                  @click="handleChangeSize(session)"
                 ></LsIcon>
               </div>
               <div class="btn">
                 <LsIcon
                   render-svg
                   icon="ls-icon-a-icon_close2x"
-                  @click="handleClose"
+                  @click="handleClose(session)"
                 ></LsIcon>
               </div>
             </template>
           </ImView>
+        </div>
+      </div>
+      <div class="scroll-view-small" v-else>
+        <div
+          class="item"
+          v-for="session in synergySessionList"
+          @click="handleOpenCollapse(session)"
+        >
+          <el-tooltip
+            class="btn"
+            effect="dark"
+            :content="session.nickname"
+            placement="right"
+          >
+            <img class="img" :src="session.avatar" alt="" />
+          </el-tooltip>
         </div>
       </div>
     </div>
@@ -43,10 +78,10 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { lodash } from '@lanshu/utils';
+import { mapGetters, mapActions } from 'vuex';
 import { LsIcon } from '@lanshu/components';
 import ImView from '../im-view.vue';
-import { lodash } from '@lanshu/utils';
 export default {
   name: 'Synergy',
   components: {
@@ -58,15 +93,21 @@ export default {
       isSettings: this.isSettings,
     };
   },
+  props: {
+    pluginStyle: {
+      type: Object,
+      default: () => {},
+    },
+  },
   computed: {
-    ...mapGetters('IMStore', ['sessionList']),
+    ...mapGetters('IMStore', ['sessionList', 'synergySessionList']),
 
-    getStyle() {
+    getBasicStyle() {
       const length = this.synergySessionList.length;
       let height = '40%';
       switch (length) {
         case 1:
-          height = '100%';
+          height = this.MAX_HEIGHT;
           break;
         case 2:
           height = '50%';
@@ -79,38 +120,104 @@ export default {
         height,
       };
     },
+
+    _sessionList() {
+      return this.sessionList.filter((d) =>
+        this.synergySessionList.some((s) => s.sessId === d.sessId),
+      );
+    },
+
+    getPanelStyle() {
+      return this.collapse
+        ? {
+            width: '72px',
+          }
+        : {
+            width: '100%',
+          };
+    },
   },
   data() {
     return {
-      synergySessionList: [],
+      collapse: false,
+      selectSynergy: '',
+      MAX_HEIGHT: 'calc(100% - 10px)',
     };
   },
 
-  async created() {
-    this.synergySessionList = lodash.cloneDeep(
-      this.sessionList.filter((d, index) => index >= 0 && index <= 2),
-    );
+  created() {
+    const synergySessionList = lodash
+      .cloneDeep(this.sessionList.filter((d, index) => index >= 1))
+      .map((d) => {
+        const { sessId, avatar, nickname } = d;
+        return {
+          sessId,
+          avatar,
+          nickname,
+        };
+      });
+    this.setSynergySessionList(synergySessionList);
   },
 
   methods: {
-    handleFull(session) {
-      this.synergySessionList = this.synergySessionList.map((d) => {
+    ...mapActions('IMStore', [
+      'setSynergySessionList',
+      'removeSynergySessionList',
+    ]),
+
+    getStyle(session) {
+      const target = this.synergySessionList.find(
+        (d) => d.sessId === session.sessId,
+      );
+      if (target?.style) return target.style;
+      return this.getBasicStyle;
+    },
+
+    handleChangeSize(session) {
+      const synergySessionList = this.synergySessionList.map((d) => {
         if (d.sessId === session.sessId) {
           d.style =
-            d?.style?.height === '100%'
-              ? this.getStyle
+            d?.style?.height === this.MAX_HEIGHT
+              ? this.getBasicStyle
               : {
-                  height: '100%',
+                  height: this.MAX_HEIGHT,
                 };
         }
 
         return { ...d };
       });
-
-      console.log(1);
+      this.setSynergySessionList(synergySessionList);
     },
-    handleClose() {
-      console.log('2');
+    handleClose(session) {
+      this.removeSynergySessionList(session);
+    },
+
+    handleCollapse() {
+      this.collapse = !this.collapse;
+      const pluginStyle = this.collapse ? { flex: 'unset' } : { flex: '1 1 0' };
+      this.$emit('update:pluginStyle', pluginStyle);
+    },
+
+    handleOpenCollapse(session) {
+      this.handleSelectSynergy(session);
+      this.collapse = false;
+      this.$nextTick(() => {
+        const target = document.querySelector(
+          `.session_${this.formatSessId(session.sessId)}`,
+        );
+        this.$refs.SynergyContainer.scrollTo({
+          top: target.offsetTop - 10,
+          behavior: 'smooth',
+        });
+      });
+    },
+
+    handleSelectSynergy(session) {
+      this.selectSynergy = session.sessId;
+    },
+
+    formatSessId(sessId) {
+      return sessId.replace(':', '');
     },
   },
 };
@@ -122,32 +229,122 @@ export default {
   height: 100%;
   display: flex;
   flex-direction: column;
+  background-color: $bg-white-color;
 
   .top {
     width: 100%;
-    height: 50px;
-    background-color: red;
-    border-bottom: 1px solid #000;
+    height: 56px;
+    border-bottom: 1px solid $split-line-color;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-sizing: border-box;
+    padding: 0 22px 0 18px;
+    position: relative;
+
+    .title {
+      font-size: 16px;
+      font-weight: bold;
+      color: $main-text-color;
+    }
+
+    .list {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+
+      .item {
+        width: 36px;
+        height: 36px;
+        overflow: hidden;
+        background-color: #f2f4f8;
+        margin-left: 10px;
+        border-radius: 5px;
+        border: 1px dashed #ccc;
+        cursor: pointer;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+    }
+
+    .right {
+      width: 16px;
+      height: 100%;
+      position: absolute;
+      right: 0;
+      top: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #e7eaf3;
+      cursor: pointer;
+    }
   }
 
   .container {
     flex: 1;
-    background-color: #2b83fa;
     overflow-y: auto;
     overflow-x: hidden;
     width: 100%;
     box-sizing: border-box;
+    padding: 10px 10px 0 10px;
+    position: relative;
 
     .scroll-view {
       height: 100%;
-      padding: 0 16px;
       box-sizing: border-box;
+
+      .session {
+        width: 100%;
+        min-height: 40%;
+        margin-bottom: 10px;
+        border-radius: 12px;
+        overflow: hidden;
+        border: 2px solid #e7eaf3;
+        box-sizing: border-box;
+
+        &:last-child {
+          margin-bottom: 0;
+        }
+
+        &.active {
+          border-color: #2b83fa;
+        }
+      }
+
+      &:after {
+        content: '';
+        width: 100%;
+        height: 10px;
+        display: block;
+      }
     }
 
-    .session {
-      width: 100%;
-      min-height: 40%;
-      margin-bottom: 16px;
+    .scroll-view-small {
+      height: 100%;
+      box-sizing: border-box;
+
+      .item {
+        width: 36px;
+        height: 36px;
+        border-radius: 4px;
+        margin: 0 auto 10px;
+        overflow: hidden;
+        cursor: pointer;
+
+        .img {
+          display: block;
+          width: 100%;
+          height: 100%;
+        }
+
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
     }
   }
 }

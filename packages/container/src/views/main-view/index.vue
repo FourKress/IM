@@ -7,9 +7,9 @@
     >
       <MainIM />
       <MainPlugIn
-        v-if="synergyPlugin.visible"
-        :key="synergyPlugin.key"
-        :component="synergyPlugin.key"
+        v-if="mainSessionWindow.sessId && synergyStatus"
+        key="Synergy"
+        component="Synergy"
       />
       <template v-for="plugin in plugins">
         <MainPlugIn
@@ -42,15 +42,14 @@ export default {
   data() {
     return {
       plugins: [],
-      synergyPlugin: {
-        visible: false,
-        key: 'SynergyView',
-      },
     };
   },
   computed: {
-    ...mapGetters('IMStore', ['sessionList']),
-
+    ...mapGetters('IMStore', [
+      'sessionList',
+      'synergyStatus',
+      'mainSessionWindow',
+    ]),
     ...mapGetters('globalStore', ['openMicroApp']),
   },
   watch: {
@@ -111,6 +110,8 @@ export default {
     height: 100%;
     flex: 1;
     display: flex;
+    box-shadow: 4px 0 10px -4px rgb(51 51 51 / 10%);
+    border-radius: 0 10px 0 0;
   }
 }
 </style>

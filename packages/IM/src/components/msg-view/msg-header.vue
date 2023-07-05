@@ -1,5 +1,5 @@
 <template>
-  <div class="top">
+  <div class="top" :style="headerStyle">
     <div class="left">
       <div class="img" @click="handleFriend">
         <img :src="toAvatar" alt="" />
@@ -113,6 +113,10 @@ export default {
       type: Object,
       default: () => {},
     },
+    headerStyle: {
+      type: Object,
+      default: () => {},
+    },
   },
   inject: {
     isSettings: {
@@ -219,13 +223,13 @@ export default {
 
 <style scoped lang="scss">
 .top {
-  height: 66px;
+  height: 56px;
   box-sizing: border-box;
   background-color: $bg-white-color;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 20px;
+  padding: 10px 12px;
 
   .left {
     flex: 1;
@@ -234,8 +238,8 @@ export default {
 
     .img {
       display: block;
-      width: 46px;
-      height: 46px;
+      width: 40px;
+      height: 40px;
       border-radius: 6px;
       margin-right: 10px;
       overflow: hidden;

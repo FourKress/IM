@@ -1,8 +1,9 @@
 <template>
-  <div class="client-plugIn">
+  <div class="client-plugIn" :style="pluginStyle">
     <component
       :is="component"
       :key="component"
+      :pluginStyle.sync="pluginStyle"
     ></component>
   </div>
 </template>
@@ -14,19 +15,24 @@ export default {
     component: {
       type: String,
       required: true,
-    }
+    },
+  },
+  data() {
+    return {
+      pluginStyle: {
+        flex: '1 1 0',
+      },
+    };
   },
 };
 </script>
 
 <style scoped lang="scss">
 .client-plugIn {
-  flex: 1 1 0;
-  min-width: 400px;
+  min-width: 72px;
   width: auto;
-  box-shadow: 0 4px 10px 0 rgba(51, 51, 51, 0.1);
-  border-radius: 10px 10px 0 0;
-  margin-left: 6px;
+  border-left: 2px solid $split-line-color;
   overflow: hidden;
+  box-sizing: border-box;
 }
 </style>

@@ -17,7 +17,9 @@ const handlePromiseResult = async (fnc) => {
     return res;
   } catch (e) {
     console.log(e);
-    window.ClientMessage.error(e.message);
+    if (!e.includes('reply was never sent')) {
+      window.ClientMessage.error(e.message);
+    }
     return Promise.reject(e);
   }
 };

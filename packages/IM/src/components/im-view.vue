@@ -204,6 +204,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    headerStyle: {
+      type: Object,
+      default: () => {},
+    },
   },
   data() {
     return {
@@ -502,28 +506,17 @@ export default {
 .im-view {
   height: 100%;
   background-color: $bg-IM-color;
-  box-shadow: 0 4px 10px 0 rgba(51, 51, 51, 0.1);
-  //border-radius: 10px 10px 0 0;
-  //width: 500px;
-  width: auto;
+  width: 100%;
   min-width: 399px;
-  margin-left: 6px;
   display: flex;
   flex-direction: column;
   overflow: hidden;
   transform: translate3d(0, 0, 0);
   position: relative;
 
-  &:first-child {
-    margin-left: 0;
-    flex: 1;
-    //border-radius: 0 10px 0 0;
-    width: auto;
-  }
-
   .message-panel {
     flex: 1;
-    padding: 0px 20px;
+    padding: 0 20px;
     overflow-y: auto;
     overflow-x: hidden;
     transform: translate3d(0, 0, 0);

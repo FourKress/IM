@@ -150,6 +150,7 @@ export default {
           icon: () => 'ls-icon-quxiaozhiding',
         },
       ],
+      _sessionList: [],
     };
   },
   components: {
@@ -163,6 +164,7 @@ export default {
       'mainSessionWindow',
       'allUnreadCount',
       'IM_DataSync_Status',
+      'synergySessionList',
     ]),
     topSessionList() {
       return this.selfSessionList.filter((d) => d.topState === 1);
@@ -171,8 +173,14 @@ export default {
   watch: {
     sessionList: {
       deep: true,
-      handler(val) {
+      handler() {
         this.initData();
+      },
+    },
+    synergySessionList: {
+      deep: true,
+      handler() {
+        this.initSessionList();
       },
     },
     mainSessionWindow: {
@@ -191,16 +199,23 @@ export default {
   },
   methods: {
     ...mapActions('IMStore', ['setMainSessionWindow']),
+
+    initSessionList() {
+      this._sessionList = this.sessionList.filter((d) =>
+        this.synergySessionList.every((s) => s.sessId !== d.sessId),
+      );
+      this.selfSessionList = this._sessionList;
+    },
     initData() {
-      this.selfSessionList = this.sessionList;
+      this.initSessionList();
       this._setMainSessionWindow();
     },
     handleChooseTab(isAll) {
       this.tabType = isAll;
       if (isAll === this.isAll) {
-        this.selfSessionList = this.sessionList;
+        this.selfSessionList = this._sessionList;
       } else {
-        this.selfSessionList = this.sessionList.filter((d) => d?.unreadCount);
+        this.selfSessionList = this._sessionList.filter((d) => d?.unreadCount);
       }
     },
     handleSetSessionWindow(sessId, mainSessionWindow) {

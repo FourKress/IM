@@ -7,6 +7,10 @@ const state = {
   sessionList: [],
   // 主会话窗口
   mainSessionWindow: {},
+  // 协同会话窗口
+  synergySessionList: [],
+  // 协同会话状态
+  synergyStatus: false,
   // 网络状态
   IM_Network_Status: 0,
   // 数据同步状态
@@ -42,6 +46,8 @@ const getters = {
   userProfile: (state) => state.userProfile,
   sessionList: (state) => state.sessionList,
   mainSessionWindow: (state) => state.mainSessionWindow,
+  synergySessionList: (state) => state.synergySessionList,
+  synergyStatus: (state) => state.synergyStatus,
   IM_Network_Status: (state) => state.IM_Network_Status,
   IM_DataSync_Status: (state) => state.IM_DataSync_Status,
   currentMsg: (state) => state.currentMsg,
@@ -76,6 +82,25 @@ const mutations = {
   },
   setMainSessionWindow(data, value) {
     data.mainSessionWindow = value;
+  },
+  setSynergySessionList(data, value) {
+    data.synergySessionList = value;
+  },
+  setSynergyStatus(data, value) {
+    data.synergyStatus = value;
+    if (!value) {
+      data.synergySessionList = [];
+    }
+  },
+  addSynergySessionList(data, value) {
+    if (data.synergySessionList.some((d) => d.sessId === value.sessId)) return;
+    data.synergySessionList.push(value);
+  },
+  removeSynergySessionList(data, value) {
+    const synergySessionList = data.synergySessionList.filter(
+      (d) => d.sessId !== value.sessId,
+    );
+    data.synergySessionList = synergySessionList;
   },
   setIMNetworkStatus(data, value) {
     data.IM_Network_Status = value;
@@ -134,7 +159,18 @@ const actions = {
   setMainSessionWindow({ commit }, value) {
     commit('setMainSessionWindow', value);
   },
-
+  setSynergySessionList({ commit }, value) {
+    commit('setSynergySessionList', value);
+  },
+  setSynergyStatus({ commit }, value) {
+    commit('setSynergyStatus', value);
+  },
+  addSynergySessionList({ commit }, value) {
+    commit('addSynergySessionList', value);
+  },
+  removeSynergySessionList({ commit }, value) {
+    commit('removeSynergySessionList', value);
+  },
   setIMNetworkStatus({ commit }, value) {
     commit('setIMNetworkStatus', value);
   },

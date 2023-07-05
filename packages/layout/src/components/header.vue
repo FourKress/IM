@@ -105,15 +105,15 @@
             <span class="label" @click="goToSettings">设置</span>
             <el-badge is-dot :hidden="!updateNotify"></el-badge>
           </div>
-<!--          <div class="row">-->
-<!--            <span class="label">下载手机版</span>-->
-<!--          </div>-->
-<!--          <div class="row">-->
-<!--            <span class="label">帮助与客服</span>-->
-<!--          </div>-->
-<!--          <div class="row split">-->
-<!--            <span class="label">关于北象</span>-->
-<!--          </div>-->
+          <!--          <div class="row">-->
+          <!--            <span class="label">下载手机版</span>-->
+          <!--          </div>-->
+          <!--          <div class="row">-->
+          <!--            <span class="label">帮助与客服</span>-->
+          <!--          </div>-->
+          <!--          <div class="row split">-->
+          <!--            <span class="label">关于北象</span>-->
+          <!--          </div>-->
           <div class="row disabled">
             <span class="label" @click="handleLogOut">退出北象</span>
           </div>
@@ -411,7 +411,7 @@ export default {
 
   .header_action {
     position: relative;
-    width: 102px;
+    width: 136px;
     height: 24px;
     -webkit-app-region: no-drag !important;
   }

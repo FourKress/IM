@@ -196,16 +196,13 @@ export default {
 #client-im {
   flex: 1 1 0;
   height: 100%;
-  border-left: 1px solid $split-line-color;
-  box-shadow: 4px 0 10px -4px rgb(51 51 51 / 10%);
+  border-left: 2px solid $split-line-color;
   min-width: 400px;
   box-sizing: border-box;
   display: flex;
   justify-content: flex-start;
   overflow-x: auto;
   transform: translate3d(0, 0, 0);
-
-  border-radius: 0 10px 0 0;
   position: relative;
 
   .empty-bg {

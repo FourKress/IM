@@ -1,5 +1,30 @@
 <template>
   <div class="window-action">
+    <el-dropdown
+      trigger="click"
+      @command="handleOpenSynergy"
+      style="display: flex"
+      v-if="!isLogin"
+    >
+      <el-tooltip
+        class="btn"
+        effect="dark"
+        content="协同模式"
+        placement="bottom"
+      >
+        <LsIcon icon="ls-icon-zxh" width="24" height="24" render-svg></LsIcon>
+      </el-tooltip>
+
+      <el-dropdown-menu slot="dropdown">
+        <el-dropdown-item>
+          <div class="send-down-row">
+            <LsIcon render-svg icon="pop_cd_sz"></LsIcon>
+            <span>{{ synergyStatus ? '关闭' : '开启' }}协同模式</span>
+          </div>
+        </el-dropdown-item>
+      </el-dropdown-menu>
+    </el-dropdown>
+
     <span class="btn" @click="handleWindowChange(WIN_ACTION_TYPE.IS_MIN)">
       <LsIcon icon="ls-icon-zxh" width="24" height="24" render-svg></LsIcon>
     </span>
@@ -25,6 +50,7 @@
 import { renderProcess } from '@lanshu/render-process';
 import LsIcon from './ls-icon';
 import { WINDOW_TYPE, WIN_ACTION_TYPE } from '@lanshu/utils';
+import { mapGetters, mapActions } from 'vuex';
 
 export default {
   name: 'Window-action',
@@ -37,6 +63,9 @@ export default {
   components: {
     LsIcon,
   },
+  computed: {
+    ...mapGetters('IMStore', ['synergyStatus']),
+  },
   data() {
     return {
       WIN_ACTION_TYPE,
@@ -44,12 +73,18 @@ export default {
     };
   },
   methods: {
+    ...mapActions('IMStore', ['setSynergyStatus']),
+
     handleWindowChange(type) {
       if (type === this.WIN_ACTION_TYPE.IS_MAX) {
         this.isFull = !this.isFull;
       }
       // isMain => 主窗口标识
       renderProcess.changeWindow(type, WINDOW_TYPE.IS_MAIN);
+    },
+
+    handleOpenSynergy() {
+      this.setSynergyStatus(!this.synergyStatus);
     },
   },
 };
