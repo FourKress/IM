@@ -483,7 +483,7 @@ export default {
     .empty-data {
       height: 20px;
       font-size: 14px;
-      margin: 170px auto 0;
+      margin: 120px auto 0;
       text-align: center;
 
       .link {

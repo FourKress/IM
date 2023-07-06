@@ -154,14 +154,14 @@ export default {
 
 <style scoped lang="scss">
 #client-menu {
-  width: 72px;
+  width: 64px;
   background: $gradient-sidebar-color;
-  padding-bottom: 6px;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
-  margin: -15px 0 0 1px;
+  margin-left: 1px;
+  padding: 24px 0 6px 0;
 
   ::-webkit-scrollbar {
     display: none;
@@ -177,9 +177,9 @@ export default {
     transform: translate3d(0, 0, 0);
 
     .menu-item {
-      width: 60px;
-      height: 60px;
-      min-height: 60px;
+      width: 50px;
+      height: 50px;
+      min-height: 50px;
       font-size: 12px;
       line-height: 17px;
       color: #6f8ab9;
@@ -210,7 +210,7 @@ export default {
       &.active {
         background-color: $bg-white-color;
         box-shadow: $bg-select-shadow;
-        border-radius: 8px;
+        border-radius: 6px;
         color: $primary-color;
 
         .btn-icon {
@@ -230,7 +230,7 @@ export default {
       }
 
       .menu-label {
-        width: 60px;
+        width: 50px;
         text-align: center;
         height: 17px;
         overflow: hidden;

@@ -6,7 +6,7 @@
       </div>
 
       <div class="nav-group" v-for="org in orgList" :key="org.id">
-        <div class="nav-title">
+        <div class="nav-title" style="border: none; margin-bottom: 0">
           <span class="label">{{ org.name }}</span>
           <span class="right-btn" @click="openOrgLink">
             <LsIcon
@@ -529,7 +529,7 @@ export default {
       line-height: 22px;
       font-weight: bold;
       color: $main-text-color;
-      padding: 14px 15px 14px 22px;
+      padding: 14px 15px 4px 22px;
       display: flex;
       justify-content: space-between;
       align-items: center;

@@ -457,8 +457,8 @@ export default {
 
             .name {
               height: 20px;
-              width: 120px;
-              max-width: 120px;
+              width: 100px;
+              max-width: 100px;
               overflow: hidden;
               text-overflow: ellipsis;
               white-space: nowrap;

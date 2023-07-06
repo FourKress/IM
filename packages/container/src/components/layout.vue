@@ -60,9 +60,9 @@ export default {
 <style scoped lang="scss">
 #client-container {
   flex: 1;
-  max-height: calc(100% - 90px);
+  max-height: calc(100% - 70px);
   background-color: $bg-blue-color;
-  height: calc(100% - 68px);
+  height: calc(100% - 56px);
   box-shadow: 4px 0px 10px -4px rgb(51 51 51 / 10%);
 
   .container {
@@ -76,7 +76,7 @@ export default {
       box-shadow: 0 4px 10px 0 rgba(51, 51, 51, 0.1);
       border-radius: 10px 10px 0 0;
       overflow: hidden;
-      margin-top: -22px;
+      margin-top: -14px;
       position: relative;
 
       .router-view {

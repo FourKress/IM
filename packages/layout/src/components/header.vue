@@ -7,13 +7,6 @@
             <img :src="userProfile.avatar" class="img" alt="" />
           </div>
         </el-badge>
-        <!--      <div class="user-info">-->
-        <!--        <p class="name">{{ userInfo.nickname }}</p>-->
-        <!--        <div class="position">-->
-        <!--          <span>线上综窗</span>-->
-        <!--          <span class="down-icon"></span>-->
-        <!--        </div>-->
-        <!--      </div>-->
 
         <div class="network_status">
           <LsNetwork />
@@ -22,9 +15,12 @@
 
       <div class="hearer-search">
         <div class="search" @click="handleSearch">
-          <div class="query-icon">
-            <LsIcon icon="navi_ss_icon" render-svg></LsIcon>
-          </div>
+          <LsIcon
+            icon="navi_ss_icon"
+            width="14"
+            height="14"
+            render-svg
+          ></LsIcon>
           <div class="input-panel">
             <el-input
               v-model="keywords"
@@ -34,9 +30,6 @@
               placeholder="搜索"
             />
           </div>
-          <!--        <div class="add">-->
-          <!--          <LsIcon icon="navi_ss_add" render-svg></LsIcon>-->
-          <!--        </div>-->
         </div>
       </div>
 
@@ -56,16 +49,6 @@
           </div>
           <div class="sub-info">
             <div class="nickname">{{ userProfile.nickname }}</div>
-            <!--            <span class="auth-tag">-->
-            <!--              <LsIcon-->
-            <!--                render-svg-->
-            <!--                class="tag-icon"-->
-            <!--                icon="a-icon_yzcg2x"-->
-            <!--                height="12"-->
-            <!--                width="12"-->
-            <!--              ></LsIcon>-->
-            <!--              <span>已实名</span>-->
-            <!--            </span>-->
           </div>
           <div class="more">
             <LsIcon
@@ -105,15 +88,6 @@
             <span class="label" @click="goToSettings">设置</span>
             <el-badge is-dot :hidden="!updateNotify"></el-badge>
           </div>
-          <!--          <div class="row">-->
-          <!--            <span class="label">下载手机版</span>-->
-          <!--          </div>-->
-          <!--          <div class="row">-->
-          <!--            <span class="label">帮助与客服</span>-->
-          <!--          </div>-->
-          <!--          <div class="row split">-->
-          <!--            <span class="label">关于北象</span>-->
-          <!--          </div>-->
           <div class="row disabled">
             <span class="label" @click="handleLogOut">退出北象</span>
           </div>
@@ -124,8 +98,8 @@
     <LsCardDialog :visible.sync="showQrCodeDialog">
       <LsQrcodePanel
         :position="{
-          left: '450px',
-          top: '10px',
+          left: '442px',
+          top: '12px',
         }"
         tips="添加我为联系人"
         :qrcodeInfo="{
@@ -264,17 +238,17 @@ export default {
 <style scoped lang="scss">
 #client-header {
   width: 100%;
-  height: 90px;
-  min-height: 90px;
+  height: 70px;
+  min-height: 70px;
   background: $gradient-header-color;
-  padding-bottom: 22px;
+  padding-bottom: 14px;
   box-sizing: border-box;
   position: relative;
 
   #header-container {
-    height: 68px;
+    height: 56px;
     box-sizing: border-box;
-    padding: 0 20px 0 12px;
+    padding: 0 10px 0 12px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -291,11 +265,14 @@ export default {
     display: flex;
     align-items: center;
     position: relative;
+
+    transform: translateY(4px);
+
     -webkit-app-region: no-drag !important;
 
     .avatar {
-      width: 46px;
-      height: 46px;
+      width: 40px;
+      height: 40px;
       cursor: pointer;
 
       .img {
@@ -305,37 +282,6 @@ export default {
         height: 100%;
       }
     }
-
-    //.user-info {
-    //  margin-left: 12px;
-    //  display: flex;
-    //  flex-direction: column;
-    //  justify-content: center;
-    //  align-items: flex-start;
-    //
-    //  .name {
-    //    font-size: 16px;
-    //    font-weight: bold;
-    //    color: $main-text-color;
-    //    line-height: 22px;
-    //  }
-    //
-    //  .position {
-    //    font-size: 14px;
-    //    color: $minor-text-color;
-    //    line-height: 20px;
-    //    display: flex;
-    //    align-items: center;
-    //
-    //    .down-icon {
-    //      width: 8px;
-    //      height: 5px;
-    //      margin-left: 6px;
-    //
-    //      background-color: #333333;
-    //    }
-    //  }
-    //}
 
     .network_status {
       position: absolute;
@@ -356,10 +302,10 @@ export default {
 
     .search {
       width: 500px;
-      height: 48px;
+      height: 36px;
       background-color: $bg-white-color;
       box-shadow: $bg-select-shadow;
-      border-radius: 10px;
+      border-radius: 20px;
       padding: 0 18px;
       overflow: hidden;
       display: flex;
@@ -368,22 +314,16 @@ export default {
 
       -webkit-app-region: no-drag;
 
-      .query-icon {
-        width: 18px;
-        height: 18px;
-      }
-
       .input-panel {
         flex: 1;
-        height: 40px;
+        height: 36px;
         padding: 0 8px;
-        //border-right: 1px solid $split-line-color;
         font-size: 14px;
         cursor: pointer;
 
         ::v-deep .el-input {
           border: none;
-          height: 40px;
+          height: 36px;
 
           .el-input__inner {
             width: 100%;
@@ -398,13 +338,6 @@ export default {
             font-size: 14px;
           }
         }
-      }
-
-      .add {
-        width: 18px;
-        height: 18px;
-        cursor: pointer;
-        margin-left: 17px;
       }
     }
   }
@@ -426,8 +359,8 @@ export default {
   border: 1px solid $split-line-color;
   overflow: hidden;
   position: fixed;
-  top: 10px;
-  left: 72px;
+  top: 12px;
+  left: 64px;
   z-index: 9;
 
   .top {
