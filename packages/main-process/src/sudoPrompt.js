@@ -1,6 +1,6 @@
 import { electronLog } from './log';
 
-const sudo = require('sudo-prompt');
+const sudo = require('@lanshu/sudo-prompt');
 const options = {
   name: 'Lanshu',
 };
