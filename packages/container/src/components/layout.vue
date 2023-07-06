@@ -67,14 +67,14 @@ export default {
 
   .container {
     display: flex;
-    width: calc(100% - 6px);
+    width: 100%;
     height: 100%;
 
     .view-container {
       flex: 1;
       display: flex;
       box-shadow: 0 4px 10px 0 rgba(51, 51, 51, 0.1);
-      border-radius: 10px 10px 0 0;
+      border-radius: 10px 0 0 0;
       overflow: hidden;
       margin-top: -14px;
       position: relative;

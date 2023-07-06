@@ -1,5 +1,5 @@
 <template>
-  <div class="im-view" :ref="refsName">
+  <div class="im-view" :ref="refsName" :style="imViewStyle">
     <MsgHeader
       v-bind="$props"
       v-on="$listeners"
@@ -207,6 +207,14 @@ export default {
     headerStyle: {
       type: Object,
       default: () => {},
+    },
+    imViewStyle: {
+      type: Object,
+      default: () => {
+        return {
+          minWidth: '399px',
+        };
+      },
     },
   },
   data() {
@@ -507,7 +515,6 @@ export default {
   height: 100%;
   background-color: $bg-IM-color;
   width: 100%;
-  min-width: 399px;
   display: flex;
   flex-direction: column;
   overflow: hidden;

@@ -93,10 +93,9 @@
           </div>
         </div>
       </div>
-    </LsCardDialog>
 
-    <LsCardDialog :visible.sync="showQrCodeDialog">
       <LsQrcodePanel
+        v-if="showQrCodeDialog"
         :position="{
           left: '442px',
           top: '12px',
@@ -185,6 +184,7 @@ export default {
       this.description = this.userProfile?.description;
     },
     openDialog() {
+      this.showQrCodeDialog = false;
       this.showSettingsDialog = true;
     },
     goToSettings() {
@@ -208,7 +208,7 @@ export default {
     },
 
     showQrCode() {
-      this.showQrCodeDialog = true;
+      this.showQrCodeDialog = !this.showQrCodeDialog;
     },
 
     async handleSetSign(val) {

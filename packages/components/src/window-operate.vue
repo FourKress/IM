@@ -1,32 +1,42 @@
 <template>
   <div class="window-action">
-    <el-dropdown
-      trigger="click"
-      @command="handleOpenSynergy"
-      style="display: flex"
+    <el-popover
+      placement="bottom-end"
+      popper-class="synergy-popover"
+      width="172"
+      trigger="hover"
       v-if="!isLogin"
     >
-      <el-tooltip
-        class="btn"
-        effect="dark"
-        content="协同模式"
-        placement="bottom"
-      >
-        <LsIcon icon="ls-icon-zxh" width="24" height="24" render-svg></LsIcon>
-      </el-tooltip>
-
-      <el-dropdown-menu slot="dropdown">
-        <el-dropdown-item>
-          <div class="send-down-row">
-            <LsIcon render-svg icon="pop_cd_sz"></LsIcon>
-            <span>{{ synergyStatus ? '关闭' : '开启' }}协同模式</span>
-          </div>
-        </el-dropdown-item>
-      </el-dropdown-menu>
-    </el-dropdown>
+      <div class="popover-panel">
+        <LsIcon
+          icon="ls-icon-icon_xietong"
+          width="12"
+          height="12"
+          render-svg
+        ></LsIcon>
+        <span class="label">协同模式</span>
+        <el-switch
+          :value="synergyStatus"
+          @change="handleOpenSynergy"
+        ></el-switch>
+      </div>
+      <span slot="reference" class="btn">
+        <LsIcon
+          icon="ls-icon-icon_yemianbuju"
+          width="12"
+          height="12"
+          render-svg
+        ></LsIcon>
+      </span>
+    </el-popover>
 
     <span class="btn" @click="handleWindowChange(WIN_ACTION_TYPE.IS_MIN)">
-      <LsIcon icon="ls-icon-zxh" width="24" height="24" render-svg></LsIcon>
+      <LsIcon
+        icon="ls-icon-zuixiaohua1"
+        width="12"
+        height="12"
+        render-svg
+      ></LsIcon>
     </span>
     <span
       class="btn"
@@ -34,14 +44,14 @@
       @click="handleWindowChange(WIN_ACTION_TYPE.IS_MAX)"
     >
       <LsIcon
-        :icon="isFull ? 'ls-icon-zuixiaohua' : 'ls-icon-sx'"
-        width="24"
-        height="24"
+        :icon="isFull ? 'ls-icon-icon_quxiaozuidahua' : 'ls-icon-zuidahua'"
+        width="12"
+        height="12"
         render-svg
       ></LsIcon>
     </span>
     <span class="btn" @click="handleWindowChange(WIN_ACTION_TYPE.IS_CLOSE)">
-      <LsIcon icon="ls-icon-gb" width="24" height="24" render-svg></LsIcon>
+      <LsIcon icon="ls-icon-guanbi" width="12" height="12" render-svg></LsIcon>
     </span>
   </div>
 </template>
@@ -107,6 +117,26 @@ export default {
     margin-left: 10px;
     border-radius: 50%;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+</style>
+
+<style scoped lang="scss">
+.synergy-popover {
+  .popover-panel {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    .label {
+      flex: 1;
+      padding-left: 8px;
+      color: $main-text-color;
+      font-weight: bold;
+    }
   }
 }
 </style>
