@@ -184,6 +184,7 @@
         @close="handleGroupClose"
         @confirm="handleCroupConfirm"
         :rawMembers="rawMembers"
+        :defaultMembers="defaultMembers"
       ></GroupMemberChat>
     </LsCardDialog>
   </div>
@@ -265,13 +266,21 @@ export default {
     };
   },
   computed: {
-    ...mapGetters('IMStore', ['newFriendCount', 'sessionList']),
+    ...mapGetters('IMStore', ['newFriendCount', 'sessionList', 'userInfo']),
     ...mapGetters('routerStore', ['orgBreadCrumbs']),
 
     rawMembers() {
       return this.sessionList.filter(
         (d) => d.toUserType === SESSION_USER_TYPE.IS_BASIC,
       );
+    },
+    defaultMembers() {
+      return [
+        {
+          ...this.userInfo,
+          toUser: this.userInfo.userId,
+        },
+      ];
     },
   },
   watch: {
@@ -285,12 +294,14 @@ export default {
   mounted() {
     this.orgActiveKey = sessionStorage.getItem('orgActiveKey') || '';
     this.activeKey = sessionStorage.getItem('activeKey') || '';
-    this.friendNavItem = JSON.parse(sessionStorage.getItem('friendNavItem') || '{}');
+    this.friendNavItem = JSON.parse(
+      sessionStorage.getItem('friendNavItem') || '{}',
+    );
     if (!this.orgActiveKey && this.activeKey) {
       this.handleFriendNav({
         ...this.friendNavItem,
         key: this.activeKey,
-      })
+      });
     }
     this.getDepList();
   },
@@ -322,6 +333,7 @@ export default {
     },
 
     handleSelectDep(item, dep, org) {
+      this.orgActiveKey = dep.id;
       this.friendNavItem = {};
       this.activeKey = item.key;
       this.handleSelectNav({
@@ -472,7 +484,7 @@ export default {
     recursionMyDep(subDepList, dep, userDepList) {
       // 所属部门只有一个 且 属于顶级部门
       if (userDepList.length === 1 && userDepList[0].id === dep.id) {
-        return []
+        return [];
       }
       const userDep = userDepList.find((u) => u.parentId === dep.id);
       if (userDep) {
@@ -489,7 +501,7 @@ export default {
     },
   },
 
-  destroyed() {
+  beforeDestroy() {
     sessionStorage.setItem('orgActiveKey', this.orgActiveKey);
     sessionStorage.setItem('activeKey', this.activeKey);
     sessionStorage.setItem('friendNavItem', JSON.stringify(this.friendNavItem));

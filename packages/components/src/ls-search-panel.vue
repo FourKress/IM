@@ -31,10 +31,17 @@
         </span>
         <span
           class="btn"
-          :class="tabType === TAB_TYPE.IS_Address && 'active'"
-          @click="handleChooseTab(TAB_TYPE.IS_Address)"
+          :class="tabType === TAB_TYPE.IS_Org && 'active'"
+          @click="handleChooseTab(TAB_TYPE.IS_Org)"
         >
-          联系人
+          组织架构
+        </span>
+        <span
+          class="btn"
+          :class="tabType === TAB_TYPE.IS_Friend && 'active'"
+          @click="handleChooseTab(TAB_TYPE.IS_Friend)"
+        >
+          好友
         </span>
         <span
           class="btn"
@@ -65,7 +72,12 @@
 
       <div class="search-list" v-if="searchData.length">
         <div class="scroll-view">
-          <div class="item" v-for="item in searchData" :key="item.userId" @click="(event) => handleFriend(item, event)">
+          <div
+            class="item"
+            v-for="item in searchData"
+            :key="item.userId"
+            @click="(event) => handleFriend(item, event)"
+          >
             <div class="info">
               <div class="img">
                 <img :src="item.avatar" alt="" />
@@ -76,7 +88,6 @@
             </div>
           </div>
         </div>
-
       </div>
 
       <div class="empty-data" v-if="isEmpty">
@@ -90,14 +101,20 @@
 
 <script>
 import { LsIcon } from '@lanshu/components';
-import { lodash, setHeaderClassName, StartSessionMixins, } from '@lanshu/utils';
+import {
+  Apis,
+  lodash,
+  setHeaderClassName,
+  StartSessionMixins,
+} from '@lanshu/utils';
 import { mapActions, mapGetters } from 'vuex';
-import { IMGetAllFriendList, IMGetByUserId, IMGetGroupList } from '@lanshu/im';
+import { IMGetAllFriendList, IMGetGroupList } from '@lanshu/im';
 
 const TAB_TYPE = {
   IS_ALL: 'All',
   IS_GROUP: 'Group',
-  IS_Address: 'Address',
+  IS_Org: 'Org',
+  IS_Friend: 'Friend',
 };
 
 export default {
@@ -114,7 +131,7 @@ export default {
     LsIcon,
   },
   computed: {
-    ...mapGetters('globalStore', ['searchHistory']),
+    ...mapGetters('globalStore', ['searchHistory', 'systemUserInfo']),
   },
   data() {
     return {
@@ -124,6 +141,7 @@ export default {
       groupData: [],
       addressBooKData: [],
       searchData: [],
+      orgData: [],
       isEmpty: false,
     };
   },
@@ -165,11 +183,16 @@ export default {
     }, 400),
 
     getSearchResult(keywords) {
-      if (!keywords) return
+      if (!keywords) return;
       const dataMap = {
-        [TAB_TYPE.IS_ALL]: [...this.groupData, ...this.addressBooKData],
+        [TAB_TYPE.IS_ALL]: [
+          ...this.groupData,
+          ...this.addressBooKData,
+          ...this.orgData,
+        ],
         [TAB_TYPE.IS_GROUP]: this.groupData,
-        [TAB_TYPE.IS_Address]: this.addressBooKData,
+        [TAB_TYPE.IS_Friend]: this.addressBooKData,
+        [TAB_TYPE.IS_Org]: this.orgData,
       };
       const originData = dataMap[this.tabType];
       const searchData = originData.filter((d) => {
@@ -200,8 +223,20 @@ export default {
       this.tabType = TAB_TYPE.IS_ALL;
       const groupRes = await IMGetGroupList();
       const addressBooKRes = await IMGetAllFriendList();
+      const orgRes = await Apis.userQueryByOrgId({
+        orgId: this.systemUserInfo?.currentOrg?.id,
+      });
       this.groupData = groupRes?.data || [];
       this.addressBooKData = addressBooKRes?.data || [];
+      this.orgData = (orgRes?.data || []).map((d) => {
+        const { nickName, picture, userId } = d;
+        return {
+          ...d,
+          toUser: userId,
+          avatar: picture,
+          nickname: nickName,
+        };
+      });
     },
 
     async handleFriend(item) {

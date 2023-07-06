@@ -2,11 +2,32 @@
   <div class="synergy" :style="getPanelStyle">
     <div class="top">
       <span class="title">协同</span>
-      <span class="list" v-if="!collapse">
+      <div class="list" v-if="!collapse">
+        <div
+          class="item"
+          v-for="session in _sessionList"
+          @click="handleOpenCollapse(session)"
+        >
+          <el-tooltip
+            class="btn"
+            effect="dark"
+            :content="session.nickname"
+            placement="top"
+          >
+            <el-badge
+              :value="session.unreadCount"
+              :hidden="!session.unreadCount"
+              :max="99"
+            >
+              <img class="img" :src="session.avatar" alt="" />
+            </el-badge>
+          </el-tooltip>
+        </div>
+
         <span class="add item">
           <LsIcon render-svg width="14" height="14" icon="navi_ss_add"></LsIcon>
         </span>
-      </span>
+      </div>
       <span class="right" @click="handleCollapse">
         <LsIcon
           render-svg
@@ -60,7 +81,7 @@
       <div class="scroll-view-small" v-else>
         <div
           class="item"
-          v-for="session in synergySessionList"
+          v-for="session in _sessionList"
           @click="handleOpenCollapse(session)"
         >
           <el-tooltip
@@ -69,9 +90,19 @@
             :content="session.nickname"
             placement="right"
           >
-            <img class="img" :src="session.avatar" alt="" />
+            <el-badge
+              :value="session.unreadCount"
+              :hidden="!session.unreadCount"
+              :max="99"
+            >
+              <img class="img" :src="session.avatar" alt="" />
+            </el-badge>
           </el-tooltip>
         </div>
+
+        <span class="add item">
+          <LsIcon render-svg width="14" height="14" icon="navi_ss_add"></LsIcon>
+        </span>
       </div>
     </div>
   </div>
@@ -82,6 +113,7 @@ import { lodash } from '@lanshu/utils';
 import { mapGetters, mapActions } from 'vuex';
 import { LsIcon } from '@lanshu/components';
 import ImView from '../im-view.vue';
+import { IMClearUnreadCount } from '../../IM-SDK';
 export default {
   name: 'Synergy',
   components: {
@@ -147,7 +179,9 @@ export default {
 
   created() {
     const synergySessionList = lodash
-      .cloneDeep(this.sessionList.filter((d, index) => index >= 1))
+      .cloneDeep(
+        this.sessionList.filter((d, index) => index >= 3 && index <= 6),
+      )
       .map((d) => {
         const { sessId, avatar, nickname } = d;
         return {
@@ -199,25 +233,42 @@ export default {
     },
 
     handleOpenCollapse(session) {
-      this.handleSelectSynergy(session);
+      this.handleActiveSynergy(session);
       this.collapse = false;
-      this.$nextTick(() => {
-        const target = document.querySelector(
-          `.session_${this.formatSessId(session.sessId)}`,
-        );
+      this.$nextTick(() => {});
+      setTimeout(() => {
+        const target = this.getSessionTarget(session);
         this.$refs.SynergyContainer.scrollTo({
           top: target.offsetTop - 10,
           behavior: 'smooth',
         });
-      });
+      }, 1000);
+    },
+
+    handleActiveSynergy(session) {
+      const { sessId, unreadCount } = session;
+      this.selectSynergy = sessId;
+      if (unreadCount) {
+        IMClearUnreadCount(sessId);
+      }
     },
 
     handleSelectSynergy(session) {
-      this.selectSynergy = session.sessId;
+      this.handleActiveSynergy(session);
+      this.getSessionTarget(session);
     },
 
     formatSessId(sessId) {
       return sessId.replace(':', '');
+    },
+
+    getSessionTarget(session) {
+      const { sessId } = session;
+      const target = document.querySelector(
+        `.session_${this.formatSessId(sessId)}`,
+      );
+      target.querySelector('.editor-container')?.focus();
+      return target;
     },
   },
 };
@@ -257,16 +308,34 @@ export default {
       .item {
         width: 36px;
         height: 36px;
-        overflow: hidden;
         background-color: #f2f4f8;
-        margin-left: 10px;
+        margin-right: 16px;
         border-radius: 5px;
-        border: 1px dashed #ccc;
-        cursor: pointer;
 
+        cursor: pointer;
+        box-sizing: border-box;
         display: flex;
         align-items: center;
         justify-content: center;
+
+        .img {
+          display: block;
+          width: 100%;
+          height: 100%;
+          border-radius: 5px;
+        }
+
+        &:last-child {
+          margin-right: 0;
+        }
+
+        &.add {
+          border: 1px solid #ccc;
+        }
+
+        ::v-deep .el-badge__content {
+          right: 14px;
+        }
       }
     }
 
@@ -330,19 +399,34 @@ export default {
       .item {
         width: 36px;
         height: 36px;
-        border-radius: 4px;
         margin: 0 auto 10px;
-        overflow: hidden;
         cursor: pointer;
+
+        background-color: #f2f4f8;
+        border-radius: 5px;
+        cursor: pointer;
+        box-sizing: border-box;
+        display: flex;
+        align-items: center;
+        justify-content: center;
 
         .img {
           display: block;
           width: 100%;
           height: 100%;
+          border-radius: 4px;
         }
 
         &:last-child {
           margin-bottom: 0;
+        }
+
+        &.add {
+          border: 1px solid #ccc;
+        }
+
+        ::v-deep .el-badge__content {
+          top: 2px;
         }
       }
     }

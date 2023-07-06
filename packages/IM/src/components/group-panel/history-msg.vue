@@ -94,12 +94,9 @@
 import { LsIcon, TimesTransform, LsAssets } from '@lanshu/components';
 import { lodash, MSG_FORMAT_MAP } from '@lanshu/utils';
 import { mapGetters } from 'vuex';
-import {
-  IMSearchMessageByMsgType,
-  IMSearchMessageOfText,
-} from '../../IM-SDK';
+import { IMSearchMessageByMsgType, IMSearchMessageOfText } from '../../IM-SDK';
 import DrawerMixins from './drawer-mixins';
-import HistoryMsgCard from "./history-msg-card.vue";
+import HistoryMsgCard from './history-msg-card.vue';
 
 const TAB_TYPE = {
   IS_KEYWORDS: 1,
@@ -139,9 +136,9 @@ export default {
   watch: {
     visibleDrawer(val) {
       if (val) {
-        this.handleChooseTab(TAB_TYPE.IS_KEYWORDS)
+        this.handleChooseTab(TAB_TYPE.IS_KEYWORDS);
       }
-    }
+    },
   },
   mounted() {
     this.throttleGetHistoryMsgList = lodash.throttle(
@@ -152,11 +149,13 @@ export default {
         trailing: false,
       },
     );
-    this.throttleGetHistoryMsgList(false);
+    if (this.visibleDrawer) {
+      this.throttleGetHistoryMsgList(false);
+    }
   },
   methods: {
     handleChooseTab(type) {
-      this.historyMsgList = []
+      this.historyMsgList = [];
       this.keywords = '';
       this.tabType = type;
       this.throttleGetHistoryMsgList(false);
@@ -167,8 +166,6 @@ export default {
       this.getHistoryMsgList();
     }, 400),
 
-
-
     getHistoryMsgList(isContinue = false) {
       if (!isContinue) {
         this.nextSeq = 0;
@@ -176,9 +173,15 @@ export default {
 
       const isKeywords = this.tabType === TAB_TYPE.IS_KEYWORDS;
 
-      const fetchFnc = isKeywords ? IMSearchMessageOfText : IMSearchMessageByMsgType;
+      const fetchFnc = isKeywords
+        ? IMSearchMessageOfText
+        : IMSearchMessageByMsgType;
 
-      fetchFnc(this.actionWindow.sessId, isKeywords ? this.keywords : this.tabType, this.nextSeq).then((res) => {
+      fetchFnc(
+        this.actionWindow.sessId,
+        isKeywords ? this.keywords : this.tabType,
+        this.nextSeq,
+      ).then((res) => {
         console.log('拉取成功', res.data);
         const { msgs, nextSeq, hasNext } = res?.data || {};
         this.hasNext = hasNext;
@@ -187,7 +190,8 @@ export default {
           this.historyMsgList.unshift(...msgs);
           this.$nextTick(() => {
             const currentScrollHeight = this.$refs.historyMsgList.scrollHeight;
-            this.$refs.historyMsgList.scrollTop = currentScrollHeight - this.preScrollHeight + this.scrollTop;
+            this.$refs.historyMsgList.scrollTop =
+              currentScrollHeight - this.preScrollHeight + this.scrollTop;
           });
         } else {
           this.historyMsgList = msgs;
@@ -199,21 +203,25 @@ export default {
       });
     },
 
-    handleScroll: lodash.throttle(function (event) {
-      if (!this.hasNext) return;
-      const scrollTop = event.target.scrollTop;
-      if (
-        scrollTop <= 500 &&
-        (scrollTop <= this.scrollTop || this.scrollTop === 0)
-      ) {
-        this.preScrollHeight = this.$refs.historyMsgList.scrollHeight;
-        this.scrollTop = scrollTop;
-        this.throttleGetHistoryMsgList(true);
-      }
-    }, 200, {
-      leading: true,
-      trailing: false,
-    }),
+    handleScroll: lodash.throttle(
+      function (event) {
+        if (!this.hasNext) return;
+        const scrollTop = event.target.scrollTop;
+        if (
+          scrollTop <= 500 &&
+          (scrollTop <= this.scrollTop || this.scrollTop === 0)
+        ) {
+          this.preScrollHeight = this.$refs.historyMsgList.scrollHeight;
+          this.scrollTop = scrollTop;
+          this.throttleGetHistoryMsgList(true);
+        }
+      },
+      200,
+      {
+        leading: true,
+        trailing: false,
+      },
+    ),
   },
 };
 </script>
@@ -366,7 +374,6 @@ export default {
       }
 
       .empty-bg {
-
         img {
           display: block;
           width: 200px;
@@ -376,7 +383,6 @@ export default {
           top: 50%;
           transform: translate(-50%, -60%);
         }
-
       }
     }
   }

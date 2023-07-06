@@ -312,18 +312,16 @@ export default {
     this.minScrollTop = 370;
     this.maxScrollTop = 440;
 
-    if (!this.isCreate) {
-      this.groupName = this.defaultGroup.nickname;
+    this.groupName = this.defaultGroup?.nickname || '';
 
-      if (this.defaultMembers.length) {
-        if (this.isAddAdmin || this.isAdd) {
-          this.selectList = [
-            ...this.defaultMembers.map((d) => {
-              d.isDefault = true;
-              return d;
-            }),
-          ];
-        }
+    if (this.defaultMembers?.length) {
+      if (this.isAddAdmin || this.isAdd || this.isCreate) {
+        this.selectList = [
+          ...this.defaultMembers.map((d) => {
+            d.isDefault = true;
+            return d;
+          }),
+        ];
       }
     }
   },
@@ -387,8 +385,6 @@ export default {
     },
 
     async handleCreateGroup(members) {
-      // const avatar =
-      //   'https://diy.jiuwa.net/make/ps?sktype=&fontsize=380&skwidth=3&fillcolor=022b6f&shadowtype=2&filltype=1&text=%E9%A9%AC&skcolor=999999&skopacity=1&distort=9&fontype=21';
       // groupAddType – 群加入类型 1：不允许加入2：任何人都可以加入3：群主或管理员审核通过后加入
       const groupAddType = 2;
       return await IMCreateGroup(this.groupName, '', groupAddType, members);
@@ -497,7 +493,8 @@ export default {
     getCheckedStatus(item) {
       const key = this.isCreate || this.isAdd ? 'toUser' : 'userId';
       const isDefault = this.defaultMembers.some((c) => c.userId === item[key]);
-      const flag = this.isAdd || this.isAddAdmin ? isDefault : false;
+      const flag =
+        this.isAdd || this.isAddAdmin || this.isCreate ? isDefault : false;
       return {
         ...item,
         checked: flag,

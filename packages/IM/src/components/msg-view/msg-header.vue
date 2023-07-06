@@ -163,7 +163,10 @@ export default {
     handleCommand(command) {
       this.$emit('moreCallback', {
         command,
-        session: this.session,
+        session: {
+          ...this.session,
+          userId: this.session.toUser,
+        },
       });
     },
 
