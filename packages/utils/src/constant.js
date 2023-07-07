@@ -130,6 +130,7 @@ export const IM_GROUP_MEMBER_PANEL_TYPE = {
   IS_DEL: 'Del',
   IS_ADD_ADMIN: 'Add_Admin',
   IS_DEL_ADMIN: 'Del_Admin',
+  IS_SYNERGY: 'Synergy',
 };
 
 export const WIN_ACTION_TYPE = {

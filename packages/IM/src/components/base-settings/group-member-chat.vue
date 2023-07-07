@@ -136,35 +136,18 @@
         </div>
       </div>
       <div class="right">
-        <div class="input-row" v-if="isCreate">
-          <div class="query-icon">
-            <LsIcon
-              icon="a-icon_bianjiqunmingcheng2x"
-              width="14"
-              height="14"
-              render-svg
-            ></LsIcon>
-          </div>
-          <div class="input-panel">
-            <el-input
-              type="text"
-              v-model="groupName"
-              clearable
-              placeholder="编辑群名称"
-            />
-          </div>
-        </div>
         <div
           class="active-row"
           :style="{
             marginTop:
               panelType !== IM_GROUP_MEMBER_PANEL_TYPE.IS_CREATE ? '10px' : '0',
+            marginBottom: 0,
           }"
         >
           <span class="tips">
             <span>已选{{ placeholder }}：{{ selectList.length }}</span>
             <span v-if="panelType !== IM_GROUP_MEMBER_PANEL_TYPE.IS_DEL">
-              /500
+              /{{ MAX_SELECT_COUNT }}
             </span>
           </span>
         </div>
@@ -196,7 +179,11 @@
         </div>
         <div class="btn-list">
           <span class="btn cancel" @click="handleClose">取消</span>
-          <span class="btn confirm" @click="handleConfirm">
+          <template v-if="isSynergy">
+            <span class="btn confirm" @click="handleConfirm">群聊协同</span>
+            <span class="btn confirm" @click="handleConfirm">单聊协同</span>
+          </template>
+          <span class="btn confirm" v-else @click="handleConfirm">
             {{
               panelType !== IM_GROUP_MEMBER_PANEL_TYPE.IS_DEL ? '确定' : '删除'
             }}
@@ -263,7 +250,6 @@ export default {
       selectList: [],
       selectName: null,
       staffName: '',
-      groupName: '',
       orgUsers: [],
       pyBookList: [],
     };
@@ -277,6 +263,7 @@ export default {
       if (this.isCreate) return '创建群聊';
       if (this.isAddAdmin) return '添加管理员';
       if (this.isDelAdmin) return '删除管理员';
+      if (this.isSynergy) return '创建协同';
     },
     isDel() {
       return this.panelType === this.IM_GROUP_MEMBER_PANEL_TYPE.IS_DEL;
@@ -293,6 +280,9 @@ export default {
     isDelAdmin() {
       return this.panelType === this.IM_GROUP_MEMBER_PANEL_TYPE.IS_DEL_ADMIN;
     },
+    isSynergy() {
+      return this.panelType === this.IM_GROUP_MEMBER_PANEL_TYPE.IS_SYNERGY;
+    },
     placeholder() {
       let str = '联系人';
       if (this.isDelAdmin || this.isAddAdmin) {
@@ -301,7 +291,13 @@ export default {
       if (this.isAdd || this.isDel) {
         str = '群成员';
       }
+      if (this.isSynergy) {
+        str = '协同者';
+      }
       return str;
+    },
+    MAX_SELECT_COUNT() {
+      return this.isSynergy ? 20 : 500;
     },
   },
   mounted() {
@@ -311,8 +307,6 @@ export default {
 
     this.minScrollTop = 370;
     this.maxScrollTop = 440;
-
-    this.groupName = this.defaultGroup?.nickname || '';
 
     if (this.defaultMembers?.length) {
       if (this.isAddAdmin || this.isAdd || this.isCreate) {
@@ -367,10 +361,7 @@ export default {
         this.$message.error(`${this.groupTitle}至少选择1人`);
         return;
       }
-      if (!this.groupName && !(this.isAddAdmin || this.isDelAdmin)) {
-        this.$message.error('请输入群聊名称');
-        return;
-      }
+
       const members = realSelectList.map((d) =>
         d.toUser ? d.toUser : d.userId,
       );
@@ -379,15 +370,19 @@ export default {
         realSelectList.map((d) => d.nickname),
       );
 
-      const res = await handleTarget.func(members);
+      const res = await handleTarget.func(members, realSelectList);
       this.$message.success(`${this.groupTitle}成功`);
       this.$emit('confirm', res?.data);
     },
 
-    async handleCreateGroup(members) {
+    async handleCreateGroup(members, selectList) {
       // groupAddType – 群加入类型 1：不允许加入2：任何人都可以加入3：群主或管理员审核通过后加入
       const groupAddType = 2;
-      return await IMCreateGroup(this.groupName, '', groupAddType, members);
+      let groupName = selectList.map((d) => d.nickname).join('、');
+      if (groupName.length > 16) {
+        groupName = groupName.substring(0, 15);
+      }
+      return await IMCreateGroup(groupName, '', groupAddType, members);
     },
     async handleAddGroupMember(members) {
       return await IMInviteMember(this.defaultGroup.toUser, members).then(
@@ -456,6 +451,11 @@ export default {
     },
 
     handleSelect(value, item) {
+      if (this.selectList?.length >= this.MAX_SELECT_COUNT) {
+        this.$message.warning(`已达${this.placeholder}选择人数上限!`);
+        item.checked = false;
+        return;
+      }
       this.selectName = item?.nickname;
       if (value) {
         this.selectList.push(item);
@@ -847,9 +847,9 @@ export default {
         display: flex;
         align-items: center;
         justify-content: flex-end;
-        margin-bottom: 20px;
+        margin: 10px 0;
         box-sizing: border-box;
-        padding: 0 20px;
+        padding: 0 10px;
 
         .btn {
           width: 88px;

@@ -42,7 +42,7 @@
 
     <div class="mask" v-if="visibleSynergyMember">
       <GroupMemberChat
-        :panelType="IM_GROUP_MEMBER_PANEL_TYPE.IS_CREATE"
+        :panelType="IM_GROUP_MEMBER_PANEL_TYPE.IS_SYNERGY"
         @close="handleGroupClose"
         @confirm="handleCroupConfirm"
         :rawMembers="rawMembers"
