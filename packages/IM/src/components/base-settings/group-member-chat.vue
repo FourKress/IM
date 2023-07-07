@@ -517,7 +517,7 @@ export default {
   border-radius: 12px;
   border: 1px solid $split-line-color;
   box-sizing: border-box;
-  position: absolute;
+  position: fixed;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);

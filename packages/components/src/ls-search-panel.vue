@@ -90,7 +90,7 @@
         </div>
       </div>
 
-      <div class="empty-data" v-if="isEmpty">
+      <div class="empty-data" v-if="isEmpty && keywords">
         没有找到“
         <span class="link">{{ keywords }}</span>
         ”相关的结果
@@ -218,7 +218,7 @@ export default {
 
     async getData() {
       this.keywords = '';
-      this.searchData = '';
+      this.searchData = [];
       this.isEmpty = false;
       this.tabType = TAB_TYPE.IS_ALL;
       const groupRes = await IMGetGroupList();

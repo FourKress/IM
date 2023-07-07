@@ -91,7 +91,9 @@ export default {
         const pinyinKey = key === this.isSpecial ? this.specialKey : key;
         const offset = document
           .querySelector(`#group-${key}`)
-          .getBoundingClientRect();
+          ?.getBoundingClientRect();
+
+        if (!offset) return;
 
         const { top, height } = offset;
 

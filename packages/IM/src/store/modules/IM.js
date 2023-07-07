@@ -39,6 +39,8 @@ const state = {
   groupUserAttributeChanged: '',
   // 被提出或退出群聊
   groupMemberDeleteCallBack: '',
+  // 协同历史
+  synergyHistory: JSON.parse(localStorage.getItem('synergyHistory') || '[]'),
 };
 
 const getters = {
@@ -62,6 +64,7 @@ const getters = {
   userNicknameAvatarUpdate: (state) => state.userNicknameAvatarUpdate,
   groupUserAttributeChanged: (state) => state.groupUserAttributeChanged,
   groupMemberDeleteCallBack: (state) => state.groupMemberDeleteCallBack,
+  synergyHistory: (state) => state.synergyHistory,
 };
 
 const mutations = {
@@ -144,6 +147,11 @@ const mutations = {
   setGroupMemberDeleteCallBack(data, value) {
     data.groupMemberDeleteCallBack = value;
   },
+  setSynergyHistory(data, value) {
+    const synergyHistory = value.length > 6 ? value.slice(0, 6) : value;
+    data.synergyHistory = synergyHistory;
+    localStorage.setItem('synergyHistory', JSON.stringify(synergyHistory));
+  },
 };
 
 const actions = {
@@ -212,6 +220,9 @@ const actions = {
   },
   setGroupMemberDeleteCallBack({ commit }, value) {
     commit('setGroupMemberDeleteCallBack', value);
+  },
+  setSynergyHistory({ commit }, value) {
+    commit('setSynergyHistory', value);
   },
 };
 

@@ -140,7 +140,7 @@
           </el-tooltip>
         </div>
 
-        <span class="opt item">
+        <span class="opt item" @click="handleOpenSearch">
           <LsIcon
             render-svg
             width="14"
@@ -177,45 +177,17 @@
     </LsCardDialog>
 
     <LsCardDialog :visible.sync="visibleAddDialog">
-      <div class="synergy-search">
-        <div class="title">邀请协同者</div>
-        <div class="search" @click="handleSearch">
-          <LsIcon
-            icon="navi_ss_icon"
-            width="14"
-            height="14"
-            render-svg
-          ></LsIcon>
-          <div class="input-panel">
-            <el-input
-              v-model="keywords"
-              clearable
-              type="text"
-              placeholder="搜索组织成员、好友、群聊"
-            />
-          </div>
-          <span class="btn">
-            <LsIcon size="14" color="#90959F" icon="ls-icon-a-icon_"></LsIcon>
-          </span>
-        </div>
-        <div class="history" v-if="historySearchList.length">近期协同</div>
-        <div class="scroll-view">
-          <div class="item" v-for="item in searchList">
-            <img class="img" :src="item.avatar" alt="" />
-            <span class="name">{{ item.nickname }}</span>
-          </div>
-        </div>
-      </div>
+      <SynergySearch @confirm="handleSearchConfirm"></SynergySearch>
     </LsCardDialog>
   </div>
 </template>
 
 <script>
-import { lodash } from '@lanshu/utils';
 import { mapGetters, mapActions } from 'vuex';
 import { LsIcon, LsCardDialog } from '@lanshu/components';
 import ImView from '../im-view.vue';
 import { IMClearUnreadCount } from '../../IM-SDK';
+import SynergySearch from './search.vue';
 
 export default {
   name: 'Synergy',
@@ -223,6 +195,7 @@ export default {
     ImView,
     LsIcon,
     LsCardDialog,
+    SynergySearch,
   },
   provide() {
     return {
@@ -246,7 +219,7 @@ export default {
           height = this.MAX_HEIGHT;
           break;
         case 2:
-          height = '50%';
+          height = 'calc(50% - 10px)';
           break;
         case 3:
           height = '40%';
@@ -288,9 +261,6 @@ export default {
       visibleAddDialog: false,
       resizeObserver: null,
       maxNavCount: 0,
-      keywords: '',
-      searchList: [],
-      historySearchList: [],
     };
   },
 
@@ -300,19 +270,7 @@ export default {
     },
   },
 
-  created() {
-    const synergySessionList = lodash
-      .cloneDeep(this.sessionList.filter((d, index) => index >= 1))
-      .map((d) => {
-        const { sessId, avatar, nickname } = d;
-        return {
-          sessId,
-          avatar,
-          nickname,
-        };
-      });
-    this.setSynergySessionList(synergySessionList);
-  },
+  created() {},
 
   mounted() {
     this.$emit('update:pluginStyle', {
@@ -378,15 +336,25 @@ export default {
       this.collapse = false;
       this.$nextTick(() => {
         this.computedNavCount();
-        const target = this.getSessionTarget(session);
-        this.$refs.SynergyContainer.scrollTo({
-          top: target.offsetTop - 10,
-          behavior: 'smooth',
-        });
+        this.handleScrollTo(session);
       });
     },
 
+    handleScrollTo(session) {
+      const target = this.getSessionTarget(session);
+      this.$refs.SynergyContainer.scrollTo({
+        top: target.offsetTop - 10,
+        behavior: 'smooth',
+      });
+    },
+
+    handleOpenSearch() {
+      this.handleCollapse();
+      this.visibleAddDialog = true;
+    },
+
     handleActiveSynergy(session) {
+      this.visibleAddDialog = false;
       const { sessId, unreadCount } = session;
       this.selectSynergy = sessId;
       if (unreadCount) {
@@ -397,6 +365,13 @@ export default {
     handleSelectSynergy(session) {
       this.handleActiveSynergy(session);
       this.getSessionTarget(session);
+    },
+
+    handleSearchConfirm(session) {
+      this.handleActiveSynergy(session);
+      setTimeout(() => {
+        this.handleScrollTo(session);
+      }, 100);
     },
 
     formatSessId(sessId) {
@@ -648,123 +623,7 @@ export default {
     overflow-y: auto;
 
     .item {
-      height: 56px;
-      background-color: $bg-white-color;
-      border-radius: 6px;
-      padding: 8px 12px 8px;
-      display: flex;
-      align-items: center;
-      cursor: pointer;
-
-      .img {
-        display: block;
-        width: 36px;
-        height: 36px;
-        border-radius: 4px;
-      }
-
-      .name {
-        flex: 1;
-        padding-left: 8px;
-        font-size: 14px;
-        color: $main-text-color;
-      }
-
-      &:hover {
-        background-color: $bg-hover-grey-color;
-      }
-    }
-  }
-}
-
-.synergy-search {
-  width: 360px;
-  max-height: 460px;
-  min-height: 120px;
-  position: absolute;
-  top: 112px;
-  right: 16px;
-  background-color: $bg-white-color;
-  box-shadow: 0px 2px 8px 0px rgba(143, 149, 158, 0.1);
-  border-radius: 4px;
-  border: 1px solid $split-line-color;
-  display: flex;
-  flex-direction: column;
-  padding-bottom: 6px;
-
-  .title {
-    font-size: 14px;
-    font-weight: bold;
-    color: $main-text-color;
-    padding: 12px 14px 14px;
-  }
-
-  .search {
-    width: 332px;
-    height: 36px;
-    min-height: 36px;
-    background-color: $bg-white-color;
-    border-radius: 6px;
-    border: 1px solid $split-line-color;
-    padding-left: 18px;
-    box-sizing: border-box;
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin: 0 auto;
-
-    .input-panel {
-      flex: 1;
       height: 36px;
-      padding-left: 8px;
-      font-size: 14px;
-      cursor: pointer;
-
-      ::v-deep .el-input {
-        border: none;
-        height: 36px;
-
-        .el-input__inner {
-          width: 100%;
-          height: 100%;
-          border: none;
-          outline: none;
-          padding: 0 32px 0 0;
-        }
-
-        input::placeholder {
-          color: $tips-text-color;
-          font-size: 14px;
-        }
-      }
-    }
-
-    .btn {
-      width: 46px;
-      height: 100%;
-      background: #f2f4f8;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-    }
-  }
-
-  .history {
-    font-size: 14px;
-    color: $minor-text-color;
-    margin: 22px 0 12px 0;
-    padding: 0 14px;
-  }
-
-  .scroll-view {
-    flex: 1;
-    padding: 0 6px;
-    overflow-y: auto;
-
-    .item {
-      height: 56px;
       background-color: $bg-white-color;
       border-radius: 6px;
       padding: 8px 12px 8px;
