@@ -81,9 +81,10 @@
             </div>
           </div>
 
-          <div class="empty-bg" v-else>
-            <img :src="LsAssets.emptyData" alt="" />
-          </div>
+          <LsEmptyData
+            :imgSrc="LsAssets.notMsg"
+            tips="暂无聊天消息"
+          ></LsEmptyData>
         </div>
       </div>
     </Drawer>
@@ -91,7 +92,12 @@
 </template>
 
 <script>
-import { LsIcon, TimesTransform, LsAssets } from '@lanshu/components';
+import {
+  LsIcon,
+  TimesTransform,
+  LsAssets,
+  LsEmptyData,
+} from '@lanshu/components';
 import { lodash, MSG_FORMAT_MAP } from '@lanshu/utils';
 import { mapGetters } from 'vuex';
 import { IMSearchMessageByMsgType, IMSearchMessageOfText } from '../../IM-SDK';
@@ -114,6 +120,7 @@ export default {
     LsIcon,
     TimesTransform,
     HistoryMsgCard,
+    LsEmptyData,
   },
   data() {
     return {
@@ -370,18 +377,6 @@ export default {
               }
             }
           }
-        }
-      }
-
-      .empty-bg {
-        img {
-          display: block;
-          width: 200px;
-          height: 200px;
-          position: absolute;
-          left: 50%;
-          top: 50%;
-          transform: translate(-50%, -60%);
         }
       }
     }
