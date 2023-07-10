@@ -4,14 +4,16 @@
     <GroupList :list="joinGroupList" title="我加入的群聊"></GroupList>
   </div>
 
-  <div class="empty-data" v-else>
-    <img :src="LsAssets.emptyDataBook" alt="" />
-  </div>
+  <LsEmptyData
+    v-else
+    :imgSrc="LsAssets.notFriend"
+    tips="暂无群聊"
+  ></LsEmptyData>
 </template>
 
 <script>
 import { IMGetGroupList } from '@lanshu/im';
-import { LsAssets } from '@lanshu/components';
+import { LsAssets, LsEmptyData } from '@lanshu/components';
 import { mapGetters } from 'vuex';
 import GroupList from './group-list.vue';
 
@@ -19,6 +21,7 @@ export default {
   name: 'Group-Friend',
   components: {
     GroupList,
+    LsEmptyData,
   },
   data() {
     return {
@@ -62,19 +65,6 @@ export default {
   padding: 0 20px;
   height: 100%;
   overflow-y: auto;
-}
-
-.empty-data {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  img {
-    display: block;
-    width: 200px;
-    height: 200px;
-  }
+  position: relative;
 }
 </style>

@@ -225,13 +225,13 @@ export default {
       friendNavItem: {},
       nvaList: [
         {
-          label: '新的联系人',
+          label: '新的好友',
           component: 'NewFriend',
           key: 'NewFriend',
           icon: 'ls-icon-icon_xindehaoyou',
         },
         {
-          label: '联系人',
+          label: '好友',
           component: 'FriendList',
           key: 'FriendList',
           icon: 'ls-icon-icon_haoyou',

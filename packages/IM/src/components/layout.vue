@@ -1,7 +1,10 @@
 <template>
   <div id="client-im" ref="ClientIM">
     <div class="empty-bg" v-if="!mainSessionWindow.sessId">
-      <img :src="LsAssets.emptyData" alt="" />
+      <div class="empty-container">
+        <img :src="LsAssets.notMsg" alt="" />
+        <span class="tips">暂无消息</span>
+      </div>
     </div>
 
     <ImView
@@ -212,14 +215,27 @@ export default {
     position: absolute;
     z-index: -1;
 
-    img {
-      display: block;
-      width: 200px;
-      height: 200px;
+    .empty-container {
       position: absolute;
       left: 50%;
       top: 50%;
       transform: translate(-50%, -50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+
+      img {
+        display: block;
+        width: 141px;
+        height: 124px;
+      }
+
+      .tips {
+        padding-top: 16px;
+        font-size: 14px;
+        color: $minor-text-color;
+      }
     }
   }
 }

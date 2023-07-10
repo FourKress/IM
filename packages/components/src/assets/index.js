@@ -8,6 +8,9 @@ const updateBgLogin = require('./images/update-bg-login.png');
 const emptyData = require('./images/empty-data.png');
 const emptyDataBook = require('./images/empty-data-book.png');
 const logo = require('./images/logo.png');
+const notFriend = require('./images/not-friend.png');
+const notMsg = require('./images/not-msg.png');
+const notSynergy = require('./images/not-synergy.png');
 
 // 统一导出静态资源
 export default {
@@ -21,4 +24,7 @@ export default {
   emptyData,
   emptyDataBook,
   logo,
+  notFriend,
+  notSynergy,
+  notMsg,
 };

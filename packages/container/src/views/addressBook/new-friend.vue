@@ -29,9 +29,11 @@
       </div>
     </div>
 
-    <div class="empty-data" v-else>
-      <img :src="LsAssets.emptyDataBook" alt="" />
-    </div>
+    <LsEmptyData
+      v-else
+      :imgSrc="LsAssets.notFriend"
+      tips="暂无新好友"
+    ></LsEmptyData>
 
     <LsCardDialog :visible.sync="showFriendDialog">
       <LsFriendPanel
@@ -50,7 +52,12 @@
 </template>
 
 <script>
-import { LsCardDialog, LsFriendPanel, LsAssets } from '@lanshu/components';
+import {
+  LsCardDialog,
+  LsFriendPanel,
+  LsEmptyData,
+  LsAssets,
+} from '@lanshu/components';
 import { FRIEND_AUTH_STATE, FriendMixins } from '@lanshu/utils';
 import { mapGetters, mapActions } from 'vuex';
 import {
@@ -66,6 +73,7 @@ export default {
   components: {
     LsCardDialog,
     LsFriendPanel,
+    LsEmptyData,
   },
   data() {
     return {
@@ -173,6 +181,7 @@ export default {
   box-sizing: border-box;
   overflow-y: auto;
   height: 100%;
+  position: relative;
 
   .friend-list {
     display: flex;
@@ -246,20 +255,6 @@ export default {
           }
         }
       }
-    }
-  }
-
-  .empty-data {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    img {
-      display: block;
-      width: 200px;
-      height: 200px;
     }
   }
 }

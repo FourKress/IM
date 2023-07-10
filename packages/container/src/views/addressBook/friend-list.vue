@@ -40,9 +40,11 @@
           </div>
         </div>
       </div>
-      <div class="empty-data" v-else>
-        <img :src="LsAssets.emptyDataBook" alt="">
-      </div>
+      <LsEmptyData
+        v-else
+        :imgSrc="LsAssets.notFriend"
+        :tips="`暂无${isBot ? '技术支持' : '好友'}`"
+      ></LsEmptyData>
     </div>
 
     <LsCardDialog :visible.sync="showFriendDialog">
@@ -62,7 +64,12 @@
 
 <script>
 import { AddressBookMixins, FriendMixins } from '@lanshu/utils';
-import { LsCardDialog, LsFriendPanel, LsAssets } from '@lanshu/components';
+import {
+  LsCardDialog,
+  LsFriendPanel,
+  LsAssets,
+  LsEmptyData,
+} from '@lanshu/components';
 import { mapGetters } from 'vuex';
 
 export default {
@@ -77,6 +84,7 @@ export default {
   components: {
     LsCardDialog,
     LsFriendPanel,
+    LsEmptyData,
   },
   computed: {
     ...mapGetters('IMStore', ['refreshAddressBook']),
@@ -85,7 +93,7 @@ export default {
     // 刷新列表通知
     refreshAddressBook(val) {
       if (val) {
-        this.handleUpdate()
+        this.handleUpdate();
       }
     },
   },
@@ -110,14 +118,11 @@ export default {
     },
     async handleFriend(item, event) {
       // 打开好友面板
-      await this.openFriendDialog(
-        event,
-        async () => {
-          return {
-            ...item,
-          };
-        }
-      );
+      await this.openFriendDialog(event, async () => {
+        return {
+          ...item,
+        };
+      });
     },
   },
 };
@@ -238,20 +243,6 @@ export default {
           }
         }
       }
-    }
-  }
-
-  .empty-data {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    img {
-      display: block;
-      width: 200px;
-      height: 200px;
     }
   }
 }
