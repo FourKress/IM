@@ -192,20 +192,16 @@ export default {
     async startSynergy(synergy) {
       const { userId = '', groupId = '', avatar, nickname } = synergy;
       const targetId = userId || groupId;
-      const hasHistory = this.synergyHistory.some((d) => d === targetId);
-      if (hasHistory) {
-        const temp = this.synergyHistory.filter((d) => d !== targetId);
-        await this.setSynergyHistory([targetId, ...temp]);
-      } else {
-        await this.setSynergyHistory([targetId, ...this.synergyHistory]);
-      }
+      await this.setSynergyHistory([targetId]);
       const createSession = await IMGetByUserId(groupId || userId);
       const session = createSession.data;
-      await this.addSynergySessionList({
-        sessId: session.sessId,
-        avatar,
-        nickname,
-      });
+      await this.addSynergySessionList([
+        {
+          sessId: session.sessId,
+          avatar,
+          nickname,
+        },
+      ]);
       this.$emit('confirm', session);
     },
 
@@ -216,9 +212,9 @@ export default {
     handleGroupClose() {
       this.visibleSynergyMember = false;
     },
-    handleCroupConfirm(session) {
+    handleCroupConfirm() {
       this.handleGroupClose();
-      console.log(session);
+      this.$emit('confirm');
     },
   },
 };

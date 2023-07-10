@@ -180,8 +180,12 @@
         <div class="btn-list">
           <span class="btn cancel" @click="handleClose">取消</span>
           <template v-if="isSynergy">
-            <span class="btn confirm" @click="handleConfirm">群聊协同</span>
-            <span class="btn confirm" @click="handleConfirm">单聊协同</span>
+            <span class="btn confirm" @click="handleCreateGroupSynergy">
+              群聊协同
+            </span>
+            <span class="btn confirm" @click="handleCreateSynergy">
+              单聊协同
+            </span>
           </template>
           <span class="btn confirm" v-else @click="handleConfirm">
             {{
@@ -206,6 +210,7 @@ import {
 import {
   IMAdminDelGroupMembers,
   IMCreateGroup,
+  IMGetByUserId,
   IMInviteMember,
   IMSetGroupMemberAdminRole,
 } from '../../IM-SDK';
@@ -323,6 +328,8 @@ export default {
     ...mapActions('IMStore', [
       'setRefreshMembers',
       'setRefreshGroupRoleManager',
+      'addSynergySessionList',
+      'setSynergyHistory',
     ]),
 
     handleClose() {
@@ -365,14 +372,75 @@ export default {
       const members = realSelectList.map((d) =>
         d.toUser ? d.toUser : d.userId,
       );
-      console.log(
-        members,
-        realSelectList.map((d) => d.nickname),
-      );
 
       const res = await handleTarget.func(members, realSelectList);
       this.$message.success(`${this.groupTitle}成功`);
       this.$emit('confirm', res?.data);
+    },
+
+    async handleCreateGroupSynergy() {
+      if (this.selectList?.length < 1) {
+        this.$message.error(`${this.groupTitle}至少选择1人`);
+        return;
+      }
+      const members = this.selectList.map((d) =>
+        d.toUser ? d.toUser : d.userId,
+      );
+
+      const groupSessionRes = await this.handleCreateGroup(
+        members,
+        this.selectList,
+      );
+      const { sessId, avatar, nickname, toUser } = groupSessionRes?.data;
+
+      await this.setSynergyHistory([toUser]);
+      await this.addSynergySessionList([
+        {
+          sessId,
+          avatar,
+          nickname,
+        },
+      ]);
+      this.$emit('confirm');
+    },
+
+    async handleCreateSynergy(type) {
+      if (this.selectList?.length < 1) {
+        this.$message.error(`${this.groupTitle}至少选择1人`);
+        return;
+      }
+      const memberList = this.selectList.map((d) => {
+        const { toUser = '', userId = '', avatar, nickname } = d;
+        return {
+          userId: toUser ? toUser : userId,
+          avatar,
+          nickname,
+        };
+      });
+
+      await this.batchCreateSynergy(memberList);
+
+      this.$emit('confirm');
+    },
+
+    async batchCreateSynergy(memberList) {
+      const synergyList = await Promise.all(
+        memberList.map(async (d) => {
+          const { userId, avatar, nickname } = d;
+          const createSession = await IMGetByUserId(userId);
+          const session = createSession.data;
+          const result = {
+            sessId: session.sessId,
+            userId,
+            avatar,
+            nickname,
+          };
+          return result;
+        }),
+      );
+
+      await this.setSynergyHistory(synergyList.map((d) => d.userId));
+      await this.addSynergySessionList(synergyList);
     },
 
     async handleCreateGroup(members, selectList) {

@@ -96,8 +96,10 @@ const mutations = {
     }
   },
   addSynergySessionList(data, value) {
-    if (data.synergySessionList.some((d) => d.sessId === value.sessId)) return;
-    data.synergySessionList.push(value);
+    const realList = value.filter((n) =>
+      data.synergySessionList.every((d) => d.sessId !== n.sessId),
+    );
+    data.synergySessionList.push(...realList);
   },
   removeSynergySessionList(data, value) {
     const synergySessionList = data.synergySessionList.filter(
@@ -147,8 +149,21 @@ const mutations = {
   setGroupMemberDeleteCallBack(data, value) {
     data.groupMemberDeleteCallBack = value;
   },
-  setSynergyHistory(data, value) {
-    const synergyHistory = value.length > 6 ? value.slice(0, 6) : value;
+  setSynergyHistory(data, historySynergyIds) {
+    let historyList = [];
+    historySynergyIds.forEach((h) => {
+      const rawData = historyList.length ? historyList : data.synergyHistory;
+      const hasHistory = data.synergyHistory.some((d) => d === h);
+      if (hasHistory) {
+        const temp = rawData.filter((d) => d !== h);
+        historyList = [h, ...temp];
+      } else {
+        historyList = [h, ...rawData];
+      }
+    });
+
+    const synergyHistory =
+      historyList.length > 6 ? historyList.slice(0, 6) : historyList;
     data.synergyHistory = synergyHistory;
     localStorage.setItem('synergyHistory', JSON.stringify(synergyHistory));
   },

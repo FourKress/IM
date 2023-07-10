@@ -368,6 +368,10 @@ export default {
     },
 
     handleSearchConfirm(session) {
+      if (!session) {
+        this.visibleAddDialog = false;
+        return;
+      }
       this.handleActiveSynergy(session);
       setTimeout(() => {
         this.handleScrollTo(session);
