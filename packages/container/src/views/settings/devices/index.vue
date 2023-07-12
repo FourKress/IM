@@ -22,10 +22,14 @@
           width="180"
         ></el-table-column>
         <el-table-column prop="name" label="状态" width="180"></el-table-column>
-        <el-table-column label="操作" width='130'>
+        <el-table-column label="操作" width="130">
           <template slot-scope="scope">
-            <el-button @click="handleView(scope.row)" type="text" size="small">取消设备</el-button>
-            <el-button @click="handleEdit(scope.row)" type="text" size="small">退出登录</el-button>
+            <el-button @click="handleView(scope.row)" type="text" size="small">
+              取消设备
+            </el-button>
+            <el-button @click="handleEdit(scope.row)" type="text" size="small">
+              退出登录
+            </el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -68,8 +72,8 @@ export default {
     },
     handleEdit(row) {
       console.log(row);
-    }
-  }
+    },
+  },
 };
 </script>
 
