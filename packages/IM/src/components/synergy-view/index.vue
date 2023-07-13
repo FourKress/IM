@@ -68,55 +68,59 @@
     </div>
     <div class="container" ref="SynergyContainer">
       <div class="scroll-view" v-if="!collapse">
-        <div
-          class="session"
-          :class="{
-            active: selectSynergy === session.sessId,
-            [`session_${formatSessId(session.sessId)}`]: true,
-          }"
-          v-for="session in _sessionList"
-          :style="getStyle(session) || getBasicStyle"
-          @click="handleSelectSynergy(session)"
-        >
-          <ImView
-            v-if="session.sessId"
-            :key="session.sessId || ''"
-            :session="session"
-            :isFocus="false"
-            :isSmallEditor="true"
-            :headerStyle="{
-              backgroundColor: '#E7EAF3',
+        <template v-if="_sessionList.length">
+          <div
+            class="session"
+            :class="{
+              active: selectSynergy === session.sessId,
+              [`session_${formatSessId(session.sessId)}`]: true,
             }"
-            :imViewStyle="{
-              minWidth: '368px',
-            }"
+            v-for="session in _sessionList"
+            :style="getStyle(session) || getBasicStyle"
+            @click="handleSelectSynergy(session)"
           >
-            <template slot="header">
-              <div class="btn" v-if="_sessionList.length > 1">
-                <LsIcon
-                  render-svg
-                  width="20"
-                  height="20"
-                  :icon="
-                    getStyle(session).height === MAX_HEIGHT
-                      ? 'ls-icon-icon_zuixiaohua2'
-                      : 'ls-icon-icon_quanpin1'
-                  "
-                  @click="handleChangeSize(session)"
-                ></LsIcon>
-              </div>
-              <div class="btn">
-                <LsIcon
-                  render-svg
-                  width="20"
-                  height="20"
-                  icon="ls-icon-icon_guanbi1"
-                  @click="handleClose(session)"
-                ></LsIcon>
-              </div>
-            </template>
-          </ImView>
-        </div>
+            <ImView
+              v-if="session.sessId"
+              :key="session.sessId || ''"
+              :session="session"
+              :isFocus="false"
+              :isSmallEditor="true"
+              :headerStyle="{
+                backgroundColor: '#E7EAF3',
+              }"
+              :imViewStyle="{
+                minWidth: '368px',
+              }"
+            >
+              <template slot="header">
+                <div class="btn" v-if="_sessionList.length > 1">
+                  <LsIcon
+                    render-svg
+                    width="20"
+                    height="20"
+                    :icon="
+                      getStyle(session).height === MAX_HEIGHT
+                        ? 'ls-icon-icon_zuixiaohua2'
+                        : 'ls-icon-icon_quanpin1'
+                    "
+                    @click="handleChangeSize(session)"
+                  ></LsIcon>
+                </div>
+                <div class="btn">
+                  <LsIcon
+                    render-svg
+                    width="20"
+                    height="20"
+                    icon="ls-icon-icon_guanbi1"
+                    @click="handleClose(session)"
+                  ></LsIcon>
+                </div>
+              </template>
+            </ImView>
+          </div>
+        </template>
+
+        <LsEmptyData v-else :imgSrc="LsAssets.notSynergy" tips="暂无协同" />
       </div>
       <div class="scroll-view-small" v-else>
         <div
@@ -184,7 +188,12 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex';
-import { LsIcon, LsCardDialog } from '@lanshu/components';
+import {
+  LsIcon,
+  LsCardDialog,
+  LsEmptyData,
+  LsAssets,
+} from '@lanshu/components';
 import ImView from '../im-view.vue';
 import { IMClearUnreadCount } from '../../IM-SDK';
 import SynergySearch from './search.vue';
@@ -196,6 +205,7 @@ export default {
     LsIcon,
     LsCardDialog,
     SynergySearch,
+    LsEmptyData,
   },
   provide() {
     return {
@@ -254,6 +264,7 @@ export default {
   },
   data() {
     return {
+      LsAssets,
       collapse: false,
       selectSynergy: '',
       MAX_HEIGHT: 'calc(100% - 10px)',
@@ -440,6 +451,7 @@ export default {
     }
 
     .list {
+      height: 100%;
       flex: 1;
       display: flex;
       align-items: center;
@@ -462,8 +474,8 @@ export default {
 
         .img {
           display: block;
-          width: 100%;
-          height: 100%;
+          width: 36px;
+          height: 36px;
           border-radius: 5px;
         }
 
@@ -484,6 +496,7 @@ export default {
 
         ::v-deep .el-badge__content {
           right: 14px;
+          transform: translateY(-50%) translateX(100%) scale(0.8);
         }
       }
     }
