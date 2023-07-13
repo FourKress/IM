@@ -92,14 +92,18 @@ module.exports = defineConfig({
       customFileProtocol: '../',
 
       chainWebpackMainProcess: (config) => {
-        config.module
-          .rule()
-          .exclude.add(/node_modules(?!.*@lanshu.*(?!.*node_modules))/)
-          .end()
-          .test(/\.js$/)
-          .use()
-          .loader(JavaScriptObfuscator.loader)
-          .options(obfuscatorOptions);
+        config.when(!isDevelopment, (config) => {
+          config.module
+            .rule()
+            .exclude.add(/node_modules(?!.*@lanshu.*(?!.*node_modules))/)
+            .end()
+            .test(/\.js$/)
+            .use()
+            .loader(JavaScriptObfuscator.loader)
+            .options(obfuscatorOptions);
+        });
+
+        return config;
       },
 
       chainWebpackRendererProcess: (config) => {
