@@ -54,7 +54,7 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex';
-import { LsIcon, LsCardDialog } from '@lanshu/components';
+import { LsIcon } from '@lanshu/components';
 import GroupMemberChat from '../base-settings/group-member-chat.vue';
 import {
   Apis,
@@ -121,7 +121,6 @@ export default {
     ...mapActions('IMStore', ['setSynergyHistory', 'addSynergySessionList']),
 
     handleSearch: lodash.debounce(function (val) {
-      console.log(11, val);
       if (!val) {
         this.isEmpty = false;
         this.getHistoryList();

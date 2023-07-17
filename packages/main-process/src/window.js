@@ -1,6 +1,6 @@
 import { BrowserWindow } from 'electron';
 import path from 'path';
-import { IS_MAC, CLIENT_TYPE, WINDOW_TYPE } from './utils';
+import { IS_MAC, CLIENT_TYPE, WINDOW_TYPE, IS_DEVELOPMENT } from './utils';
 import checkDevices from './checkDevices';
 import { getScreenInfo } from './screen';
 import { electronLog } from './log';
@@ -131,8 +131,7 @@ export const openTRTCWindow = async (type = CLIENT_TYPE.IS_PC) => {
 
   TRTCWindow.setAspectRatio(targetClient.ratio);
 
-  const isDevelopment = process.env.NODE_ENV === 'development';
-  const loadURL = isDevelopment
+  const loadURL = IS_DEVELOPMENT
     ? `${process.env.WEBPACK_DEV_SERVER_URL}#/TRTC`
     : 'app://./index.html/#/TRTC';
 

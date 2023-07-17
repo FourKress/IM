@@ -7,10 +7,9 @@ import store from './datastore';
 import trayEvent from './trayEvent';
 import { electronLog } from './log';
 import { shieldHotKeys } from './hotKey';
+import { IS_DEVELOPMENT } from './utils';
 
 global.store = store;
-
-const isDevelopment = process.env.NODE_ENV === 'development';
 
 async function createWindow() {
   const win = new BrowserWindow({
@@ -82,7 +81,7 @@ const initElectron = (config) => {
   } = config;
 
   global.store.set('DEFAULT_WINDOWS_SIZE', windowsSize);
-  global.store.set('IS_DEVTOOLS', isDevelopment || isDevtools);
+  global.store.set('IS_DEVTOOLS', IS_DEVELOPMENT || isDevtools);
   global.store.set('CLIENT_TERMINAL', terminal);
   electronLog.info(`VERSION: ${global.store.get('VERSION')}`);
 
@@ -125,7 +124,7 @@ const initElectron = (config) => {
       });
 
       app.on('ready', async () => {
-        if (isDevelopment) {
+        if (IS_DEVELOPMENT) {
           try {
             await installExtension(VUEJS_DEVTOOLS);
           } catch (e) {
@@ -145,7 +144,7 @@ const initElectron = (config) => {
         });
       });
 
-      if (isDevelopment) {
+      if (IS_DEVELOPMENT) {
         if (process.platform === 'win32') {
           process.on('message', (data) => {
             if (data === 'graceful-exit') {

@@ -73,6 +73,7 @@
             class="session"
             :class="{
               active: selectSynergy === session.sessId,
+              'has-mask': selectSynergy !== session.sessId,
               [`session_${formatSessId(session.sessId)}`]: true,
             }"
             v-for="session in _sessionList"
@@ -536,13 +537,24 @@ export default {
         overflow: hidden;
         border: 2px solid #e7eaf3;
         box-sizing: border-box;
+        position: relative;
 
         &:last-child {
           margin-bottom: 0;
         }
 
         &.active {
-          border-color: #2b83fa;
+          border-color: rgba(43, 131, 250, 0.5);
+        }
+
+        &.has-mask:after {
+          content: '';
+          width: 100%;
+          height: 100%;
+          background-color: transparent;
+          position: absolute;
+          left: 0;
+          top: 0;
         }
       }
 

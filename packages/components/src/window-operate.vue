@@ -20,7 +20,7 @@
           @change="handleOpenSynergy"
         ></el-switch>
       </div>
-      <span slot="reference" class="btn">
+      <span slot="reference" class="btn" style="z-index: 0">
         <LsIcon
           icon="ls-icon-icon_yemianbuju"
           width="12"
@@ -109,7 +109,6 @@ export default {
   position: absolute;
   left: 0;
   top: 0;
-  z-index: 999;
 
   .btn {
     width: 24px;
@@ -120,6 +119,7 @@ export default {
     display: flex;
     align-items: center;
     justify-content: center;
+    z-index: 999;
   }
 }
 </style>

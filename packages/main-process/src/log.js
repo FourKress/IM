@@ -1,5 +1,6 @@
 import log from 'electron-log';
 import { app } from 'electron';
+import { IS_DEVELOPMENT } from './utils';
 
 class Log {
   constructor() {
@@ -21,7 +22,9 @@ class Log {
 
     log.transports.file.file = `${app.getPath(
       'userData',
-    )}/electron_log/${date}-${process.env.NODE_ENV}-${name}.log`;
+    )}/electron_log/${date}-${
+      IS_DEVELOPMENT ? 'development' : 'production'
+    }-${name}.log`;
   }
 }
 

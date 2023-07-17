@@ -151,9 +151,12 @@ const mutations = {
   },
   setSynergyHistory(data, historySynergyIds) {
     let historyList = [];
+    const { synergyHistory = [] } = data;
+    const currentHistory = [...synergyHistory];
+
     historySynergyIds.forEach((h) => {
-      const rawData = historyList.length ? historyList : data.synergyHistory;
-      const hasHistory = data.synergyHistory.some((d) => d === h);
+      const rawData = historyList.length ? historyList : currentHistory;
+      const hasHistory = currentHistory.some((d) => d === h);
       if (hasHistory) {
         const temp = rawData.filter((d) => d !== h);
         historyList = [h, ...temp];
@@ -162,10 +165,10 @@ const mutations = {
       }
     });
 
-    const synergyHistory =
+    const resultHistory =
       historyList.length > 6 ? historyList.slice(0, 6) : historyList;
-    data.synergyHistory = synergyHistory;
-    localStorage.setItem('synergyHistory', JSON.stringify(synergyHistory));
+    data.synergyHistory = resultHistory;
+    localStorage.setItem('synergyHistory', JSON.stringify(resultHistory));
   },
 };
 
@@ -237,6 +240,7 @@ const actions = {
     commit('setGroupMemberDeleteCallBack', value);
   },
   setSynergyHistory({ commit }, value) {
+    console.log('commit', value);
     commit('setSynergyHistory', value);
   },
 };

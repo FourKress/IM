@@ -1,9 +1,9 @@
 import { Menu, Tray } from 'electron';
 import path from 'path';
 import { app, nativeImage } from 'electron';
+import { IS_DEVELOPMENT } from './utils';
 
-const isDevelopment = process.env.NODE_ENV === 'development';
-const trayIconPath = isDevelopment
+const trayIconPath = IS_DEVELOPMENT
   ? './icons/icon.ico'
   : path.join(app.getPath('exe'), '/../resources/icons/icon.ico');
 

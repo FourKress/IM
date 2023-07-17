@@ -2,22 +2,20 @@ import { app, BrowserWindow } from 'electron';
 import fs from 'fs';
 import { electronLog, sdkLog } from './log';
 import { openTRTCWindow } from './window';
-import { CLIENT_TYPE } from './utils';
+import { CLIENT_TYPE, IS_DEVELOPMENT } from './utils';
 import trayEvent from './trayEvent';
 
 const { LimMain, LogLevel } = require('lim-sdk-electron');
 
-const envMap = {
-  production: 'prod',
-  test: 'test',
-  development: 'test',
+const getEnv = () => {
+  return IS_DEVELOPMENT ? 'test' : 'prod';
 };
 
 export const IMSDKInit = (appId) => {
   const limMain = new LimMain({ appId });
   const IMSDK = limMain.init({
     filePath: `${app.getPath('userData')}/`,
-    env: envMap[process.env.NODE_ENV],
+    env: getEnv(),
   });
 
   global.IMSDK = IMSDK;

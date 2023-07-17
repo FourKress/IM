@@ -105,6 +105,8 @@ export const deleteFile = (path) => {
 
 export const IS_MAC = process.platform === 'darwin';
 
+export const IS_DEVELOPMENT = process.env.NODE_ENV === 'development';
+
 export const CLIENT_TYPE = {
   IS_PC: 1,
   IS_MOBILE: 2,
