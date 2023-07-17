@@ -6,7 +6,11 @@
       :class="classObject"
       v-if="isText"
       v-html="msgText"
-      v-contextMenu="textContextMenuList"
+      v-contextMenu="
+        msg.msgType === -1
+          ? []
+          : [...textContextMenuList, ...baseContextMenuList]
+      "
     ></div>
 
     <div
@@ -17,7 +21,7 @@
         height: `${size.height}px`,
         ...wrapStyle,
       }"
-      v-contextMenu="imageContextMenuList"
+      v-contextMenu="[...imageContextMenuList, ...baseContextMenuList]"
     >
       <img :src="assetsPath" @click="handlePreview" />
     </div>
@@ -35,6 +39,7 @@
         ...wrapStyle,
       }"
       :src="assetsPath"
+      v-contextMenu="baseContextMenuList"
     ></video>
 
     <audio
@@ -44,6 +49,7 @@
       controls
       preload="auto"
       :src="assetsPath"
+      v-contextMenu="baseContextMenuList"
     ></audio>
 
     <div
@@ -51,6 +57,7 @@
       :class="classObject"
       :style="{ ...wrapStyle, ...wrapFileStyle }"
       v-if="isFile"
+      v-contextMenu="baseContextMenuList"
     >
       <div class="view">
         <LsIcon
@@ -147,11 +154,12 @@ import {
   MsgCardMixins,
 } from '@lanshu/utils';
 import { LsIcon } from '@lanshu/components';
+import { mapGetters } from 'vuex';
 
 export default {
   name: 'Msg-card',
   props: {
-    msg: {
+    rawMsg: {
       type: Object,
       required: true,
       default: () => {},
@@ -194,6 +202,7 @@ export default {
       return {
         self: this.isSelf,
         target: !this.isSelf,
+        disabled: this.msg.msgType === -1,
       };
     },
     trtcMsgTips() {
@@ -206,10 +215,21 @@ export default {
       };
       return tipsMap[msgType];
     },
+
+    ...mapGetters('IMStore', ['revokeCallBack']),
   },
   watch: {
     imViewWidth(val) {
       this.initSize(val);
+    },
+    revokeCallBack: {
+      deep: true,
+      handler(val) {
+        if (!val?.msgId) return;
+        if (val?.msgId === this.msg?.msgId) {
+          this.msg = val;
+        }
+      },
     },
   },
   mounted() {
@@ -260,6 +280,10 @@ export default {
     &.text {
       user-select: text;
       word-break: break-all;
+
+      &.disabled {
+        color: $minor-text-color;
+      }
 
       ::v-deep .link-jump {
         color: $primary-color;

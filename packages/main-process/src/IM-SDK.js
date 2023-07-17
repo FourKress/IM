@@ -240,6 +240,16 @@ export const IMSDKInit = (appId) => {
       });
     },
   );
+
+  IMSDK.getMainProvider().setRevokeMessageCallback((revokeMessage = {}) => {
+    electronLog.info(`RevokeMessageCallback: ${revokeMessage}`);
+    global.mainWindow.webContents.send('IMSDKListener', {
+      type: 'RevokeMessageCallback',
+      value: {
+        revokeMessage,
+      },
+    });
+  });
 };
 
 export const IMSDKEvent = async (provider, event, data) => {

@@ -75,7 +75,7 @@
               :isSelf="checkSelf(item)"
               :imViewWidth="imViewWidth"
               :bubbleModel="bubbleModel"
-              :msg="item"
+              :rawMsg="item"
             />
             <div
               class="send-tips"

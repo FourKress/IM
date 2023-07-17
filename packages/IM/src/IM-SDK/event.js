@@ -537,3 +537,11 @@ export const IMGetGroupCurrentMemberCount = async (groupId) =>
     IMSDKGroupProvider.events.getGroupCurrentMemberCount,
     groupId,
   );
+
+export const IMRevokeMessage = async (messId) => {
+  await eventHOCFnc(
+    IMSDKMessageProvider.provider,
+    IMSDKMessageProvider.events.revokeMessage,
+    messId,
+  );
+};

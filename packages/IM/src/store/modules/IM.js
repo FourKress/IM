@@ -41,6 +41,8 @@ const state = {
   groupMemberDeleteCallBack: '',
   // 协同历史
   synergyHistory: JSON.parse(localStorage.getItem('synergyHistory') || '[]'),
+  // 撤回消息回调
+  revokeCallBack: '',
 };
 
 const getters = {
@@ -65,6 +67,7 @@ const getters = {
   groupUserAttributeChanged: (state) => state.groupUserAttributeChanged,
   groupMemberDeleteCallBack: (state) => state.groupMemberDeleteCallBack,
   synergyHistory: (state) => state.synergyHistory,
+  revokeCallBack: (state) => state.revokeCallBack,
 };
 
 const mutations = {
@@ -170,6 +173,9 @@ const mutations = {
     data.synergyHistory = resultHistory;
     localStorage.setItem('synergyHistory', JSON.stringify(resultHistory));
   },
+  setRevokeCallBack(data, value) {
+    data.revokeCallBack = value;
+  },
 };
 
 const actions = {
@@ -242,6 +248,9 @@ const actions = {
   setSynergyHistory({ commit }, value) {
     console.log('commit', value);
     commit('setSynergyHistory', value);
+  },
+  setRevokeCallBack({ commit }, value) {
+    commit('setRevokeCallBack', value);
   },
 };
 

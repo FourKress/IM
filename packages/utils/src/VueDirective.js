@@ -2,6 +2,9 @@ const handleOpenContentMenu = (el, binding, vnode) => {
   const menuList = binding.value;
   const that = vnode.context;
   const arg = binding.arg;
+
+  if (!menuList?.length) return;
+
   const handleOpenContentMenu = (event) => {
     const { clientX, clientY } = event;
     that

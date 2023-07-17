@@ -43,6 +43,7 @@ export const IMSDKMessageProvider = {
     clearMessage: 'clearMessage',
     searchMessageOfText: 'searchMessageOfText',
     searchMessageByMsgType: 'searchMessageByMsgType',
+    revokeMessage: 'revokeMessage',
   },
 };
 

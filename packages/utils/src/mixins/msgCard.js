@@ -1,6 +1,7 @@
 import { CHECK_MSG_TYPE, MSG_FORMAT_MAP } from '../constant';
 import { dataURLtoBlob, getFileSize, lodash } from '../../lib/main';
 import { renderProcess } from '@lanshu/render-process';
+import { IMRevokeMessage } from '@lanshu/im';
 
 export default {
   data() {
@@ -10,6 +11,16 @@ export default {
       assetsPath: '',
       cachePath: '',
       selectedText: '',
+      baseContextMenuList: [
+        {
+          label: () => '撤回',
+          handler: this.handleRevokeMessage,
+          icon: () => 'ls-icon-fuzhi',
+          hide: () => {
+            return !this.isSelf && this.msg?.msgId;
+          },
+        },
+      ],
       textContextMenuList: [
         {
           label: () => '复制',
@@ -23,7 +34,7 @@ export default {
           handler: this.handleCopyImage,
           icon: () => 'ls-icon-fuzhi',
           hide: () => {
-            return this.assetsPath.includes('gif') ? true : false;
+            return this.assetsPath.includes('gif');
           },
         },
         {
@@ -32,6 +43,7 @@ export default {
           icon: () => 'ls-icon-xiazai',
         },
       ],
+      msg: {},
     };
   },
 
@@ -109,6 +121,10 @@ export default {
         height: high || this.imageMaxWidth,
       };
     },
+  },
+
+  created() {
+    this.msg = this.rawMsg;
   },
 
   mounted() {
@@ -225,6 +241,13 @@ export default {
       }
       await renderProcess.copyFile(this.cachePath, dirPath);
       this.$message.success('保存成功');
+    },
+
+    async handleRevokeMessage() {
+      const { msgId } = this.msg;
+      if (!msgId) return;
+      await IMRevokeMessage(msgId);
+      console.log(123);
     },
   },
 };

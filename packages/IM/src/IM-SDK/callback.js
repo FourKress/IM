@@ -205,4 +205,12 @@ export const IMSDKCallBackEvents = {
       storeInstance.commit('IMStore/setRefreshGroupRoleManager', Date.now());
     }
   },
+
+  RevokeMessageCallback(ctx, info) {
+    const { revokeMessage } = info;
+    const { isCurrent } = getCurrentSession('sessId', revokeMessage.sessId);
+    if (isCurrent) {
+      storeInstance.commit('IMStore/setRevokeCallBack', revokeMessage);
+    }
+  },
 };

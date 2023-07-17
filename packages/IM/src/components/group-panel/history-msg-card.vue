@@ -100,7 +100,7 @@ import { MsgCardMixins } from '@lanshu/utils';
 export default {
   name: 'History-msg-card',
   props: {
-    msg: {
+    rawMsg: {
       type: Object,
       required: true,
       default: () => {},

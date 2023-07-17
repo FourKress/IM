@@ -74,7 +74,7 @@
                 </div>
                 <div class="msg-row">
                   <span class="message">
-                    <HistoryMsgCard :msg="msg" />
+                    <HistoryMsgCard :rawMsg="msg" />
                   </span>
                 </div>
               </div>
