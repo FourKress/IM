@@ -66,13 +66,6 @@ export const IMSDKInit = (appId) => {
 
   IMSDK.getMainProvider().setLogOutCallBack((level, str) => {
     sdkLog.info(`${level}： ${str}`);
-    global.mainWindow.webContents.send('IMSDKListener', {
-      type: 'LogOutCallBack',
-      value: {
-        level,
-        str,
-      },
-    });
   });
 
   IMSDK.getMainProvider().setMessageSendingStateCallBack((sendState, msg) => {

@@ -4,7 +4,7 @@
       <span class="label">[草稿]</span>
       <span>{{ tempMsgText }}</span>
     </span>
-    <span v-else>{{ messageText }}</span>
+    <span v-else v-html="messageText"></span>
   </span>
 </template>
 
@@ -43,7 +43,7 @@ export default {
       handler(val) {
         const preview = val?.preview;
         // 存在草稿消息时，需要做延迟渲染，避免草稿消息的残留
-        const timer = (preview || this.tempMsgText === preview) ? 300 : 1;
+        const timer = preview || this.tempMsgText === preview ? 300 : 1;
         setTimeout(() => {
           this.tempMsgText = this.tempMsg?.preview;
         }, timer);

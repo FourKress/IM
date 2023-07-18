@@ -134,9 +134,6 @@ export const IMSDKCallBackEvents = {
         await ClientLogOut();
       });
   },
-  LogOutCallBack(ctx, info) {
-    console.info('日志', info);
-  },
   FriendAddRequestUpdateListener(ctx, friendAddRequestCount) {
     storeInstance.commit(
       'IMStore/setNewFriendCount',

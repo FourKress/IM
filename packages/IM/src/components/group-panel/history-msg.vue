@@ -82,6 +82,7 @@
           </div>
 
           <LsEmptyData
+            v-else
             :imgSrc="LsAssets.notMsg"
             tips="暂无聊天消息"
           ></LsEmptyData>

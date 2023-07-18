@@ -14,6 +14,7 @@ export const CHECK_MSG_TYPE = {
   IS_SEND_BUSINESS_CARD: 'BusinessCard',
   IS_TRTC: 'TRTC',
   IS_SYSTEM_NOTIFY: 'systemNotify',
+  IS_AT: 'at',
 };
 
 const formatMsgType = (val, isBaseType = true) => {
@@ -27,13 +28,12 @@ const getNetworkCallLabel = (data) => {
   );
 };
 
-export const BASE_MSG_TYPES = [-1, 1, 2, 3, 4, 5, 6, 671, 672, 673, 674];
+export const BASE_MSG_TYPES = [-1, 1, 2, 3, 4, 5, 6, 8, 671, 672, 673, 674];
 
 export const MSG_FORMAT_MAP = {
   '-1': {
     label: (data) => {
-      const msg = data?.content;
-      return msg;
+      return formatMsgType(data?.content);
     },
     type: CHECK_MSG_TYPE.IS_TEXT,
   },
@@ -63,6 +63,13 @@ export const MSG_FORMAT_MAP = {
   },
   6: {
     label: () => formatMsgType('位置'),
+    type: CHECK_MSG_TYPE.IS_POSITION,
+  },
+  8: {
+    label: (data) => {
+      const msgType = formatMsgType('有人@了你');
+      return msgType;
+    },
     type: CHECK_MSG_TYPE.IS_POSITION,
   },
   400: {

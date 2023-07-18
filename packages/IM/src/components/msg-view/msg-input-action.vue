@@ -66,17 +66,37 @@
           </span>
         </div>
       </div>
-      <div class="input-textarea">
+      <div
+        class="input-textarea"
+        ref="InputTextarea"
+        :style="{
+          paddingRight: isScroll ? '0' : '8px',
+        }"
+      >
         <div
           class="editor-container"
           :contenteditable="!noSendAuth"
-          @keyup.enter.exact="handleEnterSend"
-          @keyup.ctrl.enter.exact="handleCtrlEnterSend"
+          @keyup.enter.exact="handleEnterEvent(KEY_CODE.IS_ENTER)"
+          @keyup.ctrl.enter.exact="handleEnterEvent(KEY_CODE.IS_CTRL_ENTER)"
           ref="msgInput"
           :placeholder="placeholder"
           @input="handleInput"
           @blur="handleBlur"
+          @focus="handleCheckAt(true)"
         ></div>
+      </div>
+
+      <div class="at-member-panel" v-if="visibleMemberDialog">
+        <div class="scroll-view">
+          <div
+            class="member-item"
+            v-for="item in members"
+            @click="handleSelectMember(item)"
+          >
+            <img class="img" :src="item.avatar" alt="" />
+            <span class="name">{{ item.alias }}</span>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -119,6 +139,7 @@ import {
   IMCreateMsg,
   IMSendMessage,
   IMUploadFile,
+  IMGetGroupMemberList,
 } from '../../IM-SDK';
 
 export default {
@@ -157,6 +178,11 @@ export default {
       screenshotHotKey: null,
       KEY_CODE,
       CHECK_MSG_TYPE,
+      members: [],
+      nextSeq: 0,
+      visibleMemberDialog: false,
+      atTagDom: null,
+      isScroll: false,
     };
   },
   computed: {
@@ -200,6 +226,7 @@ export default {
       setTimeout(async () => {
         if (this.isFocus) {
           this.$refs.msgInput.focus();
+          this.handleCheckAt(true);
         }
         this.windowRange = window.getSelection()?.getRangeAt(0);
         // 获取切换时保存的临时类容
@@ -214,6 +241,7 @@ export default {
     });
 
     document.addEventListener('click', this.handleGlobalClick);
+    document.addEventListener('click', this.handleAtGlobalClick);
     this.$refs.msgInput.addEventListener('paste', (e) => {
       this.handleBlur(e);
       e.preventDefault();
@@ -246,18 +274,33 @@ export default {
       }
     });
 
+    this.$refs.msgInput.addEventListener('keydown', (e) => {
+      const { shiftKey, key } = e;
+      if (shiftKey && key === '@') {
+        this.windowRange = window.getSelection()?.getRangeAt(0);
+        const nowTime = Date.now();
+        this.handleTargetInsert(
+          `<span class='at-container' contenteditable="false" data-at="${nowTime}">@</span><span>&nbsp;</span>`,
+        );
+        this.atTagDom = document.querySelector(`[data-at="${nowTime}"]`);
+        this.handleCheckAt();
+        e.preventDefault();
+      }
+    });
+
     const hotKeyDB = await renderProcess.getStore('HOT_KEYS');
 
     this.sendMsgHotKey = hotKeyDB.sendMsg.currentKey;
     this.screenshotHotKey = hotKeyDB.screenshot.currentKey;
 
-    if (this.sendMsgHotKey === this.KEY_CODE.IS_ENTER) {
-      document.onkeydown = (e) => {
-        if (e.key === this.KEY_CODE.IS_ENTER) {
-          e.preventDefault(); //禁用回车的默认事件
-        }
-      };
-    }
+    this.$refs.msgInput.onkeydown = (e) => {
+      if (e.key === this.KEY_CODE.IS_ENTER) {
+        e.preventDefault(); //禁用回车的默认事件
+      }
+    };
+
+    // 给动态生成的html标签绑定事件，挂载到window上;
+    window.getAtUser = this.getAtUser;
   },
   methods: {
     init() {
@@ -276,41 +319,74 @@ export default {
         }
       } catch (e) {}
     },
-
-    handleEnterSend() {
-      if (this.sendMsgHotKey === this.KEY_CODE.IS_ENTER) {
-        this.sendMsg();
-      }
+    handleAtGlobalClick(event) {
+      if (!this.visibleMemberDialog) return;
+      try {
+        const path = [...event.path];
+        const notPopover = path.every(
+          (d) => !['action-panel', 'at-member-panel'].includes(d.className),
+        );
+        if (notPopover) {
+          this.visibleMemberDialog = false;
+        }
+      } catch (e) {}
     },
-    handleCtrlEnterSend() {
-      if (this.sendMsgHotKey === this.KEY_CODE.IS_CTRL_ENTER) {
+
+    handleEnterEvent(keyType) {
+      if (this.sendMsgHotKey === keyType) {
         this.sendMsg();
       } else {
         this.windowRange = window.getSelection().getRangeAt(0);
         const innerText = this.$refs.msgInput.innerText;
         const endOffset = this.windowRange.endOffset;
-        const before = `${innerText ? '<br>' : ''}`;
-        const after = `<br>${
-          !innerText || innerText?.length === endOffset ? '<br>' : ''
-        }`;
-        const brNode = `${before}${after}`;
-        this.handleTargetInsert(brNode);
+
+        this.handleTargetInsert('\n&zwnj;');
+
         // 在最末尾处换行时，需要两次才能换行，需要特殊处理
         const wrapArr = innerText.split('\n');
         const lastText = wrapArr.pop();
         if (lastText && (endOffset === lastText.length || endOffset === 1)) {
           setTimeout(() => {
-            this.handleCtrlEnterSend();
+            // this.handleTargetInsert('\n');
           });
         }
       }
     },
+    handleCheckAt(isAuto = false) {
+      if (isAuto) {
+        const hasAt =
+          this.session.toUserType === SESSION_USER_TYPE.IS_GROUP &&
+          /[\s\S]?<span class="at-container" contenteditable="false" data-at="\d+">@<\/span>$/.test(
+            this.message.replace(/<span><\/span>/g, ''),
+          );
+        if (hasAt) {
+          this.getGroupMemberList();
+        }
+        this.visibleMemberDialog = hasAt;
+        return;
+      }
+      this.getGroupMemberList();
+      this.visibleMemberDialog = true;
+    },
+    handleSelectMember(member) {
+      this.message = this.message.slice(0, -1);
+      this.messageText = this.messageText.slice(0, -1);
+      this.windowRange = window.getSelection()?.getRangeAt(0);
+      const { userId, nickname } = member;
+      this.atTagDom.innerHTML = `<span class="at-tag" data-userid="${userId}" onclick='getAtUser(event)'>@${nickname}</span>`;
+      this.handleTargetInsert(`<span></span>`);
+    },
+    getAtUser(event) {
+      const userId = event.target.getAttribute('data-userid');
+      console.log(userId);
+    },
     handleInput() {
       const element = this.$refs.msgInput;
       const innerHTML = element.innerHTML;
-      if (!innerHTML || !innerHTML.replace(/<br>/g, '')) {
+      if (!innerHTML || !innerHTML.replace(/\n/g, '')) {
         this.message = '';
         this.messageText = '';
+        this.visibleMemberDialog = false;
         this.$nextTick(() => {
           this.$refs.msgInput.focus();
         });
@@ -318,6 +394,12 @@ export default {
       }
       this.message = element.innerHTML;
       this.messageText = element.innerText.trim();
+      // 校验是否触发@事件
+      this.handleCheckAt(true);
+      // 判断是否有滚动条
+      this.isScroll =
+        this.$refs?.InputTextarea?.scrollHeight >
+        this.$refs?.InputTextarea?.clientHeight;
     },
     handleBlur(event) {
       this.$refs.msgInput = event.target;
@@ -390,9 +472,9 @@ export default {
     handleImageInsert(base64Url) {
       const innerText = this.$refs.msgInput.innerText;
       const endOffset = this.windowRange.endOffset;
-      const before = `${innerText ? '<br>' : ''}`;
-      const after = `<br>${
-        !innerText || innerText?.length === endOffset ? '<span><br></span>' : ''
+      const before = `${innerText ? '\n' : ''}`;
+      const after = `\n${
+        !innerText || innerText?.length === endOffset ? '<span>\n</span>' : ''
       }`;
       const imageNode = `${before}<img src='${base64Url}' alt=''>${after}`;
 
@@ -471,9 +553,52 @@ export default {
       async function () {
         if (this.disabledSendMsg) return;
 
+        let realMessage;
+        let isAtMsg = false;
+
+        // 存在@
+        if (this.message.includes('at-container')) {
+          // 空@ 只是一个@符号，替换为@
+          realMessage = this.message.replace(
+            /<span class="at-container" contenteditable="false" data-at="\d+">@<\/span>/g,
+            '@',
+          );
+          // 真实@
+          if (realMessage.includes('data-userid')) {
+            isAtMsg = true;
+            const atRegExp =
+              /<span class="at-container" contenteditable="false" data-at="\d+"><span class="at-tag" data-userid="\d+" onclick="getAtUser\(event\)">(@[\s\S]*?)<\/span><\/span>/;
+            const atArr = realMessage.match(new RegExp(atRegExp, 'g'));
+
+            const tempDom = document.createElement('span');
+            const atUsers = atArr.map((d) => {
+              tempDom.innerHTML = d;
+              const userId = tempDom
+                .querySelector('.at-tag')
+                .getAttribute('data-userid');
+              const nickname = tempDom.innerText;
+              return {
+                userId,
+                nickname,
+              };
+            });
+
+            atUsers.forEach((d) => {
+              realMessage = realMessage.replace(
+                atRegExp,
+                `<at userId="${d.userId}">${d.nickname}</at>`,
+              );
+            });
+          }
+        } else {
+          realMessage = this.message;
+        }
+
         const regExp = new RegExp(/(<img src="\S*" alt(="")?>)+/g, 'g');
-        const realMessage = this.recursionReplace(
-          this.message.replace(/(<(span|div)>)|(<\/(span|div)>)/g, '<br>'),
+        realMessage = this.recursionReplace(
+          realMessage
+            .replace(/(<(span|div)>)|(<\/(span|div)>)/g, '')
+            .replace(/<br>/g, '\n'),
         );
 
         let msgArr = [];
@@ -481,31 +606,45 @@ export default {
           const imageArr = realMessage.match(regExp);
           const tempMsgArr = realMessage
             .replace(
-              /(<br>)?<img src="\S*" alt(="")?>(<br>)?/g,
+              /(\n)?<img src="\S*" alt(="")?>(\n)?/g,
               '#_&_#IMAGE_BR#_&_#',
             )
             .split('#_&_#');
           msgArr = tempMsgArr
             .map((d) => {
+              let type = CHECK_MSG_TYPE.IS_TEXT;
               if (d === 'IMAGE_BR') {
                 d = imageArr.splice(0, 1)[0];
+                type = CHECK_MSG_TYPE.IS_IMAGE;
               }
-              if (!d.replace(/<br>/g, '')) d = '';
-              return d;
+              if (!d.replace(/\n/g, '')) d = '';
+              return {
+                type,
+                value: d,
+              };
             })
-            .filter((d) => d);
+            .filter((d) => d.value);
         } else {
-          msgArr = [realMessage];
+          msgArr = [
+            {
+              type: isAtMsg ? CHECK_MSG_TYPE.IS_AT : CHECK_MSG_TYPE.IS_TEXT,
+              value: realMessage,
+            },
+          ];
         }
 
         this.clearInput();
 
+        console.log(msgArr);
+
         const sendMsgArr = await Promise.all(
           msgArr
             .map(async (d) => {
+              const { value, type } = d;
               let msg = null;
-              if (d.includes('<img')) {
-                const b64 = d.replace(/(<img src=")(\S+)(" \S*)/, '$2');
+              if (type === CHECK_MSG_TYPE.IS_IMAGE) {
+                const b64 = value.replace(/(<img src=")(\S+)(" \S*)/, '$2');
+                console.log(b64);
                 const file = this.dataURLtoFile(b64);
                 const { name, size, type } = file;
                 const url = await this.handleFileUpload(b64);
@@ -525,8 +664,8 @@ export default {
                 );
               } else {
                 msg = await this.handleCreateMsg({
-                  type: this.CHECK_MSG_TYPE.IS_TEXT,
-                  message: d,
+                  type,
+                  message: value,
                 });
               }
 
@@ -617,6 +756,10 @@ export default {
             url,
           });
           break;
+        case this.CHECK_MSG_TYPE.IS_AT:
+          msgEvent = IMSDKMessageProvider.events.createTextAtMessage;
+          msgData.push(message);
+          break;
         default:
           break;
       }
@@ -682,9 +825,25 @@ export default {
         });
       }
     },
+
+    getGroupMemberList() {
+      // nextSeq默认从0开始
+      IMGetGroupMemberList(this.session.toUser, 0).then((res) => {
+        console.log(res, 'getGroupMemberList');
+        const { nextSeq, members = [] } = res;
+        this.nextSeq = nextSeq;
+        this.members = members.map((d) => {
+          return {
+            ...d,
+            alias: d.alias || d.nickname,
+          };
+        });
+      });
+    },
   },
   async beforeDestroy() {
     document.removeEventListener('click', this.handleGlobalClick);
+    document.removeEventListener('click', this.handleAtGlobalClick);
     document.onkeydown = null;
     const sessId = this.session.sessId;
     const historyTempMsgOBJ = await window.$lanshuStore.getItem('tempMsgOBJ');
@@ -713,10 +872,11 @@ export default {
   .input-panel {
     box-sizing: border-box;
     background: $bg-white-color;
-    padding: 0 0px 16px 20px;
+    padding: 0 0px 16px 16px;
     display: flex;
     justify-content: flex-start;
     flex-direction: column;
+    position: relative;
 
     .options-row {
       width: 100%;
@@ -747,7 +907,7 @@ export default {
           border-radius: 4px;
           cursor: pointer;
           display: inline-block;
-          margin-right: 14px;
+          margin-right: 16px;
 
           &.disabled {
             cursor: not-allowed;
@@ -764,7 +924,8 @@ export default {
       line-height: 21px;
       font-size: 14px;
       overflow-y: auto;
-      max-height: 340px;
+      max-height: 300px;
+      box-sizing: border-box;
 
       .editor-container {
         width: 100%;
@@ -774,13 +935,20 @@ export default {
         font-size: 14px;
         border: none;
         outline: none;
-        white-space: normal;
+        white-space: pre-line;
         word-break: break-all;
 
         &:empty::before {
           content: attr(placeholder);
           color: $tips-text-color;
           font-size: 14px;
+        }
+
+        ::v-deep .at-container {
+          .at-tag {
+            color: $primary-color;
+            cursor: pointer;
+          }
         }
       }
     }
@@ -797,6 +965,57 @@ export default {
 
       .editor-container {
         min-height: 22px;
+      }
+    }
+  }
+
+  .at-member-panel {
+    width: 216px;
+    height: 335px;
+    display: flex;
+    background: $bg-white-color;
+    box-shadow: 0px 4px 20px 0px rgba(51, 51, 51, 0.1);
+    border-radius: 6px;
+    border: 1px solid #eaeaea;
+    overflow: hidden;
+    position: absolute;
+    z-index: 9;
+    left: 16px;
+    top: 40px;
+    transform: translateY(-100%);
+
+    .scroll-view {
+      flex: 1;
+      padding: 0 6px;
+      overflow-y: auto;
+      margin-top: 16px;
+
+      .member-item {
+        height: 36px;
+        background-color: $bg-white-color;
+        border-radius: 6px;
+        padding: 8px 12px 8px;
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+
+        .img {
+          display: block;
+          width: 36px;
+          height: 36px;
+          border-radius: 4px;
+        }
+
+        .name {
+          flex: 1;
+          padding-left: 8px;
+          font-size: 14px;
+          color: $main-text-color;
+        }
+
+        &:hover {
+          background-color: $bg-hover-grey-color;
+        }
       }
     }
   }

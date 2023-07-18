@@ -280,6 +280,7 @@ export default {
     &.text {
       user-select: text;
       word-break: break-all;
+      white-space: pre-line;
 
       &.disabled {
         color: $minor-text-color;
