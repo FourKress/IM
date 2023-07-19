@@ -76,6 +76,7 @@
               :imViewWidth="imViewWidth"
               :bubbleModel="bubbleModel"
               :rawMsg="item"
+              @checkAtUser="handleFriend"
             />
             <div
               class="send-tips"
@@ -117,6 +118,7 @@
       :groupRoleManager="groupRoleManager"
       @refreshMsg="handleRefreshMsg"
       @pushMsg="handlePushLocalMsg"
+      @checkAtUser="handleFriend"
     />
 
     <!--    <div class='notify'>-->

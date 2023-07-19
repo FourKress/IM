@@ -6,11 +6,24 @@
       :class="classObject"
       v-if="isText"
       v-html="msgText"
-      v-contextMenu="
-        msg.msgType === -1
-          ? []
-          : [...textContextMenuList, ...baseContextMenuList]
-      "
+      v-contextMenu="[...textContextMenuList, ...baseContextMenuList]"
+    ></div>
+
+    <div
+      class="card text"
+      ref="MsgCard"
+      :class="classObject"
+      v-if="isAt"
+      v-html="msgText"
+      v-contextMenu="[...textContextMenuList, ...baseContextMenuList]"
+    ></div>
+
+    <div
+      class="card text"
+      ref="MsgCard"
+      :class="classObject"
+      v-if="isRevoke"
+      v-html="msgText"
     ></div>
 
     <div
@@ -202,7 +215,7 @@ export default {
       return {
         self: this.isSelf,
         target: !this.isSelf,
-        disabled: this.msg.msgType === -1,
+        disabled: this.isRevoke,
       };
     },
     trtcMsgTips() {
@@ -281,6 +294,18 @@ export default {
       user-select: text;
       word-break: break-all;
       white-space: pre-line;
+
+      ::v-deep .at-tag {
+        color: $primary-color;
+        cursor: pointer;
+
+        &.at-me {
+          background-color: $primary-color;
+          color: $bg-white-color;
+          padding: 2px 4px;
+          border-radius: 4px;
+        }
+      }
 
       &.disabled {
         color: $minor-text-color;

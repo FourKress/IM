@@ -1,10 +1,11 @@
 <template>
-  <span>
+  <span class="msg">
+    <span class="at-tag" v-if="isAtMe">[有人@了你]</span>
     <span class="temp-msg" v-if="tempMsgText">
       <span class="label">[草稿]</span>
       <span>{{ tempMsgText }}</span>
     </span>
-    <span v-else v-html="messageText"></span>
+    <span class="msg-text" v-else v-html="messageText"></span>
   </span>
 </template>
 
@@ -25,6 +26,10 @@ export default {
           preview: '',
         };
       },
+    },
+    isAtMe: {
+      type: Boolean,
+      default: false,
     },
   },
   computed: {
@@ -59,19 +64,35 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.temp-msg {
-  display: block;
-  width: 145px;
-  height: 17px;
-  font-size: 12px;
-  color: $tips-text-color;
+.msg {
+  display: flex;
+  align-items: center;
 
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  .msg-text {
+    flex: 1;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+  }
 
-  .label {
-    color: $minor-red-color;
+  .temp-msg {
+    display: block;
+    width: 145px;
+    height: 17px;
+    font-size: 12px;
+    color: $tips-text-color;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    .label {
+      color: $minor-red-color;
+    }
+  }
+
+  .at-tag {
+    color: $primary-color;
   }
 }
 </style>

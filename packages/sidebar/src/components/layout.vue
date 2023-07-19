@@ -79,6 +79,7 @@
                 <MsgTextType
                   v-if="item.lastMsg"
                   :lastMsg="item.lastMsg"
+                  :isAtMe="item.isAtMe === 1"
                   :tempMsg="
                     currentSession === item.sessId
                       ? {}

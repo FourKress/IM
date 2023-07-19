@@ -90,6 +90,19 @@
         <div class="scroll-view">
           <div
             class="member-item"
+            @click="
+              handleSelectMember({
+                userId: 'IM_AT_ALL',
+                nickname: '所有人',
+              })
+            "
+          >
+            <img class="img" src="" alt="" />
+            <span class="name">所有人</span>
+          </div>
+          <div class="tips">群成员</div>
+          <div
+            class="member-item"
             v-for="item in members"
             @click="handleSelectMember(item)"
           >
@@ -130,10 +143,12 @@ import {
   SESSION_USER_TYPE,
   lodash,
   GROUP_ROLE_TYPE_LOCAL,
+  openAtUser,
 } from '@lanshu/utils';
 import { renderProcess } from '@lanshu/render-process';
 import { LsIcon } from '@lanshu/components';
 import ActionCard from '../action-view/action-card';
+import { mapGetters } from 'vuex';
 import {
   IMSDKMessageProvider,
   IMCreateMsg,
@@ -186,6 +201,8 @@ export default {
     };
   },
   computed: {
+    ...mapGetters('IMStore', ['userInfo']),
+
     session() {
       return this.$attrs.session;
     },
@@ -280,7 +297,7 @@ export default {
         this.windowRange = window.getSelection()?.getRangeAt(0);
         const nowTime = Date.now();
         this.handleTargetInsert(
-          `<span class='at-container' contenteditable="false" data-at="${nowTime}">@</span><span>&nbsp;</span>`,
+          `<span class='at-container' contenteditable="false" data-at="${nowTime}">@</span>`,
         );
         this.atTagDom = document.querySelector(`[data-at="${nowTime}"]`);
         this.handleCheckAt();
@@ -300,7 +317,7 @@ export default {
     };
 
     // 给动态生成的html标签绑定事件，挂载到window上;
-    window.getAtUser = this.getAtUser;
+    window.openAtUser = (event) => openAtUser(this, event);
   },
   methods: {
     init() {
@@ -373,12 +390,8 @@ export default {
       this.messageText = this.messageText.slice(0, -1);
       this.windowRange = window.getSelection()?.getRangeAt(0);
       const { userId, nickname } = member;
-      this.atTagDom.innerHTML = `<span class="at-tag" data-userid="${userId}" onclick='getAtUser(event)'>@${nickname}</span>`;
-      this.handleTargetInsert(`<span></span>`);
-    },
-    getAtUser(event) {
-      const userId = event.target.getAttribute('data-userid');
-      console.log(userId);
+      this.atTagDom.innerHTML = `<span class="at-tag" data-userid="${userId}" onclick='openAtUser(event)'>@${nickname}</span>`;
+      this.handleTargetInsert(`<span>&nbsp;</span>`);
     },
     handleInput() {
       const element = this.$refs.msgInput;
@@ -567,7 +580,7 @@ export default {
           if (realMessage.includes('data-userid')) {
             isAtMsg = true;
             const atRegExp =
-              /<span class="at-container" contenteditable="false" data-at="\d+"><span class="at-tag" data-userid="\d+" onclick="getAtUser\(event\)">(@[\s\S]*?)<\/span><\/span>/;
+              /<span class="at-container" contenteditable="false" data-at="\d+"><span class="at-tag" data-userid="(\d+|IM_AT_ALL)" onclick="getAtUser\(event\)">(@[\s\S]*?)<\/span><\/span>/;
             const atArr = realMessage.match(new RegExp(atRegExp, 'g'));
 
             const tempDom = document.createElement('span');
@@ -983,12 +996,13 @@ export default {
     left: 16px;
     top: 40px;
     transform: translateY(-100%);
+    padding-bottom: 6px;
 
     .scroll-view {
       flex: 1;
       padding: 0 6px;
       overflow-y: auto;
-      margin-top: 16px;
+      margin-top: 6px;
 
       .member-item {
         height: 36px;
@@ -1016,6 +1030,15 @@ export default {
         &:hover {
           background-color: $bg-hover-grey-color;
         }
+      }
+
+      .tips {
+        height: 40px;
+        line-height: 40px;
+        padding-left: 14px;
+        background: $bg-white-color;
+        font-size: 14px;
+        color: $tips-text-color;
       }
     }
   }

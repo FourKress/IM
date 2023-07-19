@@ -1,4 +1,5 @@
 import { storeInstance } from './store';
+import { getAtTagList, formatAtTag } from './atUtils';
 
 export * from './micro';
 
@@ -15,6 +16,7 @@ export const CHECK_MSG_TYPE = {
   IS_TRTC: 'TRTC',
   IS_SYSTEM_NOTIFY: 'systemNotify',
   IS_AT: 'at',
+  IS_REVOKE: 'revoke',
 };
 
 const formatMsgType = (val, isBaseType = true) => {
@@ -35,11 +37,11 @@ export const MSG_FORMAT_MAP = {
     label: (data) => {
       return formatMsgType(data?.content);
     },
-    type: CHECK_MSG_TYPE.IS_TEXT,
+    type: CHECK_MSG_TYPE.IS_REVOKE,
   },
   1: {
     label: (data) => {
-      const msg = data?.content ? data.content.split('<br>')[0] : '';
+      const msg = data?.content;
       if (!msg) return msg;
       return msg.replace(/&nbsp;/g, ' ');
     },
@@ -67,10 +69,12 @@ export const MSG_FORMAT_MAP = {
   },
   8: {
     label: (data) => {
-      const msgType = formatMsgType('有人@了你');
-      return msgType;
+      const msg = data?.content;
+      if (!msg) return msg;
+      const atTagList = getAtTagList(msg);
+      return formatAtTag(msg, atTagList, true);
     },
-    type: CHECK_MSG_TYPE.IS_POSITION,
+    type: CHECK_MSG_TYPE.IS_AT,
   },
   400: {
     label: (data) => {

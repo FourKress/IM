@@ -6,6 +6,7 @@ export * from '../src/base';
 export * from '../src/pinyin';
 export * from '../src/mixins';
 export * from '../src/version';
+export * from '../src/atUtils';
 import lodash from 'lodash';
 import qrcode from 'qrcode';
 import domToImage from 'dom-to-image';

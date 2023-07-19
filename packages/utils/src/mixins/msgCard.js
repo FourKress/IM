@@ -2,6 +2,8 @@ import { CHECK_MSG_TYPE, MSG_FORMAT_MAP } from '../constant';
 import { dataURLtoBlob, getFileSize, lodash } from '../../lib/main';
 import { renderProcess } from '@lanshu/render-process';
 import { IMRevokeMessage } from '@lanshu/im';
+import { mapGetters } from 'vuex';
+import { getAtTagList, formatAtTag, openAtUser } from '../../lib/main';
 
 export default {
   data() {
@@ -48,6 +50,8 @@ export default {
   },
 
   computed: {
+    ...mapGetters('IMStore', ['userInfo']),
+
     msgType() {
       const msgType = this.msg?.msgType;
       return this.MSG_FORMAT_MAP[msgType].type;
@@ -58,7 +62,7 @@ export default {
     linkArr() {
       const content = this.msgData?.content;
       if (!this.isText || !content) return [];
-      const reg = /http(s)?:\/\/\S+/g;
+      const reg = /http(s)?:\/\/\S+(?<=[a-zA-Z])/g;
       const matchArr = content.match(reg) || [];
       let linkArr = [];
       matchArr.forEach((d) => {
@@ -66,9 +70,15 @@ export default {
       });
       return linkArr?.length ? linkArr : [];
     },
+    atArr() {
+      const content = this.msgData?.content;
+      if (!this.isAt || !content) return [];
+      return getAtTagList(content);
+    },
     msgText() {
       const content = this.msgData?.content;
       const linkArr = lodash.cloneDeep(this.linkArr);
+      const atArr = lodash.cloneDeep(this.atArr);
       let msgText = content;
       if (linkArr.length) {
         linkArr.forEach((d) => {
@@ -79,15 +89,23 @@ export default {
           .filter((d) => d && d !== ' ')
           .map((d) => {
             if (d === 'LINK') {
-              d = `<span class="link-jump link-jump_${this.msg.msgId}">${
-                linkArr.splice(0, 1)[0]
-              }</span>`;
+              const url = linkArr.splice(0, 1)[0];
+              d = `<span class="link-jump" data-url="${url}" onclick="openTargetUrl(event)">${url}</span>`;
             }
             return d;
           })
           .join('');
       }
+      if (atArr.length) {
+        msgText = formatAtTag(content, atArr);
+      }
       return msgText;
+    },
+    isAt() {
+      return this.msgType === this.CHECK_MSG_TYPE.IS_AT;
+    },
+    isRevoke() {
+      return this.msgType === this.CHECK_MSG_TYPE.IS_REVOKE;
     },
     isText() {
       return this.msgType === this.CHECK_MSG_TYPE.IS_TEXT;
@@ -125,28 +143,23 @@ export default {
 
   created() {
     this.msg = this.rawMsg;
+    // 给动态生成的html标签绑定事件，挂载到window上;
+    window.openTargetUrl = this.openTargetUrl;
+    window.openAtUser = (event) => openAtUser(this, event);
   },
 
   mounted() {
-    this.getAssetsPath();
-
-    this.$nextTick(() => {
-      if (this.linkArr.length) {
-        const linKDomArr = [
-          ...document.querySelectorAll(`.link-jump_${this.msg.msgId}`),
-        ];
-        linKDomArr.forEach((d) => {
-          d.onclick = (e) => {
-            const url = e.target.innerText;
-            renderProcess.openUrl(url);
-          };
-        });
-      }
-    });
+    this.getAssetsPath().catch(() => {});
   },
 
   methods: {
     getFileSize,
+
+    openTargetUrl(event) {
+      const url = event.target.getAttribute('data-url');
+      if (!url) return;
+      renderProcess.openUrl(url);
+    },
 
     async handleDownload() {
       const msgId = this.msg?.msgId;
