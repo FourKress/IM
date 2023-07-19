@@ -522,6 +522,7 @@ export default {
     min-width: 265px;
     height: 100%;
     box-sizing: border-box;
+    overflow-y: auto;
 
     .top {
       font-size: 16px;

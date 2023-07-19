@@ -620,7 +620,7 @@ export default {
           if (realMessage.includes('data-userid')) {
             isAtMsg = true;
             const atRegExp =
-              /<span class="at-container" contenteditable="false" data-at="\d+"><span class="at-tag" data-userid="(\d+|IM_AT_ALL)" onclick="getAtUser\(event\)">(@[\s\S]*?)<\/span><\/span>/;
+              /<span class="at-container" contenteditable="false" data-at="\d+"><span class="at-tag" data-userid="(\d+|IM_AT_ALL)" onclick="openAtUser\(event\)">(@[\s\S]*?)<\/span><\/span>/;
             const atArr = realMessage.match(new RegExp(atRegExp, 'g'));
 
             const tempDom = document.createElement('span');
@@ -688,8 +688,6 @@ export default {
 
         this.clearInput();
 
-        console.log(msgArr);
-
         const sendMsgArr = await Promise.all(
           msgArr
             .map(async (d) => {
@@ -697,7 +695,6 @@ export default {
               let msg = null;
               if (type === CHECK_MSG_TYPE.IS_IMAGE) {
                 const b64 = value.replace(/(<img src=")(\S+)(" \S*)/, '$2');
-                console.log(b64);
                 const file = this.dataURLtoFile(b64);
                 const { name, size, type } = file;
                 const url = await this.handleFileUpload(b64);
