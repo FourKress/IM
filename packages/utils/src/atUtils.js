@@ -28,12 +28,12 @@ export const formatAtTag = (content, atTagList = [], isPreview = false) => {
         const atTag = atTagList.splice(0, 1)[0];
         const { userId, nickname } = getAtUserInfo(atTag);
         if (isPreview) {
-          d = `${nickname}`;
+          d = `${nickname} `;
         } else {
           const userInfo = storeInstance.getters['IMStore/userInfo'];
           d = `<span class="at-tag ${
             userInfo.userId === userId || userId === 'IM_AT_ALL' ? 'at-me' : ''
-          }" data-userid="${userId}" onclick="openAtUser(event)">${nickname}</span>`;
+          }" data-userid="${userId}" onclick="openAtUser(event)">${nickname}</span><span>&nbsp;</span>`;
         }
       }
       return d;

@@ -6,6 +6,55 @@
   "description": "IM、政务通用",
   "glyphs": [
     {
+      "icon_id": "36509430",
+      "name": "所有人",
+      "font_class": "suoyouren",
+      "unicode": "e652",
+      "unicode_decimal": 58962
+    },
+    {
+      "icon_id": "36468677",
+      "name": "粘贴",
+      "font_class": "niantie",
+      "unicode": "e64c",
+      "unicode_decimal": 58956
+    },
+    {
+      "icon_id": "36468678",
+      "name": "删除",
+      "font_class": "shanchu1",
+      "unicode": "e64d",
+      "unicode_decimal": 58957
+    },
+    {
+      "icon_id": "36468679",
+      "name": "引用",
+      "font_class": "yinyong",
+      "unicode": "e64e",
+      "unicode_decimal": 58958
+    },
+    {
+      "icon_id": "36468680",
+      "name": "多选",
+      "font_class": "duoxuan",
+      "unicode": "e64f",
+      "unicode_decimal": 58959
+    },
+    {
+      "icon_id": "36468681",
+      "name": "操作记录",
+      "font_class": "caozuojilu",
+      "unicode": "e650",
+      "unicode_decimal": 58960
+    },
+    {
+      "icon_id": "36468682",
+      "name": "转发",
+      "font_class": "zhuanfa",
+      "unicode": "e651",
+      "unicode_decimal": 58961
+    },
+    {
       "icon_id": "36314376",
       "name": "icon_取消最大化",
       "font_class": "icon_quxiaozuidahua",

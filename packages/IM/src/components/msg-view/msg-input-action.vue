@@ -82,7 +82,6 @@
           :placeholder="placeholder"
           @input="handleInput"
           @blur="handleBlur"
-          @focus="handleCheckAt(true)"
         ></div>
       </div>
 
@@ -97,7 +96,13 @@
               })
             "
           >
-            <img class="img" src="" alt="" />
+            <LsIcon
+              class="img"
+              icon="ls-icon-suoyouren"
+              width="36"
+              height="36"
+              render-svg
+            ></LsIcon>
             <span class="name">所有人</span>
           </div>
           <div class="tips">群成员</div>
@@ -243,9 +248,9 @@ export default {
       setTimeout(async () => {
         if (this.isFocus) {
           this.$refs.msgInput.focus();
-          this.handleCheckAt(true);
+          this.isGroup && this.handleCheckAt(true);
         }
-        this.windowRange = window.getSelection()?.getRangeAt(0);
+        this.windowRange = this.getRange();
         // 获取切换时保存的临时类容
         const historyTempMsgOBJ = await window.$lanshuStore.getItem(
           'tempMsgOBJ',
@@ -291,39 +296,55 @@ export default {
       }
     });
 
-    this.$refs.msgInput.addEventListener('keydown', (e) => {
-      const { shiftKey, key } = e;
-      if (shiftKey && key === '@') {
-        this.windowRange = window.getSelection()?.getRangeAt(0);
-        const nowTime = Date.now();
-        this.handleTargetInsert(
-          `<span class='at-container' contenteditable="false" data-at="${nowTime}">@</span>`,
-        );
-        this.atTagDom = document.querySelector(`[data-at="${nowTime}"]`);
-        this.handleCheckAt();
-        e.preventDefault();
-      }
-    });
-
     const hotKeyDB = await renderProcess.getStore('HOT_KEYS');
 
     this.sendMsgHotKey = hotKeyDB.sendMsg.currentKey;
     this.screenshotHotKey = hotKeyDB.screenshot.currentKey;
 
-    this.$refs.msgInput.onkeydown = (e) => {
-      if (e.key === this.KEY_CODE.IS_ENTER) {
-        e.preventDefault(); //禁用回车的默认事件
+    this.$refs.msgInput.onkeydown = (event) => {
+      if (event.key === this.KEY_CODE.IS_ENTER) {
+        event.preventDefault(); //禁用回车的默认事件
       }
     };
 
-    // 给动态生成的html标签绑定事件，挂载到window上;
-    window.openAtUser = (event) => openAtUser(this, event);
+    if (this.isGroup) {
+      this.$refs.msgInput.addEventListener('keydown', (e) => {
+        const { shiftKey, key } = e;
+        if (shiftKey && key === '@') {
+          this.windowRange = this.getRange();
+          const nowTime = Date.now();
+          this.handleTargetInsert(
+            `<span class='at-container' contenteditable="false" data-at="${nowTime}">@</span>`,
+          );
+          this.atTagDom = document.querySelector(`[data-at="${nowTime}"]`);
+          this.handleCheckAt();
+          e.preventDefault();
+        }
+      });
+
+      this.$refs.msgInput.onkeyup = (event) => {
+        if (['ArrowLeft', 'ArrowRight'].includes(event.key)) {
+          this.handleAuthActionAt();
+        }
+      };
+      this.$refs.msgInput.onmouseup = (event) => {
+        if (event.button == 0) {
+          this.handleAuthActionAt();
+        }
+      };
+
+      // 给动态生成的html标签绑定事件，挂载到window上;
+      window.openAtUser = (event) => openAtUser(this, event);
+    }
   },
   methods: {
     init() {
       this.windowRange = null;
       this.emojiVisible = false;
       this.clearInput();
+    },
+    getRange() {
+      return window.getSelection()?.getRangeAt(0);
     },
     handleGlobalClick(event) {
       if (!this.emojiVisible) return;
@@ -348,25 +369,42 @@ export default {
         }
       } catch (e) {}
     },
+    handleAuthActionAt() {
+      const atDomList = document.querySelectorAll('.at-container');
+      if (!atDomList?.length) return;
+      const rang = this.getRange();
+      // 没有任何选区，代表是最开始或者最结尾，根据内容匹配处理
+      if (rang.endContainer.className === 'editor-container') {
+        this.handleCheckAt(true);
+        return;
+      }
+      const atTagList = [...atDomList]
+        // 存在at-tag, 说明已经是一个完整的AT标签，不需要处理
+        .filter((d) => !d.querySelector('.at-tag'))
+        .filter((d) => {
+          const offsetIndex = rang.comparePoint(d, 0);
+          // 光标处于选区开始位置 并且 @元素与选区偏远值等于-1 则光标当前处理@符号处，触发@动作
+          if (rang.startOffset === 0 && offsetIndex === -1) {
+            return true;
+          }
+          return false;
+        });
+      if (!atTagList.length) {
+        this.visibleMemberDialog = false;
+        return;
+      }
+      const atTag = atTagList.pop();
+      this.atTagDom = atTag;
+      this.getGroupMemberList();
+      this.visibleMemberDialog = true;
+    },
 
     handleEnterEvent(keyType) {
       if (this.sendMsgHotKey === keyType) {
         this.sendMsg();
       } else {
-        this.windowRange = window.getSelection().getRangeAt(0);
-        const innerText = this.$refs.msgInput.innerText;
-        const endOffset = this.windowRange.endOffset;
-
+        this.windowRange = this.getRange();
         this.handleTargetInsert('\n&zwnj;');
-
-        // 在最末尾处换行时，需要两次才能换行，需要特殊处理
-        const wrapArr = innerText.split('\n');
-        const lastText = wrapArr.pop();
-        if (lastText && (endOffset === lastText.length || endOffset === 1)) {
-          setTimeout(() => {
-            // this.handleTargetInsert('\n');
-          });
-        }
       }
     },
     handleCheckAt(isAuto = false) {
@@ -388,7 +426,7 @@ export default {
     handleSelectMember(member) {
       this.message = this.message.slice(0, -1);
       this.messageText = this.messageText.slice(0, -1);
-      this.windowRange = window.getSelection()?.getRangeAt(0);
+      this.windowRange = this.getRange();
       const { userId, nickname } = member;
       this.atTagDom.innerHTML = `<span class="at-tag" data-userid="${userId}" onclick='openAtUser(event)'>@${nickname}</span>`;
       this.handleTargetInsert(`<span>&nbsp;</span>`);
@@ -407,8 +445,10 @@ export default {
       }
       this.message = element.innerHTML;
       this.messageText = element.innerText.trim();
-      // 校验是否触发@事件
-      this.handleCheckAt(true);
+      if (this.isGroup) {
+        // 校验是否触发@事件
+        this.handleCheckAt(true);
+      }
       // 判断是否有滚动条
       this.isScroll =
         this.$refs?.InputTextarea?.scrollHeight >
@@ -416,7 +456,7 @@ export default {
     },
     handleBlur(event) {
       this.$refs.msgInput = event.target;
-      this.windowRange = window.getSelection().getRangeAt(0);
+      this.windowRange = this.getRange();
     },
     clearInput() {
       this.$nextTick(() => {

@@ -17,7 +17,7 @@ export default {
         {
           label: () => '撤回',
           handler: this.handleRevokeMessage,
-          icon: () => 'ls-icon-fuzhi',
+          icon: () => 'ls-icon-caozuojilu',
           hide: () => {
             return !this.isSelf && this.msg?.msgId;
           },
@@ -39,6 +39,13 @@ export default {
             return this.assetsPath.includes('gif');
           },
         },
+        {
+          label: () => '另存为',
+          handler: this.handleDownImage,
+          icon: () => 'ls-icon-xiazai',
+        },
+      ],
+      fileContextMenuList: [
         {
           label: () => '另存为',
           handler: this.handleDownImage,

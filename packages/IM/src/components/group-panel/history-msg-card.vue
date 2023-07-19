@@ -22,6 +22,7 @@
       class="wrap"
       v-if="msgType === CHECK_MSG_TYPE.IS_VIDEO"
       :style="{ width: `${size.width}px`, height: `${size.height}px` }"
+      v-contextMenu="fileContextMenuList"
     >
       <video
         playsinline
@@ -32,11 +33,19 @@
       ></video>
     </div>
 
-    <div class="wrap" v-if="msgType === CHECK_MSG_TYPE.IS_AUDIO">
+    <div
+      class="wrap"
+      v-if="msgType === CHECK_MSG_TYPE.IS_AUDIO"
+      v-contextMenu="fileContextMenuList"
+    >
       <audio class="audio" controls preload="auto" :src="assetsPath"></audio>
     </div>
 
-    <div class="wrap file" v-if="msgType === CHECK_MSG_TYPE.IS_FILE">
+    <div
+      class="wrap file"
+      v-if="msgType === CHECK_MSG_TYPE.IS_FILE"
+      v-contextMenu="fileContextMenuList"
+    >
       <div class="view">
         <LsIcon
           class="audio-icon"

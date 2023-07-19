@@ -52,7 +52,7 @@
         ...wrapStyle,
       }"
       :src="assetsPath"
-      v-contextMenu="baseContextMenuList"
+      v-contextMenu="[...fileContextMenuList, ...baseContextMenuList]"
     ></video>
 
     <audio
@@ -62,7 +62,7 @@
       controls
       preload="auto"
       :src="assetsPath"
-      v-contextMenu="baseContextMenuList"
+      v-contextMenu="[...fileContextMenuList, ...baseContextMenuList]"
     ></audio>
 
     <div
@@ -70,7 +70,7 @@
       :class="classObject"
       :style="{ ...wrapStyle, ...wrapFileStyle }"
       v-if="isFile"
-      v-contextMenu="baseContextMenuList"
+      v-contextMenu="[...fileContextMenuList, ...baseContextMenuList]"
     >
       <div class="view">
         <LsIcon
@@ -302,7 +302,7 @@ export default {
         &.at-me {
           background-color: $primary-color;
           color: $bg-white-color;
-          padding: 2px 4px;
+          padding: 0px 4px;
           border-radius: 4px;
         }
       }
