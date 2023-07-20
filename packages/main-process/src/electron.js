@@ -52,6 +52,10 @@ async function createWindow() {
     }
   });
 
+  win.on('focus', () => {
+    trayEvent.clearFlash();
+  });
+
   win.on('closed', () => {
     global.mainWindow = null;
   });

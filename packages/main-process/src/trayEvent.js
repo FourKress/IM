@@ -25,10 +25,7 @@ class TrayEvent {
     this.tray.on('click', () => {
       global.mainWindow.show();
       this.init();
-      if (this.flashTimer) {
-        clearInterval(this.flashTimer);
-        this.flashTimer = null;
-      }
+      this.clearFlash();
     });
 
     const trayContextMenu = Menu.buildFromTemplate([
@@ -56,6 +53,13 @@ class TrayEvent {
       }
       this.tray.setToolTip('您有新消息');
     }, 1000);
+  }
+
+  clearFlash() {
+    if (this.flashTimer) {
+      clearInterval(this.flashTimer);
+      this.flashTimer = null;
+    }
   }
 }
 
