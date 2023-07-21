@@ -1,5 +1,9 @@
 <template>
-  <div class="action-panel" :class="isSmallEditor && 'small-action'">
+  <div
+    class="action-panel"
+    ref="ActionPanel"
+    :class="isSmallEditor && 'small-action'"
+  >
     <div class="input-panel">
       <div class="options-row">
         <el-popover
@@ -86,15 +90,14 @@
       </div>
 
       <div class="at-member-panel" v-if="visibleMemberDialog">
-        <div class="scroll-view">
+        <div class="scroll-view" ref="MemberContainer">
           <div
             class="member-item"
-            @click="
-              handleSelectMember({
-                userId: 'IM_AT_ALL',
-                nickname: '所有人',
-              })
-            "
+            :class="{
+              active: selectMemberIndex === atAllMember.userId,
+              [`member-item_${atAllMember.userId}`]: true,
+            }"
+            @click="handleSelectMember(atAllMember)"
           >
             <LsIcon
               class="img"
@@ -103,12 +106,16 @@
               height="36"
               render-svg
             ></LsIcon>
-            <span class="name">所有人</span>
+            <span class="name">{{ atAllMember.nickname }}</span>
           </div>
           <div class="tips">群成员</div>
           <div
             class="member-item"
-            v-for="item in members"
+            :class="{
+              active: selectMemberIndex === index,
+              [`member-item_${index}`]: true,
+            }"
+            v-for="(item, index) in members"
             @click="handleSelectMember(item)"
           >
             <img class="img" :src="item.avatar" alt="" />
@@ -162,6 +169,11 @@ import {
   IMGetGroupMemberList,
 } from '../../IM-SDK';
 
+const atAllMember = {
+  userId: 'IM_AT_ALL',
+  nickname: '所有人',
+};
+
 export default {
   name: 'Msg-input-action',
   props: {
@@ -203,6 +215,8 @@ export default {
       visibleMemberDialog: false,
       atTagDom: null,
       isScroll: false,
+      atAllMember,
+      selectMemberIndex: atAllMember.userId,
     };
   },
   computed: {
@@ -243,6 +257,22 @@ export default {
       return this.session?.toUserType === SESSION_USER_TYPE.IS_GROUP;
     },
   },
+  watch: {
+    visibleMemberDialog(val) {
+      if (val) {
+        this.selectMemberIndex = this.atAllMember.userId;
+        this.$refs.ActionPanel.addEventListener(
+          'keyup',
+          this.handleHotKeySelectMember,
+        );
+      } else {
+        this.$refs.ActionPanel.removeEventListener(
+          'keyup',
+          this.handleHotKeySelectMember,
+        );
+      }
+    },
+  },
   async mounted() {
     this.$nextTick(() => {
       setTimeout(async () => {
@@ -275,7 +305,7 @@ export default {
         text = clp.getData('text/plain') || '';
       }
       if (text) {
-        this.handleTargetInsert(text);
+        this.handleTargetInsert(document.createTextNode(text), true);
         return;
       }
 
@@ -305,11 +335,9 @@ export default {
       if (event.key === this.KEY_CODE.IS_ENTER) {
         event.preventDefault(); //禁用回车的默认事件
       }
-    };
-
-    if (this.isGroup) {
-      this.$refs.msgInput.addEventListener('keydown', (e) => {
-        const { shiftKey, key } = e;
+      if (this.isGroup) {
+        // 拦截@ 自定义处理
+        const { shiftKey, key } = event;
         if (shiftKey && key === '@') {
           this.windowRange = this.getRange();
           const nowTime = Date.now();
@@ -318,13 +346,24 @@ export default {
           );
           this.atTagDom = document.querySelector(`[data-at="${nowTime}"]`);
           this.handleCheckAt();
-          e.preventDefault();
+          event.preventDefault();
         }
-      });
 
+        // 选择AT人员时，禁止使用左右方向按键
+        if (
+          ['ArrowUp', 'ArrowDown'].includes(event.key) &&
+          this.visibleMemberDialog
+        ) {
+          event.preventDefault();
+        }
+      }
+    };
+
+    if (this.isGroup) {
       this.$refs.msgInput.onkeyup = (event) => {
         if (['ArrowLeft', 'ArrowRight'].includes(event.key)) {
           this.handleAuthActionAt();
+          return;
         }
       };
       this.$refs.msgInput.onmouseup = (event) => {
@@ -369,6 +408,50 @@ export default {
         }
       } catch (e) {}
     },
+    handleHotKeySelectMember(event) {
+      const { key } = event;
+      if (['ArrowUp', 'ArrowDown', 'Enter'].includes(key)) {
+        event.preventDefault();
+        let { selectMemberIndex, members, atAllMember } = this;
+        if (key === 'Enter') {
+          if (selectMemberIndex === atAllMember.userId) {
+            this.handleSelectMember(atAllMember);
+          } else {
+            this.handleSelectMember(members[selectMemberIndex]);
+          }
+          return;
+        }
+        if (key === 'ArrowDown') {
+          if (selectMemberIndex >= members.length - 1) {
+            selectMemberIndex = atAllMember.userId;
+          } else {
+            selectMemberIndex =
+              selectMemberIndex === atAllMember.userId
+                ? 0
+                : selectMemberIndex + 1;
+          }
+        } else {
+          if (selectMemberIndex === 0) {
+            selectMemberIndex = atAllMember.userId;
+          } else {
+            selectMemberIndex =
+              selectMemberIndex === atAllMember.userId
+                ? members.length - 1
+                : selectMemberIndex - 1;
+          }
+        }
+        this.selectMemberIndex = selectMemberIndex;
+
+        const target = document.querySelector(
+          `.member-item_${selectMemberIndex}`,
+        );
+        this.$refs.MemberContainer.scrollTo({
+          top: target.offsetTop - 10,
+          behavior: 'smooth',
+        });
+      }
+    },
+
     handleAuthActionAt() {
       const atDomList = document.querySelectorAll('.at-container');
       if (!atDomList?.length) return;
@@ -395,11 +478,11 @@ export default {
       }
       const atTag = atTagList.pop();
       this.atTagDom = atTag;
-      this.getGroupMemberList();
-      this.visibleMemberDialog = true;
+      this.handleCheckAt();
     },
 
     handleEnterEvent(keyType) {
+      if (this.visibleMemberDialog) return;
       if (this.sendMsgHotKey === keyType) {
         this.sendMsg();
       } else {
@@ -418,10 +501,10 @@ export default {
           this.getGroupMemberList();
         }
         this.visibleMemberDialog = hasAt;
-        return;
+      } else {
+        this.getGroupMemberList();
+        this.visibleMemberDialog = true;
       }
-      this.getGroupMemberList();
-      this.visibleMemberDialog = true;
     },
     handleSelectMember(member) {
       this.message = this.message.slice(0, -1);
@@ -430,6 +513,9 @@ export default {
       const { userId, nickname } = member;
       this.atTagDom.innerHTML = `<span class="at-tag" data-userid="${userId}" onclick='openAtUser(event)'>@${nickname}</span>`;
       this.handleTargetInsert(`<span>&nbsp;</span>`);
+      this.$nextTick(() => {
+        this.visibleMemberDialog = false;
+      });
     },
     handleInput() {
       const element = this.$refs.msgInput;
@@ -470,30 +556,36 @@ export default {
       });
     },
 
-    handleTargetInsert(node) {
+    handleTargetInsert(content, isNode = false) {
       const selection = window.getSelection();
       const range = this.windowRange;
       range.collapse(false);
-      let hasR = range.createContextualFragment(node);
-      let hasR_lastChild = hasR.lastChild;
-      while (
-        hasR_lastChild &&
-        hasR_lastChild.nodeName.toLowerCase() == 'br' &&
-        hasR_lastChild.previousSibling &&
-        hasR_lastChild.previousSibling.nodeName.toLowerCase() == 'br'
-      ) {
-        let e = hasR_lastChild;
-        hasR_lastChild = hasR_lastChild.previousSibling;
-        hasR.removeChild(e);
+      if (isNode) {
+        range.insertNode(content);
+        range.setEndAfter(content);
+        range.setStartAfter(content);
+      } else {
+        let hasR = range.createContextualFragment(content);
+        let hasR_lastChild = hasR.lastChild;
+        while (
+          hasR_lastChild &&
+          hasR_lastChild.nodeName.toLowerCase() == 'br' &&
+          hasR_lastChild.previousSibling &&
+          hasR_lastChild.previousSibling.nodeName.toLowerCase() == 'br'
+        ) {
+          let e = hasR_lastChild;
+          hasR_lastChild = hasR_lastChild.previousSibling;
+          hasR.removeChild(e);
+        }
+        range.insertNode(hasR);
+        if (hasR_lastChild) {
+          range.setEndAfter(hasR_lastChild);
+          range.setStartAfter(hasR_lastChild);
+        }
       }
-      range.insertNode(hasR);
-      if (hasR_lastChild) {
-        range.setEndAfter(hasR_lastChild);
-        range.setStartAfter(hasR_lastChild);
-      }
+
       selection.removeAllRanges();
       selection.addRange(range);
-
       this.handleInput();
     },
     getEmoji(emoji) {
@@ -894,7 +986,7 @@ export default {
   async beforeDestroy() {
     document.removeEventListener('click', this.handleGlobalClick);
     document.removeEventListener('click', this.handleAtGlobalClick);
-    document.onkeydown = null;
+    // 保存草稿
     const sessId = this.session.sessId;
     const historyTempMsgOBJ = await window.$lanshuStore.getItem('tempMsgOBJ');
     let tempMsg = '';
@@ -1062,6 +1154,10 @@ export default {
           padding-left: 8px;
           font-size: 14px;
           color: $main-text-color;
+        }
+
+        &.active {
+          background-color: $bg-hover-grey-color;
         }
 
         &:hover {
