@@ -294,11 +294,11 @@ export default {
 
     document.addEventListener('click', this.handleGlobalClick);
     document.addEventListener('click', this.handleAtGlobalClick);
-    this.$refs.msgInput.addEventListener('paste', (e) => {
-      this.handleBlur(e);
-      e.preventDefault();
+    this.$refs.msgInput.addEventListener('paste', (event) => {
+      this.handleBlur();
+      event.preventDefault();
       let text;
-      const clp = (e.originalEvent || e).clipboardData;
+      const clp = (event.originalEvent || event).clipboardData;
       if (clp === undefined || clp === null) {
         text = window.clipboardData.getData('text') || '';
       } else {
@@ -540,8 +540,7 @@ export default {
         this.$refs?.InputTextarea?.scrollHeight >
         this.$refs?.InputTextarea?.clientHeight;
     },
-    handleBlur(event) {
-      this.$refs.msgInput = event.target;
+    handleBlur() {
       this.windowRange = this.getRange();
     },
     clearInput() {
