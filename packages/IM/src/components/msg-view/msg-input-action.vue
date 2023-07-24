@@ -97,6 +97,7 @@
               active: selectMemberIndex === atAllMember.userId,
               [`member-item_${atAllMember.userId}`]: true,
             }"
+            v-if="!atKeywords"
             @click="handleSelectMember(atAllMember)"
           >
             <LsIcon
@@ -115,12 +116,14 @@
               active: selectMemberIndex === index,
               [`member-item_${index}`]: true,
             }"
+            v-if="members.length"
             v-for="(item, index) in members"
             @click="handleSelectMember(item)"
           >
             <img class="img" :src="item.avatar" alt="" />
             <span class="name">{{ item.alias }}</span>
           </div>
+          <div class="empty-tips">没有匹配结果</div>
         </div>
       </div>
     </div>
@@ -210,13 +213,15 @@ export default {
       screenshotHotKey: null,
       KEY_CODE,
       CHECK_MSG_TYPE,
-      members: [],
+      rawMembers: [],
       nextSeq: 0,
       visibleMemberDialog: false,
       atTagDom: null,
       isScroll: false,
       atAllMember,
       selectMemberIndex: atAllMember.userId,
+      atKeywords: '',
+      atSearchInfo: {},
     };
   },
   computed: {
@@ -255,6 +260,9 @@ export default {
     },
     isGroup() {
       return this.session?.toUserType === SESSION_USER_TYPE.IS_GROUP;
+    },
+    members() {
+      return this.rawMembers.filter((d) => d.alias.includes(this.atKeywords));
     },
   },
   watch: {
@@ -309,7 +317,7 @@ export default {
         return;
       }
 
-      const items = e.clipboardData.items;
+      const items = event.clipboardData.items;
       for (let item of items) {
         // 图片类型
         if (item.kind === 'file' && item.type.includes('image')) {
@@ -367,7 +375,7 @@ export default {
         }
       };
       this.$refs.msgInput.onmouseup = (event) => {
-        if (event.button == 0) {
+        if (event.button === 0) {
           this.handleAuthActionAt();
         }
       };
@@ -414,16 +422,31 @@ export default {
         event.preventDefault();
         let { selectMemberIndex, members, atAllMember } = this;
         if (key === 'Enter') {
+          this.initAtValue();
+          const { node, offset } = this.atSearchInfo;
+          const isAtSearch = node && offset;
+
           if (selectMemberIndex === atAllMember.userId) {
             this.handleSelectMember(atAllMember);
           } else {
-            this.handleSelectMember(members[selectMemberIndex]);
+            this.handleSelectMember(members[selectMemberIndex], isAtSearch);
+          }
+
+          if (isAtSearch) {
+            this.windowRange.setStart(this.atSearchInfo.node, 0);
+            this.windowRange.setEnd(
+              this.atSearchInfo.node,
+              this.atSearchInfo.offset,
+            );
+            this.windowRange.deleteContents();
+            this.handleTargetInsert(`<span>&nbsp;</span>`);
+            this.atSearchInfo = {};
           }
           return;
         }
         if (key === 'ArrowDown') {
           if (selectMemberIndex >= members.length - 1) {
-            selectMemberIndex = atAllMember.userId;
+            selectMemberIndex = this.atKeywords ? 0 : atAllMember.userId;
           } else {
             selectMemberIndex =
               selectMemberIndex === atAllMember.userId
@@ -432,7 +455,9 @@ export default {
           }
         } else {
           if (selectMemberIndex === 0) {
-            selectMemberIndex = atAllMember.userId;
+            selectMemberIndex = this.atKeywords
+              ? members.length - 1
+              : atAllMember.userId;
           } else {
             selectMemberIndex =
               selectMemberIndex === atAllMember.userId
@@ -454,31 +479,63 @@ export default {
 
     handleAuthActionAt() {
       const atDomList = document.querySelectorAll('.at-container');
-      if (!atDomList?.length) return;
+      const atTagList = [...atDomList]
+        // 存在at-tag, 说明已经是一个完整的AT标签，不需要处理
+        .filter((d) => !d.querySelector('.at-tag'));
+      if (!atTagList?.length) {
+        this.visibleMemberDialog = false;
+        return;
+      }
       const rang = this.getRange();
+      const selection = window.getSelection();
       // 没有任何选区，代表是最开始或者最结尾，根据内容匹配处理
       if (rang.endContainer.className === 'editor-container') {
         this.handleCheckAt(true);
         return;
       }
-      const atTagList = [...atDomList]
-        // 存在at-tag, 说明已经是一个完整的AT标签，不需要处理
-        .filter((d) => !d.querySelector('.at-tag'))
-        .filter((d) => {
-          const offsetIndex = rang.comparePoint(d, 0);
-          // 光标处于选区开始位置 并且 @元素与选区偏远值等于-1 则光标当前处理@符号处，触发@动作
-          if (rang.startOffset === 0 && offsetIndex === -1) {
-            return true;
+      // 获取前一个元素节点或者文本节点
+      const preText = rang.startContainer?.previousSibling;
+      const preEle = rang.startContainer?.previousElementSibling;
+      const preNode = preText?.data ? preText : preEle;
+      const hasAtTag = preNode && preNode?.innerText === '@';
+      const { anchorOffset, anchorNode } = selection;
+      const { data: anchorData } = anchorNode;
+      const isAtSearch =
+        anchorData &&
+        anchorData?.slice(0, 1) !== ' ' &&
+        anchorData?.slice(-1) !== ' ';
+      const atKeywords = anchorData && anchorData?.substring(0, anchorOffset);
+      console.log(rang.startOffset === 0, hasAtTag, isAtSearch, atKeywords);
+      if (rang.startOffset === 0 && hasAtTag) {
+        // 光标处于选区开始位置 并且 @元素是选区前一个节点 则光标当前处于@符号处，触发@动作
+        this.atTagDom = preNode;
+        this.handleCheckAt();
+      } else if (hasAtTag && isAtSearch && atKeywords) {
+        // @元素是选区前一个节点 如果光标当前处于选区某个文本处，触发@动作 并且关键字搜索，关键字为选区开始到光标位置的字符串
+        this.atKeywords = atKeywords;
+        this.selectMemberIndex = 0;
+        this.visibleMemberDialog = true;
+        this.windowRange = rang;
+        this.atSearchInfo = {
+          node: anchorNode,
+          offset: anchorOffset,
+        };
+
+        this.$nextTick(() => {
+          if (!this.members?.length) {
+            setTimeout(() => {
+              this.initAtValue();
+              this.handleCheckAt(true);
+            }, 800);
           }
-          return false;
         });
-      if (!atTagList.length) {
+      } else {
         this.visibleMemberDialog = false;
-        return;
       }
-      const atTag = atTagList.pop();
-      this.atTagDom = atTag;
-      this.handleCheckAt();
+    },
+    initAtValue() {
+      this.atKeywords = '';
+      this.selectMemberIndex = this.atAllMember.userId;
     },
 
     handleEnterEvent(keyType) {
@@ -506,13 +563,13 @@ export default {
         this.visibleMemberDialog = true;
       }
     },
-    handleSelectMember(member) {
+    handleSelectMember(member, isAtSearch = false) {
       this.message = this.message.slice(0, -1);
       this.messageText = this.messageText.slice(0, -1);
       this.windowRange = this.getRange();
       const { userId, nickname } = member;
       this.atTagDom.innerHTML = `<span class="at-tag" data-userid="${userId}" onclick='openAtUser(event)'>@${nickname}</span>`;
-      this.handleTargetInsert(`<span>&nbsp;</span>`);
+      !isAtSearch && this.handleTargetInsert(`<span>&nbsp;</span>`);
       this.$nextTick(() => {
         this.visibleMemberDialog = false;
       });
@@ -533,7 +590,7 @@ export default {
       this.messageText = element.innerText.trim();
       if (this.isGroup) {
         // 校验是否触发@事件
-        this.handleCheckAt(true);
+        this.handleAuthActionAt();
       }
       // 判断是否有滚动条
       this.isScroll =
@@ -568,9 +625,9 @@ export default {
         let hasR_lastChild = hasR.lastChild;
         while (
           hasR_lastChild &&
-          hasR_lastChild.nodeName.toLowerCase() == 'br' &&
+          hasR_lastChild.nodeName.toLowerCase() === 'br' &&
           hasR_lastChild.previousSibling &&
-          hasR_lastChild.previousSibling.nodeName.toLowerCase() == 'br'
+          hasR_lastChild.previousSibling.nodeName.toLowerCase() === 'br'
         ) {
           let e = hasR_lastChild;
           hasR_lastChild = hasR_lastChild.previousSibling;
@@ -909,7 +966,7 @@ export default {
     },
 
     getVideoBase64(url) {
-      return new Promise(function (resolve, reject) {
+      return new Promise(function (resolve) {
         const video = document.createElement('video');
         video.setAttribute('crossOrigin', 'anonymous'); //处理跨域
         video.setAttribute('src', url);
@@ -973,7 +1030,7 @@ export default {
         console.log(res, 'getGroupMemberList');
         const { nextSeq, members = [] } = res;
         this.nextSeq = nextSeq;
-        this.members = members.map((d) => {
+        this.rawMembers = members.map((d) => {
           return {
             ...d,
             alias: d.alias || d.nickname,
@@ -1164,6 +1221,7 @@ export default {
         }
       }
 
+      .empty-tips,
       .tips {
         height: 40px;
         line-height: 40px;
