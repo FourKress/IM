@@ -439,7 +439,7 @@ export default {
               this.atSearchInfo.offset,
             );
             this.windowRange.deleteContents();
-            this.handleTargetInsert(`<span>&nbsp;</span>`);
+            this.handleTargetInsert(`&nbsp;`);
             this.atSearchInfo = {};
           }
           return;
@@ -569,7 +569,7 @@ export default {
       this.windowRange = this.getRange();
       const { userId, nickname } = member;
       this.atTagDom.innerHTML = `<span class="at-tag" data-userid="${userId}" onclick='openAtUser(event)'>@${nickname}</span>`;
-      !isAtSearch && this.handleTargetInsert(`<span>&nbsp;</span>`);
+      !isAtSearch && this.handleTargetInsert(`&nbsp;`);
       this.$nextTick(() => {
         this.visibleMemberDialog = false;
       });
