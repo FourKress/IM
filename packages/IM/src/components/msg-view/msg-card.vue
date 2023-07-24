@@ -1,5 +1,5 @@
 <template>
-  <div class="msg-card">
+  <div class="msg-card-item" :data-msg-id="msgId">
     <div
       class="card text"
       ref="MsgCard"
@@ -211,6 +211,8 @@ export default {
     };
   },
   computed: {
+    ...mapGetters('IMStore', ['revokeCallBack']),
+
     classObject() {
       return {
         self: this.isSelf,
@@ -228,8 +230,6 @@ export default {
       };
       return tipsMap[msgType];
     },
-
-    ...mapGetters('IMStore', ['revokeCallBack']),
   },
   watch: {
     imViewWidth(val) {
@@ -272,7 +272,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.msg-card {
+.msg-card-item {
   width: 100%;
   height: 100%;
   overflow: hidden;

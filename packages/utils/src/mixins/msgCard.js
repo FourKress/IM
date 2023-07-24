@@ -19,7 +19,7 @@ export default {
           handler: this.handleRevokeMessage,
           icon: () => 'ls-icon-caozuojilu',
           hide: () => {
-            return !this.isSelf && this.msg?.msgId;
+            return !this.isSelf && this.msgId;
           },
         },
       ],
@@ -59,6 +59,9 @@ export default {
   computed: {
     ...mapGetters('IMStore', ['userInfo']),
 
+    msgId() {
+      return this.msg?.msgId;
+    },
     msgType() {
       const msgType = this.msg?.msgType;
       return this.MSG_FORMAT_MAP[msgType].type;
@@ -169,7 +172,7 @@ export default {
     },
 
     async handleDownload() {
-      const msgId = this.msg?.msgId;
+      const msgId = this.msgId;
       const type = this.assetsPath.split('/').pop().split('.')[1];
       await this.handleSaveFile(`cache_${msgId}`, this.assetsPath, msgId);
       const cachePath = await renderProcess.getCacheFilePath(
@@ -200,7 +203,7 @@ export default {
     async getAssetsPath() {
       let assetsPath = this.msgData?.url || this.msgData?.videoUrl;
       if (assetsPath) {
-        const msgId = this.msg?.msgId || `${this.msg?.cliMsgId}_${Date.now()}`;
+        const msgId = this.msgId || `${this.msg?.cliMsgId}_${Date.now()}`;
         const key = `cache_${msgId}`;
         const storePath = (await window.$lanshuStore.getItem(key)) || '';
         // 未产生缓存
@@ -264,7 +267,7 @@ export default {
     },
 
     async handleRevokeMessage() {
-      const { msgId } = this.msg;
+      const msgId = this.msgId();
       if (!msgId) return;
       await IMRevokeMessage(msgId);
       console.log(123);

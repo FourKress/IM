@@ -246,7 +246,6 @@ const actions = {
     commit('setGroupMemberDeleteCallBack', value);
   },
   setSynergyHistory({ commit }, value) {
-    console.log('commit', value);
     commit('setSynergyHistory', value);
   },
   setRevokeCallBack({ commit }, value) {

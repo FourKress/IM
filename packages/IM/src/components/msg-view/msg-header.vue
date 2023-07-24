@@ -80,6 +80,7 @@
         :position="position"
         :config="friendPanelConfig"
         @update="handleCloseDialog"
+        @sendMsg="handleSendMsg"
       />
     </LsCardDialog>
   </div>

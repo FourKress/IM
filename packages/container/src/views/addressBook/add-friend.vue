@@ -68,6 +68,7 @@
         :position="position"
         :config="friendPanelConfig"
         @sendApply="handleSendApply"
+        @sendMsg="handleSendMsg"
       />
     </LsCardDialog>
   </div>
@@ -153,12 +154,12 @@ export default {
       });
       // 属于组织架构人员, 可直接发起聊天
       if (this.friendInfo?.dep) {
-        this.friendPanelConfig = { isPass: true }
+        this.friendPanelConfig = { isPass: true };
       }
     },
     handleSendApply(addParams) {
       IMFriendAddRequest(...addParams).then(() => {
-        this.$message.success('添加好友成功')
+        this.$message.success('添加好友成功');
         this.handleCloseDialog();
       });
     },

@@ -243,6 +243,16 @@ export const IMSDKInit = (appId) => {
       },
     });
   });
+
+  IMSDK.getMainProvider().setReceiptMessageCallback((receipts = []) => {
+    electronLog.info(`RevokeMessageCallback: ${receipts}`);
+    global.mainWindow.webContents.send('IMSDKListener', {
+      type: 'RevokeMessageCallback',
+      value: {
+        receipts,
+      },
+    });
+  });
 };
 
 export const IMSDKEvent = async (provider, event, data) => {

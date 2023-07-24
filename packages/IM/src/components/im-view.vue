@@ -136,6 +136,7 @@
         :config="friendPanelConfig"
         @update="handleCloseDialog"
         @sendApply="handleSendApply"
+        @sendMsg="handleSendMsg"
       />
     </LsCardDialog>
   </div>
@@ -172,6 +173,7 @@ import {
   IMGetMyGroupMemberInfo,
   IMGetOneFriend,
   IMGetUserProfile,
+  IMReceiptMessage,
 } from '../IM-SDK';
 
 export default {
@@ -419,8 +421,39 @@ export default {
           setTimeout(() => {
             this.$refs.messagePanel.scrollTop =
               this.$refs.messagePanel?.scrollHeight;
-          }, 1);
+            // 检测消息是否进入可视区
+            this.handleCheckMsgReceipt();
+          }, 10);
         }
+      });
+    },
+
+    handleCheckMsgReceipt() {
+      const observer = new IntersectionObserver(
+        (entries, observer) => {
+          entries.forEach((entry) => {
+            const { isIntersecting, target } = entry;
+            // 进入可视区，判断是否需要进行已读
+            if (isIntersecting) {
+              const msgId = target.getAttribute('data-msg-id');
+              const msg = this.messageList.find((d) => d.msgId === msgId);
+              const notSelf = !this.checkSelf({ fromUser: msg.fromUser });
+              if (msg.needReadReceipt && notSelf) {
+                console.log(entry, msg, notSelf);
+                IMReceiptMessage([msgId]);
+                observer.unobserve(target);
+              }
+            }
+          });
+        },
+        {
+          threshold: 0.8,
+          root: this.$refs.messagePanel,
+        },
+      );
+      const msgCardList = document.querySelectorAll('.msg-card-item');
+      msgCardList.forEach((element, index) => {
+        observer.observe(element);
       });
     },
 

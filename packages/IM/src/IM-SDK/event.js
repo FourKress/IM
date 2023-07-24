@@ -545,3 +545,11 @@ export const IMRevokeMessage = async (messId) => {
     messId,
   );
 };
+
+export const IMReceiptMessage = async (msgIdList) => {
+  await eventHOCFnc(
+    IMSDKMessageProvider.provider,
+    IMSDKMessageProvider.events.receiptMessage,
+    msgIdList,
+  );
+};
