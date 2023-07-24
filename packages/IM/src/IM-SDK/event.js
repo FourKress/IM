@@ -1,5 +1,12 @@
 import { renderProcess } from '@lanshu/render-process';
-import { storeInstance, removeToken, Apis, TOKEN_TYPE } from '@lanshu/utils';
+import {
+  storeInstance,
+  routeInstance,
+  removeToken,
+  Apis,
+  TOKEN_TYPE,
+  REST_STORE_STATE,
+} from '@lanshu/utils';
 import {
   IMSDKConvProvider,
   IMSDKFileProvider,
@@ -93,8 +100,16 @@ export const ClientLogOut = async () => {
   await window.$lanshuStore.removeItem('tempMsgOBJ');
   removeToken(TOKEN_TYPE.IS_IM);
   removeToken(TOKEN_TYPE.IS_SYS);
-  window.location.reload();
+
   renderProcess.showLoginWindow(1000);
+  routeInstance.push('/login');
+
+  Object.keys(storeInstance['_mutations']).forEach((key) => {
+    if (key.includes(REST_STORE_STATE)) {
+      console.log(key);
+      storeInstance.commit(key);
+    }
+  });
 };
 export const IMClearUnreadCount = async (sessId) => {
   const res = await eventHOCFnc(

@@ -1,9 +1,10 @@
-import { CHECK_MSG_TYPE, MSG_FORMAT_MAP } from '../constant';
-import { dataURLtoBlob, getFileSize, lodash } from '../../lib/main';
 import { renderProcess } from '@lanshu/render-process';
 import { IMRevokeMessage } from '@lanshu/im';
 import { mapGetters } from 'vuex';
-import { getAtTagList, formatAtTag, openAtUser } from '../../lib/main';
+import lodash from 'lodash';
+import { CHECK_MSG_TYPE, MSG_FORMAT_MAP } from '../msgUtils';
+import { dataURLtoBlob, getFileSize } from '../base';
+import { getAtTagList, formatAtTag, openAtUser } from '../atUtils';
 
 export default {
   data() {

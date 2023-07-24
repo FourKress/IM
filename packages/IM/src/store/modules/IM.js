@@ -1,49 +1,55 @@
-const state = {
-  // 用户基本信息
-  userInfo: {},
-  // 用户资料
-  userProfile: {},
-  // 会话列表
-  sessionList: [],
-  // 主会话窗口
-  mainSessionWindow: {},
-  // 协同会话窗口
-  synergySessionList: [],
-  // 协同会话状态
-  synergyStatus: false,
-  // 网络状态
-  IM_Network_Status: 0,
-  // 数据同步状态
-  IM_DataSync_Status: null,
-  // 当前消息
-  currentMsg: {},
-  // 总未读数
-  allUnreadCount: 0,
-  // 刷新聊天Msg
-  refreshMsg: '',
-  // 当前操作的SessionWindow
-  actionWindow: {},
-  // 刷新群成员
-  refreshMembers: '',
-  // 文件拖拽列表
-  dragFileList: [],
-  // 新好友申请数
-  newFriendCount: 0,
-  // 刷新联系人列表
-  refreshAddressBook: '',
-  // 刷新群权限信息
-  refreshGroupRoleManager: '',
-  // 头像或昵称修改通知
-  userNicknameAvatarUpdate: '',
-  // 群成员在群内的昵称修改通知
-  groupUserAttributeChanged: '',
-  // 被提出或退出群聊
-  groupMemberDeleteCallBack: '',
-  // 协同历史
-  synergyHistory: JSON.parse(localStorage.getItem('synergyHistory') || '[]'),
-  // 撤回消息回调
-  revokeCallBack: '',
+import { REST_STORE_STATE } from '@lanshu/utils';
+import { handleResetStoreState } from '@lanshu/utils/src/store/utils';
+
+const getDefaultState = () => {
+  return {
+    // 用户基本信息
+    userInfo: {},
+    // 用户资料
+    userProfile: {},
+    // 会话列表
+    sessionList: [],
+    // 主会话窗口
+    mainSessionWindow: {},
+    // 协同会话窗口
+    synergySessionList: [],
+    // 协同会话状态
+    synergyStatus: false,
+    // 网络状态
+    IM_Network_Status: 0,
+    // 数据同步状态
+    IM_DataSync_Status: null,
+    // 当前消息
+    currentMsg: {},
+    // 总未读数
+    allUnreadCount: 0,
+    // 刷新聊天Msg
+    refreshMsg: '',
+    // 当前操作的SessionWindow
+    actionWindow: {},
+    // 刷新群成员
+    refreshMembers: '',
+    // 文件拖拽列表
+    dragFileList: [],
+    // 新好友申请数
+    newFriendCount: 0,
+    // 刷新联系人列表
+    refreshAddressBook: '',
+    // 刷新群权限信息
+    refreshGroupRoleManager: '',
+    // 头像或昵称修改通知
+    userNicknameAvatarUpdate: '',
+    // 群成员在群内的昵称修改通知
+    groupUserAttributeChanged: '',
+    // 被提出或退出群聊
+    groupMemberDeleteCallBack: '',
+    // 协同历史
+    synergyHistory: JSON.parse(localStorage.getItem('synergyHistory') || '[]'),
+    // 撤回消息回调
+    revokeCallBack: '',
+  };
 };
+const state = getDefaultState();
 
 const getters = {
   userInfo: (state) => state.userInfo,
@@ -71,6 +77,9 @@ const getters = {
 };
 
 const mutations = {
+  [REST_STORE_STATE](data) {
+    data = handleResetStoreState(data, getDefaultState());
+  },
   setUserInfo(data, value) {
     data.userInfo = value;
   },
@@ -179,6 +188,9 @@ const mutations = {
 };
 
 const actions = {
+  [REST_STORE_STATE]({ commit }) {
+    commit(REST_STORE_STATE);
+  },
   setUserInfo({ commit }, value) {
     commit('setUserInfo', value);
   },

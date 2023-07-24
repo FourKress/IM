@@ -203,7 +203,6 @@ export default {
       this.showSettingsDialog = false;
       try {
         await ClientLogOut();
-        await this.$router.push('/login');
       } catch (e) {}
     },
 

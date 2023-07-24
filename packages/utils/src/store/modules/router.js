@@ -1,8 +1,15 @@
-const state = {
-  breadCrumbs: [],
-  historyMainPath: '',
-  orgBreadCrumbs: [],
+import { REST_STORE_STATE } from '../../constant';
+import { handleResetStoreState } from '../utils';
+
+const getDefaultState = () => {
+  return {
+    breadCrumbs: [],
+    historyMainPath: '',
+    orgBreadCrumbs: [],
+  };
 };
+
+const state = getDefaultState();
 
 const getters = {
   breadCrumbs: (state) => state.breadCrumbs,
@@ -11,6 +18,9 @@ const getters = {
 };
 
 const mutations = {
+  [REST_STORE_STATE](data) {
+    data = handleResetStoreState(data, getDefaultState());
+  },
   addBreadCrumb(data, value) {
     const flag = data.breadCrumbs.some((d) => d.path === value.path);
     if (flag) return;
@@ -43,6 +53,9 @@ const mutations = {
 };
 
 const actions = {
+  [REST_STORE_STATE]({ commit }) {
+    commit(REST_STORE_STATE);
+  },
   addBreadCrumbs({ commit }, value) {
     commit('addBreadCrumb', value);
   },

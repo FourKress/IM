@@ -234,7 +234,6 @@ export default {
               clearInterval(this.timer);
               this.countdown = 0;
               await ClientLogOut();
-              await this.$router.push('/login');
             }
           }, 1000);
         }

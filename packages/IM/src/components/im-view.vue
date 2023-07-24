@@ -413,14 +413,18 @@ export default {
           this.messageList.unshift(...msgs);
           setTimeout(() => {
             const currentScrollHeight = this.$refs.messagePanel?.scrollHeight;
-            this.$refs.messagePanel.scrollTop =
-              currentScrollHeight - this.preScrollHeight + this.scrollTop;
+            if (this.$refs.messagePanel) {
+              this.$refs.messagePanel.scrollTop =
+                currentScrollHeight - this.preScrollHeight + this.scrollTop;
+            }
           }, 1);
         } else {
           this.messageList = msgs;
           setTimeout(() => {
-            this.$refs.messagePanel.scrollTop =
-              this.$refs.messagePanel?.scrollHeight;
+            if (this.$refs.messagePanel) {
+              this.$refs.messagePanel.scrollTop =
+                this.$refs.messagePanel?.scrollHeight;
+            }
             // 检测消息是否进入可视区
             this.handleCheckMsgReceipt();
           }, 10);
@@ -437,6 +441,7 @@ export default {
             if (isIntersecting) {
               const msgId = target.getAttribute('data-msg-id');
               const msg = this.messageList.find((d) => d.msgId === msgId);
+              if (!msg) return;
               const notSelf = !this.checkSelf({ fromUser: msg.fromUser });
               if (msg.needReadReceipt && notSelf) {
                 console.log(entry, msg, notSelf);
@@ -509,8 +514,10 @@ export default {
     handlePushLocalMsg(msg) {
       this.messageList.push(msg);
       this.$nextTick(() => {
-        this.$refs.messagePanel.scrollTop =
-          this.$refs.messagePanel?.scrollHeight;
+        if (this.$refs.messagePanel) {
+          this.$refs.messagePanel.scrollTop =
+            this.$refs.messagePanel?.scrollHeight;
+        }
       });
     },
     handleRefreshMsg() {

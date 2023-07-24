@@ -1,15 +1,21 @@
-const state = {
-  systemUserInfo: {},
-  userErrorMsg: '',
-  codeCountdown: 0,
-  updateInfo: {},
-  startDownload: false,
-  updateNotify: false,
-  searchHistory: JSON.parse(localStorage.getItem('searchHistory') || '[]'),
-  isMaxWindow: false,
-  modalDialog: {},
-  openMicroApp: '',
+import { REST_STORE_STATE } from '../../constant';
+import { handleResetStoreState } from '../utils';
+
+const getDefaultState = () => {
+  return {
+    systemUserInfo: {},
+    userErrorMsg: '',
+    codeCountdown: 0,
+    updateInfo: {},
+    startDownload: false,
+    updateNotify: false,
+    searchHistory: JSON.parse(localStorage.getItem('searchHistory') || '[]'),
+    isMaxWindow: false,
+    modalDialog: {},
+    openMicroApp: '',
+  };
 };
+const state = getDefaultState();
 
 const getters = {
   systemUserInfo: (state) => state.systemUserInfo,
@@ -25,6 +31,9 @@ const getters = {
 };
 
 const mutations = {
+  [REST_STORE_STATE](data) {
+    data = handleResetStoreState(data, getDefaultState());
+  },
   setSystemUserInfo(data, value) {
     data.systemUserInfo = value;
   },
@@ -67,6 +76,9 @@ const mutations = {
 };
 
 const actions = {
+  [REST_STORE_STATE]({ commit }) {
+    commit(REST_STORE_STATE);
+  },
   setSystemUserInfo({ commit }, value) {
     commit('setSystemUserInfo', value);
   },
