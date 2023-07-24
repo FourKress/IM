@@ -441,7 +441,7 @@ export default {
                 ...(myDep?.id
                   ? [
                       {
-                        label: `我的部门 <span class="tag">(${myDep.name})</span>`,
+                        label: `我的部门 <span class="tag">(<span>${myDep.name}</span>)</span>`,
                         component,
                         key: `${id}_Dep`,
                         id: myDep.id,
@@ -654,17 +654,34 @@ export default {
               background: #e9f2ff;
               .label {
                 color: $primary-color;
+                ::v-deep .tag {
+                  span {
+                    color: $primary-color;
+                  }
+                }
               }
             }
 
             .label {
               flex: 1;
               padding-left: 8px;
+              display: flex;
+              align-items: center;
 
               ::v-deep .tag {
                 font-size: 14px;
-                color: $minor-text-color;
                 padding-left: 6px;
+                max-width: 96px;
+                display: flex;
+                align-items: center;
+
+                span {
+                  height: 22px;
+                  overflow: hidden;
+                  text-overflow: ellipsis;
+                  white-space: nowrap;
+                  color: $minor-text-color;
+                }
               }
             }
 

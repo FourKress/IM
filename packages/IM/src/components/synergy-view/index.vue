@@ -78,7 +78,7 @@
             }"
             v-for="session in _sessionList"
             :style="getStyle(session) || getBasicStyle"
-            @click="handleSelectSynergy(session)"
+            @click.self="handleSelectSynergy(session)"
           >
             <ImView
               v-if="session.sessId"
@@ -399,7 +399,12 @@ export default {
       const target = document.querySelector(
         `.session_${this.formatSessId(sessId)}`,
       );
-      target.querySelector('.editor-container')?.focus();
+      const editor = target.querySelector('.editor-container');
+      editor?.focus();
+      // 处理光标并移动到最后
+      const range = window.getSelection();
+      range.selectAllChildren(editor);
+      range.collapseToEnd(); //光标移至最后
       return target;
     },
 
@@ -550,11 +555,11 @@ export default {
         &.has-mask:after {
           content: '';
           width: 100%;
-          height: 100%;
+          height: calc(100% - 56px);
           background-color: transparent;
           position: absolute;
           left: 0;
-          top: 0;
+          bottom: 0;
         }
       }
 

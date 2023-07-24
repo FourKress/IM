@@ -110,20 +110,21 @@
             <span class="name">{{ atAllMember.nickname }}</span>
           </div>
           <div class="tips">群成员</div>
-          <div
-            class="member-item"
-            :class="{
-              active: selectMemberIndex === index,
-              [`member-item_${index}`]: true,
-            }"
-            v-if="members.length"
-            v-for="(item, index) in members"
-            @click="handleSelectMember(item)"
-          >
-            <img class="img" :src="item.avatar" alt="" />
-            <span class="name">{{ item.alias }}</span>
-          </div>
-          <div class="empty-tips">没有匹配结果</div>
+          <template v-if="members.length">
+            <div
+              class="member-item"
+              :class="{
+                active: selectMemberIndex === index,
+                [`member-item_${index}`]: true,
+              }"
+              v-for="(item, index) in members"
+              @click="handleSelectMember(item)"
+            >
+              <img class="img" :src="item.avatar" alt="" />
+              <span class="name">{{ item.alias }}</span>
+            </div>
+          </template>
+          <div class="empty-tips" v-else>没有匹配结果</div>
         </div>
       </div>
     </div>
@@ -1168,8 +1169,9 @@ export default {
   }
 
   .at-member-panel {
-    width: 216px;
-    height: 335px;
+    width: calc(100% - 32px);
+    height: auto;
+    max-height: 160px;
     display: flex;
     background: $bg-white-color;
     box-shadow: 0px 4px 20px 0px rgba(51, 51, 51, 0.1);
