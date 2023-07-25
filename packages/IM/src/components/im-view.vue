@@ -79,7 +79,7 @@
               :bubbleModel="bubbleModel"
               :rawMsg="item"
               :session="session"
-              :memberCount="isGroup ? memberCount : 2"
+              :memberCount="isGroup ? memberCount - 1 : 1"
             />
           </div>
         </div>

@@ -100,7 +100,7 @@ export default {
     },
     percent() {
       // 总人数需要排除自己 所以 减 1
-      return (this.receiptUserList.length / (this.memberCount - 1)) * 100 + 0.2;
+      return (this.receiptUserList.length / this.memberCount) * 100 + 0.2;
     },
   },
   watch: {},
