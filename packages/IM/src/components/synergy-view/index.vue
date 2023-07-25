@@ -77,15 +77,15 @@
               [`session_${formatSessId(session.sessId)}`]: true,
             }"
             v-for="session in _sessionList"
+            :key="formatSessId(session.sessId)"
             :style="getStyle(session) || getBasicStyle"
             @click.self="handleSelectSynergy(session)"
           >
             <ImView
               v-if="session.sessId"
-              :key="session.sessId || ''"
+              :key="formatSessId(session.sessId)"
               :session="session"
-              :isFocus="false"
-              :isSmallEditor="true"
+              :isSynergy="true"
               :headerStyle="{
                 backgroundColor: '#E7EAF3',
               }"
@@ -127,6 +127,7 @@
         <div
           class="item"
           v-for="session in _sessionList"
+          :key="formatSessId(session.sessId)"
           @click="handleOpenCollapse(session)"
         >
           <el-tooltip
@@ -166,6 +167,7 @@
           <div
             class="item"
             v-for="session in _sessionList"
+            :key="formatSessId(session.sessId)"
             @click="handleOpenCollapse(session)"
           >
             <el-badge
@@ -195,6 +197,7 @@ import {
   LsEmptyData,
   LsAssets,
 } from '@lanshu/components';
+import { formatSessId } from '@lanshu/utils';
 import ImView from '../im-view.vue';
 import { IMClearUnreadCount } from '../../IM-SDK';
 import SynergySearch from './search.vue';
@@ -242,8 +245,8 @@ export default {
     },
 
     _sessionList() {
-      return this.sessionList.filter((d) =>
-        this.synergySessionList.some((s) => s.sessId === d.sessId),
+      return this.synergySessionList.map((d) =>
+        this.sessionList.find((s) => s.sessId === d.sessId),
       );
     },
 
@@ -306,6 +309,8 @@ export default {
       'setSynergySessionList',
       'removeSynergySessionList',
     ]),
+
+    formatSessId,
 
     getStyle(session) {
       const target = this.synergySessionList.find(
@@ -388,10 +393,6 @@ export default {
       setTimeout(() => {
         this.handleScrollTo(session);
       }, 100);
-    },
-
-    formatSessId(sessId) {
-      return sessId.replace(':', '');
     },
 
     getSessionTarget(session) {

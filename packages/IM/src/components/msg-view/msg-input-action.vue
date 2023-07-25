@@ -2,7 +2,7 @@
   <div
     class="action-panel"
     ref="ActionPanel"
-    :class="isSmallEditor && 'small-action'"
+    :class="isSynergy && 'small-action'"
   >
     <div class="input-panel">
       <div class="options-row">
@@ -189,11 +189,7 @@ export default {
       type: Object,
       default: () => {},
     },
-    isFocus: {
-      type: Boolean,
-      default: true,
-    },
-    isSmallEditor: {
+    isSynergy: {
       type: Boolean,
       default: false,
     },
@@ -285,12 +281,15 @@ export default {
   async mounted() {
     this.$nextTick(() => {
       setTimeout(async () => {
-        if (this.isFocus) {
-          this.$refs.msgInput.focus();
+        // 协同模式不自动聚焦
+        if (!this.isSynergy) {
+          this.$refs.msgInput?.focus();
           this.isGroup && this.handleCheckAt(true);
         }
         this.windowRange = this.getRange();
-        // 获取切换时保存的临时类容
+        // 非协同模式 读取草稿
+        if (this.isSynergy) return;
+        // 获取切换时保存的临时草稿
         const historyTempMsgOBJ = await window.$lanshuStore.getItem(
           'tempMsgOBJ',
         );
@@ -298,7 +297,7 @@ export default {
         if (tempMsg?.preview) {
           this.handleTargetInsert(tempMsg.rawMsg);
         }
-      }, 300);
+      }, 500);
     });
 
     document.addEventListener('click', this.handleGlobalClick);
@@ -1052,11 +1051,13 @@ export default {
     } else if (this.message.includes('<img')) {
       tempMsg = '[图片]';
     }
+    // 协同模式清空当前会话的草稿
+    if (this.isSynergy) tempMsg = '';
     await window.$lanshuStore.setItem('tempMsgOBJ', {
       ...historyTempMsgOBJ,
       [sessId]: {
         preview: tempMsg,
-        rawMsg: this.message,
+        rawMsg: tempMsg ? this.message : tempMsg,
       },
     });
   },

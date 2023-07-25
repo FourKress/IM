@@ -111,7 +111,7 @@ const mutations = {
     const realList = value.filter((n) =>
       data.synergySessionList.every((d) => d.sessId !== n.sessId),
     );
-    data.synergySessionList.push(...realList);
+    data.synergySessionList.unshift(...realList);
   },
   removeSynergySessionList(data, value) {
     const synergySessionList = data.synergySessionList.filter(

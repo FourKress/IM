@@ -655,9 +655,7 @@ export default {
               .label {
                 color: $primary-color;
                 ::v-deep .tag {
-                  span {
-                    color: $primary-color;
-                  }
+                  color: $primary-color;
                 }
               }
             }
@@ -674,13 +672,12 @@ export default {
                 max-width: 96px;
                 display: flex;
                 align-items: center;
+                color: $minor-text-color;
 
                 span {
-                  height: 22px;
                   overflow: hidden;
                   text-overflow: ellipsis;
                   white-space: nowrap;
-                  color: $minor-text-color;
                 }
               }
             }

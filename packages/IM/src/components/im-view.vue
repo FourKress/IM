@@ -200,11 +200,7 @@ export default {
       default: () => {},
       require: true,
     },
-    isFocus: {
-      type: Boolean,
-      default: true,
-    },
-    isSmallEditor: {
+    isSynergy: {
       type: Boolean,
       default: false,
     },

@@ -106,7 +106,6 @@ export const ClientLogOut = async () => {
 
   Object.keys(storeInstance['_mutations']).forEach((key) => {
     if (key.includes(REST_STORE_STATE)) {
-      console.log(key);
       storeInstance.commit(key);
     }
   });

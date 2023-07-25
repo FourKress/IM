@@ -25,7 +25,7 @@
           <div
             class="top-item"
             v-for="(item, index) in topSessionList"
-            :key="`${index}_${item.sessId}`"
+            :key="formatSessId(item.sessId)"
             @click="handleMenuClick(item)"
             v-contextMenu:[topSessionList[index]]="topContextMenuList"
           >
@@ -56,7 +56,7 @@
         <div
           class="menu-item"
           v-for="(item, index) in selfSessionList"
-          :key="`${index}_${item.sessId}`"
+          :key="formatSessId(item.sessId)"
           :class="currentSession === item.sessId && 'active'"
           @click="handleMenuClick(item)"
           v-contextMenu:[selfSessionList[index]]="contextMenuList"
@@ -112,6 +112,7 @@ import {
   LsAssets,
 } from '@lanshu/components';
 import { IMClearUnreadCount, IMDelBySessId, IMSetTopStatus } from '@lanshu/im';
+import { formatSessId } from '@lanshu/utils';
 
 const isAll = true;
 
@@ -200,6 +201,7 @@ export default {
   },
   methods: {
     ...mapActions('IMStore', ['setMainSessionWindow']),
+    formatSessId,
 
     initSessionList() {
       this._sessionList = this.sessionList.filter((d) =>

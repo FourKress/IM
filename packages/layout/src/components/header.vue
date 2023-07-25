@@ -384,6 +384,7 @@ export default {
       border: none;
       background: transparent;
       background: $bg-hover-grey-color;
+      padding-right: 56px;
 
       &:hover {
         background: #eee;

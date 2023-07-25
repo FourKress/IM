@@ -9,7 +9,7 @@
 
     <ImView
       v-if="mainSessionWindow.sessId"
-      :key="mainSessionWindow.sessId || ''"
+      :key="formatSessId(mainSessionWindow.sessId)"
       :session="mainSessionWindow"
       :recordrtc="recordrtc"
       @moreCallback="handleMoreCallback"
@@ -52,6 +52,7 @@ import {
   IM_HEADER_MORE_BTN_KEY,
   IM_GROUP_MEMBER_PANEL_TYPE,
   SESSION_USER_TYPE,
+  formatSessId,
 } from '@lanshu/utils';
 
 export default {
@@ -131,6 +132,7 @@ export default {
   },
   methods: {
     ...mapActions('IMStore', ['setActionWindow', 'setMainSessionWindow']),
+    formatSessId,
 
     handleMoreCallback(data) {
       const { command, session } = data;

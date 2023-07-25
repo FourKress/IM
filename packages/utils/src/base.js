@@ -88,3 +88,8 @@ export const setHeaderClassName = (className) => {
     hearerSearch.className = `${className}`;
   }
 };
+
+// 格式化sessId，去掉冒号
+export const formatSessId = (sessId) => {
+  return sessId.replace(':', '');
+};
