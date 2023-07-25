@@ -97,11 +97,7 @@ import {
   FriendMixins,
 } from '@lanshu/utils';
 import { renderProcess } from '@lanshu/render-process';
-import {
-  IMGetGroupCurrentMemberCount,
-  IMGetOneFriend,
-  IMGetUserProfile,
-} from '../../IM-SDK';
+import { IMGetOneFriend, IMGetUserProfile } from '../../IM-SDK';
 
 export default {
   name: 'Msg-header',
@@ -117,6 +113,10 @@ export default {
     headerStyle: {
       type: Object,
       default: () => {},
+    },
+    memberCount: {
+      type: Number,
+      default: 0,
     },
   },
   inject: {
@@ -134,13 +134,12 @@ export default {
       IM_HEADER_MORE_BTN_KEY,
       NETWORK_CALL_TYPE,
       showFriendDialog: false,
-      memberCount: 0,
       friendPanelConfig: {},
     };
   },
   mixins: [FriendMixins],
   computed: {
-    ...mapGetters('IMStore', ['userInfo', 'refreshMembers']),
+    ...mapGetters('IMStore', ['userInfo']),
 
     session() {
       return this.$attrs.session;
@@ -151,14 +150,6 @@ export default {
     isGroup() {
       return this.session?.toUserType === SESSION_USER_TYPE.IS_GROUP;
     },
-  },
-  watch: {
-    refreshMembers() {
-      this.getGroupCurrentMemberCount();
-    },
-  },
-  created() {
-    this.getGroupCurrentMemberCount();
   },
   methods: {
     handleCommand(command) {
@@ -211,15 +202,6 @@ export default {
       if (this.friendInfo?.dep) {
         this.friendPanelConfig = { isPass: true };
       }
-    },
-
-    getGroupCurrentMemberCount() {
-      if (!this.isGroup) return;
-      IMGetGroupCurrentMemberCount(this.session.toUser).then((res) => {
-        console.log(res, 'IMGetGroupCurrentMemberCount');
-        const { memberCount = 0 } = res;
-        this.memberCount = memberCount;
-      });
     },
   },
 };

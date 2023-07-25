@@ -14,22 +14,36 @@ const startNotification = lodash.debounce(async function (message) {
   const audio = new Audio(require('./new-msg-audio.mp3'));
   await audio.play();
 
-  const isGroup = message.toUserType === SESSION_USER_TYPE.IS_GROUP;
-  let NOTIFICATION_TITLE = message.fromNickname,
-    NOTIFICATION_ICON = message.fromAvatar;
+  const {
+    toUserType,
+    toUser,
+    fromNickname,
+    fromAvatar,
+    msgType,
+    data,
+    sessId,
+  } = message;
+
+  const isGroup = toUserType === SESSION_USER_TYPE.IS_GROUP;
+  let NOTIFICATION_TITLE = fromNickname,
+    NOTIFICATION_ICON = fromAvatar;
   let NOTIFICATION_BODY = '';
 
   if (isGroup) {
-    const res = await IMGetGroupAttribute(message.toUser);
+    const res = await IMGetGroupAttribute(toUser);
     const groupInfo = res?.data || {};
     NOTIFICATION_TITLE = groupInfo.nickname;
     NOTIFICATION_ICON = groupInfo.avatar;
-    NOTIFICATION_BODY = `${message.fromNickname}: `;
+    const isNotSystemNotify =
+      MSG_FORMAT_MAP[msgType]?.type &&
+      MSG_FORMAT_MAP[msgType]?.type !== CHECK_MSG_TYPE.IS_SYSTEM_NOTIFY;
+    // 系统消息不展示fromNickname
+    if (isNotSystemNotify) {
+      NOTIFICATION_BODY = `${fromNickname}: `;
+    }
   }
 
-  NOTIFICATION_BODY += `${MSG_FORMAT_MAP[message.msgType]?.label(
-    message?.data,
-  )}`;
+  NOTIFICATION_BODY += `${MSG_FORMAT_MAP[msgType]?.label(data)}`;
 
   new Notification(NOTIFICATION_TITLE, {
     body: NOTIFICATION_BODY,
@@ -39,9 +53,9 @@ const startNotification = lodash.debounce(async function (message) {
 
     if (location.hash !== '#/') return;
 
-    const { isCurrent } = getCurrentSession('sessId', message.sessId);
+    const { isCurrent } = getCurrentSession('sessId', sessId);
     if (isCurrent) {
-      IMClearUnreadCount(message.sessId);
+      IMClearUnreadCount(sessId);
     }
   };
 }, 800);
@@ -91,16 +105,12 @@ export const IMSDKCallBackEvents = {
   },
   AddReceiveNewMessage: async (ctx, msgInfo) => {
     const { message, silence, isFocused } = msgInfo;
-    const { sessId, msgType } = message;
+    const { sessId } = message;
 
     const { session, isCurrent } = getCurrentSession('sessId', sessId);
 
-    const isNotSystemNotify =
-      MSG_FORMAT_MAP[msgType]?.type &&
-      MSG_FORMAT_MAP[msgType]?.type !== CHECK_MSG_TYPE.IS_SYSTEM_NOTIFY;
-
     // 窗口是否聚集
-    if (!isFocused && isNotSystemNotify) {
+    if (!isFocused) {
       startNotification(message);
     }
 

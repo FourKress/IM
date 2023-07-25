@@ -1,11 +1,19 @@
 <template>
-  <span class="msg-card" :class="(isGroup && !isSelf) && 'is-group'">
+  <span
+    class="msg-card"
+    :class="[
+      isSelf && bubbleModel === SESSION_BUBBLE_MODEL.IS_BETWEEN
+        ? 'self'
+        : 'target',
+      isGroup && !isSelf && 'is-group',
+    ]"
+  >
     <div class="img">
       <img :src="isSelf ? userInfo.avatar : toAvatar" alt="" />
     </div>
     <div
       class="nickname"
-      v-if="!isSelf && message.toUserType === SESSION_USER_TYPE.IS_GROUP"
+      v-if="!isSelf && rawMsg.toUserType === SESSION_USER_TYPE.IS_GROUP"
     >
       <span>{{ nickname }}</span>
     </div>
@@ -14,7 +22,7 @@
 
 <script>
 import { mapGetters } from 'vuex';
-import { SESSION_USER_TYPE } from '@lanshu/utils';
+import { SESSION_USER_TYPE, SESSION_BUBBLE_MODEL } from '@lanshu/utils';
 
 export default {
   name: 'Msg-lazy-userInfo',
@@ -28,10 +36,14 @@ export default {
       default: () => {},
       require: true,
     },
-    message: {
+    rawMsg: {
       type: Object,
       default: () => {},
       require: true,
+    },
+    bubbleModel: {
+      type: [Number, String],
+      default: SESSION_BUBBLE_MODEL.IS_BETWEEN,
     },
   },
   computed: {
@@ -39,6 +51,7 @@ export default {
   },
   data() {
     return {
+      SESSION_BUBBLE_MODEL,
       SESSION_USER_TYPE,
       nickname: '',
       toAvatar: '',
@@ -46,7 +59,7 @@ export default {
     };
   },
   watch: {
-    message() {
+    rawMsg() {
       this.initData();
     },
   },
@@ -55,13 +68,10 @@ export default {
   },
   methods: {
     initData() {
-      this.isGroup = this.message.toUserType === SESSION_USER_TYPE.IS_GROUP
-      if (
-        !this.isSelf &&
-        this.isGroup
-      ) {
-        this.nickname = this.message?.fromNickname;
-        this.toAvatar = this.message?.fromAvatar;
+      this.isGroup = this.rawMsg.toUserType === SESSION_USER_TYPE.IS_GROUP;
+      if (!this.isSelf && this.isGroup) {
+        this.nickname = this.rawMsg?.fromNickname;
+        this.toAvatar = this.rawMsg?.fromAvatar;
       } else {
         this.toAvatar = this.session.avatar;
       }

@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import { MSG_FORMAT_MAP } from '@lanshu/utils';
+import { CHECK_MSG_TYPE, MSG_FORMAT_MAP } from '@lanshu/utils';
 
 export default {
   name: 'Msg-text-type',
@@ -34,12 +34,17 @@ export default {
   },
   computed: {
     messageText() {
-      const { msgType, data } = this.lastMsg;
+      const { msgType, data, fromNickname } = this.lastMsg;
       if (!msgType && !data) return '暂无消息';
       const msgTypes = Object.keys(MSG_FORMAT_MAP);
       // 不满足消息类型时，默认未知消息
       if (!msgTypes.includes(String(msgType))) return '未知消息';
-      return `${MSG_FORMAT_MAP[msgType]?.label(data)}`;
+      const msgTypeInfo = MSG_FORMAT_MAP[msgType];
+      const messageText = msgTypeInfo.label(data);
+      if (msgTypeInfo.type === CHECK_MSG_TYPE.IS_SYSTEM_NOTIFY) {
+        return messageText;
+      }
+      return `${fromNickname}: ${messageText}`;
     },
   },
   watch: {

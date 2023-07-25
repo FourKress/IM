@@ -5,6 +5,7 @@
       v-on="$listeners"
       :groupRole="myGroupRole"
       :groupRoleManager="groupRoleManager"
+      :memberCount="memberCount"
     >
       <template slot="rightBtn">
         <slot name="header"></slot>
@@ -55,15 +56,10 @@
         >
           <span @click="(event) => handleFriend(item, event)">
             <MsgLazyUserInfo
-              :class="
-                checkSelf(item) &&
-                bubbleModel === SESSION_BUBBLE_MODEL.IS_BETWEEN
-                  ? 'self'
-                  : 'target'
-              "
-              :is-self="checkSelf(item)"
+              :isSelf="checkSelf(item)"
+              :bubbleModel="bubbleModel"
               :session="session"
-              :message="item"
+              :rawMsg="item"
             />
           </span>
 
@@ -78,35 +74,13 @@
               :rawMsg="item"
               @checkAtUser="handleFriend"
             />
-            <div
-              class="send-tips"
-              :class="
-                checkSelf(item) &&
-                bubbleModel === SESSION_BUBBLE_MODEL.IS_BETWEEN
-                  ? 'self'
-                  : 'target'
-              "
-              v-if="item.sendState !== 1"
-            >
-              <img
-                class="loading-icon"
-                v-if="item.sendState === 0"
-                :src="LsAssets.loadingIcon"
-                alt=""
-              />
-              <span
-                class="send-error"
-                v-if="item.sendState === -1"
-                @click="handleResendMsg"
-              >
-                <LsIcon
-                  render-svg
-                  width="17"
-                  height="17"
-                  icon="a-zt_ts_icon2x"
-                ></LsIcon>
-              </span>
-            </div>
+            <MsgSendTips
+              :isSelf="checkSelf(item)"
+              :bubbleModel="bubbleModel"
+              :rawMsg="item"
+              :session="session"
+              :memberCount="isGroup ? memberCount : 2"
+            />
           </div>
         </div>
       </div>
@@ -120,14 +94,6 @@
       @pushMsg="handlePushLocalMsg"
       @checkAtUser="handleFriend"
     />
-
-    <!--    <div class='notify'>-->
-    <!--      <LsIcon render-svg width='16' height='16' icon='a-icon_qungonggao2x'></LsIcon>-->
-    <!--      <span class='label'>群公告:</span>-->
-    <!--      <span class='content'>-->
-    <!--        <span>啊实打实大师大大撒上的啊实打实大师大大撒上的啊实打实大师大大撒上的啊</span>-->
-    <!--      </span>-->
-    <!--    </div>-->
 
     <LsCardDialog :visible.sync="showFriendDialog">
       <LsFriendPanel
@@ -166,6 +132,7 @@ import MsgCard from './msg-view/msg-card';
 import MsgHeader from './msg-view/msg-header';
 import MsgInputAction from './msg-view/msg-input-action';
 import MsgLazyUserInfo from './msg-view/msg-lazy-userinfo.vue';
+import MsgSendTips from './msg-view/msg-send-tips.vue';
 
 import {
   IMGetGroupRoleManagerList,
@@ -174,6 +141,7 @@ import {
   IMGetOneFriend,
   IMGetUserProfile,
   IMReceiptMessage,
+  IMGetGroupCurrentMemberCount,
 } from '../IM-SDK';
 
 export default {
@@ -187,6 +155,7 @@ export default {
     LsIcon,
     LsCardDialog,
     LsFriendPanel,
+    MsgSendTips,
   },
   mixins: [FriendMixins],
   props: {
@@ -238,6 +207,7 @@ export default {
       groupRoleManager: {},
       imViewWidth: 500,
       resizeObserver: null,
+      memberCount: 0,
     };
   },
   watch: {
@@ -305,6 +275,10 @@ export default {
         };
       });
     },
+
+    refreshMembers() {
+      this.getGroupCurrentMemberCount();
+    },
   },
   computed: {
     ...mapGetters('IMStore', [
@@ -315,6 +289,7 @@ export default {
       'userNicknameAvatarUpdate',
       'groupUserAttributeChanged',
       'groupMemberDeleteCallBack',
+      'refreshMembers',
     ]),
     toAvatar() {
       return this.session.avatar;
@@ -327,6 +302,7 @@ export default {
     },
   },
   async mounted() {
+    this.getGroupCurrentMemberCount();
     this.bubbleModel =
       (await renderProcess.getStore('SESSION_BUBBLE_MODEL')) ||
       SESSION_BUBBLE_MODEL.IS_BETWEEN;
@@ -440,7 +416,7 @@ export default {
               if (!msg) return;
               const notSelf = !this.checkSelf({ fromUser: msg.fromUser });
               if (msg.needReadReceipt && notSelf) {
-                console.log(entry, msg, notSelf);
+                console.log(entry, msg);
                 IMReceiptMessage([msgId]);
                 observer.unobserve(target);
               }
@@ -520,11 +496,6 @@ export default {
       this.getMessageList();
     },
 
-    handleResendMsg() {
-      // TODO
-      console.log('重发');
-    },
-
     getGroupRoleManagerList() {
       IMGetGroupRoleManagerList(this.session.toUser)
         .then((res) => {
@@ -538,6 +509,15 @@ export default {
       const res = await IMGetMyGroupMemberInfo(this.session.toUser);
       const { role } = res?.data || {};
       this.myGroupRole = role || GROUP_ROLE_TYPE_LOCAL.IS_NOT_AUTH;
+    },
+
+    getGroupCurrentMemberCount() {
+      if (!this.isGroup) return;
+      IMGetGroupCurrentMemberCount(this.session.toUser).then((res) => {
+        console.log(res, 'IMGetGroupCurrentMemberCount');
+        const { memberCount = 0 } = res;
+        this.memberCount = memberCount;
+      });
     },
   },
   beforeDestroy() {
@@ -619,89 +599,11 @@ export default {
           font-size: 14px;
           color: $main-text-color;
           line-height: 20px;
-
-          .send-tips {
-            position: absolute;
-            bottom: 0;
-
-            &.self {
-              left: -25px;
-            }
-
-            &.target {
-              right: -25px;
-            }
-
-            .loading-icon {
-              display: block;
-              width: 17px;
-              height: 17px;
-              transform-origin: center;
-              animation: 2s loadLoop linear infinite normal;
-            }
-
-            @keyframes loadLoop {
-              0% {
-                transform: rotateZ(0deg);
-              }
-              100% {
-                transform: rotateZ(360deg);
-              }
-            }
-
-            .send-error {
-              display: flex;
-              cursor: pointer;
-            }
-          }
         }
       }
 
       &:last-child {
         margin-bottom: 20px;
-      }
-    }
-  }
-
-  .notify {
-    position: absolute;
-    left: 0;
-    top: 66px;
-    width: 100%;
-    height: 50px;
-    box-sizing: border-box;
-    padding: 0 20px;
-    background-color: $bg-grey-color;
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    font-size: 14px;
-    color: $main-text-color;
-
-    .label {
-      font-weight: bold;
-      padding: 0 6px;
-    }
-
-    .content {
-      flex: 1;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-
-      span {
-        display: inline-block;
-        animation: 10s wordsLoop linear infinite normal;
-      }
-
-      @keyframes wordsLoop {
-        0%,
-        20% {
-          transform: translateX(0px);
-        }
-        100% {
-          transform: translateX(-100%);
-        }
       }
     }
   }

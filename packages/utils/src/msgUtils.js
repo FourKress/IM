@@ -11,7 +11,7 @@ export const CHECK_MSG_TYPE = {
   IS_POSITION: 'position',
   IS_CUSTOM: 'custom',
   IS_SEND_FILE: 'File',
-  IS_SEND_BUSINESS_CARD: 'BusinessCard',
+  IS_SEND_BUSINESS_CARD: 'businessCard',
   IS_TRTC: 'TRTC',
   IS_SYSTEM_NOTIFY: 'systemNotify',
   IS_AT: 'at',
