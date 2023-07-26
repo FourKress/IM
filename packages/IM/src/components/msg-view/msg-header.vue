@@ -73,31 +73,19 @@
 
       <slot name="rightBtn"></slot>
     </div>
-
-    <LsCardDialog :visible.sync="showFriendDialog">
-      <LsFriendPanel
-        :friend-info="friendInfo"
-        :position="position"
-        :config="friendPanelConfig"
-        @update="handleCloseDialog"
-        @sendMsg="handleSendMsg"
-      />
-    </LsCardDialog>
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex';
-import { LsIcon, LsCardDialog, LsFriendPanel } from '@lanshu/components';
+import { LsIcon } from '@lanshu/components';
 import {
   IM_HEADER_MORE_BTN_KEY,
   SESSION_USER_TYPE,
   CLIENT_TYPE,
   NETWORK_CALL_TYPE,
-  FriendMixins,
 } from '@lanshu/utils';
 import { renderProcess } from '@lanshu/render-process';
-import { IMGetOneFriend, IMGetUserProfile } from '../../IM-SDK';
 
 export default {
   name: 'Msg-header',
@@ -126,18 +114,13 @@ export default {
   },
   components: {
     LsIcon,
-    LsCardDialog,
-    LsFriendPanel,
   },
   data() {
     return {
       IM_HEADER_MORE_BTN_KEY,
       NETWORK_CALL_TYPE,
-      showFriendDialog: false,
-      friendPanelConfig: {},
     };
   },
-  mixins: [FriendMixins],
   computed: {
     ...mapGetters('IMStore', ['userInfo']),
 
@@ -177,31 +160,10 @@ export default {
 
     async handleFriend(event) {
       if (this.isGroup) return;
-
-      await this.openFriendDialog(event, async () => {
-        const { toUser } = this.session;
-        const friendInfo = (await IMGetOneFriend(toUser))?.data || {};
-
-        if (friendInfo?.userId) {
-          this.friendPanelConfig = this.isGroup
-            ? { isPass: true }
-            : { isDetails: true };
-        } else {
-          this.friendPanelConfig = { isApply: true };
-        }
-
-        const userProfile = (await IMGetUserProfile(toUser))?.data || {};
-        const { remark, desc } = friendInfo;
-        return {
-          ...userProfile,
-          remark,
-          desc,
-        };
-      });
-
-      if (this.friendInfo?.dep) {
-        this.friendPanelConfig = { isPass: true };
-      }
+      const member = {
+        fromUser: this.session.toUser,
+      };
+      this.$emit('checkMember', member, event);
     },
   },
 };

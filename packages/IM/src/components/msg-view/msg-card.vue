@@ -451,8 +451,7 @@ export default {
 
   audio {
     background: #f1f3f4 !important;
-    width: 100%;
-    max-width: 300px;
+    max-width: 300px !important;
   }
 }
 </style>

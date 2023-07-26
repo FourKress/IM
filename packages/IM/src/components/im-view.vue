@@ -6,6 +6,7 @@
       :groupRole="myGroupRole"
       :groupRoleManager="groupRoleManager"
       :memberCount="memberCount"
+      @checkMember="handleFriend"
     >
       <template slot="rightBtn">
         <slot name="header"></slot>
@@ -79,7 +80,8 @@
               :bubbleModel="bubbleModel"
               :rawMsg="item"
               :session="session"
-              :memberCount="isGroup ? memberCount - 1 : 1"
+              :memberCount="memberCount"
+              @checkMember="handleFriend"
             />
           </div>
         </div>
@@ -455,6 +457,7 @@ export default {
     ),
 
     async handleFriend(item, event) {
+      console.log(item);
       const isSelf = this.checkSelf(item);
       if (isSelf) return;
 
