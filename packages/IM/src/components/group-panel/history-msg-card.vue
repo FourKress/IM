@@ -25,11 +25,8 @@
       v-contextMenu="fileContextMenuList"
     >
       <video
-        playsinline
-        controls
-        preload="auto"
-        poster
-        :src="assetsPath"
+        class="video-js vjs-big-play-centered vjs-fluid"
+        ref="Video"
       ></video>
     </div>
 
@@ -38,7 +35,13 @@
       v-if="msgType === CHECK_MSG_TYPE.IS_AUDIO"
       v-contextMenu="fileContextMenuList"
     >
-      <audio class="audio" controls preload="auto" :src="assetsPath"></audio>
+      <audio
+        class="audio"
+        controls
+        controlsList="nodownload noplaybackrate"
+        preload="auto"
+        :src="assetsPath"
+      ></audio>
     </div>
 
     <div
@@ -167,7 +170,7 @@ export default {
 
     audio {
       width: 210px;
-      height: 30px;
+      height: 40px;
       display: block;
     }
 
@@ -262,6 +265,14 @@ export default {
         margin-right: 16px;
       }
     }
+  }
+
+  audio {
+    background: #f1f3f4 !important;
+  }
+
+  ::v-deep .video-js .vjs-big-play-button {
+    transform: scale(0.7);
   }
 }
 </style>

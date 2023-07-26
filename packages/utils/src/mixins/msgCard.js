@@ -127,11 +127,14 @@ export default {
     isVideo() {
       return this.msgType === this.CHECK_MSG_TYPE.IS_VIDEO;
     },
+    isAudio() {
+      return this.msgType === this.CHECK_MSG_TYPE.IS_AUDIO;
+    },
     isFile() {
       return this.msgType === this.CHECK_MSG_TYPE.IS_FILE;
     },
     size() {
-      if (!this.isImage && !this.isVideo) return;
+      if (!this.isImage && !this.isVideo && !this.isAudio) return;
       const { wide, high } = this.msgData;
       const ratio = high ? wide / high : 1;
       if (wide > high && wide >= this.imageMaxWidth) {
@@ -161,6 +164,44 @@ export default {
 
   mounted() {
     this.getAssetsPath().catch(() => {});
+    this.$nextTick(() => {
+      if (!this.isVideo) return;
+      this.$Video(
+        this.$refs.Video,
+        {
+          controls: true,
+          poster: this.msgData?.snapshotUrl,
+          preload: 'auto',
+          autoplay: false,
+          fluid: true,
+          muted: false,
+          inactivityTimeout: false,
+          noUITitleAttributes: true,
+          controlBar: {
+            children: [
+              { name: 'playToggle' },
+              { name: 'progressControl' },
+              { name: 'remainingTimeDisplay', displayNegative: false },
+              {
+                name: 'volumePanel',
+                inline: false,
+              },
+            ],
+          },
+          sources: [
+            // 视频源
+            {
+              src: this.msgData.videoUrl,
+              type: this.msgData.type,
+              poster: this.msgData?.snapshotUrl,
+            },
+          ],
+        },
+        function () {
+          console.log('视频可以播放了', this);
+        },
+      );
+    });
   },
 
   methods: {

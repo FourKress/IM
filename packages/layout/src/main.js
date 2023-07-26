@@ -13,6 +13,9 @@ import {
 import App from './App';
 import { LsConfirm, LsContextMenu } from '@lanshu/components';
 
+import Video from 'video.js';
+import 'video.js/dist/video-js.css';
+
 import 'element-ui/packages/theme-chalk/src/index.scss';
 import './assets/styles/index.scss';
 
@@ -28,6 +31,8 @@ Vue.use(VueDirective);
 Vue.component(SynergyView.name, SynergyView);
 
 window.ClientMessage = Message;
+
+Vue.prototype.$Video = Video;
 
 const Layout = (config = {}) => {
   return new Promise(async (resolve) => {

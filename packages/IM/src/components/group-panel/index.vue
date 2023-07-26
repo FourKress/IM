@@ -1,5 +1,9 @@
 <template>
-  <div class="im-group-settings" v-if="visible">
+  <div
+    class="im-group-settings"
+    :style="isPosition && positionCss"
+    v-if="visible"
+  >
     <div class="top">
       <div class="left">
         <span
@@ -27,10 +31,7 @@
       ></LsIcon>
     </div>
 
-    <Member
-      v-if="selfIsMember"
-      v-on="$listeners"
-    />
+    <Member v-if="selfIsMember" v-on="$listeners" />
     <Settings v-on="$listeners" v-else />
   </div>
 </template>
@@ -53,6 +54,10 @@ export default {
       default: true,
       required: true,
     },
+    isPosition: {
+      type: Boolean,
+      default: false,
+    },
   },
   components: {
     LsIcon,
@@ -62,6 +67,11 @@ export default {
   data() {
     return {
       selfIsMember: true,
+      positionCss: {
+        position: 'absolute',
+        top: 0,
+        right: 0,
+      },
     };
   },
   watch: {

@@ -39,27 +39,31 @@
       <img :src="assetsPath" @click="handlePreview" />
     </div>
 
-    <video
+    <div
       class="wrap"
       v-if="msgType === CHECK_MSG_TYPE.IS_VIDEO"
-      playsinline
-      controls
-      preload="auto"
-      poster
       :style="{
         width: `${size.width}px`,
         height: `${size.height}px`,
         ...wrapStyle,
       }"
-      :src="assetsPath"
       v-contextMenu="[...fileContextMenuList, ...baseContextMenuList]"
-    ></video>
+    >
+      <video
+        class="video-js vjs-big-play-centered vjs-fluid"
+        ref="Video"
+      ></video>
+    </div>
 
     <audio
       class="wrap"
-      :style="wrapStyle"
+      :style="{
+        width: `${size.width}px`,
+        ...wrapStyle,
+      }"
       v-if="msgType === CHECK_MSG_TYPE.IS_AUDIO"
       controls
+      controlsList="nodownload noplaybackrate"
       preload="auto"
       :src="assetsPath"
       v-contextMenu="[...fileContextMenuList, ...baseContextMenuList]"
@@ -252,7 +256,8 @@ export default {
   },
   methods: {
     initSize(imViewWidth) {
-      if (!this.isImage && !this.isVideo && !this.isFile) return;
+      if (!this.isImage && !this.isVideo && !this.isAudio && !this.isFile)
+        return;
       if (imViewWidth <= 490) {
         this.imageMaxWidth = 210;
         this.wrapStyle = { maxWidth: '210px', maxHeight: '210px' };
@@ -442,6 +447,12 @@ export default {
         }
       }
     }
+  }
+
+  audio {
+    background: #f1f3f4 !important;
+    width: 100%;
+    max-width: 300px;
   }
 }
 </style>
