@@ -46,7 +46,9 @@ const getDefaultState = () => {
     // 协同历史
     synergyHistory: JSON.parse(localStorage.getItem('synergyHistory') || '[]'),
     // 撤回消息回调
-    revokeCallBack: '',
+    refreshRevoke: '',
+    // 已读消息回调
+    refreshReceipt: '',
   };
 };
 const state = getDefaultState();
@@ -73,7 +75,8 @@ const getters = {
   groupUserAttributeChanged: (state) => state.groupUserAttributeChanged,
   groupMemberDeleteCallBack: (state) => state.groupMemberDeleteCallBack,
   synergyHistory: (state) => state.synergyHistory,
-  revokeCallBack: (state) => state.revokeCallBack,
+  refreshRevoke: (state) => state.refreshRevoke,
+  refreshReceipt: (state) => state.refreshReceipt,
 };
 
 const mutations = {
@@ -182,8 +185,11 @@ const mutations = {
     data.synergyHistory = resultHistory;
     localStorage.setItem('synergyHistory', JSON.stringify(resultHistory));
   },
-  setRevokeCallBack(data, value) {
-    data.revokeCallBack = value;
+  setRefreshRevoke(data, value) {
+    data.refreshRevoke = value;
+  },
+  setRefreshReceipt(data, value) {
+    data.refreshReceipt = value;
   },
 };
 
@@ -260,8 +266,11 @@ const actions = {
   setSynergyHistory({ commit }, value) {
     commit('setSynergyHistory', value);
   },
-  setRevokeCallBack({ commit }, value) {
-    commit('setRevokeCallBack', value);
+  setRefreshRevoke({ commit }, value) {
+    commit('setRefreshRevoke', value);
+  },
+  setRefreshReceipt({ commit }, value) {
+    commit('setRefreshReceipt', value);
   },
 };
 

@@ -245,9 +245,9 @@ export const IMSDKInit = (appId) => {
   });
 
   IMSDK.getMainProvider().setReceiptMessageCallback((receipts = []) => {
-    electronLog.info(`RevokeMessageCallback: ${receipts}`);
+    electronLog.info(`ReceiptMessageCallback: ${receipts}`);
     global.mainWindow.webContents.send('IMSDKListener', {
-      type: 'RevokeMessageCallback',
+      type: 'ReceiptMessageCallback',
       value: {
         receipts,
       },

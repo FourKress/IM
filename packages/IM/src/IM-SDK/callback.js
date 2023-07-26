@@ -217,7 +217,17 @@ export const IMSDKCallBackEvents = {
     const { revokeMessage } = info;
     const { isCurrent } = getCurrentSession('sessId', revokeMessage.sessId);
     if (isCurrent) {
-      storeInstance.commit('IMStore/setRevokeCallBack', revokeMessage);
+      storeInstance.commit('IMStore/setRefreshRevoke', revokeMessage);
+    }
+  },
+
+  ReceiptMessageCallback(ctx, info) {
+    const { receipts } = info;
+    const { sessId = '' } = storeInstance.getters['IMStore/mainSessionWindow'];
+    if (!sessId) return;
+    const currentSessionMsg = receipts.filter((d) => d.sessId === sessId);
+    if (currentSessionMsg?.length) {
+      storeInstance.commit('IMStore/setRefreshReceipt', currentSessionMsg);
     }
   },
 };

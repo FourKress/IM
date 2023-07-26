@@ -309,10 +309,9 @@ export default {
     },
 
     async handleRevokeMessage() {
-      const msgId = this.msgId();
+      const msgId = this.msgId;
       if (!msgId) return;
       await IMRevokeMessage(msgId);
-      console.log(123);
     },
   },
 };

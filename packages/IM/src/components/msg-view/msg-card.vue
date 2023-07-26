@@ -215,7 +215,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters('IMStore', ['revokeCallBack']),
+    ...mapGetters('IMStore', ['refreshRevoke']),
 
     classObject() {
       return {
@@ -239,7 +239,7 @@ export default {
     imViewWidth(val) {
       this.initSize(val);
     },
-    revokeCallBack: {
+    refreshRevoke: {
       deep: true,
       handler(val) {
         if (!val?.msgId) return;

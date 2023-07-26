@@ -174,14 +174,17 @@ export default {
       MSG_FORMAT_MAP,
       readMember: [],
       notReadMember: [],
-      visible: false,
+      callbackReceiptUserList: [],
     };
   },
   computed: {
-    ...mapGetters('IMStore', ['userInfo']),
+    ...mapGetters('IMStore', ['userInfo', 'refreshReceipt']),
 
     receiptUserList() {
-      return this.rawMsg?.receiptUserList || [];
+      return [
+        ...(this.rawMsg?.receiptUserList || []),
+        ...this.callbackReceiptUserList,
+      ];
     },
     percent() {
       const percent =
@@ -203,13 +206,20 @@ export default {
       return this.isGroup ? this.memberCount - 1 : 1;
     },
   },
-  watch: {},
+  watch: {
+    refreshReceipt: {
+      deep: true,
+      handler(val) {
+        const targetList = val?.filter((d) => d.msgId === this.rawMsg.msgId);
+        if (!targetList.length) return;
+        this.callbackReceiptUserList = targetList.map((d) => d.userId);
+      },
+    },
+  },
   created() {},
   methods: {
     checkGroupMember() {
       if (!this.isGroup) return;
-      this.visible = !this.visible;
-      if (!this.visible) return;
       this.getGroupMemberList();
     },
 
