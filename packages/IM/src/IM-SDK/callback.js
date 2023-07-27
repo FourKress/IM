@@ -225,9 +225,9 @@ export const IMSDKCallBackEvents = {
     const { receipts } = info;
     const { sessId = '' } = storeInstance.getters['IMStore/mainSessionWindow'];
     if (!sessId) return;
-    const currentSessionMsg = receipts.filter((d) => d.sessId === sessId);
-    if (currentSessionMsg?.length) {
-      storeInstance.commit('IMStore/setRefreshReceipt', currentSessionMsg);
+    const currentSessionMsgs = receipts.filter((d) => d.sessId === sessId);
+    if (currentSessionMsgs?.length) {
+      storeInstance.commit('IMStore/setRefreshReceipt', currentSessionMsgs);
     }
   },
 };

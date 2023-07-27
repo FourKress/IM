@@ -36,11 +36,10 @@ export const formatAtTag = (msg, atTagList = [], isPreview = false) => {
           const isSelf = msg?.fromUser === userInfo.userId;
           const receiptUserList = msg.receiptUserList;
           const isRead = receiptUserList.some((r) => r === userId);
-          console.log(msg);
           d = `<span class="at-tag ${
             isAtMe || isAtAll ? 'at-me' : ''
           }" data-userid="${userId}" onclick="openAtUser(event)">${nickname}${
-            isSelf && !isAtAll
+            isSelf && !isAtMe && !isAtAll
               ? `<sup class="at-tag-sup ${isRead ? 'read' : ''}"></sup>`
               : ''
           }</span>`;

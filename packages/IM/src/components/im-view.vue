@@ -399,8 +399,9 @@ export default {
               this.$refs.messagePanel.scrollTop =
                 this.$refs.messagePanel?.scrollHeight;
             }
-            // 检测消息是否进入可视区
-            this.handleCheckMsgReceipt();
+            setTimeout(() => {
+              this.handleCheckMsgReceipt();
+            }, 500);
           }, 10);
         }
       });
@@ -409,6 +410,7 @@ export default {
     handleCheckMsgReceipt() {
       const observer = new IntersectionObserver(
         (entries, observer) => {
+          const receiptMsgIds = [];
           entries.forEach((entry) => {
             const { isIntersecting, target } = entry;
             // 进入可视区，判断是否需要进行已读
@@ -418,12 +420,20 @@ export default {
               if (!msg) return;
               const notSelf = !this.checkSelf({ fromUser: msg.fromUser });
               if (msg.needReadReceipt && notSelf) {
-                console.log(entry, msg);
-                IMReceiptMessage([msgId]);
+                this.messageList = this.messageList.map((m) => {
+                  return {
+                    ...m,
+                    needReadReceipt: 0,
+                  };
+                });
+                receiptMsgIds.push(msgId);
                 observer.unobserve(target);
               }
             }
           });
+          if (receiptMsgIds.length) {
+            IMReceiptMessage([...new Set([...receiptMsgIds])]);
+          }
         },
         {
           threshold: 0.8,
@@ -515,7 +525,10 @@ export default {
     },
 
     getGroupCurrentMemberCount() {
-      if (!this.isGroup) return;
+      if (!this.isGroup) {
+        this.memberCount = 2;
+        return;
+      }
       IMGetGroupCurrentMemberCount(this.session.toUser).then((res) => {
         console.log(res, 'IMGetGroupCurrentMemberCount');
         const { memberCount = 0 } = res;

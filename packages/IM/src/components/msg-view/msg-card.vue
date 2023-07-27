@@ -253,7 +253,14 @@ export default {
       handler(val) {
         const targetList = val?.filter((d) => d.msgId === this.msgId);
         if (!targetList.length) return;
-        this.callbackReceiptUserList = targetList.map((d) => d.userId);
+        const callbackReceiptUserList = targetList.map((d) => d.userId);
+        const receiptUserList = this.msg.receiptUserList || [];
+        this.msg = {
+          ...this.msg,
+          receiptUserList: [
+            ...new Set([...receiptUserList, ...callbackReceiptUserList]),
+          ],
+        };
       },
     },
   },
@@ -331,7 +338,8 @@ export default {
           transform: translateY(-2px);
 
           &.read {
-            background-color: $tips-text-color;
+            background-color: #00c476;
+            border-color: #00c476;
           }
         }
       }

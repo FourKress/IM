@@ -30,11 +30,6 @@
     </template>
 
     <template v-if="isSelf && rawMsg.sendState === 1">
-      <i
-        class="el-icon-circle-check"
-        slot="reference"
-        v-if="!isGroup && receiptUserList.length === realMemberCount"
-      ></i>
       <el-popover
         placement="top-end"
         title=""
@@ -48,7 +43,7 @@
           positionFixed: true,
           preventOverflow: true,
         }"
-        v-if="isGroup"
+        :disabled="!isGroup"
       >
         <i
           class="el-icon-circle-check"
@@ -109,7 +104,7 @@
 </template>
 
 <script>
-import { LsIcon, LsAssets, Expand } from '@lanshu/components';
+import { LsIcon, LsAssets } from '@lanshu/components';
 import {
   SESSION_BUBBLE_MODEL,
   CHECK_MSG_TYPE,
@@ -182,8 +177,10 @@ export default {
 
     receiptUserList() {
       return [
-        ...(this.rawMsg?.receiptUserList || []),
-        ...this.callbackReceiptUserList,
+        ...new Set([
+          ...(this.rawMsg?.receiptUserList || []),
+          ...this.callbackReceiptUserList,
+        ]),
       ];
     },
     percent() {
@@ -212,7 +209,7 @@ export default {
       handler(val) {
         const targetList = val?.filter((d) => d.msgId === this.rawMsg.msgId);
         if (!targetList.length) return;
-        this.callbackReceiptUserList = targetList.map((d) => d.userId);
+        this.callbackReceiptUserList.push(...targetList.map((d) => d.userId));
       },
     },
   },
