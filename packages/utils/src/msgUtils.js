@@ -74,7 +74,7 @@ export const MSG_FORMAT_MAP = {
       return formatAtTag(
         {
           data: {
-            content: msg,
+            content: msg.replace(/&nbsp;/g, ' '),
           },
         },
         atTagList,
