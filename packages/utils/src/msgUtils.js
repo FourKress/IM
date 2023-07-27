@@ -71,7 +71,15 @@ export const MSG_FORMAT_MAP = {
       const msg = data?.content;
       if (!msg) return msg;
       const atTagList = getAtTagList(msg);
-      return formatAtTag(msg, atTagList, true);
+      return formatAtTag(
+        {
+          data: {
+            content: msg,
+          },
+        },
+        atTagList,
+        true,
+      );
     },
     type: CHECK_MSG_TYPE.IS_AT,
   },

@@ -5,6 +5,8 @@ $primary-click-color: #0356e2;
 $primary-disabled-color: #96bff3;
 // IM气泡
 $bubble-IM-color: #bcd7ff;
+$bubble-target-color: #e7eaf3;
+$bubble-self-color: #ddebff;
 // 背景色
 $bg-select-color: #ecf3ff;
 $bg-blue-color: #eef4fd;
@@ -87,7 +89,7 @@ $--color-primary: $primary-color;
   display: none;
 } /* 滚动条的滑轨背景颜色 */
 ::-webkit-scrollbar-thumb {
-  background-color: #D8D8D8;
+  background-color: #d8d8d8;
 } /* 滑块颜色 */
 ::-webkit-scrollbar-button {
   display: none;

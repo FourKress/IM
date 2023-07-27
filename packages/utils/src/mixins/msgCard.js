@@ -54,6 +54,7 @@ export default {
         },
       ],
       msg: {},
+      callbackReceiptUserList: [],
     };
   },
 
@@ -108,7 +109,17 @@ export default {
           .join('');
       }
       if (atArr.length) {
-        msgText = formatAtTag(content, atArr);
+        const receiptUserList = this.msg.receiptUserList || [];
+        msgText = formatAtTag(
+          {
+            ...this.msg,
+            receiptUserList: [
+              ...receiptUserList,
+              ...this.callbackReceiptUserList,
+            ],
+          },
+          atArr,
+        );
       }
       return msgText;
     },

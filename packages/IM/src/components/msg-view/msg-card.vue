@@ -215,7 +215,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters('IMStore', ['refreshRevoke']),
+    ...mapGetters('IMStore', ['refreshRevoke', 'refreshReceipt']),
 
     classObject() {
       return {
@@ -246,6 +246,14 @@ export default {
         if (val?.msgId === this.msg?.msgId) {
           this.msg = val;
         }
+      },
+    },
+    refreshReceipt: {
+      deep: true,
+      handler(val) {
+        const targetList = val?.filter((d) => d.msgId === this.msgId);
+        if (!targetList.length) return;
+        this.callbackReceiptUserList = targetList.map((d) => d.userId);
       },
     },
   },
@@ -288,11 +296,11 @@ export default {
     padding: 15px;
 
     &.self {
-      background-color: $bubble-IM-color;
+      background-color: $bubble-self-color;
     }
 
     &.target {
-      background-color: $bg-white-color;
+      background-color: $bubble-target-color;
     }
 
     &.text {
@@ -309,6 +317,22 @@ export default {
           color: $bg-white-color;
           padding: 0px 4px;
           border-radius: 4px;
+        }
+
+        .at-tag-sup {
+          width: 6px;
+          height: 6px;
+          border-radius: 50%;
+          background-color: $bg-white-color;
+          border: 1px solid $tips-text-color;
+          display: inline-block;
+          margin-left: 2px;
+          box-sizing: border-box;
+          transform: translateY(-2px);
+
+          &.read {
+            background-color: $tips-text-color;
+          }
         }
       }
 

@@ -15,8 +15,8 @@ export const getAtUserInfo = (atTag) => {
   };
 };
 
-export const formatAtTag = (content, atTagList = [], isPreview = false) => {
-  let msgText = content;
+export const formatAtTag = (msg, atTagList = [], isPreview = false) => {
+  let msgText = msg?.data?.content;
   atTagList.forEach((d) => {
     msgText = msgText.replace(d, `#_&_#AT#_&_#`);
   });
@@ -31,9 +31,19 @@ export const formatAtTag = (content, atTagList = [], isPreview = false) => {
           d = `${nickname} `;
         } else {
           const userInfo = storeInstance.getters['IMStore/userInfo'];
+          const isAtMe = userInfo.userId === userId;
+          const isAtAll = userId === 'IM_AT_ALL';
+          const isSelf = msg?.fromUser === userInfo.userId;
+          const receiptUserList = msg.receiptUserList;
+          const isRead = receiptUserList.some((r) => r === userId);
+          console.log(msg);
           d = `<span class="at-tag ${
-            userInfo.userId === userId || userId === 'IM_AT_ALL' ? 'at-me' : ''
-          }" data-userid="${userId}" onclick="openAtUser(event)">${nickname}</span><span>&nbsp;</span>`;
+            isAtMe || isAtAll ? 'at-me' : ''
+          }" data-userid="${userId}" onclick="openAtUser(event)">${nickname}${
+            isSelf && !isAtAll
+              ? `<sup class="at-tag-sup ${isRead ? 'read' : ''}"></sup>`
+              : ''
+          }</span>`;
         }
       }
       return d;
