@@ -391,7 +391,8 @@ export default {
               this.$refs.messagePanel.scrollTop =
                 currentScrollHeight - this.preScrollHeight + this.scrollTop;
             }
-          }, 1);
+            this.handleCheckMsgReceipt();
+          }, 10);
         } else {
           this.messageList = msgs;
           setTimeout(() => {
@@ -399,51 +400,52 @@ export default {
               this.$refs.messagePanel.scrollTop =
                 this.$refs.messagePanel?.scrollHeight;
             }
-            setTimeout(() => {
-              this.handleCheckMsgReceipt();
-            }, 500);
+            this.handleCheckMsgReceipt();
           }, 10);
         }
       });
     },
 
     handleCheckMsgReceipt() {
-      const observer = new IntersectionObserver(
-        (entries, observer) => {
-          const receiptMsgIds = [];
-          entries.forEach((entry) => {
-            const { isIntersecting, target } = entry;
-            // 进入可视区，判断是否需要进行已读
-            if (isIntersecting) {
-              const msgId = target.getAttribute('data-msg-id');
-              const msg = this.messageList.find((d) => d.msgId === msgId);
-              if (!msg) return;
-              const notSelf = !this.checkSelf({ fromUser: msg.fromUser });
-              if (msg.needReadReceipt && notSelf) {
-                this.messageList = this.messageList.map((m) => {
-                  return {
-                    ...m,
-                    needReadReceipt: 0,
-                  };
-                });
-                receiptMsgIds.push(msgId);
-                observer.unobserve(target);
+      setTimeout(() => {
+        const observer = new IntersectionObserver(
+          (entries, observer) => {
+            const receiptMsgIds = [];
+            entries.forEach((entry) => {
+              const { isIntersecting, target } = entry;
+              // 进入可视区，判断是否需要进行已读
+              if (isIntersecting) {
+                const msgId = target.getAttribute('data-msg-id');
+                const msg = this.messageList.find((d) => d.msgId === msgId);
+                if (!msg) return;
+                const notSelf = !this.checkSelf({ fromUser: msg.fromUser });
+                if (msg.needReadReceipt && notSelf) {
+                  this.messageList = this.messageList.map((m) => {
+                    return {
+                      ...m,
+                      needReadReceipt:
+                        msgId === m.msgId ? 0 : m.needReadReceipt,
+                    };
+                  });
+                  receiptMsgIds.push(msgId);
+                  observer.unobserve(target);
+                }
               }
+            });
+            if (receiptMsgIds.length) {
+              IMReceiptMessage([...new Set([...receiptMsgIds])]);
             }
-          });
-          if (receiptMsgIds.length) {
-            IMReceiptMessage([...new Set([...receiptMsgIds])]);
-          }
-        },
-        {
-          threshold: 0.8,
-          root: this.$refs.messagePanel,
-        },
-      );
-      const msgCardList = document.querySelectorAll('.msg-card-item');
-      msgCardList.forEach((element, index) => {
-        observer.observe(element);
-      });
+          },
+          {
+            threshold: 0.8,
+            root: this.$refs.messagePanel,
+          },
+        );
+        const msgCardList = document.querySelectorAll('.msg-card-item');
+        msgCardList.forEach((element, index) => {
+          observer.observe(element);
+        });
+      }, 10);
     },
 
     handleScroll: lodash.throttle(
@@ -467,7 +469,6 @@ export default {
     ),
 
     async handleFriend(item, event) {
-      console.log(item);
       const isSelf = this.checkSelf(item);
       if (isSelf) return;
 
@@ -530,7 +531,6 @@ export default {
         return;
       }
       IMGetGroupCurrentMemberCount(this.session.toUser).then((res) => {
-        console.log(res, 'IMGetGroupCurrentMemberCount');
         const { memberCount = 0 } = res;
         this.memberCount = memberCount;
       });

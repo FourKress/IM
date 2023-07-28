@@ -6,7 +6,6 @@
         ? 'self'
         : 'target'
     "
-    v-if="!isRevoke"
   >
     <template v-if="rawMsg.sendState !== 1">
       <img
@@ -105,12 +104,7 @@
 
 <script>
 import { LsIcon, LsAssets } from '@lanshu/components';
-import {
-  SESSION_BUBBLE_MODEL,
-  CHECK_MSG_TYPE,
-  MSG_FORMAT_MAP,
-  SESSION_USER_TYPE,
-} from '@lanshu/utils';
+import { SESSION_BUBBLE_MODEL, SESSION_USER_TYPE } from '@lanshu/utils';
 import { IMGetGroupMemberList } from '../../IM-SDK';
 import { mapGetters } from 'vuex';
 
@@ -165,8 +159,6 @@ export default {
     return {
       LsAssets,
       SESSION_BUBBLE_MODEL,
-      CHECK_MSG_TYPE,
-      MSG_FORMAT_MAP,
       readMember: [],
       notReadMember: [],
       callbackReceiptUserList: [],
@@ -187,13 +179,6 @@ export default {
       const percent =
         (this.receiptUserList.length / this.realMemberCount) * 100;
       return percent ? percent + 0.2 : percent;
-    },
-    msgType() {
-      const msgType = this.rawMsg?.msgType;
-      return this.MSG_FORMAT_MAP[msgType].type;
-    },
-    isRevoke() {
-      return this.msgType === this.CHECK_MSG_TYPE.IS_REVOKE;
     },
     isGroup() {
       return this.rawMsg.toUserType === SESSION_USER_TYPE.IS_GROUP;
