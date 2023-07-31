@@ -33,7 +33,7 @@
     </div>
 
     <div class="list">
-      <div class="scroll-view">
+      <div class="scroll-view" v-loading="loading">
         <div
           class="item"
           v-for="(item, index) in members"
@@ -83,6 +83,7 @@ export default {
       nextSeq: 0,
       members: [],
       groupRoleManager: {},
+      loading: false,
     };
   },
   computed: {
@@ -117,18 +118,23 @@ export default {
   },
   methods: {
     getGroupMemberList() {
+      this.loading = true;
       // nextSeq默认从0开始
-      IMGetGroupMemberList(this.groupId, 0).then((res) => {
-        console.log(res, 'getGroupMemberList');
-        const { nextSeq, members = [] } = res;
-        this.nextSeq = nextSeq;
-        this.members = members.map((d) => {
-          return {
-            ...d,
-            nickname: d.alias || d.nickname,
-          };
+      IMGetGroupMemberList(this.groupId, 0)
+        .then((res) => {
+          console.log(res, 'getGroupMemberList');
+          const { nextSeq, members = [] } = res;
+          this.nextSeq = nextSeq;
+          this.members = members.map((d) => {
+            return {
+              ...d,
+              nickname: d.alias || d.nickname,
+            };
+          });
+        })
+        .finally(() => {
+          this.loading = false;
         });
-      });
     },
     changeMember(type) {
       const members = this.members;

@@ -90,7 +90,7 @@
       </div>
 
       <div class="at-member-panel" v-if="visibleMemberDialog">
-        <div class="scroll-view" ref="MemberContainer">
+        <div class="scroll-view" ref="MemberContainer" v-loading="loading">
           <div
             class="member-item"
             :class="{
@@ -219,6 +219,7 @@ export default {
       selectMemberIndex: atAllMember.userId,
       atKeywords: '',
       atSearchInfo: {},
+      loading: false,
     };
   },
   computed: {
@@ -1025,18 +1026,23 @@ export default {
     },
 
     getGroupMemberList() {
+      this.loading = true;
       // nextSeq默认从0开始
-      IMGetGroupMemberList(this.session.toUser, 0).then((res) => {
-        console.log(res, 'getGroupMemberList');
-        const { nextSeq, members = [] } = res;
-        this.nextSeq = nextSeq;
-        this.rawMembers = members.map((d) => {
-          return {
-            ...d,
-            alias: d.alias || d.nickname,
-          };
+      IMGetGroupMemberList(this.session.toUser, 0)
+        .then((res) => {
+          console.log(res, 'getGroupMemberList');
+          const { nextSeq, members = [] } = res;
+          this.nextSeq = nextSeq;
+          this.rawMembers = members.map((d) => {
+            return {
+              ...d,
+              alias: d.alias || d.nickname,
+            };
+          });
+        })
+        .finally(() => {
+          this.loading = false;
         });
-      });
     },
   },
   async beforeDestroy() {

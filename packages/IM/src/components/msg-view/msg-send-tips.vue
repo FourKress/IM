@@ -44,30 +44,28 @@
         }"
         :disabled="!isGroup"
       >
-        <i
-          class="el-icon-circle-check"
-          slot="reference"
-          v-if="receiptUserList.length === realMemberCount"
-          @click="checkGroupMember"
-        ></i>
-        <div
-          class="progress-bar"
-          slot="reference"
-          :style="{
-            borderColor: receiptUserList.length ? '#00C476' : '#999999',
-          }"
-          v-else
-          @click="checkGroupMember"
-        >
+        <span slot="reference" @click="checkGroupMember">
+          <i
+            class="el-icon-circle-check"
+            v-if="receiptUserList.length === realMemberCount"
+          ></i>
           <div
-            class="bar"
+            class="progress-bar"
             :style="{
-              background: `conic-gradient(#00c476 0, #00c476 ${percent}%, #fff ${percent}%, #fff)`,
+              borderColor: receiptUserList.length ? '#00C476' : '#999999',
             }"
-          ></div>
-        </div>
+            v-else
+          >
+            <div
+              class="bar"
+              :style="{
+                background: `conic-gradient(#00c476 0, #00c476 ${percent}%, #fff ${percent}%, #fff)`,
+              }"
+            ></div>
+          </div>
+        </span>
 
-        <div class="tips-member-list">
+        <div class="tips-member-list" v-loading="loading">
           <div class="left">
             <div class="top-title">
               <span class="count">{{ readMember.length }}</span>
@@ -162,6 +160,7 @@ export default {
       readMember: [],
       notReadMember: [],
       callbackReceiptUserList: [],
+      loading: false,
     };
   },
   computed: {
@@ -208,24 +207,29 @@ export default {
     getGroupMemberList() {
       this.readMember = [];
       this.notReadMember = [];
+      this.loading = true;
       // nextSeq默认从0开始
-      IMGetGroupMemberList(this.session.toUser, 0).then((res) => {
-        const { members = [] } = res;
-        members
-          .filter((d) => d.userId !== this.userInfo.userId)
-          .forEach((d) => {
-            const member = {
-              ...d,
-              nickname: d.alias || d.nickname,
-            };
+      IMGetGroupMemberList(this.session.toUser, 0)
+        .then((res) => {
+          const { members = [] } = res;
+          members
+            .filter((d) => d.userId !== this.userInfo.userId)
+            .forEach((d) => {
+              const member = {
+                ...d,
+                nickname: d.alias || d.nickname,
+              };
 
-            if (this.receiptUserList.some((r) => r === d.userId)) {
-              this.readMember.push(member);
-            } else {
-              this.notReadMember.push(member);
-            }
-          });
-      });
+              if (this.receiptUserList.some((r) => r === d.userId)) {
+                this.readMember.push(member);
+              } else {
+                this.notReadMember.push(member);
+              }
+            });
+        })
+        .finally(() => {
+          this.loading = false;
+        });
     },
 
     checkMember(member, event) {
