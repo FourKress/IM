@@ -122,24 +122,22 @@ export default {
         console.log(res, 'getGroupMemberList');
         const { nextSeq, members = [] } = res;
         this.nextSeq = nextSeq;
-        this.members = members.map(d => {
+        this.members = members.map((d) => {
           return {
             ...d,
-            nickname: d.alias || d.nickname
-          }
+            nickname: d.alias || d.nickname,
+          };
         });
       });
     },
     changeMember(type) {
-      const members = this.members.filter(
-        (d) => d.userId !== this.userInfo.userId,
-      );
+      const members = this.members;
       const data = {
         type,
         defaultMembers: members,
       };
       if (type === this.IM_GROUP_MEMBER_PANEL_TYPE.IS_DEL) {
-        data.members = members;
+        data.members = members.filter((d) => d.userId !== this.userInfo.userId);
       }
       this.$emit('changeGroupMember', {
         ...data,

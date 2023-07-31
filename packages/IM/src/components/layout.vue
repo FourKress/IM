@@ -99,6 +99,7 @@ export default {
       'mainSessionWindow',
       'actionWindow',
       'sessionList',
+      'userInfo',
     ]),
 
     sessionMembers() {
@@ -137,7 +138,13 @@ export default {
     handleMoreCallback(data) {
       const { command, session } = data;
       this.setActionWindow(session);
-      this.defaultMembers = [session];
+      this.defaultMembers = [
+        session,
+        {
+          ...this.userInfo,
+          toUser: this.userInfo.userId,
+        },
+      ];
       this.rawMembers = this.sessionMembers;
       switch (command) {
         case this.IM_HEADER_MORE_BTN_KEY.IS_OPEN_SET:

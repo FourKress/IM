@@ -46,7 +46,9 @@
             <el-select
               placeholder="请选择"
               size="small"
-              :disabled="isDisabled || groupRoleManager.whoCanSetGroupInfo > groupRole"
+              :disabled="
+                isDisabled || groupRoleManager.whoCanSetGroupInfo > groupRole
+              "
               v-model="groupRoleManager.whoCanSetGroupInfo"
               @change="
                 (val) => handleGroupRoleChange(val, 'whoCanSetGroupInfo')
@@ -65,7 +67,10 @@
             <el-select
               placeholder="请选择"
               size="small"
-              :disabled="isDisabled || groupRoleManager.whoCanAddGroupMemberOrShareGroup > groupRole"
+              :disabled="
+                isDisabled ||
+                groupRoleManager.whoCanAddGroupMemberOrShareGroup > groupRole
+              "
               v-model="groupRoleManager.whoCanAddGroupMemberOrShareGroup"
               @change="
                 (val) =>
@@ -86,7 +91,9 @@
             <el-select
               placeholder="请选择"
               size="small"
-              :disabled="isDisabled || groupRoleManager.whoCanSendMessage > groupRole"
+              :disabled="
+                isDisabled || groupRoleManager.whoCanSendMessage > groupRole
+              "
               v-model="groupRoleManager.whoCanSendMessage"
               @change="(val) => handleGroupRoleChange(val, 'whoCanSendMessage')"
             >
@@ -103,7 +110,10 @@
             <el-select
               placeholder="请选择"
               size="small"
-              :disabled="isDisabled || groupRoleManager.whoCanStartNetworkCall > groupRole"
+              :disabled="
+                isDisabled ||
+                groupRoleManager.whoCanStartNetworkCall > groupRole
+              "
               v-model="groupRoleManager.whoCanStartNetworkCall"
               @change="
                 (val) => handleGroupRoleChange(val, 'whoCanStartNetworkCall')
@@ -123,7 +133,9 @@
             <el-select
               placeholder="请选择"
               size="small"
-              :disabled="isDisabled || groupRoleManager.whoCanSendFile > groupRole"
+              :disabled="
+                isDisabled || groupRoleManager.whoCanSendFile > groupRole
+              "
               v-model="groupRoleManager.whoCanSendFile"
               @change="(val) => handleGroupRoleChange(val, 'whoCanSendFile')"
             >
@@ -343,7 +355,10 @@ export default {
       this.$emit('changeGroupMember', {
         type,
         defaultMembers: this.groupAdminList,
-        members: this.members,
+        members:
+          type === IM_GROUP_MEMBER_PANEL_TYPE.IS_DEL_ADMIN
+            ? this.groupAdminList
+            : this.members,
       });
     },
   },
