@@ -93,3 +93,15 @@ export const setHeaderClassName = (className) => {
 export const formatSessId = (sessId) => {
   return sessId.replace(':', '');
 };
+
+export const removeAllDialogDom = () => {
+  const cardDialogList = document.querySelectorAll('.ls-card-dialog');
+  const dialogList = document.querySelectorAll('.ls-dialog');
+  const removeList = [...cardDialogList, ...dialogList];
+
+  if (removeList?.length) {
+    removeList.forEach((d) => {
+      document.querySelector('#lanshu-app').removeChild(d);
+    });
+  }
+};

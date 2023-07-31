@@ -4,6 +4,7 @@ import {
   routeInstance,
   removeToken,
   Apis,
+  removeAllDialogDom,
   TOKEN_TYPE,
   REST_STORE_STATE,
 } from '@lanshu/utils';
@@ -100,7 +101,7 @@ export const ClientLogOut = async () => {
   await window.$lanshuStore.removeItem('tempMsgOBJ');
   removeToken(TOKEN_TYPE.IS_IM);
   removeToken(TOKEN_TYPE.IS_SYS);
-
+  removeAllDialogDom();
   renderProcess.showLoginWindow(1000);
   routeInstance.push('/login');
 
