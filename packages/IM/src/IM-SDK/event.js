@@ -161,7 +161,7 @@ export const IMGetGroupMemberList = async (groupId, nextSeq) => {
           IMSDKGroupProvider.provider,
           IMSDKGroupProvider.events.getGroupMemberList,
           groupId,
-          nextSeq,
+          _nextSeq,
         );
         const { nextSeq: currentNextSeq, members = [] } = res.data;
         totalMembers.push(...members);
