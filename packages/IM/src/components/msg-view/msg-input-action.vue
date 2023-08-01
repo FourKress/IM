@@ -742,15 +742,6 @@ export default {
       });
     },
 
-    recursionReplace(msg) {
-      const reg = /&nbsp;?$/;
-      if (reg.test(msg)) {
-        const str = msg.replace(reg, '');
-        return this.recursionReplace(str);
-      }
-      return msg;
-    },
-
     sendMsg: lodash.throttle(
       async function () {
         if (this.disabledSendMsg) return;
@@ -797,12 +788,10 @@ export default {
         }
 
         const regExp = new RegExp(/(<img src="\S*" alt(="")?>)+/g, 'g');
-        realMessage = this.recursionReplace(
-          realMessage
-            .replace(/(<(span|div)>)|(<\/(span|div)>)/g, '')
-            .replace(/<br>/g, '\n')
-            .replace(/\&nbsp;/g, ' '),
-        );
+        realMessage = realMessage
+          .replace(/(<(span|div)>)|(<\/(span|div)>)/g, '')
+          .replace(/<br>/g, '\n')
+          .replace(/\&nbsp;/g, ' ');
 
         let msgArr = [];
         if (realMessage.includes('<img')) {

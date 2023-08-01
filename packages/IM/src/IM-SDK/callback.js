@@ -95,12 +95,9 @@ export const IMSDKCallBackEvents = {
     storeInstance.commit('IMStore/setAllUnreadCount', AllUnreadCount);
   },
   MessageSendingStateCallBack: (ctx, msgInfo) => {
-    const { sendState, msg } = msgInfo;
-    const mainSessionWindow =
-      storeInstance.getters['IMStore/mainSessionWindow'];
-
-    if (!mainSessionWindow?.sessId) return;
-    if (mainSessionWindow.sessId !== msg.sessId) return;
+    const { msg } = msgInfo;
+    const { isCurrent } = getCurrentSession('sessId', msg.sessId);
+    if (!isCurrent) return;
     storeInstance.commit('IMStore/setRefreshMsg', Date.now());
   },
   AddReceiveNewMessage: async (ctx, msgInfo) => {
