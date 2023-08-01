@@ -491,6 +491,7 @@ export default {
       const selection = window.getSelection();
       // 没有任何选区，代表是最开始或者最结尾，根据内容匹配处理
       if (rang.endContainer.className === 'editor-container') {
+        this.atSearchInfo = {};
         this.handleCheckAt(true);
         return;
       }
@@ -506,7 +507,6 @@ export default {
         anchorData?.slice(0, 1) !== ' ' &&
         anchorData?.slice(-1) !== ' ';
       const atKeywords = anchorData && anchorData?.substring(0, anchorOffset);
-      console.log(rang.startOffset === 0, hasAtTag, isAtSearch, atKeywords);
       if (rang.startOffset === 0 && hasAtTag) {
         // 光标处于选区开始位置 并且 @元素是选区前一个节点 则光标当前处于@符号处，触发@动作
         this.atTagDom = preNode;

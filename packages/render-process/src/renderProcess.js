@@ -1,15 +1,6 @@
-import { WINDOW_TYPE, WIN_ACTION_TYPE } from '@lanshu/utils';
-import { storeInstance } from '@lanshu/utils';
-
 const electronAPI = window?.electronAPI ?? {};
 
-export const changeWindow = (type, win) => {
-  if (type === WIN_ACTION_TYPE.IS_MAX && win === WINDOW_TYPE.IS_MAIN) {
-    const isMaxWindow = storeInstance.getters['globalStore/isMaxWindow'];
-    storeInstance.commit('globalStore/setIsMaxWindow', !isMaxWindow);
-  }
-  electronAPI?.changeWindow(type, win);
-};
+export const changeWindow = (type, win) => electronAPI?.changeWindow(type, win);
 export const openFileDialog = electronAPI?.openFileDialog;
 export const saveFileDialog = electronAPI?.saveFileDialog;
 export const startScreenshots = electronAPI?.startScreenshots;

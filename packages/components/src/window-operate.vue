@@ -44,7 +44,7 @@
       @click="handleWindowChange(WIN_ACTION_TYPE.IS_MAX)"
     >
       <LsIcon
-        :icon="isFull ? 'ls-icon-icon_quxiaozuidahua' : 'ls-icon-zuidahua'"
+        :icon="isMax ? 'ls-icon-icon_quxiaozuidahua' : 'ls-icon-zuidahua'"
         width="12"
         height="12"
         render-svg
@@ -79,7 +79,7 @@ export default {
   data() {
     return {
       WIN_ACTION_TYPE,
-      isFull: false,
+      isMax: false,
     };
   },
   methods: {
@@ -87,7 +87,7 @@ export default {
 
     handleWindowChange(type) {
       if (type === this.WIN_ACTION_TYPE.IS_MAX) {
-        this.isFull = !this.isFull;
+        this.isMax = !this.isMax;
       }
       // isMain => 主窗口标识
       renderProcess.changeWindow(type, WINDOW_TYPE.IS_MAIN);

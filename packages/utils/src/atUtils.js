@@ -22,8 +22,7 @@ export const formatAtTag = (msg, atTagList = [], isPreview = false) => {
   });
   msgText = msgText
     .split('#_&_#')
-    .filter((d) => d && d !== ' ')
-    .map((d) => {
+    ?.map((d) => {
       if (d === 'AT') {
         const atTag = atTagList.splice(0, 1)[0];
         const { userId, nickname } = getAtUserInfo(atTag);

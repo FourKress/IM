@@ -113,11 +113,6 @@ export const TOKEN_TYPE = {
   IS_SYS: 'SYS_TOKEN',
 };
 
-export const MODAL_DIALOG_TYPE = {
-  IS_MODAL: 'Modal',
-  IS_DIALOG: 'Dialog',
-};
-
 export const SEX_TYPE = {
   IS_MAN: 1,
   IS_WOMAN: 2,

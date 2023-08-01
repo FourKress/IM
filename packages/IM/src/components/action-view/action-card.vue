@@ -27,18 +27,6 @@
             <span>文件</span>
           </div>
         </el-dropdown-item>
-        <!--        <el-dropdown-item>-->
-        <!--          <div class="send-down-row">-->
-        <!--            <LsIcon render-svg icon="pop_cd_sb"></LsIcon>-->
-        <!--            <span>OCR识别</span>-->
-        <!--          </div>-->
-        <!--        </el-dropdown-item>-->
-        <!--        <el-dropdown-item>-->
-        <!--          <div class="send-down-row">-->
-        <!--            <LsIcon render-svg icon="pop_cd_mp"></LsIcon>-->
-        <!--            <span>名片</span>-->
-        <!--          </div>-->
-        <!--        </el-dropdown-item>-->
       </el-dropdown-menu>
     </el-dropdown>
     <LsCardDialog :visible.sync="visibleFileDialog" :isModalClose="false">

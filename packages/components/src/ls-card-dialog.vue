@@ -10,8 +10,7 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex';
-import { MODAL_DIALOG_TYPE, setHeaderClassName } from '@lanshu/utils';
+import { setHeaderClassName } from '@lanshu/utils';
 
 export default {
   name: 'Ls-card-dialog',
@@ -30,16 +29,8 @@ export default {
       default: 'transparent',
     },
   },
-  computed: {
-    ...mapGetters('globalStore', ['modalDialog']),
-  },
   watch: {
     visible(val) {
-      // 实时设置全局的dialog、右键菜单的打开状态
-      this.setModalDialog({
-        type: MODAL_DIALOG_TYPE.IS_MODAL,
-        visible: val,
-      });
       if (val) {
         // 打开时，头部禁止拖动
         setHeaderClassName('no-drag');
@@ -53,20 +44,8 @@ export default {
         this.handleRemoveDom();
       }
     },
-
-    modalDialog: {
-      deep: true,
-      handler(val) {
-        // 在特定情况下，根据全局的dialog状态，执行关闭处理
-        if (val.type === MODAL_DIALOG_TYPE.IS_MODAL && !val.visible) {
-          this.handleEmit();
-        }
-      },
-    },
   },
   methods: {
-    ...mapActions('globalStore', ['setModalDialog']),
-
     handleEmit() {
       this.$emit('close');
       this.$emit('update:visible', false);

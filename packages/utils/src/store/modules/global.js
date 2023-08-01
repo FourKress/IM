@@ -10,8 +10,6 @@ const getDefaultState = () => {
     startDownload: false,
     updateNotify: false,
     searchHistory: JSON.parse(localStorage.getItem('searchHistory') || '[]'),
-    isMaxWindow: false,
-    modalDialog: {},
     openMicroApp: '',
   };
 };
@@ -25,8 +23,6 @@ const getters = {
   startDownload: (state) => state.startDownload,
   updateNotify: (state) => state.updateNotify,
   searchHistory: (state) => state.searchHistory,
-  isMaxWindow: (state) => state.isMaxWindow,
-  modalDialog: (state) => state.modalDialog,
   openMicroApp: (state) => state.openMicroApp,
 };
 
@@ -64,12 +60,6 @@ const mutations = {
     data.searchHistory = value;
     localStorage.setItem('searchHistory', JSON.stringify(value));
   },
-  setIsMaxWindow(data, value) {
-    data.isMaxWindow = value;
-  },
-  setModalDialog(data, value) {
-    data.modalDialog = value;
-  },
   setOpenMicroApp(data, value) {
     data.openMicroApp = value;
   },
@@ -99,12 +89,6 @@ const actions = {
   },
   setSearchHistory({ commit }, value) {
     commit('setSearchHistory', value);
-  },
-  setIsMaxWindow({ commit }, value) {
-    commit('setIsMaxWindow', value);
-  },
-  setModalDialog({ commit }, value) {
-    commit('setModalDialog', value);
   },
   setOpenMicroApp({ commit }, value) {
     commit('setOpenMicroApp', value);

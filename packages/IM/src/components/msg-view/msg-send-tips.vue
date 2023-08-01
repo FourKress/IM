@@ -317,8 +317,9 @@ export default {
 
 <style lang="scss">
 .tips-member-panel {
+  width: 244px !important;
   .tips-member-list {
-    width: 294px;
+    width: 244px;
     display: flex;
     align-items: flex-start;
     height: 142px;
