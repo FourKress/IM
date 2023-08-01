@@ -46,6 +46,12 @@
             <span class="link" @click="openUrl">《用户服务协议》</span>
             <span class="link" @click="openUrl">《隐私协议》</span>
           </div>
+
+          <!--          <div class="checkbox-row">-->
+          <!--            <el-checkbox v-model="autoLoginChecked">-->
+          <!--              <span>自动登录</span>-->
+          <!--            </el-checkbox>-->
+          <!--          </div>-->
         </el-form>
       </div>
     </template>
@@ -54,7 +60,12 @@
 
 <script>
 import { renderProcess } from '@lanshu/render-process';
-import { formatPhoneNum, unFormatPhoneNum, PhoneNumMixins, Apis } from '@lanshu/utils';
+import {
+  formatPhoneNum,
+  unFormatPhoneNum,
+  PhoneNumMixins,
+  Apis,
+} from '@lanshu/utils';
 import { LsAssets } from '@lanshu/components';
 
 export default {
@@ -85,6 +96,7 @@ export default {
       },
       protocolChecked: false,
       isAwait: false,
+      autoLoginChecked: false,
     };
   },
   computed: {
@@ -227,13 +239,19 @@ export default {
 
   .checkbox-row {
     color: $minor-text-color;
-    font-size: 15px;
+    font-size: 14px;
+    margin-bottom: 8px;
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
 
+    &:last-child {
+      margin-bottom: 0;
+    }
+
     ::v-deep .el-checkbox__label {
       padding-left: 8px;
+      color: $minor-text-color;
     }
 
     .link {

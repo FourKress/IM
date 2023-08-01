@@ -40,9 +40,7 @@ export const MSG_FORMAT_MAP = {
   },
   1: {
     label: (data) => {
-      const msg = data?.content;
-      if (!msg) return msg;
-      return msg.replace(/&nbsp;/g, ' ');
+      return data?.content;
     },
     type: CHECK_MSG_TYPE.IS_TEXT,
   },
@@ -74,7 +72,7 @@ export const MSG_FORMAT_MAP = {
       return formatAtTag(
         {
           data: {
-            content: msg.replace(/&nbsp;/g, ' '),
+            content: msg,
           },
         },
         atTagList,

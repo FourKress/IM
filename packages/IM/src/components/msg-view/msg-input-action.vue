@@ -743,7 +743,7 @@ export default {
     },
 
     recursionReplace(msg) {
-      const reg = /&nbsp; ?$/;
+      const reg = /&nbsp;?$/;
       if (reg.test(msg)) {
         const str = msg.replace(reg, '');
         return this.recursionReplace(str);
@@ -800,7 +800,8 @@ export default {
         realMessage = this.recursionReplace(
           realMessage
             .replace(/(<(span|div)>)|(<\/(span|div)>)/g, '')
-            .replace(/<br>/g, '\n'),
+            .replace(/<br>/g, '\n')
+            .replace(/\&nbsp;/g, ' '),
         );
 
         let msgArr = [];

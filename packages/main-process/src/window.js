@@ -71,7 +71,7 @@ export const changeWindow = (type, win) => {
         ? targetWindow.unmaximize()
         : targetWindow.maximize(),
     full: () => targetWindow.setFullScreen(!targetWindow.isFullScreen()),
-    close: () => targetWindow.close(),
+    close: () => targetWindow.hide(),
     show: () => targetWindow.show(),
   };
   const action = actionFnMap[type];
