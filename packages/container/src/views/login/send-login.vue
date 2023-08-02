@@ -75,7 +75,7 @@ import { Apis } from '@lanshu/utils';
 import { LsIcon } from '@lanshu/components';
 import LoginMixins from './loginMixins';
 
-const reg = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{8,16}$/;
+const reg = /^(?=.*[a-zA-Z])(?=.*\d)[0-9a-zA-Z!@#$%^&*_+,.?]{8,16}$/;
 
 export default {
   name: 'Send-login',

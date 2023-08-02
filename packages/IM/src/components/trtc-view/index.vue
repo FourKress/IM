@@ -234,6 +234,7 @@ export default {
   },
 
   async mounted() {
+    document.body.className = 'trtc-body';
     this.checkDevices();
     const resizeObserver = new ResizeObserver((entries) => {
       for (let entry of entries) {
@@ -979,7 +980,9 @@ export default {
 </style>
 
 <style lang="scss">
-.el-message {
-  min-width: 320px !important;
+.trtc-body {
+  .el-message {
+    min-width: 320px !important;
+  }
 }
 </style>

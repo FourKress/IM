@@ -96,7 +96,7 @@ const initElectron = (config) => {
   } = config;
 
   global.store.set('DEFAULT_WINDOWS_SIZE', windowsSize);
-  global.store.set('IS_DEVTOOLS', false);
+  global.store.set('IS_DEVTOOLS', IS_DEVELOPMENT || isDevtools);
   global.store.set('CLIENT_TERMINAL', terminal);
   electronLog.info(`VERSION: ${global.store.get('VERSION')}`);
 

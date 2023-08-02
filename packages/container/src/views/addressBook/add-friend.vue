@@ -69,6 +69,8 @@
         :config="friendPanelConfig"
         @sendApply="handleSendApply"
         @sendMsg="handleSendMsg"
+        @sendVideo="handleSendVideo"
+        @sendAudio="handleSendAudio"
       />
     </LsCardDialog>
   </div>
