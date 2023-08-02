@@ -977,3 +977,9 @@ export default {
   }
 }
 </style>
+
+<style lang="scss">
+.el-message {
+  min-width: 320px !important;
+}
+</style>

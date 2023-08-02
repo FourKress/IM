@@ -21,7 +21,7 @@ export const IMSDKInit = (appId) => {
   global.IMSDK = IMSDK;
 
   IMSDK.getMainProvider().setLogLevel(
-    process.env.WEBPACK_DEV_SERVER_URL ? LogLevel.DEBUG : LogLevel.DEBUG,
+    process.env.WEBPACK_DEV_SERVER_URL ? LogLevel.INFO : LogLevel.INFO,
   );
 
   IMSDK.getMainProvider().setNetworkChangeCallBack((state) => {

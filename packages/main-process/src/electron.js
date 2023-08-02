@@ -41,23 +41,34 @@ async function createWindow() {
   });
 
   win.on('close', (event) => {
-    const hasGlobalWindow = global.TRTCWindow;
-    if (!!hasGlobalWindow) {
+    const winCanBeClosed = global.store.get('WIN_CAN_BE_CLOSED');
+    if (!winCanBeClosed) {
+      win.hide();
       event.preventDefault();
-      win.webContents.send('mainProcessError', {
-        msg: '请先结束当前通话',
-        type: 'MESSAGE',
-      });
       return;
+    } else {
+      const hasGlobalWindow = global.TRTCWindow;
+      if (!!hasGlobalWindow) {
+        global.store.set('WIN_CAN_BE_CLOSED', false);
+        event.preventDefault();
+        const errorMsg = {
+          msg: '请先结束当前通话',
+          type: 'MESSAGE',
+        };
+        win.webContents.send('mainProcessError', errorMsg);
+        global.TRTCWindow.webContents.send('mainProcessError', errorMsg);
+        return;
+      }
     }
-  });
-
-  win.on('focus', () => {
-    trayEvent.clearFlash();
   });
 
   win.on('closed', () => {
     global.mainWindow = null;
+    global.store.set('WIN_CAN_BE_CLOSED', false);
+  });
+
+  win.on('focus', () => {
+    trayEvent.clearFlash();
   });
 
   win.on('ready-to-show', () => {
@@ -85,7 +96,7 @@ const initElectron = (config) => {
   } = config;
 
   global.store.set('DEFAULT_WINDOWS_SIZE', windowsSize);
-  global.store.set('IS_DEVTOOLS', IS_DEVELOPMENT || isDevtools);
+  global.store.set('IS_DEVTOOLS', false);
   global.store.set('CLIENT_TERMINAL', terminal);
   electronLog.info(`VERSION: ${global.store.get('VERSION')}`);
 

@@ -87,7 +87,16 @@ export default {
 
     await this.handleGetVersion();
   },
-  mounted() {},
+  mounted() {
+    document.addEventListener(
+      'dragstart',
+      function (event) {
+        event.preventDefault();
+        return false;
+      },
+      true,
+    );
+  },
   methods: {
     ...mapActions('globalStore', [
       'setUserErrorMsg',

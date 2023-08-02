@@ -71,7 +71,8 @@ export const changeWindow = (type, win) => {
         ? targetWindow.unmaximize()
         : targetWindow.maximize(),
     full: () => targetWindow.setFullScreen(!targetWindow.isFullScreen()),
-    close: () => targetWindow.hide(),
+    close: () =>
+      type === WINDOW_TYPE.IS_MAIN ? targetWindow.hide() : targetWindow.close(),
     show: () => targetWindow.show(),
   };
   const action = actionFnMap[type];
@@ -158,10 +159,6 @@ export const openTRTCWindow = async (type = CLIENT_TYPE.IS_PC) => {
     const trtcCanBeClosed = global.store.get('TRTC_CAN_BE_CLOSED');
     if (!trtcCanBeClosed) {
       event.preventDefault();
-      TRTCWindow.webContents.send('mainProcessError', {
-        msg: '请先结束当前通话',
-        type: 'MESSAGE',
-      });
       return;
     }
   });
@@ -170,8 +167,8 @@ export const openTRTCWindow = async (type = CLIENT_TYPE.IS_PC) => {
     electronLog.info('TRTCWindow Close');
     TRTCWindow = null;
     global.TRTCWindow = null;
-    global.store.delete('TRTC_SESSION');
-    global.store.delete('TRTC_CAN_BE_CLOSED');
+    global.store.set('TRTC_SESSION', null);
+    global.store.set('TRTC_CAN_BE_CLOSED', false);
   });
 
   // 屏蔽浏览器快捷键

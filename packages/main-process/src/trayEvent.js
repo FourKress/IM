@@ -29,14 +29,16 @@ class TrayEvent {
       } else {
         global.mainWindow.show();
       }
-      this.init();
       this.clearFlash();
     });
 
     const trayContextMenu = Menu.buildFromTemplate([
       {
         label: '退出',
-        role: 'quit',
+        click: () => {
+          global.store.set('WIN_CAN_BE_CLOSED', true);
+          app.quit();
+        },
       },
     ]);
     // 设置鼠标右键键事件
@@ -64,6 +66,7 @@ class TrayEvent {
     if (this.flashTimer) {
       clearInterval(this.flashTimer);
       this.flashTimer = null;
+      this.init();
     }
   }
 }

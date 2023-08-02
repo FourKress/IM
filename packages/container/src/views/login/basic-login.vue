@@ -113,6 +113,10 @@ export default {
       }
     },
   },
+  created() {
+    const historyPhoneNum = localStorage.getItem('historyPhoneNum');
+    this.form.phoneNum = historyPhoneNum;
+  },
   methods: {
     openUrl(url) {
       renderProcess.openUrl('https://www.baidu.com' || url);
