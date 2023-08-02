@@ -8,7 +8,7 @@ import trayEvent from './trayEvent';
 const { LimMain, LogLevel } = require('lim-sdk-electron');
 
 const getEnv = () => {
-  return IS_DEVELOPMENT ? 'test' : 'prod';
+  return IS_DEVELOPMENT ? 'prod' : 'prod';
 };
 
 export const IMSDKInit = (appId) => {
@@ -112,6 +112,10 @@ export const IMSDKInit = (appId) => {
 
   IMSDK.getMainProvider().setNetworkCallListener(
     async (uuid, type, data = {}, userId, userType) => {
+      const hasGlobalWindow = global.TRTCWindow;
+      // 已存在通话 忽略新的呼叫
+      if (!!hasGlobalWindow) return;
+
       if (global.store.get('NETWORK_CALL_UUID') === uuid) return;
       global.store.set('NETWORK_CALL_UUID', uuid);
       electronLog.info(

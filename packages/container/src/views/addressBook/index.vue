@@ -347,18 +347,15 @@ export default {
       this.clearOrgBreadCrumb();
       // Dep ===> 是否存在我的部门
       if (item.key.includes('Dep')) {
-        const breadCrumb = item.myDeps?.map((d) => {
-          return {
-            label: d.name,
-            key: d.id,
-          };
-        });
         this.setOrgBreadCrumb([
           {
             label: dep.name,
             key: dep.id,
           },
-          ...breadCrumb,
+          {
+            label: item.name,
+            key: item.id,
+          },
         ]);
       } else {
         this.setOrgBreadCrumb([
@@ -415,15 +412,7 @@ export default {
           const depList = subList.filter((s) => s.parentId === o.id);
           depList.forEach((d) => {
             const { id, name } = d;
-
             const component = 'OrgStructure';
-            // 递归查找我的部门
-            const myDeps = this.recursionMyDep(subList, d, userDepList);
-
-            let myDep;
-            if (myDeps?.length) {
-              myDep = myDeps.slice(-1)[0];
-            }
 
             if (!o?.subList) {
               o.subList = [];
@@ -438,17 +427,16 @@ export default {
                   id,
                   name,
                 },
-                ...(myDep?.id
-                  ? [
-                      {
-                        label: `我的部门 <span class="tag">(<span>${myDep.name}</span>)</span>`,
+                ...(userDepList?.length
+                  ? userDepList.map((m) => {
+                      return {
+                        label: `我的部门 <span class="tag">(<span>${m.name}</span>)</span>`,
                         component,
-                        key: `${id}_Dep`,
-                        id: myDep.id,
-                        name: myDep.name,
-                        myDeps: myDeps,
-                      },
-                    ]
+                        key: `${m.id}_Dep`,
+                        id: m.id,
+                        name: m.name,
+                      };
+                    })
                   : []),
               ],
             });
@@ -486,12 +474,12 @@ export default {
       if (userDepList.length === 1 && userDepList[0].id === dep.id) {
         return [];
       }
-      const userDep = userDepList.find((u) => u.parentId === dep.id);
-      if (userDep) {
-        return [userDep];
+      const userDeps = userDepList.filter((u) => u.parentId === dep.id);
+      if (userDeps?.length) {
+        return [...userDeps];
       }
-      const subDep = subDepList.find((d) => d.parentId === dep.id);
-      if (subDep) {
+      const subDeps = subDepList.filter((d) => d.parentId === dep.id);
+      if (subDeps?.length) {
         const result = this.recursionMyDep(subDepList, subDep, userDepList);
         if (result) {
           return [subDep, ...result];

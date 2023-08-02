@@ -82,10 +82,9 @@ import { LsIcon } from '@lanshu/components';
 import {
   IM_HEADER_MORE_BTN_KEY,
   SESSION_USER_TYPE,
-  CLIENT_TYPE,
   NETWORK_CALL_TYPE,
+  startTrtc,
 } from '@lanshu/utils';
-import { renderProcess } from '@lanshu/render-process';
 
 export default {
   name: 'Msg-header',
@@ -146,16 +145,7 @@ export default {
     },
 
     async handleStartTrtc(NETWORK_CALL_TYPE) {
-      const platform = CLIENT_TYPE.IS_MOBILE;
-      await renderProcess.setStore('TRTC_SESSION', this.session);
-      await renderProcess.setStore('TRTC_CALL_INFO', {
-        type: NETWORK_CALL_TYPE,
-        roomId: Number(Date.now().toString().substring(4, 13)),
-        isBeInvited: false,
-        platform,
-      });
-
-      renderProcess.openTRTCWindow(platform);
+      await startTrtc(this.session, NETWORK_CALL_TYPE);
     },
 
     async handleFriend(event) {

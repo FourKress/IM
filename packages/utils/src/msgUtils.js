@@ -1,6 +1,7 @@
 import { formatAtTag, getAtTagList } from './atUtils';
 import { storeInstance } from './store';
-import { NETWORK_CALL_TYPE } from './constant';
+import { CLIENT_TYPE, NETWORK_CALL_TYPE } from './constant';
+import { renderProcess } from '@lanshu/render-process';
 
 export const CHECK_MSG_TYPE = {
   IS_TEXT: 'text',
@@ -114,4 +115,23 @@ export const MSG_FORMAT_MAP = {
     label: (data) => data.content,
     type: CHECK_MSG_TYPE.IS_SYSTEM_NOTIFY,
   },
+};
+
+export const startTrtc = async (session, NETWORK_CALL_TYPE) => {
+  const hasWindow = await renderProcess.hasWindow('TRTCWindow');
+  if (hasWindow) {
+    window.ClientMessage.warning('请先结束当前通话');
+    return;
+  }
+
+  const platform = CLIENT_TYPE.IS_MOBILE;
+  await renderProcess.setStore('TRTC_SESSION', session);
+  await renderProcess.setStore('TRTC_CALL_INFO', {
+    type: NETWORK_CALL_TYPE,
+    roomId: Number(Date.now().toString().substring(4, 13)),
+    isBeInvited: false,
+    platform,
+  });
+
+  renderProcess.openTRTCWindow(platform);
 };

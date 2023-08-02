@@ -6,7 +6,8 @@ import {
   IMSendMessage,
 } from '@lanshu/im';
 import { renderProcess } from '@lanshu/render-process';
-import { CLIENT_TYPE, NETWORK_CALL_TYPE } from '../constant';
+import { startTrtc } from '../msgUtils';
+import { NETWORK_CALL_TYPE } from '../constant';
 import * as Apis from '../apis';
 import StartSessionMixins from './startSession';
 
@@ -87,16 +88,6 @@ export default {
       });
     },
 
-    async startTrtc(session, NETWORK_CALL_TYPE) {
-      await renderProcess.setStore('TRTC_SESSION', session);
-      await renderProcess.setStore('TRTC_CALL_INFO', {
-        type: NETWORK_CALL_TYPE,
-        isBeInvited: false,
-      });
-
-      renderProcess.openTRTCWindow(CLIENT_TYPE.IS_PC);
-    },
-
     async handleSendAuth(authParams) {
       await IMAgreeFriendAddRequest(...authParams);
       await this.handleJumIMPage(async (session) => {
@@ -120,12 +111,12 @@ export default {
     },
     async handleSendVideo() {
       await this.handleJumIMPage(async (session) => {
-        await this.startTrtc(session, NETWORK_CALL_TYPE.IS_VIDEO);
+        await startTrtc(session, NETWORK_CALL_TYPE.IS_VIDEO);
       });
     },
     async handleSendAudio() {
       await this.handleJumIMPage(async (session) => {
-        await this.startTrtc(session, NETWORK_CALL_TYPE.IS_AUDIO);
+        await startTrtc(session, NETWORK_CALL_TYPE.IS_AUDIO);
       });
     },
   },

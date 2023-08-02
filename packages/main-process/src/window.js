@@ -84,7 +84,8 @@ export const defaultWindowConfig = () => {
     frame: false,
     autoHideMenuBar: true,
     webPreferences: {
-      devTools: global.store.get('IS_DEVTOOLS'),
+      // devTools: global.store.get('IS_DEVTOOLS'),
+      devTools: true,
       webviewTag: true,
       webSecurity: false,
       nodeIntegration: true,
