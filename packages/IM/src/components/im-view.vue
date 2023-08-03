@@ -471,9 +471,6 @@ export default {
     ),
 
     async handleFriend(item, event) {
-      const isSelf = this.checkSelf(item);
-      if (isSelf) return;
-
       await this.openFriendDialog(event, async () => {
         const { fromUser } = item;
         const friendInfo = (await IMGetOneFriend(fromUser))?.data || {};

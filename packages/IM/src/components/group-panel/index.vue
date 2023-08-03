@@ -31,18 +31,35 @@
       ></LsIcon>
     </div>
 
-    <Member v-if="selfIsMember" v-on="$listeners" />
-    <Settings v-on="$listeners" v-else />
+    <Member v-if="selfIsMember" v-on="$listeners" @checkMember="handleFriend" />
+    <Settings v-on="$listeners" v-else @checkMember="handleFriend" />
+
+    <LsCardDialog :visible.sync="showFriendDialog">
+      <LsFriendPanel
+        :friend-info="friendInfo"
+        :position="position"
+        :config="friendPanelConfig"
+        @update="handleCloseDialog"
+        @sendApply="handleSendApply"
+        @sendMsg="handleSendMsg"
+        @sendVideo="handleSendVideo"
+        @sendAudio="handleSendAudio"
+      />
+    </LsCardDialog>
   </div>
 </template>
 
 <script>
-import { LsIcon } from '@lanshu/components';
+import { FriendMixins } from '@lanshu/utils';
+import { LsCardDialog, LsFriendPanel, LsIcon } from '@lanshu/components';
+import { mapGetters } from 'vuex';
 import Settings from './settings';
 import Member from './member';
+import { IMGetOneFriend, IMGetUserProfile } from '../../IM-SDK';
 
 export default {
   name: 'Group-panel',
+  mixins: [FriendMixins],
   props: {
     visible: {
       type: Boolean,
@@ -60,9 +77,14 @@ export default {
     },
   },
   components: {
+    LsCardDialog,
+    LsFriendPanel,
     LsIcon,
     Settings,
     Member,
+  },
+  computed: {
+    ...mapGetters('IMStore', ['userInfo']),
   },
   data() {
     return {
@@ -72,6 +94,7 @@ export default {
         top: 0,
         right: 0,
       },
+      friendPanelConfig: {},
     };
   },
   watch: {
@@ -94,6 +117,32 @@ export default {
     handleChooseTab(isMember) {
       if (isMember === this.selfIsMember) return;
       this.selfIsMember = isMember;
+    },
+
+    async handleFriend(member, event) {
+      const { userId } = member;
+      await this.openFriendDialog(event, async () => {
+        const friendInfo = (await IMGetOneFriend(userId))?.data || {};
+        if (friendInfo?.userId) {
+          this.friendPanelConfig = this.isGroup
+            ? { isPass: true }
+            : { isDetails: true };
+        } else {
+          this.friendPanelConfig = { isApply: true };
+        }
+
+        const userProfile = (await IMGetUserProfile(userId))?.data || {};
+        const { remark, desc } = friendInfo;
+        return {
+          ...userProfile,
+          remark,
+          desc,
+        };
+      });
+
+      if (this.friendInfo?.dep) {
+        this.friendPanelConfig = { isPass: true };
+      }
     },
   },
 };

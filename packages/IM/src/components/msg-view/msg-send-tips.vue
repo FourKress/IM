@@ -35,13 +35,6 @@
         width="284"
         trigger="click"
         popper-class="tips-member-panel"
-        :append-to-body="false"
-        :popper-options="{
-          boundariesElement: 'body',
-          gpuAcceleration: true,
-          positionFixed: true,
-          preventOverflow: true,
-        }"
         :disabled="!isGroup"
       >
         <span slot="reference" @click="checkGroupMember">
@@ -317,13 +310,15 @@ export default {
 
 <style lang="scss">
 .tips-member-panel {
-  width: 244px !important;
+  width: 294px !important;
+  z-index: 7 !important;
+
   .tips-member-list {
-    width: 244px;
+    width: 294px;
     display: flex;
     align-items: flex-start;
-    height: 142px;
-    max-height: 142px;
+    height: 336px;
+    max-height: 336px;
     overflow: hidden;
 
     .left,

@@ -101,7 +101,7 @@ export const removeAllDialogDom = () => {
 
   if (removeList?.length) {
     removeList.forEach((d) => {
-      document.querySelector('#lanshu-app').removeChild(d);
+      document.body.removeChild(d);
     });
   }
 };

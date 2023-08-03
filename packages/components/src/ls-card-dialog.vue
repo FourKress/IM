@@ -34,7 +34,7 @@ export default {
       if (val) {
         // 打开时，头部禁止拖动
         setHeaderClassName('no-drag');
-        document.querySelector('#lanshu-app').appendChild(this.$el);
+        document.body.appendChild(this.$el);
       } else {
         const cardDialogDom = document.querySelectorAll('.ls-card-dialog');
         // 关闭时，恢复头部拖动功能

@@ -39,6 +39,7 @@
           v-for="(item, index) in members"
           :key="index"
           v-if="item.nickname && item.nickname.includes(memberName)"
+          @click="(event) => handleFriend(item, event)"
         >
           <div class="img">
             <img :src="item.avatar" alt="" />
@@ -166,6 +167,10 @@ export default {
         .catch((err) => {
           console.log(err);
         });
+    },
+
+    handleFriend(member, event) {
+      this.$emit('checkMember', member, event);
     },
   },
   mounted() {

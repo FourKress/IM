@@ -7,7 +7,11 @@
         </div>
 
         <div class="action">
-          <span class="item" v-for="item in groupAdminList">
+          <span
+            class="item"
+            v-for="item in groupAdminList"
+            @click="(event) => handleFriend(item, event)"
+          >
             <el-tooltip effect="dark" :content="item.nickname" placement="top">
               <img class="img" :src="item.avatar" alt="" />
             </el-tooltip>
@@ -360,6 +364,10 @@ export default {
             ? this.groupAdminList
             : this.members,
       });
+    },
+
+    handleFriend(member, event) {
+      this.$emit('checkMember', member, event);
     },
   },
 };
