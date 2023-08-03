@@ -271,8 +271,12 @@ export default {
     background: #f1f3f4 !important;
   }
 
-  ::v-deep .video-js .vjs-big-play-button {
-    transform: scale(0.7);
+  ::v-deep .video-js {
+    height: 100% !important;
+
+    .vjs-big-play-button {
+      transform: scale(0.7);
+    }
   }
 }
 </style>

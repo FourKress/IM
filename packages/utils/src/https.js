@@ -6,7 +6,7 @@ import { storeInstance } from './store';
 const DEFAULT_HTTP_OPTIONS = {
   baseURL:
     process.env.NODE_ENV === 'development'
-      ? 'http://222.179.101.46:9001'
+      ? 'http://172.16.2.245:9000'
       : 'http://222.179.101.46:9001',
   timeout: 20000,
   withCredentials: false,

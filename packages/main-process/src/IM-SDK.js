@@ -8,7 +8,7 @@ import trayEvent from './trayEvent';
 const { LimMain, LogLevel } = require('lim-sdk-electron');
 
 const getEnv = () => {
-  return IS_DEVELOPMENT ? 'prod' : 'prod';
+  return IS_DEVELOPMENT ? 'test' : 'prod';
 };
 
 export const IMSDKInit = (appId) => {

@@ -485,5 +485,9 @@ export default {
     background: #f1f3f4 !important;
     max-width: 300px !important;
   }
+
+  ::v-deep .video-js {
+    height: 100% !important;
+  }
 }
 </style>
