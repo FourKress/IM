@@ -55,7 +55,9 @@ const initIpcMain = () => {
     });
 
     ipcMain.handle('openFileDialog', (_event, type) => handleFileOpen(type));
-    ipcMain.handle('saveFileDialog', (_event) => handleSaveFileOpen());
+    ipcMain.handle('saveFileDialog', (_event, fileName) =>
+      handleSaveFileOpen(fileName),
+    );
 
     ipcMain.handle('IMSDKIPC', (_event, provider, event, data) =>
       IMSDKEvent(provider, event, data),

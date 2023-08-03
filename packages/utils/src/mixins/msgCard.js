@@ -2,6 +2,7 @@ import { renderProcess } from '@lanshu/render-process';
 import { IMRevokeMessage } from '@lanshu/im';
 import { mapGetters } from 'vuex';
 import lodash from 'lodash';
+import dayjs from 'dayjs';
 import { CHECK_MSG_TYPE, MSG_FORMAT_MAP } from '../msgUtils';
 import { dataURLtoBlob, getFileSize } from '../base';
 import { getAtTagList, formatAtTag, openAtUser } from '../atUtils';
@@ -299,9 +300,14 @@ export default {
     },
 
     async handleDownImage() {
-      const dirPath = await renderProcess.saveFileDialog();
+      const dirPath = await renderProcess.saveFileDialog(
+        `${dayjs().format('YYYYMMDDHHmmss')}.${
+          this.assetsPath.split('/').pop().split('.')[1]
+        }`,
+      );
       if (!dirPath) {
-        this.$message.warning('请选择保存文件夹');
+        typeof dirPath === 'Boolean' &&
+          this.$message.warning('请选择保存文件夹');
         return;
       }
       await renderProcess.copyFile(this.cachePath, dirPath);

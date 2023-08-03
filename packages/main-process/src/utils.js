@@ -38,11 +38,12 @@ export const handleFileOpen = async (args) => {
   return filePaths[0];
 };
 
-export const handleSaveFileOpen = async () => {
+export const handleSaveFileOpen = async (fileName) => {
   const { canceled, filePath } = await dialog.showSaveDialog(
     global.mainWindow,
     {
-      filters: [{ name: 'Images', extensions: ['jpg', 'png', 'gif'] }],
+      filters: [{ name: 'All Files', extensions: ['*'] }],
+      defaultPath: fileName,
     },
   );
   if (canceled) {

@@ -15,11 +15,11 @@ const obfuscatorOptions = {
   // 死代码块的影响概率
   // deadCodeInjectionThreshold: 0.4,
   // 此选项几乎不可能使用开发者工具的控制台选项卡
-  debugProtection: true,
+  // debugProtection: true,
   // 如果选中，则会在“控制台”选项卡上使用间隔强制调试模式，从而更难使用“开发人员工具”的其他功能。
-  debugProtectionInterval: true,
+  // debugProtectionInterval: true,
   // 通过用空函数替换它们来禁用console.log，console.info，console.error和console.warn。这使得调试器的使用更加困难。
-  disableConsoleOutput: true,
+  // disableConsoleOutput: true,
   // 标识符的混淆方式 hexadecimal(十六进制) mangled(短标识符)
   identifierNamesGenerator: 'hexadecimal',
   log: false,
