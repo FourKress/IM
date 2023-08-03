@@ -50,7 +50,7 @@
         render-svg
       ></LsIcon>
     </span>
-    <span class="btn" @click="handleWindowChange(WIN_ACTION_TYPE.IS_CLOSE)">
+    <span class="btn" @click="handleWindowChange(WIN_ACTION_TYPE.IS_HIDE)">
       <LsIcon icon="ls-icon-guanbi" width="12" height="12" render-svg></LsIcon>
     </span>
   </div>

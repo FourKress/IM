@@ -45,6 +45,7 @@ export const WIN_ACTION_TYPE = {
   IS_MAX: 'max',
   IS_CLOSE: 'close',
   IS_SHOW: 'show',
+  IS_HIDE: 'hide',
 };
 
 export const WINDOW_TYPE = {
