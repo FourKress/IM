@@ -51,7 +51,6 @@
     >
       <div class="view">
         <LsIcon
-          class="audio-icon"
           icon="ls-icon-icon_wenjian1"
           render-svg
           width="31"
@@ -72,7 +71,6 @@
                 placement="top"
               >
                 <LsIcon
-                  class="audio-icon"
                   icon="ls-icon-icon_wenjianjia"
                   render-svg
                   width="14"
@@ -89,7 +87,6 @@
                 placement="top"
               >
                 <LsIcon
-                  class="audio-icon"
                   icon="ls-icon-icon_xiazai"
                   render-svg
                   width="14"

@@ -71,6 +71,7 @@
                 <TimesTransform
                   v-if="item.lastMsg"
                   :timestamp="item.lastMsg.timestamp"
+                  :key="updateTimer"
                 />
               </span>
             </div>
@@ -153,6 +154,7 @@ export default {
         },
       ],
       _sessionList: [],
+      updateTimer: Date.now(),
     };
   },
   components: {
@@ -207,6 +209,7 @@ export default {
       this._sessionList = this.sessionList.filter((d) =>
         this.synergySessionList.every((s) => s.sessId !== d.sessId),
       );
+      this.updateTimer = Date.now();
       this.selfSessionList = this._sessionList;
     },
     initData() {

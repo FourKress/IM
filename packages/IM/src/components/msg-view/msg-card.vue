@@ -78,7 +78,6 @@
     >
       <div class="view">
         <LsIcon
-          class="audio-icon"
           icon="ls-icon-icon_wenjian1"
           render-svg
           width="31"
@@ -99,7 +98,6 @@
                 placement="top"
               >
                 <LsIcon
-                  class="audio-icon"
                   icon="ls-icon-icon_wenjianjia"
                   render-svg
                   width="14"
@@ -116,9 +114,7 @@
                 placement="top"
               >
                 <LsIcon
-                  class="audio-icon"
-                  icon="ls-icon-icon_xiazai"
-                  render-svg
+                  icon="ls-icon-xiazai"
                   width="14"
                   height="14"
                   @click="handleDownload"
@@ -375,7 +371,7 @@ export default {
       border: 1px solid $split-line-color;
 
       &:before {
-        content: '图片加载中...';
+        content: '加载中...';
         z-index: 0;
         position: absolute;
         top: 50%;

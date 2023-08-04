@@ -198,12 +198,12 @@ export default {
     },
 
     getGroupMemberList() {
-      this.readMember = [];
-      this.notReadMember = [];
       this.loading = true;
       // nextSeq默认从0开始
       IMGetGroupMemberList(this.session.toUser, 0)
         .then((res) => {
+          this.readMember = [];
+          this.notReadMember = [];
           const { members = [] } = res;
           members
             .filter((d) => d.userId !== this.userInfo.userId)

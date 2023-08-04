@@ -43,14 +43,14 @@ export default {
         },
         {
           label: () => '另存为',
-          handler: this.handleDownImage,
+          handler: this.handleDownFile,
           icon: () => 'ls-icon-xiazai',
         },
       ],
       fileContextMenuList: [
         {
           label: () => '另存为',
-          handler: this.handleDownImage,
+          handler: this.handleDownFile,
           icon: () => 'ls-icon-xiazai',
         },
       ],
@@ -237,7 +237,7 @@ export default {
     },
 
     async handlePreview() {
-      if (!this.assetsPath.includes('cache')) {
+      if (!this.cachePath) {
         await this.handleDownload();
       }
       renderProcess.previewAssets(this.cachePath);
@@ -287,19 +287,24 @@ export default {
       if (!this.cachePath) {
         await this.handleDownload();
       }
+      console.log(this.cachePath);
       const base64 = await renderProcess.getCacheFile2Base64(this.cachePath);
       const blob = dataURLtoBlob(base64);
 
-      await navigator.clipboard.write([
-        new ClipboardItem({
-          [blob.type]: blob,
-        }),
-      ]);
-
-      this.$message.success('复制成功');
+      setTimeout(async () => {
+        await navigator.clipboard.write([
+          new ClipboardItem({
+            [blob.type]: blob,
+          }),
+        ]);
+        this.$message.success('复制成功');
+      }, 100);
     },
 
-    async handleDownImage() {
+    async handleDownFile() {
+      if (!this.cachePath) {
+        await this.handleDownload();
+      }
       const dirPath = await renderProcess.saveFileDialog(
         `${dayjs().format('YYYYMMDDHHmmss')}.${
           this.assetsPath.split('/').pop().split('.')[1]
