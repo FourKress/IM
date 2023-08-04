@@ -79,6 +79,7 @@ export default {
     },
 
     handleUpdate() {
+      // TODO 检查处理音视频通话
       const { fetchUrl, version } = this.updateInfo;
       if (fetchUrl && version) {
         this.setStartDownload(true);

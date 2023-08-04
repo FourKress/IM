@@ -1,4 +1,4 @@
-import { BrowserWindow } from 'electron';
+import { app, BrowserWindow } from 'electron';
 import path from 'path';
 import { IS_MAC, CLIENT_TYPE, WINDOW_TYPE, IS_DEVELOPMENT } from './utils';
 import checkDevices from './checkDevices';
@@ -71,7 +71,18 @@ export const changeWindow = (type, win) => {
         ? targetWindow.unmaximize()
         : targetWindow.maximize(),
     full: () => targetWindow.setFullScreen(!targetWindow.isFullScreen()),
-    close: () => targetWindow.close(),
+    close: () => {
+      if (win === WINDOW_TYPE.IS_TRTC) {
+        global.store.set('TRTC_CAN_BE_CLOSED', true);
+        targetWindow.close();
+        return;
+      }
+      if (win === WINDOW_TYPE.IS_MAIN) {
+        global.store.set('WIN_CAN_BE_CLOSED', true);
+        app.quit();
+        return;
+      }
+    },
     hide: () => targetWindow.hide(),
     show: () => targetWindow.show(),
   };

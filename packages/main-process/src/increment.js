@@ -70,6 +70,8 @@ export default async (data) => {
             'exe',
           )}"`,
         );
+        global.store.set('TRTC_CAN_BE_CLOSED', true);
+        global.store.set('WIN_CAN_BE_CLOSED', true);
         sudoPrompt(
           `"${path.join(
             app.getPath('userData'),
