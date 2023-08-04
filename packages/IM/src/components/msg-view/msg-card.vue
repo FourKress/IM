@@ -127,9 +127,10 @@
     </div>
 
     <div
-      class="card text"
+      class="card trtc"
       :class="classObject"
       v-if="msgType === CHECK_MSG_TYPE.IS_TRTC"
+      @click="handleStartTrtc"
     >
       <LsIcon
         v-if="!isSelf || bubbleModel === SESSION_BUBBLE_MODEL.IS_LEFT"
@@ -165,6 +166,7 @@ import {
   SESSION_BUBBLE_MODEL,
   secondToDate,
   MsgCardMixins,
+  startTrtc,
 } from '@lanshu/utils';
 import { LsIcon } from '@lanshu/components';
 import { mapGetters } from 'vuex';
@@ -190,6 +192,11 @@ export default {
       type: [Number, String],
       required: true,
       default: 500,
+    },
+    session: {
+      type: Object,
+      default: () => {},
+      require: true,
     },
   },
   components: {
@@ -283,6 +290,12 @@ export default {
         this.wrapFileStyle = { width: '340px' };
       }
     },
+
+    async handleStartTrtc() {
+      const type = this.rawMsg.data?.type;
+      if (!type) return;
+      await startTrtc(this.session, type);
+    },
   },
 };
 </script>
@@ -348,6 +361,10 @@ export default {
         color: $primary-color;
         cursor: pointer;
       }
+    }
+
+    &.trtc {
+      cursor: pointer;
 
       .trtc-icon {
         &.self {

@@ -7,10 +7,10 @@
     <div class="input-panel">
       <div class="options-row">
         <el-popover
-          v-model="emojiVisible"
           placement="top"
           width="460"
-          trigger="manual"
+          trigger="click"
+          v-model="emojiVisible"
         >
           <div class="emoji-panel">
             <span
@@ -302,7 +302,6 @@ export default {
       }, 500);
     });
 
-    document.addEventListener('click', this.handleGlobalClick);
     document.addEventListener('click', this.handleAtGlobalClick);
     this.$refs.msgInput.addEventListener('paste', (event) => {
       this.handleBlur();
@@ -389,20 +388,10 @@ export default {
   methods: {
     init() {
       this.windowRange = null;
-      this.emojiVisible = false;
       this.clearInput();
     },
     getRange() {
       return window.getSelection()?.getRangeAt(0);
-    },
-    handleGlobalClick(event) {
-      if (!this.emojiVisible) return;
-      try {
-        const classNames = (event.target.className || '')?.split(' ');
-        if (!classNames.some((c) => ['emoji-btn'].includes(c))) {
-          this.emojiVisible = false;
-        }
-      } catch (e) {}
     },
     handleAtGlobalClick(event) {
       if (!this.visibleMemberDialog) return;
@@ -658,7 +647,6 @@ export default {
         this.$message.warning('暂无权限！');
         return;
       }
-      this.emojiVisible = !this.emojiVisible;
     },
 
     handleScreenshots() {
@@ -1039,7 +1027,6 @@ export default {
     },
   },
   async beforeDestroy() {
-    document.removeEventListener('click', this.handleGlobalClick);
     document.removeEventListener('click', this.handleAtGlobalClick);
     // 保存草稿
     const sessId = this.session.sessId;

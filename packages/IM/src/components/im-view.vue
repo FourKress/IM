@@ -73,6 +73,7 @@
               :imViewWidth="imViewWidth"
               :bubbleModel="bubbleModel"
               :rawMsg="item"
+              :session="session"
               @checkAtUser="handleFriend"
             />
             <MsgSendTips

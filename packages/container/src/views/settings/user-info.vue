@@ -32,7 +32,7 @@
       <input
         ref="fileInput"
         style="display: none"
-        accept="image/jpg,image/png"
+        :accept="acceptList.join(',')"
         id="file"
         type="file"
         name="file"
@@ -63,8 +63,8 @@ export default {
   data() {
     const expireTimeOption = {
       disabledDate(time) {
-        return time.getTime() > Date.now();  //如果没有后面的-8.64e7就是不可以选择今天的
-      }
+        return time.getTime() > Date.now(); //如果没有后面的-8.64e7就是不可以选择今天的
+      },
     };
 
     return {
@@ -162,6 +162,7 @@ export default {
       showAuthenticate: false,
       showUnbind: false,
       regions: [],
+      acceptList: ['image/jpg', 'image/png'],
     };
   },
   watch: {
@@ -204,6 +205,11 @@ export default {
       const files = event?.target?.files;
       if (!files?.length) return;
       const avatarFile = files[0];
+      if (this.acceptList.every((d) => d !== avatarFile.type)) {
+        this.$message.error('请上传PNG或JPG的图片');
+        return;
+      }
+
       const formData = new FormData();
       formData.append('file', avatarFile);
       Apis.managerFileUpload(formData)

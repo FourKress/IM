@@ -28,7 +28,7 @@
       </span>
     </template>
 
-    <template v-if="isSelf && rawMsg.sendState === 1">
+    <template v-if="showTips">
       <el-popover
         placement="top-end"
         title=""
@@ -45,7 +45,7 @@
           <div
             class="progress-bar"
             :style="{
-              borderColor: receiptUserList.length ? '#00C476' : '#999999',
+              borderColor: receiptUserList.length ? '#00C476' : '#DBDEE4',
             }"
             v-else
           >
@@ -95,7 +95,12 @@
 
 <script>
 import { LsIcon, LsAssets } from '@lanshu/components';
-import { SESSION_BUBBLE_MODEL, SESSION_USER_TYPE } from '@lanshu/utils';
+import {
+  SESSION_BUBBLE_MODEL,
+  SESSION_USER_TYPE,
+  CHECK_MSG_TYPE,
+  MSG_FORMAT_MAP,
+} from '@lanshu/utils';
 import { IMGetGroupMemberList } from '../../IM-SDK';
 import { mapGetters } from 'vuex';
 
@@ -150,6 +155,8 @@ export default {
     return {
       LsAssets,
       SESSION_BUBBLE_MODEL,
+      CHECK_MSG_TYPE,
+      MSG_FORMAT_MAP,
       readMember: [],
       notReadMember: [],
       callbackReceiptUserList: [],
@@ -178,6 +185,17 @@ export default {
     realMemberCount() {
       // 总人数需要排除自己 所以 减 1
       return this.isGroup ? this.memberCount - 1 : 1;
+    },
+    msgType() {
+      const msgType = this.rawMsg?.msgType;
+      return MSG_FORMAT_MAP[msgType].type;
+    },
+    showTips() {
+      return (
+        this.isSelf &&
+        this.msgType !== CHECK_MSG_TYPE.IS_TRTC &&
+        this.rawMsg.sendState === 1
+      );
     },
   },
   watch: {
@@ -279,7 +297,7 @@ export default {
   }
 
   .progress-bar {
-    border: 2px solid #00c476;
+    border: 2px solid #dbdee4;
     cursor: pointer;
     width: 18px;
     height: 18px;
