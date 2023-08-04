@@ -5,8 +5,12 @@
 
 import https from './https';
 
+import Video from 'video.js';
+import 'video.js/dist/video-js.css';
+
 const prototypes = {
   https,
+  Video,
 };
 
 export default {

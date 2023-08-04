@@ -220,6 +220,7 @@ export default {
       atKeywords: '',
       atSearchInfo: {},
       loading: false,
+      atSearchTimer: 0,
     };
   },
   computed: {
@@ -398,9 +399,7 @@ export default {
       if (!this.emojiVisible) return;
       try {
         const classNames = (event.target.className || '')?.split(' ');
-        if (
-          !classNames.some((c) => ['editor-container', 'emoji-btn'].includes(c))
-        ) {
+        if (!classNames.some((c) => ['emoji-btn'].includes(c))) {
           this.emojiVisible = false;
         }
       } catch (e) {}
@@ -523,9 +522,12 @@ export default {
         };
 
         this.$nextTick(() => {
-          if (!this.members?.length) {
-            setTimeout(() => {
-              this.initAtValue();
+          this.atSearchTimer && clearTimeout(this.atSearchTimer);
+          const members = this.rawMembers.filter((d) =>
+            d.alias.includes(atKeywords),
+          );
+          if (!members?.length) {
+            this.atSearchTimer = setTimeout(() => {
               this.handleCheckAt(true);
             }, 800);
           }
@@ -549,6 +551,7 @@ export default {
       }
     },
     handleCheckAt(isAuto = false) {
+      this.initAtValue();
       if (isAuto) {
         const hasAt =
           this.session.toUserType === SESSION_USER_TYPE.IS_GROUP &&
