@@ -102,6 +102,10 @@ const initElectron = (config) => {
   global.store.set('WIN_CAN_BE_CLOSED', false);
   electronLog.info(`VERSION: ${global.store.get('VERSION')}`);
 
+  if (global.store.get('UPDATE_NOTIFY') === undefined) {
+    global.store.set('UPDATE_NOTIFY', true);
+  }
+
   if (!global.store.get('VERSION')) {
     global.store.set('VERSION', version);
   }

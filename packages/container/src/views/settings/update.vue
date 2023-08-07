@@ -56,8 +56,9 @@ export default {
     ...mapGetters('globalStore', ['updateNotify', 'updateInfo']),
   },
   async created() {
-    this.selfUpdateNotify = await renderProcess.getStore('UPDATE_NOTIFY');
     this.currentVersion = await renderProcess.getStore('VERSION');
+    this.selfUpdateNotify = await renderProcess.getStore('UPDATE_NOTIFY');
+    await this.handleChange(this.selfUpdateNotify);
   },
   methods: {
     ...mapActions('globalStore', [
@@ -71,10 +72,10 @@ export default {
         info.fnc(info);
       }
     },
-    async handleChange() {
-      await renderProcess.setStore('UPDATE_NOTIFY', this.selfUpdateNotify);
+    async handleChange(val) {
+      await renderProcess.setStore('UPDATE_NOTIFY', val);
       if (this.updateInfo.version) {
-        this.setUpdateNotify(this.selfUpdateNotify);
+        this.setUpdateNotify(val);
       }
     },
 

@@ -57,6 +57,16 @@ export default {
         });
       }
     },
+    $route: {
+      handler: async function (val) {
+        if (val.name === 'Login') {
+          const trtcSession = await renderProcess.getStore('TRTC_SESSION');
+          if (trtcSession) return;
+          await this.handleGetVersion();
+        }
+      },
+      deep: true,
+    },
   },
   async created() {
     renderProcess.IMSDKListener((event, data) => {
@@ -80,12 +90,6 @@ export default {
         );
       });
     });
-
-    const trtcSession = await renderProcess.getStore('TRTC_SESSION');
-
-    if (trtcSession) return;
-
-    await this.handleGetVersion();
   },
   mounted() {
     document.addEventListener(
