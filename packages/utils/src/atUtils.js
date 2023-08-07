@@ -56,7 +56,7 @@ export const openAtUser = (ctx, event) => {
   ctx.$emit(
     'checkAtUser',
     {
-      fromUser: userId,
+      userId: userId,
     },
     event,
   );

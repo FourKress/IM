@@ -59,7 +59,7 @@
         >
           <div class="scroll-view" v-if="historyMsgList.length">
             <div class="item" v-for="msg in historyMsgList">
-              <div class="img">
+              <div class="img" @click="(event) => handleFriend(msg, event)">
                 <img :src="msg.fromAvatar" alt="" />
               </div>
               <div class="info">
@@ -230,6 +230,16 @@ export default {
         trailing: false,
       },
     ),
+
+    handleFriend(member, event) {
+      this.$emit(
+        'checkMember',
+        {
+          userId: member.fromUser,
+        },
+        event,
+      );
+    },
   },
 };
 </script>
@@ -325,6 +335,7 @@ export default {
             height: 40px;
             border-radius: 6px;
             overflow: hidden;
+            cursor: pointer;
 
             img {
               display: block;

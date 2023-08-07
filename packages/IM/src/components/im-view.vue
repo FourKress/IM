@@ -60,7 +60,9 @@
           "
           :style="{ minHeight: !checkSelf(item) && isGroup ? '68px' : '50px' }"
         >
-          <span @click="(event) => handleFriend(item, event)">
+          <span
+            @click="(event) => handleFriend({ userId: item.fromUser }, event)"
+          >
             <MsgLazyUserInfo
               :isSelf="checkSelf(item)"
               :bubbleModel="bubbleModel"
@@ -484,8 +486,8 @@ export default {
 
     async handleFriend(item, event) {
       await this.openFriendDialog(event, async () => {
-        const { fromUser } = item;
-        const friendInfo = (await IMGetOneFriend(fromUser))?.data || {};
+        const { userId } = item;
+        const friendInfo = (await IMGetOneFriend(userId))?.data || {};
         if (friendInfo?.userId) {
           this.friendPanelConfig = this.isGroup
             ? { isPass: true }
@@ -494,7 +496,7 @@ export default {
           this.friendPanelConfig = { isApply: true };
         }
 
-        const userProfile = (await IMGetUserProfile(fromUser))?.data || {};
+        const userProfile = (await IMGetUserProfile(userId))?.data || {};
         const { remark, desc } = friendInfo;
         return {
           ...userProfile,

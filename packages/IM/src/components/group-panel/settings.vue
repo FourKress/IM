@@ -71,7 +71,10 @@
       @confirm="handleConfirmTransfer"
     ></GroupTransfer>
 
-    <HistoryMsg :visibleDrawer.sync="visibleHistoryMsgDrawer" />
+    <HistoryMsg
+      :visibleDrawer.sync="visibleHistoryMsgDrawer"
+      v-on="$listeners"
+    />
 
     <LsCardDialog :visible.sync="groupQrcodeVisible">
       <LsQrcodePanel

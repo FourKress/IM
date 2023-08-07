@@ -157,7 +157,7 @@ export default {
     async handleFriend(event) {
       if (this.isGroup) return;
       const member = {
-        fromUser: this.session.toUser,
+        userId: this.session.toUser,
       };
       this.$emit('checkMember', member, event);
     },

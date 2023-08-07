@@ -247,7 +247,7 @@ export default {
       this.$emit(
         'checkMember',
         {
-          fromUser: member.userId,
+          userId: member.userId,
         },
         event,
       );
