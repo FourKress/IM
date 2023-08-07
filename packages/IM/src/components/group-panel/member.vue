@@ -32,8 +32,8 @@
       </span>
     </div>
 
-    <div class="list">
-      <div class="scroll-view" v-loading="loading">
+    <div class="list" v-loading="loading">
+      <div class="scroll-view">
         <div
           class="item"
           v-for="(item, index) in members"

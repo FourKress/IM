@@ -186,7 +186,7 @@ export default {
       type: Object,
       default: () => {
         return {
-          minWidth: '399px',
+          minWidth: '398px',
         };
       },
     },

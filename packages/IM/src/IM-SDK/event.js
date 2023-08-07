@@ -25,7 +25,7 @@ const handlePromiseResult = async (fnc) => {
     return res;
   } catch (e) {
     console.log(e);
-    if (!e.includes('reply was never sent')) {
+    if (!e?.includes('reply was never sent')) {
       window.ClientMessage.error(e.message);
     }
     return Promise.reject(e);
