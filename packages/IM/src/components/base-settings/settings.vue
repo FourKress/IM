@@ -12,7 +12,7 @@
       ></LsIcon>
     </div>
 
-    <div class="row">
+    <div class="row" v-if="isNotMe">
       <div class="item" @click="createGroup">
         <span class="label">创建群聊</span>
         <i class="el-icon-arrow-right"></i>
@@ -52,7 +52,7 @@ export default {
     isPosition: {
       type: Boolean,
       default: false,
-    }
+    },
   },
   components: {
     LsIcon,
@@ -70,7 +70,11 @@ export default {
     };
   },
   computed: {
-    ...mapGetters('IMStore', ['actionWindow']),
+    ...mapGetters('IMStore', ['actionWindow', 'userInfo']),
+
+    isNotMe() {
+      return this.userInfo.userId !== this.actionWindow.toUser;
+    },
   },
   watch: {
     visible(val) {

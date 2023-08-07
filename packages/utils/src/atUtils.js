@@ -52,8 +52,7 @@ export const formatAtTag = (msg, atTagList = [], isPreview = false) => {
 
 export const openAtUser = (ctx, event) => {
   const userId = event.target.getAttribute('data-userid');
-  const userInfo = storeInstance.getters['IMStore/userInfo'];
-  if (!userId || userId === 'IM_AT_ALL' || userId === userInfo.userId) return;
+  if (!userId || userId === 'IM_AT_ALL') return;
   ctx.$emit(
     'checkAtUser',
     {

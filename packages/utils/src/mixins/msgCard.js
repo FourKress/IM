@@ -288,14 +288,12 @@ export default {
       const base64 = await renderProcess.getCacheFile2Base64(this.cachePath);
       const blob = dataURLtoBlob(base64);
 
-      setTimeout(async () => {
-        await navigator.clipboard.write([
-          new ClipboardItem({
-            [blob.type]: blob,
-          }),
-        ]);
-        this.$message.success('复制成功');
-      }, 100);
+      await navigator.clipboard.write([
+        new ClipboardItem({
+          [blob.type]: blob,
+        }),
+      ]);
+      this.$message.success('复制成功');
     },
 
     async handleDownFile() {

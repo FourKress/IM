@@ -90,7 +90,7 @@
       </div>
 
       <div class="at-member-panel" v-if="visibleMemberDialog">
-        <div class="scroll-view" ref="MemberContainer" v-loading="loading">
+        <div class="scroll-view" ref="MemberContainer">
           <div
             class="member-item"
             :class="{
@@ -193,6 +193,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    memberCount: {
+      type: Number,
+      default: 0,
+    },
   },
   components: {
     LsIcon,
@@ -219,7 +223,6 @@ export default {
       selectMemberIndex: atAllMember.userId,
       atKeywords: '',
       atSearchInfo: {},
-      loading: false,
       atSearchTimer: 0,
     };
   },
@@ -278,6 +281,10 @@ export default {
           this.handleHotKeySelectMember,
         );
       }
+    },
+    memberCount() {
+      if (!this.isGroup) return;
+      this.getGroupMemberList();
     },
   },
   async mounted() {
@@ -547,12 +554,8 @@ export default {
           /[\s\S]?<span class="at-container" contenteditable="false" data-at="\d+">@<\/span>$/.test(
             this.message.replace(/<span><\/span>/g, ''),
           );
-        if (hasAt) {
-          this.getGroupMemberList();
-        }
         this.visibleMemberDialog = hasAt;
       } else {
-        this.getGroupMemberList();
         this.visibleMemberDialog = true;
       }
     },
@@ -1007,23 +1010,17 @@ export default {
     },
 
     getGroupMemberList() {
-      this.loading = true;
       // nextSeq默认从0开始
-      IMGetGroupMemberList(this.session.toUser, 0)
-        .then((res) => {
-          console.log(res, 'getGroupMemberList');
-          const { nextSeq, members = [] } = res;
-          this.nextSeq = nextSeq;
-          this.rawMembers = members.map((d) => {
-            return {
-              ...d,
-              alias: d.alias || d.nickname,
-            };
-          });
-        })
-        .finally(() => {
-          this.loading = false;
+      IMGetGroupMemberList(this.session.toUser, 0).then((res) => {
+        const { nextSeq, members = [] } = res;
+        this.nextSeq = nextSeq;
+        this.rawMembers = members.map((d) => {
+          return {
+            ...d,
+            alias: d.alias || d.nickname,
+          };
         });
+      });
     },
   },
   async beforeDestroy() {

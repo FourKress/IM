@@ -13,7 +13,12 @@
       </template>
     </MsgHeader>
 
-    <div class="message-panel" ref="messagePanel" @scroll="handleScroll">
+    <div
+      class="message-panel"
+      ref="messagePanel"
+      :style="{ opacity: loadComplete ? '1' : '0' }"
+      @scroll="handleScroll"
+    >
       <div
         class="message-item"
         v-for="(item, index) in messageList"
@@ -91,6 +96,7 @@
 
     <MsgInputAction
       v-bind="$props"
+      :memberCount="memberCount"
       :groupRole="myGroupRole"
       :groupRoleManager="groupRoleManager"
       @refreshMsg="handleRefreshMsg"
@@ -213,6 +219,7 @@ export default {
       imViewWidth: 500,
       resizeObserver: null,
       memberCount: 0,
+      loadComplete: false,
     };
   },
   watch: {
@@ -315,6 +322,10 @@ export default {
       leading: true,
       trailing: false,
     });
+
+    setTimeout(() => {
+      this.loadComplete = true;
+    }, 100);
 
     const imViewDom = this.$refs[this.refsName];
     //添加拖拽事件监听器
@@ -561,6 +572,7 @@ export default {
     overflow-y: auto;
     overflow-x: hidden;
     transform: translate3d(0, 0, 0);
+    opacity: 0;
 
     .message-item {
       .tips-row {

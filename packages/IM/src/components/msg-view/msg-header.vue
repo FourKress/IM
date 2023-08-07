@@ -11,7 +11,7 @@
       </div>
     </div>
     <div class="right">
-      <div class="btn" v-if="!isGroup">
+      <div class="btn" v-if="!isGroup && isNotMe">
         <el-tooltip class="item" effect="dark" content="视频" placement="top">
           <!--        || groupRoleManager.whoCanStartNetworkCall <= groupRole-->
           <LsIcon
@@ -21,7 +21,7 @@
           ></LsIcon>
         </el-tooltip>
       </div>
-      <div class="btn" v-if="!isGroup">
+      <div class="btn" v-if="!isGroup && isNotMe">
         <el-tooltip class="item" effect="dark" content="语音" placement="top">
           <!--        || groupRoleManager.whoCanStartNetworkCall <= groupRole-->
           <LsIcon
@@ -55,7 +55,10 @@
             </el-dropdown-item>
           </el-dropdown-menu>
           <el-dropdown-menu slot="dropdown" v-else>
-            <el-dropdown-item :command="IM_HEADER_MORE_BTN_KEY.IS_CREATE_GROUP">
+            <el-dropdown-item
+              v-if="isNotMe"
+              :command="IM_HEADER_MORE_BTN_KEY.IS_CREATE_GROUP"
+            >
               <div class="send-down-row">
                 <LsIcon render-svg icon="pop_cd_cjql"></LsIcon>
                 <span>创建群聊</span>
@@ -131,6 +134,9 @@ export default {
     },
     isGroup() {
       return this.session?.toUserType === SESSION_USER_TYPE.IS_GROUP;
+    },
+    isNotMe() {
+      return this.userInfo.userId !== this.session.toUser;
     },
   },
   methods: {
