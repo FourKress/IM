@@ -37,14 +37,18 @@
         >
           {{ isSetPwd ? '下一步' : '立即登录' }}
         </el-button>
-
       </AuthCode>
     </div>
   </div>
 </template>
 
 <script>
-import { PhoneNumMixins, phoneEncryption, Apis, SCENE_TYPE, } from '@lanshu/utils';
+import {
+  PhoneNumMixins,
+  phoneEncryption,
+  Apis,
+  SCENE_TYPE,
+} from '@lanshu/utils';
 import { LsIcon } from '@lanshu/components';
 import AuthCode from '../../components/authCode';
 import LoginMixins from './loginMixins';
@@ -80,8 +84,10 @@ export default {
       return phoneEncryption(this.phoneNum);
     },
     sceneType() {
-      return this.isSetPwd ? this.SCENE_TYPE.IS_SET_PWD : this.SCENE_TYPE.IS_LOGIN
-    }
+      return this.isSetPwd
+        ? this.SCENE_TYPE.IS_SET_PWD
+        : this.SCENE_TYPE.IS_LOGIN;
+    },
   },
   methods: {
     backLogin() {

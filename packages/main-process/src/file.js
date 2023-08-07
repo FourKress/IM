@@ -76,7 +76,6 @@ export const saveCacheFile = async (data) => {
 
 export const getCacheFile2Base64 = (fileName) => {
   const bitmap = fs.readFileSync(fileName);
-  const type = fileName.split('.').pop();
   const base64str = Buffer.from(bitmap).toString('base64'); // base64编码
-  return `data:image/${type};base64,${base64str}`;
+  return `data:image/png;base64,${base64str}`;
 };

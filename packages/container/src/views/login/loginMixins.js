@@ -22,8 +22,9 @@ export default {
       const resData = res?.data || {};
       await this.setSystemUserInfo(resData);
 
-      const { imAppid, imToken, token, userId } = resData;
+      const { imAppid, imToken, token, userId, username } = resData;
 
+      localStorage.setItem('historyPhoneNum', username);
       setToken(TOKEN_TYPE.IS_IM, imToken);
       setToken(TOKEN_TYPE.IS_SYS, token);
 

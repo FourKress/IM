@@ -208,7 +208,6 @@ export default {
               password: this.form.firstPhoneNum,
               orgId: '',
             });
-            localStorage.setItem('historyPhoneNum', this.phoneNum);
             await this.handleClientLogin(res);
           } catch (e) {
             this.isAwait = false;

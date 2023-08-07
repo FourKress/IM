@@ -60,15 +60,12 @@ export default {
     },
 
     dialogSure() {
-      this.handleClose();
       this.promiseStatus && this.promiseStatus.resolve(true);
     },
     dialogCancel() {
-      this.handleClose();
       this.promiseStatus && this.promiseStatus.reject({ isCancel: true });
     },
     dialogClose() {
-      this.handleClose();
       this.promiseStatus && this.promiseStatus.reject({ isClose: true });
     },
   },

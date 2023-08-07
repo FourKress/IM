@@ -37,9 +37,6 @@ export default {
           label: () => '复制',
           handler: this.handleCopyImage,
           icon: () => 'ls-icon-fuzhi',
-          hide: () => {
-            return this.assetsPath.includes('gif');
-          },
         },
         {
           label: () => '另存为',

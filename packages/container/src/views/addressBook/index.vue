@@ -413,6 +413,7 @@ export default {
           depList.forEach((d) => {
             const { id, name } = d;
             const component = 'OrgStructure';
+            const myDeps = userDepList.filter((u) => u.parentId === d.id);
 
             if (!o?.subList) {
               o.subList = [];
@@ -427,8 +428,8 @@ export default {
                   id,
                   name,
                 },
-                ...(userDepList?.length
-                  ? userDepList.map((m) => {
+                ...(myDeps?.length
+                  ? myDeps.map((m) => {
                       return {
                         label: `我的部门 <span class="tag">(<span>${m.name}</span>)</span>`,
                         component,
@@ -467,25 +468,6 @@ export default {
           this.handleSelectDep(item, dep, org);
         }
       }
-    },
-
-    recursionMyDep(subDepList, dep, userDepList) {
-      // 所属部门只有一个 且 属于顶级部门
-      if (userDepList.length === 1 && userDepList[0].id === dep.id) {
-        return [];
-      }
-      const userDeps = userDepList.filter((u) => u.parentId === dep.id);
-      if (userDeps?.length) {
-        return [...userDeps];
-      }
-      const subDeps = subDepList.filter((d) => d.parentId === dep.id);
-      if (subDeps?.length) {
-        const result = this.recursionMyDep(subDepList, subDep, userDepList);
-        if (result) {
-          return [subDep, ...result];
-        }
-      }
-      return [];
     },
   },
 
