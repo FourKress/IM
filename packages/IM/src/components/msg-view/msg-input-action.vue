@@ -718,12 +718,9 @@ export default {
       return new File([u8arr], Date.now().toString(), { type: mime });
     },
 
-    handleIMSendMsg(msg, cb) {
-      IMSendMessage(msg).finally(() => {
-        this.$emit('refreshMsg', msg);
-      });
+    handleIMSendMsg(msg) {
+      IMSendMessage(msg);
       this.$emit('pushMsg', msg);
-      cb && cb();
     },
 
     async getImageSize(url) {

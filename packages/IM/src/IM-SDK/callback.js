@@ -98,7 +98,7 @@ export const IMSDKCallBackEvents = {
     const { msg } = msgInfo;
     const { isCurrent } = getCurrentSession('sessId', msg.sessId);
     if (!isCurrent) return;
-    storeInstance.commit('IMStore/setRefreshMsg', Date.now());
+    storeInstance.commit('IMStore/setUpdateMsg', msg);
   },
   AddReceiveNewMessage: async (ctx, msgInfo) => {
     const { message, silence, isFocused } = msgInfo;

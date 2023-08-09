@@ -25,6 +25,8 @@ const getDefaultState = () => {
     allUnreadCount: 0,
     // 刷新聊天Msg
     refreshMsg: '',
+    // 更新聊天Msg
+    updateMsg: '',
     // 当前操作的SessionWindow
     actionWindow: {},
     // 刷新群成员
@@ -65,6 +67,7 @@ const getters = {
   currentMsg: (state) => state.currentMsg,
   allUnreadCount: (state) => state.allUnreadCount,
   refreshMsg: (state) => state.refreshMsg,
+  updateMsg: (state) => state.updateMsg,
   actionWindow: (state) => state.actionWindow,
   refreshMembers: (state) => state.refreshMembers,
   dragFileList: (state) => state.dragFileList,
@@ -136,6 +139,9 @@ const mutations = {
   },
   setRefreshMsg(data, value) {
     data.refreshMsg = value;
+  },
+  setUpdateMsg(data, value) {
+    data.updateMsg = value;
   },
   setActionWindow(data, value) {
     data.actionWindow = value;
@@ -235,6 +241,9 @@ const actions = {
   },
   setRefreshMsg({ commit }, value) {
     commit('setRefreshMsg', value);
+  },
+  setUpdateMsg({ commit }, value) {
+    commit('setUpdateMsg', value);
   },
   setActionWindow({ commit }, value) {
     commit('setActionWindow', value);

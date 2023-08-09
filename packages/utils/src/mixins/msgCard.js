@@ -156,7 +156,6 @@ export default {
   watch: {
     cachePath(val) {
       if (val) {
-        console.log('watch', val);
         this.initVideoPlay();
       }
     },

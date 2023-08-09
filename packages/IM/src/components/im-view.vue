@@ -251,6 +251,17 @@ export default {
         this.getMessageList();
       }
     },
+    updateMsg: {
+      immediate: true,
+      deep: true,
+      async handler(msg) {
+        if (!this?.session?.sessId) return;
+        if (msg?.sessId === this?.session?.sessId) {
+          this.handleUpdateMsg(msg);
+          this.setUpdateMsg({});
+        }
+      },
+    },
     refreshGroupRoleManager() {
       this.getGroupRoleManagerList();
       this.getMyGroupMemberInfo();
@@ -258,14 +269,10 @@ export default {
     groupUserAttributeChanged(data) {
       const { groupId, nickname, userId, avatar } = data;
       if (this.session.toUser === groupId) {
-        this.messageList = this.messageList.map((d) => {
-          if (d.fromUser === userId) {
-            d.fromNickname = nickname;
-            d.fromAvatar = avatar;
-          }
-          return {
-            ...d,
-          };
+        this.handleModifyMsgList({
+          nickname,
+          userId,
+          avatar,
         });
       }
     },
@@ -278,14 +285,10 @@ export default {
 
     userNicknameAvatarUpdate(data) {
       const { nickname, userId, avatar } = data;
-      this.messageList = this.messageList.map((d) => {
-        if (d.fromUser === userId) {
-          d.fromNickname = nickname;
-          d.fromAvatar = avatar;
-        }
-        return {
-          ...d,
-        };
+      this.handleModifyMsgList({
+        nickname,
+        userId,
+        avatar,
       });
     },
 
@@ -298,6 +301,7 @@ export default {
       'userInfo',
       'currentMsg',
       'refreshMsg',
+      'updateMsg',
       'refreshGroupRoleManager',
       'userNicknameAvatarUpdate',
       'groupUserAttributeChanged',
@@ -325,8 +329,9 @@ export default {
     });
 
     setTimeout(() => {
+      console.log('2222');
       this.loadComplete = true;
-    }, 100);
+    }, 1);
 
     const imViewDom = this.$refs[this.refsName];
     //添加拖拽事件监听器
@@ -370,7 +375,11 @@ export default {
     this.resizeObserver.observe(this.$refs[this.refsName]);
   },
   methods: {
-    ...mapActions('IMStore', ['setDragFileList', 'setCurrentMsg']),
+    ...mapActions('IMStore', [
+      'setDragFileList',
+      'setCurrentMsg',
+      'setUpdateMsg',
+    ]),
 
     checkTimesInterval,
     initData() {
@@ -393,7 +402,7 @@ export default {
       if (!isContinue) {
         this.nextSeq = 0;
       }
-      // 拉取SDK缓存消息，每次sdk最多返回20条消息
+      // 拉取SDK缓存消息，每次sdk最多返回50条消息
       IMGetMessageList(sessId, this.nextSeq).then((res) => {
         const { msgs, nextSeq, hasNext } = res?.data || {};
         this.hasNext = hasNext;
@@ -518,8 +527,38 @@ export default {
         }
       });
     },
+
+    handleUpdateMsg(msg) {
+      this.messageList = this.messageList.map((d) => {
+        if (d.cliMsgId === msg.cliMsgId) {
+          return {
+            ...d,
+            ...msg,
+          };
+        }
+        return {
+          ...d,
+        };
+      });
+    },
+
     handleRefreshMsg() {
       this.getMessageList();
+    },
+
+    handleModifyMsgList(msg) {
+      const { userId, ...other } = msg;
+      this.messageList = this.messageList.map((d) => {
+        if (d.fromUser === msg.userId) {
+          return {
+            ...d,
+            ...other,
+          };
+        }
+        return {
+          ...d,
+        };
+      });
     },
 
     getGroupRoleManagerList() {
