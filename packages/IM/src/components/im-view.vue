@@ -101,7 +101,6 @@
       :memberCount="memberCount"
       :groupRole="myGroupRole"
       :groupRoleManager="groupRoleManager"
-      @refreshMsg="handleRefreshMsg"
       @pushMsg="handlePushLocalMsg"
       @checkAtUser="handleFriend"
     />
@@ -242,7 +241,7 @@ export default {
       async handler(msg) {
         if (!this?.session?.sessId) return;
         if (msg?.sessId === this?.session?.sessId) {
-          this.getMessageList();
+          this.handlePushLocalMsg(msg);
           this.setCurrentMsg({});
         }
       },
