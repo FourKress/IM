@@ -10,6 +10,7 @@
         class="code-item"
         type="text"
         @input="(val) => handleInput(val, index)"
+        @keydown.native="(event) => handleBackspace(event, index)"
         v-model="codeList[index]"
       />
     </div>
@@ -27,7 +28,6 @@
 <script>
 import { mapGetters, mapActions } from 'vuex';
 import { Apis } from '@lanshu/utils';
-import { renderProcess } from '@lanshu/render-process';
 
 export default {
   name: 'authCode',
@@ -82,6 +82,17 @@ export default {
         this.handleCountdown();
       } else {
         this.sendCode();
+      }
+    },
+
+    handleBackspace(event, index) {
+      if (event.key === 'Backspace') {
+        // 为清除到第一位时，前一位输入框自动聚焦
+        if (index >= 0) {
+          this.codeList = this.codeList.map((d, i) => (i === index ? '' : d));
+          this.$refs[`codeRef_${Math.max(index - 1, 0)}`][0].focus();
+        }
+        event.preventDefault();
       }
     },
 
