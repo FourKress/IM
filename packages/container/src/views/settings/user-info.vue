@@ -162,7 +162,7 @@ export default {
       showAuthenticate: false,
       showUnbind: false,
       regions: [],
-      acceptList: ['image/jpg', 'image/png'],
+      acceptList: ['image/jpeg', 'image/jpg', 'image/png'],
     };
   },
   watch: {
@@ -206,9 +206,11 @@ export default {
       if (!files?.length) return;
       const avatarFile = files[0];
       if (this.acceptList.every((d) => d !== avatarFile.type)) {
-        this.$message.error('请上传PNG或JPG的图片');
+        this.$message.error('请上传PNG、JPG、JPEG的图片');
         return;
       }
+      console.log(avatarFile.type);
+      return;
 
       const formData = new FormData();
       formData.append('file', avatarFile);
