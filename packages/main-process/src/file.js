@@ -60,18 +60,22 @@ export const getCacheFilePath = (fileName) => {
   }
 };
 
-export const saveCacheFile = async (data) => {
-  const cacheDir = global.store.get('CACHE_DIR');
-  const { url, fileName } = data;
-  const type = url.split('/').pop().split('.')[1];
-  const path = await downloadFile({
-    url,
-    targetPath: cacheDir,
-    fileName: type ? `${fileName}.${type}` : fileName,
-  }).catch((err) => {
-    electronLog.error(`saveCacheFile ${err}`);
+export const saveCacheFile = (data) => {
+  return new Promise(async (resolve, reject) => {
+    const cacheDir = global.store.get('CACHE_DIR');
+    const { url, fileName } = data;
+    const type = url.split('/').pop().split('.')[1];
+    const path = await downloadFile({
+      url,
+      targetPath: cacheDir,
+      fileName: type ? `${fileName}.${type}` : fileName,
+    }).catch((err) => {
+      electronLog.error(`saveCacheFile ${err}`);
+      reject();
+    });
+    electronLog.info(`saveCacheFile ${path}`);
+    resolve();
   });
-  electronLog.info(`saveCacheFile ${path}`);
 };
 
 export const getCacheFile2Base64 = (fileName) => {

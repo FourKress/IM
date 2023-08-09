@@ -501,6 +501,7 @@ export default {
 
   ::v-deep .video-js {
     height: 100% !important;
+    background: $split-line-color;
   }
 }
 </style>

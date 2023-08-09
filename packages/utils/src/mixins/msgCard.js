@@ -153,6 +153,15 @@ export default {
     },
   },
 
+  watch: {
+    cachePath(val) {
+      if (val) {
+        console.log('watch', val);
+        this.initVideoPlay();
+      }
+    },
+  },
+
   created() {
     this.msg = this.rawMsg;
     // 给动态生成的html标签绑定事件，挂载到window上;
@@ -160,50 +169,20 @@ export default {
     window.openAtUser = (event) => openAtUser(this, event);
   },
 
-  mounted() {
-    this.getAssetsPath().catch(() => {});
-    this.$nextTick(() => {
-      if (!this.isVideo) return;
-      this.$Video(
-        this.$refs.Video,
-        {
-          controls: true,
-          poster: this.msgData?.snapshotUrl,
-          preload: 'auto',
-          autoplay: false,
-          fluid: true,
-          muted: false,
-          inactivityTimeout: false,
-          noUITitleAttributes: true,
-          controlBar: {
-            children: [
-              { name: 'playToggle' },
-              { name: 'progressControl' },
-              { name: 'remainingTimeDisplay', displayNegative: false },
-              {
-                name: 'volumePanel',
-                inline: false,
-              },
-            ],
-          },
-          sources: [
-            // 视频源
-            {
-              src: this.msgData.videoUrl,
-              type: this.msgData.type,
-              poster: this.msgData?.snapshotUrl,
-            },
-          ],
-        },
-        function () {
-          console.log('视频可以播放了', this);
-        },
-      );
-    });
+  async mounted() {
+    await this.getAssetsPath();
   },
 
   methods: {
     getFileSize,
+
+    getFileType(assetsPath = this.assetsPath) {
+      return assetsPath.split('/').pop().split('.')[1];
+    },
+    getFileName() {
+      const { cliMsgId, toUser } = this.msg;
+      return `${toUser}_${cliMsgId}`;
+    },
 
     openTargetUrl(event) {
       const url = event.target.getAttribute('data-url');
@@ -212,11 +191,16 @@ export default {
     },
 
     async handleDownload() {
-      const msgId = this.msgId;
-      const type = this.assetsPath.split('/').pop().split('.')[1];
-      await this.handleSaveFile(`cache_${msgId}`, this.assetsPath, msgId);
+      const fileName = this.getFileName();
+      await this.handleSaveFile(`cache_${fileName}`, this.assetsPath, fileName);
+      await this.setCachePath(this.assetsPath);
+    },
+
+    async setCachePath(filePath) {
+      const fileName = this.getFileName();
+      const type = this.getFileType(filePath);
       const cachePath = await renderProcess.getCacheFilePath(
-        `${msgId}.${type}`,
+        `${fileName}.${type}`,
       );
       this.cachePath = cachePath;
     },
@@ -227,6 +211,7 @@ export default {
         fileName,
       });
       await window.$lanshuStore.setItem(key, url);
+      await this.setCachePath(url);
     },
 
     handleOpenDir() {
@@ -243,20 +228,20 @@ export default {
     async getAssetsPath() {
       let assetsPath = this.msgData?.url || this.msgData?.videoUrl;
       if (assetsPath) {
-        const msgId = this.msgId || `${this.msg?.cliMsgId}_${Date.now()}`;
-        const key = `cache_${msgId}`;
+        const fileName = this.getFileName();
+        const key = `cache_${fileName}`;
         const storePath = (await window.$lanshuStore.getItem(key)) || '';
         // 未产生缓存
         if (!storePath) {
           if (this.msgType !== this.CHECK_MSG_TYPE.IS_FILE) {
-            this.handleSaveFile(key, assetsPath, msgId).then(() => {
+            this.handleSaveFile(key, assetsPath, fileName).then(() => {
               console.log('文件缓存下载成功');
             });
           }
         } else {
-          const type = assetsPath.split('/').pop().split('.')[1];
+          const type = this.getFileType(assetsPath);
           const cachePath = await renderProcess.getCacheFilePath(
-            `${msgId}.${type}`,
+            `${fileName}.${type}`,
           );
           // 本地缓存文件存在
           if (cachePath) {
@@ -264,7 +249,7 @@ export default {
             this.cachePath = cachePath;
           } else {
             // 本地缓存文件不存在，意外删除，重新下载并缓存
-            this.handleSaveFile(key, assetsPath, msgId).then(() => {
+            this.handleSaveFile(key, assetsPath, fileName).then(() => {
               console.log('文件缓存下载成功');
             });
           }
@@ -284,7 +269,6 @@ export default {
       if (!this.cachePath) {
         await this.handleDownload();
       }
-      console.log(this.cachePath);
       const base64 = await renderProcess.getCacheFile2Base64(this.cachePath);
       const blob = dataURLtoBlob(base64);
 
@@ -301,9 +285,7 @@ export default {
         await this.handleDownload();
       }
       const dirPath = await renderProcess.saveFileDialog(
-        `${dayjs().format('YYYYMMDDHHmmss')}.${
-          this.assetsPath.split('/').pop().split('.')[1]
-        }`,
+        `${dayjs().format('YYYYMMDDHHmmss')}.${this.getFileType()}`,
       );
       if (!dirPath) {
         typeof dirPath === 'Boolean' &&
@@ -318,6 +300,48 @@ export default {
       const msgId = this.msgId;
       if (!msgId) return;
       await IMRevokeMessage(msgId);
+    },
+
+    initVideoPlay() {
+      this.$nextTick(async () => {
+        if (!this.isVideo || !this.cachePath) return;
+
+        this.$Video(
+          this.$refs.Video,
+          {
+            controls: true,
+            poster: this.msgData?.snapshotUrl,
+            preload: 'auto',
+            autoplay: false,
+            fluid: true,
+            muted: false,
+            inactivityTimeout: false,
+            noUITitleAttributes: true,
+            controlBar: {
+              children: [
+                { name: 'playToggle' },
+                { name: 'progressControl' },
+                { name: 'remainingTimeDisplay', displayNegative: false },
+                {
+                  name: 'volumePanel',
+                  inline: false,
+                },
+              ],
+            },
+            sources: [
+              // 视频源
+              {
+                src: this.cachePath,
+                type: this.msgData.type,
+                poster: this.msgData?.snapshotUrl,
+              },
+            ],
+          },
+          function () {
+            console.log('视频可以播放了');
+          },
+        );
+      });
     },
   },
 };
