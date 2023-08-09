@@ -329,7 +329,6 @@ export default {
     });
 
     setTimeout(() => {
-      console.log('2222');
       this.loadComplete = true;
     }, 1);
 
