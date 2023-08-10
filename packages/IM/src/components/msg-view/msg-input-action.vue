@@ -288,25 +288,21 @@ export default {
     },
   },
   async mounted() {
-    this.$nextTick(() => {
-      setTimeout(async () => {
-        // 协同模式不自动聚焦
-        if (!this.isSynergy) {
-          this.$refs.msgInput?.focus();
-          this.isGroup && this.handleCheckAt(true);
-        }
-        this.windowRange = this.getRange();
-        // 非协同模式 读取草稿
-        if (this.isSynergy) return;
-        // 获取切换时保存的临时草稿
-        const historyTempMsgOBJ = await window.$lanshuStore.getItem(
-          'tempMsgOBJ',
-        );
-        const tempMsg = historyTempMsgOBJ?.[this.session.sessId];
-        if (tempMsg?.preview) {
-          this.handleTargetInsert(tempMsg.rawMsg);
-        }
-      }, 500);
+    this.$nextTick(async () => {
+      // 协同模式不自动聚焦
+      if (!this.isSynergy) {
+        this.$refs.msgInput?.focus();
+        this.isGroup && this.handleCheckAt(true);
+      }
+      this.windowRange = this.getRange();
+      // 非协同模式 读取草稿
+      if (this.isSynergy) return;
+      // 获取切换时保存的临时草稿
+      const historyTempMsgOBJ = await window.$lanshuStore.getItem('tempMsgOBJ');
+      const tempMsg = historyTempMsgOBJ?.[this.session.sessId];
+      if (tempMsg?.preview) {
+        this.handleTargetInsert(tempMsg.rawMsg);
+      }
     });
 
     document.addEventListener('click', this.handleAtGlobalClick);
