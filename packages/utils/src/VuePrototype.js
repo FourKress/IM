@@ -4,13 +4,16 @@
  */
 
 import https from './https';
-
+import VueScrollTo from 'vue-scrollto';
 import Video from 'video.js';
 import 'video.js/dist/video-js.css';
+
+const ScrollTo = VueScrollTo.scrollTo;
 
 const prototypes = {
   https,
   Video,
+  ScrollTo,
 };
 
 export default {
