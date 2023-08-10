@@ -57,13 +57,13 @@
             v-if="[TAB_TYPE.IS_FRIEND, TAB_TYPE.IS_ORG].includes(tabType)"
             v-for="item in pyList"
             :key="item"
-            :class="pinyinKey === item && 'active'"
-            @click="filterAddress(item)"
+            :class="navSelectKey === item && 'active'"
+            @click.self="filterAddress(item)"
           >
             {{ item }}
           </span>
         </div>
-        <div class="list selected-scroll-view">
+        <div class="list">
           <div
             class="scroll-view"
             v-if="tabType === TAB_TYPE.IS_SESSION && selfSessionList.length"
@@ -93,7 +93,7 @@
           </div>
 
           <div
-            class="scroll-view"
+            class="scroll-view selected-scroll-view"
             v-if="
               [TAB_TYPE.IS_FRIEND, TAB_TYPE.IS_ORG].includes(tabType) &&
               pyBookList.length
@@ -101,7 +101,7 @@
           >
             <div
               class="group-panel"
-              :id="`group-${key}`"
+              :id="`${key}-group`"
               :key="key"
               v-for="(group, key) in addressBookPYObj"
             >
@@ -310,9 +310,6 @@ export default {
       return this.getCheckedStatus(d);
     });
 
-    this.minScrollTop = 370;
-    this.maxScrollTop = 440;
-
     if (this.defaultMembers?.length) {
       if (this.isAddAdmin || this.isAdd || this.isCreate) {
         this.selectList = [
@@ -487,8 +484,6 @@ export default {
       this.staffName = '';
       this.tabType = type;
       if ([this.TAB_TYPE.IS_FRIEND, this.TAB_TYPE.IS_ORG].includes(type)) {
-        // 注册滚动事件的处理
-        this.handleRegisterScroll();
         let pyBookList = [];
         if (type === this.TAB_TYPE.IS_ORG) {
           if (!this.orgUsers?.length) {
@@ -515,6 +510,9 @@ export default {
 
         this.pyBookList = pyBookList;
         this.initPinYin(this.pyBookList);
+
+        // 注册滚动事件的处理
+        this.handleRegisterScroll(50, 290);
       }
     },
 
@@ -761,13 +759,16 @@ export default {
       }
 
       .list {
-        overflow-y: auto;
-        overflow-x: hidden;
-        transform: translate3d(0, 0, 0);
-        scroll-behavior: smooth;
+        overflow: hidden;
+        box-sizing: border-box;
         padding: 0 20px;
 
         .scroll-view {
+          overflow-y: auto;
+          overflow-x: hidden;
+          transform: translate3d(0, 0, 0);
+          height: 100%;
+
           .group-panel {
             display: flex;
             flex-direction: column;

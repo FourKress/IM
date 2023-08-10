@@ -38,6 +38,7 @@
 <script>
 import { mapGetters } from 'vuex';
 import { LsIcon } from '@lanshu/components';
+import { ScrollToMixins } from '@lanshu/utils';
 import AccountCenter from '../account-center';
 import Notify from '../notify';
 import File from '../file';
@@ -47,11 +48,10 @@ import HotKey from '../hot-key';
 import Update from '../update';
 import About from '../about';
 import UserInfo from '../user-info.vue';
-import { IMReceiptMessage } from '@lanshu/im';
-import { lodash } from '@lanshu/utils';
 
 export default {
   name: 'Settings-home',
+  mixins: [ScrollToMixins],
   components: {
     LsIcon,
     UserInfo,
@@ -113,61 +113,19 @@ export default {
         //   icon: 'sz_gy',
         // },
       ],
-      navSelectKey: 'UserInfo',
-      targetKey: '',
-      isScrollMax: false,
-      scrollView: null,
+      navSelectKey: '',
     };
   },
   computed: {
     ...mapGetters('globalStore', ['updateNotify']),
   },
   mounted() {
-    this.scrollView = document.querySelector('.scroll-view');
+    this.scrollView = '.scroll-view';
+    this.navSelectKey = 'UserInfo';
+    const scrollView = document.querySelector(this.scrollView);
+    const lastKey = this.navList.at(-1).key;
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        let realKey = '';
-        this.isScrollMax = false;
-        entries.forEach((entry) => {
-          const { isIntersecting, target } = entry;
-          // 进入可视区
-          if (isIntersecting) {
-            const { intersectionRatio, boundingClientRect } = entry;
-            const { top } = boundingClientRect;
-            const key = target.id.split('-')[0];
-
-            if (intersectionRatio <= 0.25 && top <= 162) {
-              realKey = key;
-              return;
-            }
-            if (
-              intersectionRatio <= 1 &&
-              intersectionRatio >= 0.5 &&
-              top <= 200
-            ) {
-              realKey = key;
-              return;
-            }
-            if (key === this.navList.at(-1).key && intersectionRatio === 1) {
-              this.isScrollMax = true;
-            }
-          }
-        });
-
-        if (realKey) {
-          this.setNacSelectKey(realKey);
-        }
-      },
-      {
-        threshold: [0, 0.25, 0.5, 0.75, 0.85, 0.95, 1],
-        root: this.scrollView,
-      },
-    );
-    const childNodes = this.scrollView.childNodes;
-    childNodes.forEach((element) => {
-      observer.observe(element);
-    });
+    this.initScrollObserver(scrollView, lastKey, 162, 200);
   },
   methods: {
     handleRouterBack() {
@@ -175,32 +133,12 @@ export default {
     },
     handleSelectNav(nav) {
       const { key } = nav;
-      if (this.isScrollMax) {
-        this.navSelectKey = key;
-        this.isScrollMax = false;
-      } else {
-        this.targetKey = key;
-      }
-      this.$ScrollTo(document.querySelector(`#${key}-Card`), 50, {
-        container: '.scroll-view',
-        easing: 'linear',
-        lazy: false,
-        offset: 0,
-        force: true,
-        cancelable: true,
-        x: false,
-        y: true,
-      });
+      this.handleScrollTo(
+        key,
+        document.querySelector(`#${key}-Card`),
+        this.scrollView,
+      );
     },
-
-    setNacSelectKey: lodash.debounce(function (key) {
-      if (this.targetKey && this.targetKey !== key) {
-        this.navSelectKey = this.targetKey;
-      } else {
-        this.navSelectKey = key;
-      }
-      this.targetKey = '';
-    }, 150),
   },
 };
 </script>
@@ -269,7 +207,6 @@ export default {
       height: 100%;
       overflow-y: auto;
       transform: translate3d(0, 0, 0);
-      scroll-behavior: smooth;
       padding-right: 54px;
     }
   }

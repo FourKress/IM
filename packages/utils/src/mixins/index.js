@@ -5,6 +5,7 @@ import PhoneNumMixins from './phoneNum';
 import RecoverAccountMixins from './recoverAccount';
 import StartSessionMixins from './startSession';
 import MsgCardMixins from './msgCard';
+import ScrollToMixins from './scrollTo';
 
 export {
   AddressBookMixins,
@@ -14,4 +15,5 @@ export {
   RecoverAccountMixins,
   StartSessionMixins,
   MsgCardMixins,
+  ScrollToMixins,
 };

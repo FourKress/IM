@@ -4,17 +4,20 @@
       <span
         v-for="item in pyList"
         :key="item"
-        :class="pinyinKey === item && 'active'"
+        :class="navSelectKey === item && 'active'"
         @click="filterAddress(item)"
       >
         {{ item }}
       </span>
     </div>
-    <div class="list selected-scroll-view">
-      <div class="scroll-view" v-if="addressBookList.length">
+    <div class="list">
+      <div
+        class="scroll-view selected-scroll-view"
+        v-if="addressBookList.length"
+      >
         <div
           class="group-panel"
-          :id="`group-${key}`"
+          :id="`${key}-group`"
           :key="key"
           v-for="(group, key) in addressBookPYObj"
         >
