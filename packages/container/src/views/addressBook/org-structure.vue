@@ -107,8 +107,8 @@ export default {
         if (!val?.length) return;
         const current = val.slice(-1)[0];
         this.initData(current.key);
-      }
-    }
+      },
+    },
   },
   data() {
     return {
@@ -178,7 +178,6 @@ export default {
 
 <style scoped lang="scss">
 .org-list {
-  padding: 0 30px;
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -188,7 +187,7 @@ export default {
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    padding: 14px 0 16px 0;
+    padding: 14px 30px 16px;
 
     font-size: 12px;
     color: $primary-hover-color;
@@ -215,6 +214,8 @@ export default {
     height: 100%;
 
     .scroll-view {
+      padding: 0 30px;
+
       .item {
         width: 100%;
         height: 66px;

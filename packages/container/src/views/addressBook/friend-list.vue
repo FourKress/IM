@@ -176,13 +176,16 @@ export default {
   }
 
   .list {
-    overflow-y: auto;
-    overflow-x: hidden;
-    transform: translate3d(0, 0, 0);
-    scroll-behavior: smooth;
+    overflow: hidden;
     height: 100%;
+    box-sizing: border-box;
 
     .scroll-view {
+      overflow-y: auto;
+      overflow-x: hidden;
+      transform: translate3d(0, 0, 0);
+      height: 100%;
+
       .group-panel {
         display: flex;
         flex-direction: column;
