@@ -204,6 +204,7 @@ export default {
       resizeObserver: null,
       maxSize: 640,
       isNotUserVideo: false,
+      destroyTimer: 0,
     };
   },
   created() {
@@ -371,6 +372,7 @@ export default {
 
               this.handleEnterRoom();
               this.startTime();
+              // 通话计时，最长2小时
               setInterval(() => {
                 this.timer++;
                 if (this.timer >= 60 * 60 * 2) {
@@ -439,7 +441,9 @@ export default {
 
     handleTRTCDestroy() {
       this.isExitRoom = true;
-      setTimeout(() => {
+      // 延迟2s关闭音视频窗口
+      this.destroyTimer && clearTimeout(this.destroyTimer);
+      this.destroyTimer = setTimeout(() => {
         this.handleWindowChange(this.WIN_ACTION_TYPE.IS_CLOSE);
       }, 2000);
     },

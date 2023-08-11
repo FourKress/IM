@@ -390,9 +390,9 @@ export default {
         return;
       }
       this.handleActiveSynergy(session);
-      setTimeout(() => {
+      this.$nextTick(() => {
         this.handleScrollTo(session);
-      }, 100);
+      });
     },
 
     getSessionTarget(session) {

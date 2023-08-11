@@ -307,8 +307,11 @@ export const IMSDKNetworkCallEvent = async (event, data) => {
   }
 };
 
+let networkCallRefreshTimer = 0;
 export const IMSDKNetworkCallRefresh = (sessId) => {
-  setTimeout(() => {
+  // 通话结束时，通知刷新消息列表，延迟500ms，确保正常情况下消息已发送
+  networkCallRefreshTimer && clearTimeout(networkCallRefreshTimer);
+  networkCallRefreshTimer = setTimeout(() => {
     global.mainWindow.webContents.send('IMSDKListener', {
       type: 'RefreshMsg',
       value: sessId,

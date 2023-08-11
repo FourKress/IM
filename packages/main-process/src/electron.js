@@ -32,9 +32,12 @@ async function createWindow() {
 
   global.mainWindow = win;
 
+  let hookTimer = 0;
   win.hookWindowMessage(278, () => {
     win.setEnabled(false);
-    setTimeout(() => {
+    // 禁止头部右键点击
+    hookTimer && clearTimeout(hookTimer);
+    hookTimer = setTimeout(() => {
       win.setEnabled(true);
     }, 100);
     return true;

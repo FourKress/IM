@@ -155,6 +155,7 @@ export default {
       ],
       _sessionList: [],
       updateTimer: Date.now(),
+      tempMsgTimer: 0,
     };
   },
   components: {
@@ -248,7 +249,9 @@ export default {
     async handleMenuClick(session) {
       const sessId = session.sessId;
       this.handleSetSessionWindow(sessId, session);
-      setTimeout(async () => {
+      // 延迟300ms后查询草稿，保证草稿已存储
+      this.tempMsgTimer && clearTimeout(this.tempMsgTimer);
+      this.tempMsgTimer = setTimeout(async () => {
         await this.getHistoryTempMsg();
       }, 300);
     },
