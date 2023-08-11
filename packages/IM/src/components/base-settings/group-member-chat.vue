@@ -213,6 +213,7 @@ import {
   IMGetByUserId,
   IMInviteMember,
   IMSetGroupMemberAdminRole,
+  IMSetSynergyStatus,
 } from '../../IM-SDK';
 
 const TAB_TYPE = {
@@ -390,6 +391,7 @@ export default {
       );
       const { sessId, avatar, nickname, toUser } = groupSessionRes?.data;
 
+      await IMSetSynergyStatus(sessId, true);
       await this.setSynergyHistory([toUser]);
       await this.addSynergySessionList([
         {
@@ -401,7 +403,7 @@ export default {
       this.$emit('confirm');
     },
 
-    async handleCreateSynergy(type) {
+    async handleCreateSynergy() {
       if (this.selectList?.length < 1) {
         this.$message.error(`${this.groupTitle}至少选择1人`);
         return;
@@ -426,8 +428,10 @@ export default {
           const { userId, avatar, nickname } = d;
           const createSession = await IMGetByUserId(userId);
           const session = createSession.data;
+          const { sessId } = session;
+          await IMSetSynergyStatus(sessId, true);
           const result = {
-            sessId: session.sessId,
+            sessId,
             userId,
             avatar,
             nickname,

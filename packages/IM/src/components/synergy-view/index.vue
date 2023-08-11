@@ -5,7 +5,7 @@
       <div class="list" ref="SynergyNav" v-if="!collapse">
         <div
           class="item"
-          v-for="session in _sessionList.filter(
+          v-for="session in synergySessionList.filter(
             (_d, index) => index <= this.maxNavCount - 1,
           )"
           @click="handleOpenCollapse(session)"
@@ -28,7 +28,7 @@
 
         <span
           class="opt item"
-          v-if="_sessionList.length > maxNavCount"
+          v-if="synergySessionList.length > maxNavCount"
           :style="{ borderColor: visibleMore ? '#0066ff' : '#ccc' }"
           @click="visibleMore = true"
         >
@@ -68,7 +68,7 @@
     </div>
     <div class="container" ref="SynergyContainer">
       <div class="scroll-view" v-if="!collapse">
-        <template v-if="_sessionList.length">
+        <template v-if="synergySessionList.length">
           <div
             class="session"
             :class="{
@@ -76,7 +76,7 @@
               'has-mask': selectSynergy !== session.sessId,
               [`session_${formatSessId(session.sessId)}`]: true,
             }"
-            v-for="session in _sessionList"
+            v-for="session in synergySessionList"
             :key="formatSessId(session.sessId)"
             :style="getStyle(session) || getBasicStyle"
             @click.self="handleSelectSynergy(session)"
@@ -94,7 +94,7 @@
               }"
             >
               <template slot="header">
-                <div class="btn" v-if="_sessionList.length > 1">
+                <div class="btn" v-if="synergySessionList.length > 1">
                   <LsIcon
                     render-svg
                     width="20"
@@ -126,7 +126,7 @@
       <div class="scroll-view-small" v-else>
         <div
           class="item"
-          v-for="session in _sessionList"
+          v-for="session in synergySessionList"
           :key="formatSessId(session.sessId)"
           @click="handleOpenCollapse(session)"
         >
@@ -166,7 +166,7 @@
         <div class="more-scroll-view">
           <div
             class="item"
-            v-for="session in _sessionList"
+            v-for="session in synergySessionList"
             :key="formatSessId(session.sessId)"
             @click="handleOpenCollapse(session)"
           >
@@ -199,7 +199,7 @@ import {
 } from '@lanshu/components';
 import { formatSessId } from '@lanshu/utils';
 import ImView from '../im-view.vue';
-import { IMClearUnreadCount } from '../../IM-SDK';
+import { IMClearUnreadCount, IMSetSynergyStatus } from '../../IM-SDK';
 import SynergySearch from './search.vue';
 
 export default {
@@ -244,12 +244,6 @@ export default {
       };
     },
 
-    _sessionList() {
-      return this.synergySessionList.map((d) =>
-        this.sessionList.find((s) => s.sessId === d.sessId),
-      );
-    },
-
     getPanelStyle() {
       return this.collapse
         ? {
@@ -261,7 +255,7 @@ export default {
     },
 
     unreadTotalCount() {
-      return this._sessionList
+      return this.synergySessionList
         .map((d) => d.unreadCount)
         .reduce((sum, curr) => sum + curr, 0);
     },
@@ -285,7 +279,10 @@ export default {
     },
   },
 
-  created() {},
+  created() {
+    const synergySessionList = this.sessionList.filter((d) => d.isHelp);
+    this.setSynergySessionList(synergySessionList);
+  },
 
   mounted() {
     this.$emit('update:pluginStyle', {
@@ -336,6 +333,7 @@ export default {
       this.setSynergySessionList(synergySessionList);
     },
     handleClose(session) {
+      IMSetSynergyStatus(session.sessId, false);
       this.removeSynergySessionList(session);
     },
 

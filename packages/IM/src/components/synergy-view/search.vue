@@ -66,6 +66,7 @@ import {
   IMGetAllFriendList,
   IMGetByUserId,
   IMGetGroupList,
+  IMSetSynergyStatus,
 } from '../../IM-SDK';
 
 export default {
@@ -194,6 +195,7 @@ export default {
       await this.setSynergyHistory([targetId]);
       const createSession = await IMGetByUserId(groupId || userId);
       const session = createSession.data;
+      await IMSetSynergyStatus(session.sessId, true);
       await this.addSynergySessionList([
         {
           sessId: session.sessId,

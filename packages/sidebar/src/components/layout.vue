@@ -169,7 +169,6 @@ export default {
       'mainSessionWindow',
       'allUnreadCount',
       'IM_DataSync_Status',
-      'synergySessionList',
     ]),
     topSessionList() {
       return this.selfSessionList.filter((d) => d.topState === 1);
@@ -180,12 +179,6 @@ export default {
       deep: true,
       handler() {
         this.initData();
-      },
-    },
-    synergySessionList: {
-      deep: true,
-      handler() {
-        this.initSessionList();
       },
     },
     mainSessionWindow: {
@@ -207,9 +200,7 @@ export default {
     formatSessId,
 
     initSessionList() {
-      this._sessionList = this.sessionList.filter((d) =>
-        this.synergySessionList.every((s) => s.sessId !== d.sessId),
-      );
+      this._sessionList = this.sessionList.filter((d) => !d.isHelp);
       this.updateTimer = Date.now();
       this.selfSessionList = this._sessionList;
     },
