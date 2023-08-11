@@ -221,6 +221,7 @@ export default {
       resizeObserver: null,
       memberCount: 0,
       loadComplete: false,
+      scrollTopTimer: 0,
     };
   },
   watch: {
@@ -241,7 +242,7 @@ export default {
       async handler(msg) {
         if (!this?.session?.sessId) return;
         if (msg?.sessId === this?.session?.sessId) {
-          this.handlePushLocalMsg(msg);
+          this.handlePushLocalMsg(msg, false);
           this.setCurrentMsg({});
         }
       },
@@ -328,10 +329,6 @@ export default {
       trailing: false,
     });
 
-    setTimeout(() => {
-      this.loadComplete = true;
-    }, 1);
-
     const imViewDom = this.$refs[this.refsName];
     //添加拖拽事件监听器
     imViewDom.addEventListener('drop', (e) => {
@@ -406,30 +403,31 @@ export default {
         const { msgs, nextSeq, hasNext } = res?.data || {};
         this.hasNext = hasNext;
         this.nextSeq = nextSeq;
+        this.scrollTopTimer && clearTimeout(this.scrollTopTimer);
         if (isContinue && this.messageList?.length) {
           this.messageList.unshift(...msgs);
-          setTimeout(() => {
-            const currentScrollHeight = this.$refs.messagePanel?.scrollHeight;
-            if (this.$refs.messagePanel) {
-              this.$refs.messagePanel.scrollTop =
-                currentScrollHeight - this.preScrollHeight + this.scrollTop;
-            }
-            this.handleCheckMsgReceipt();
+          // 延迟100ms, 等待视频、图片加载完成，保证滚动高度真实
+          this.scrollTopTimer = setTimeout(() => {
+            this.handleScrollTo(() => {
+              this.handleCheckMsgReceipt();
+            }, true);
           }, 10);
         } else {
           this.messageList = msgs;
-          setTimeout(() => {
-            if (this.$refs.messagePanel) {
-              this.$refs.messagePanel.scrollTop =
-                this.$refs.messagePanel?.scrollHeight;
-            }
-            this.handleCheckMsgReceipt();
+          if (!msgs?.length) return;
+          // 延迟100ms, 等待视频、图片加载完成，保证滚动高度真实
+          this.scrollTopTimer = setTimeout(() => {
+            this.handleScrollTo(() => {
+              this.loadComplete = true;
+              this.handleCheckMsgReceipt();
+            });
           }, 10);
         }
       });
     },
 
     handleCheckMsgReceipt() {
+      // 延迟已读，确保消息渲染
       setTimeout(() => {
         const observer = new IntersectionObserver(
           (entries, observer) => {
@@ -476,7 +474,7 @@ export default {
         if (!this.hasNext) return;
         const scrollTop = event.target.scrollTop;
         if (
-          scrollTop <= 500 &&
+          scrollTop <= 800 &&
           (scrollTop <= this.scrollTop || this.scrollTop === 0)
         ) {
           this.preScrollHeight = this.$refs.messagePanel?.scrollHeight;
@@ -520,10 +518,11 @@ export default {
     handlePushLocalMsg(msg) {
       this.messageList.push(msg);
       this.$nextTick(() => {
-        if (this.$refs.messagePanel) {
-          this.$refs.messagePanel.scrollTop =
-            this.$refs.messagePanel?.scrollHeight;
-        }
+        this.handleScrollTo(() => {
+          if (msg.msgId) {
+            this.handleCheckMsgReceipt();
+          }
+        });
       });
     },
 
@@ -585,11 +584,24 @@ export default {
         this.memberCount = memberCount;
       });
     },
+
+    handleScrollTo(cb, isContinue = false) {
+      if (this.$refs.messagePanel) {
+        let currentScrollHeight = this.$refs.messagePanel?.scrollHeight;
+        if (isContinue) {
+          currentScrollHeight =
+            currentScrollHeight - this.preScrollHeight + this.scrollTop;
+        }
+        this.$refs.messagePanel.scrollTop = currentScrollHeight;
+      }
+      cb && cb();
+    },
   },
   beforeDestroy() {
     if (this.resizeObserver) {
       this.resizeObserver.observe(this.$refs[this.refsName]);
     }
+    this.scrollTopTimer && clearTimeout(this.scrollTopTimer);
   },
 };
 </script>

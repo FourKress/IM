@@ -502,6 +502,10 @@ export default {
   ::v-deep .video-js {
     height: 100% !important;
     background: $split-line-color;
+
+    .vjs-big-play-button {
+      transform: scale(0.7);
+    }
   }
 }
 </style>

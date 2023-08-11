@@ -196,17 +196,10 @@ export default {
         this.nextSeq = nextSeq;
         if (isContinue && this.historyMsgList?.length) {
           this.historyMsgList.unshift(...msgs);
-          this.$nextTick(() => {
-            const currentScrollHeight = this.$refs.historyMsgList.scrollHeight;
-            this.$refs.historyMsgList.scrollTop =
-              currentScrollHeight - this.preScrollHeight + this.scrollTop;
-          });
+          this.handleScrollTo(true);
         } else {
           this.historyMsgList = msgs;
-          this.$nextTick(() => {
-            this.$refs.historyMsgList.scrollTop =
-              this.$refs.historyMsgList.scrollHeight;
-          });
+          this.handleScrollTo();
         }
       });
     },
@@ -216,7 +209,7 @@ export default {
         if (!this.hasNext) return;
         const scrollTop = event.target.scrollTop;
         if (
-          scrollTop <= 500 &&
+          scrollTop <= 800 &&
           (scrollTop <= this.scrollTop || this.scrollTop === 0)
         ) {
           this.preScrollHeight = this.$refs.historyMsgList.scrollHeight;
@@ -239,6 +232,17 @@ export default {
         },
         event,
       );
+    },
+
+    handleScrollTo(isContinue = false) {
+      this.$nextTick(() => {
+        let currentScrollHeight = this.$refs.historyMsgList?.scrollHeight;
+        if (isContinue) {
+          currentScrollHeight =
+            currentScrollHeight - this.preScrollHeight + this.scrollTop;
+        }
+        this.$refs.historyMsgList.scrollTop = currentScrollHeight;
+      });
     },
   },
 };
