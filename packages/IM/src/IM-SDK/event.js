@@ -568,3 +568,11 @@ export const IMReceiptMessage = async (msgIdList) => {
     msgIdList,
   );
 };
+
+export const IMSetSynergyStatus = async (sessId, help) =>
+  await eventHOCFnc(
+    IMSDKConvProvider.provider,
+    IMSDKConvProvider.events.setHelpConvBySessId,
+    sessId,
+    help,
+  );
