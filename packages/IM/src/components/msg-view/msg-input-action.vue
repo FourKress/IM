@@ -118,7 +118,12 @@
                 [`member-item_${index}`]: true,
               }"
               v-for="(item, index) in members"
-              @click="handleSelectMember(item)"
+              @click="
+                handleSelectMember(
+                  item,
+                  atSearchInfo.node && atSearchInfo.offset,
+                )
+              "
             >
               <img class="img" :src="item.avatar" alt="" />
               <span class="name">{{ item.alias }}</span>
@@ -423,17 +428,6 @@ export default {
           } else {
             this.handleSelectMember(members[selectMemberIndex], isAtSearch);
           }
-
-          if (isAtSearch) {
-            this.windowRange.setStart(this.atSearchInfo.node, 0);
-            this.windowRange.setEnd(
-              this.atSearchInfo.node,
-              this.atSearchInfo.offset,
-            );
-            this.windowRange.deleteContents();
-            this.handleTargetInsert(`&nbsp;`);
-            this.atSearchInfo = {};
-          }
           return;
         }
         if (key === 'ArrowDown') {
@@ -529,6 +523,16 @@ export default {
         this.visibleMemberDialog = false;
       }
     },
+
+    handleRangDeleteContents() {
+      console.log(this.atSearchInfo, this.atSearchInfo.node);
+      this.windowRange.setStart(this.atSearchInfo.node, 0);
+      this.windowRange.setEnd(this.atSearchInfo.node, this.atSearchInfo.offset);
+      this.windowRange.deleteContents();
+      this.handleTargetInsert(`&nbsp;`);
+      this.atSearchInfo = {};
+    },
+
     initAtValue() {
       this.atKeywords = '';
       this.selectMemberIndex = this.atAllMember.userId;
@@ -562,7 +566,11 @@ export default {
       this.windowRange = this.getRange();
       const { userId, nickname } = member;
       this.atTagDom.innerHTML = `<span class="at-tag" data-userid="${userId}" onclick='openAtUser(event)'>@${nickname}</span>`;
-      !isAtSearch && this.handleTargetInsert(`&nbsp;`);
+      if (isAtSearch) {
+        this.handleRangDeleteContents();
+      } else {
+        this.handleTargetInsert(`&nbsp;`);
+      }
       this.$nextTick(() => {
         this.visibleMemberDialog = false;
       });
