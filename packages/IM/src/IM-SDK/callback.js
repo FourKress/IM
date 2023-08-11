@@ -101,19 +101,19 @@ export const IMSDKCallBackEvents = {
     storeInstance.commit('IMStore/setUpdateMsg', msg);
   },
   AddReceiveNewMessage: async (ctx, msgInfo) => {
-    const { message, silence, isFocused } = msgInfo;
+    const { message, silence, isNotFocused } = msgInfo;
     const { sessId } = message;
 
     const { session, isCurrent } = getCurrentSession('sessId', sessId);
 
     // 窗口是否聚集
-    if (!isFocused) {
+    if (isNotFocused) {
       startNotification(message);
     }
 
     if (!session?.sessId) return;
 
-    storeInstance.commit('IMStore/setCurrentMsg', message);
+    storeInstance.commit('IMStore/setCurrentMsg', { ...message, isNotFocused });
 
     if (!isCurrent) return;
 

@@ -369,6 +369,8 @@ export default {
     this.resizeObserver = resizeObserver;
     // 观察一个或多个元素
     this.resizeObserver.observe(this.$refs[this.refsName]);
+
+    document.addEventListener('visibilitychange', this.handleVisibilityChange);
   },
   methods: {
     ...mapActions('IMStore', [
@@ -519,7 +521,7 @@ export default {
       this.messageList.push(msg);
       this.$nextTick(() => {
         this.handleScrollTo(() => {
-          if (msg.msgId) {
+          if (msg.msgId && !msg.isNotFocused) {
             this.handleCheckMsgReceipt();
           }
         });
@@ -596,12 +598,22 @@ export default {
       }
       cb && cb();
     },
+
+    handleVisibilityChange() {
+      if (!document.hidden) {
+        this.handleCheckMsgReceipt();
+      }
+    },
   },
   beforeDestroy() {
     if (this.resizeObserver) {
       this.resizeObserver.observe(this.$refs[this.refsName]);
     }
     this.scrollTopTimer && clearTimeout(this.scrollTopTimer);
+    document.removeEventListener(
+      'visibilitychange',
+      this.handleVisibilityChange,
+    );
   },
 };
 </script>
