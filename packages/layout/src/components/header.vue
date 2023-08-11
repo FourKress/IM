@@ -297,20 +297,22 @@ export default {
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
+    background-color: rgba(255, 255, 255, 0.6);
+    border-radius: 6px;
+    overflow: hidden;
+    cursor: pointer;
     -webkit-app-region: no-drag !important;
 
     .search {
       width: 500px;
       height: 36px;
-      background-color: $bg-white-color;
-      box-shadow: $bg-select-shadow;
-      border-radius: 20px;
+      border-radius: 6px;
       padding: 0 18px;
       overflow: hidden;
       display: flex;
       align-items: center;
       justify-content: space-between;
-
+      background-color: rgba(255, 255, 255, 0.6);
       -webkit-app-region: no-drag;
 
       .input-panel {
@@ -330,6 +332,8 @@ export default {
             border: none;
             outline: none;
             padding: 0 30px 0 0;
+            cursor: pointer;
+            background-color: rgba(255, 255, 255, 0.6);
           }
 
           input::placeholder {
@@ -343,7 +347,7 @@ export default {
 
   .header_action {
     position: relative;
-    width: 136px;
+    width: 176px;
     height: 24px;
     -webkit-app-region: no-drag !important;
   }

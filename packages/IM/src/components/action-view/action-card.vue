@@ -17,13 +17,13 @@
       <el-dropdown-menu slot="dropdown">
         <el-dropdown-item>
           <div class="send-down-row" @click="handleUploadFile(false)">
-            <LsIcon render-svg icon="pop_cd_tp"></LsIcon>
+            <LsIcon size="14" icon="pop_cd_tp"></LsIcon>
             <span>图片/视频</span>
           </div>
         </el-dropdown-item>
         <el-dropdown-item>
           <div class="send-down-row" @click="handleUploadFile(true)">
-            <LsIcon render-svg icon="pop_cd_wj"></LsIcon>
+            <LsIcon size="14" icon="pop_cd_wj"></LsIcon>
             <span>文件</span>
           </div>
         </el-dropdown-item>

@@ -41,7 +41,7 @@
               :command="IM_HEADER_MORE_BTN_KEY.IS_OPEN_GROUP_MEMBER"
             >
               <div class="send-down-row">
-                <LsIcon render-svg icon="pop_cd_cjql"></LsIcon>
+                <LsIcon size="14" icon="pop_cd_cjql"></LsIcon>
                 <span>群成员</span>
               </div>
             </el-dropdown-item>
@@ -49,7 +49,7 @@
               :command="IM_HEADER_MORE_BTN_KEY.IS_OPEN_GROUP_SET"
             >
               <div class="send-down-row">
-                <LsIcon render-svg icon="pop_cd_sz"></LsIcon>
+                <LsIcon size="14" icon="pop_cd_sz"></LsIcon>
                 <span>群设置</span>
               </div>
             </el-dropdown-item>
@@ -60,13 +60,13 @@
               :command="IM_HEADER_MORE_BTN_KEY.IS_CREATE_GROUP"
             >
               <div class="send-down-row">
-                <LsIcon render-svg icon="pop_cd_cjql"></LsIcon>
+                <LsIcon size="14" icon="pop_cd_cjql"></LsIcon>
                 <span>创建群聊</span>
               </div>
             </el-dropdown-item>
             <el-dropdown-item :command="IM_HEADER_MORE_BTN_KEY.IS_OPEN_SET">
               <div class="send-down-row">
-                <LsIcon render-svg icon="pop_cd_sz"></LsIcon>
+                <LsIcon size="14" icon="pop_cd_sz"></LsIcon>
                 <span>设置</span>
               </div>
             </el-dropdown-item>

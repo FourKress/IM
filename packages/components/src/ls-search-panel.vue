@@ -16,10 +16,8 @@
               placeholder="搜索"
             />
           </div>
-          <div class="add">
-            <LsIcon icon="navi_ss_add" render-svg></LsIcon>
-          </div>
         </div>
+        <div class="close-btn" @click="handleClose">取消</div>
       </div>
       <div class="tabs">
         <span
@@ -277,30 +275,29 @@ export default {
   z-index: 999;
 
   .container {
-    width: 980px;
-    height: 580px;
+    width: 780px;
+    height: 480px;
     background: $bg-white-color;
     border-radius: 20px;
     margin: 8px auto 0;
-    padding: 0 40px;
+    padding: 0 28px;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
 
     .search-wrap {
       display: flex;
-      justify-content: center;
+      justify-content: space-between;
       align-items: center;
       padding-top: 22px;
 
       .search {
         width: 100%;
-        height: 48px;
+        height: 40px;
         background-color: $bg-white-color;
-        box-shadow: 0px 0px 6px 0px #9dc4ff;
         border: 1px solid $primary-color;
-        border-radius: 10px;
-        padding: 0 18px;
+        border-radius: 6px;
+        padding-left: 18px;
         overflow: hidden;
         display: flex;
         align-items: center;
@@ -314,8 +311,7 @@ export default {
         .input-panel {
           flex: 1;
           height: 40px;
-          padding: 0 8px;
-          border-right: 1px solid $split-line-color;
+          padding-left: 8px;
           font-size: 14px;
 
           ::v-deep .el-input {
@@ -327,7 +323,7 @@ export default {
               height: 100%;
               border: none;
               outline: none;
-              padding: 0 30px 0 0;
+              padding: 0 34px 0 0;
             }
 
             input::placeholder {
@@ -336,13 +332,14 @@ export default {
             }
           }
         }
+      }
 
-        .add {
-          width: 18px;
-          height: 18px;
-          cursor: pointer;
-          margin-left: 17px;
-        }
+      .close-btn {
+        font-size: 14px;
+        color: $tips-text-color;
+        min-width: 28px;
+        padding-left: 18px;
+        cursor: pointer;
       }
     }
 
@@ -483,7 +480,7 @@ export default {
     .empty-data {
       height: 20px;
       font-size: 14px;
-      margin: 120px auto 0;
+      margin: 100px auto 0;
       text-align: center;
 
       .link {

@@ -1,6 +1,6 @@
 <template>
   <span class="msg">
-    <span class="at-tag" v-if="isAtMe">[有人@了你]</span>
+    <span class="at-tag" v-if="isAtMe">[@你]</span>
     <span class="temp-msg" v-if="tempMsgText">
       <span class="label">[草稿]</span>
       <span>{{ tempMsgText }}</span>
@@ -104,7 +104,7 @@ export default {
   }
 
   .at-tag {
-    color: $primary-color;
+    color: $minor-red-color;
   }
 }
 </style>

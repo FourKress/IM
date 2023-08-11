@@ -1,34 +1,15 @@
 <template>
   <div class="window-action">
-    <el-popover
-      placement="bottom-end"
-      popper-class="synergy-popover"
-      width="172"
-      trigger="hover"
+    <span
+      class="synergy-btn btn"
+      :class="synergyStatus && 'active'"
+      style="z-index: 0"
       v-if="!isLogin"
+      @click="handleOpenSynergy"
     >
-      <div class="popover-panel">
-        <LsIcon
-          icon="ls-icon-icon_xietong"
-          width="12"
-          height="12"
-          render-svg
-        ></LsIcon>
-        <span class="label">协同模式</span>
-        <el-switch
-          :value="synergyStatus"
-          @change="handleOpenSynergy"
-        ></el-switch>
-      </div>
-      <span slot="reference" class="btn" style="z-index: 0">
-        <LsIcon
-          icon="ls-icon-icon_yemianbuju"
-          width="12"
-          height="12"
-          render-svg
-        ></LsIcon>
-      </span>
-    </el-popover>
+      <LsIcon icon="ls-icon-icon_yemianbuju" size="14"></LsIcon>
+      <span class="label">协同</span>
+    </span>
 
     <span class="btn" @click="handleWindowChange(WIN_ACTION_TYPE.IS_MIN)">
       <LsIcon
@@ -120,22 +101,26 @@ export default {
     align-items: center;
     justify-content: center;
     z-index: 999;
-  }
-}
-</style>
 
-<style scoped lang="scss">
-.synergy-popover {
-  .popover-panel {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    .label {
-      flex: 1;
-      padding-left: 8px;
+    &.synergy-btn {
+      width: 64px;
+      height: 28px;
+      background: #d3d9e9;
+      border-radius: 6px;
+      font-size: 14px;
       color: $main-text-color;
-      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      .label {
+        padding-left: 6px;
+      }
+
+      &.active {
+        background: $primary-color;
+        color: #fff;
+      }
     }
   }
 }
