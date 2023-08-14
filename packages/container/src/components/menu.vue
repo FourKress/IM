@@ -190,6 +190,7 @@ export default {
       flex-direction: column;
       justify-content: center;
       align-items: center;
+      margin-bottom: 12px;
 
       transition: all 0.3s;
 

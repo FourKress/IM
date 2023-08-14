@@ -77,14 +77,29 @@
             maxlength="50"
             show-word-limit
             @change="handleSetSign"
+            @blur="isEditor = false"
+            v-if="isEditor"
+            ref="SignInput"
           ></el-input>
+          <div class="sign-content" v-else>
+            <span @click="handleEditorSign">
+              {{ description || '这是个性签名' }}
+            </span>
+            <LsIcon
+              render-svg
+              icon="ls-icon-icon_erweima"
+              width="12"
+              height="12"
+              @click="handleEditorSign"
+            ></LsIcon>
+          </div>
         </div>
 
         <div class="nav-wrap">
           <div class="row split">
             <span class="label" @click="goToSettings">个人信息</span>
           </div>
-          <div class="row">
+          <div class="row split">
             <span class="label" @click="goToSettings">设置</span>
             <el-badge is-dot :hidden="!updateNotify"></el-badge>
           </div>
@@ -153,6 +168,7 @@ export default {
       showQrCodeDialog: false,
       qrcodeUrl: '',
       visibleSearch: false,
+      isEditor: false,
     };
   },
   watch: {
@@ -229,6 +245,13 @@ export default {
 
     handleSearch() {
       this.visibleSearch = true;
+    },
+
+    handleEditorSign() {
+      this.isEditor = true;
+      this.$nextTick(() => {
+        this.$refs.SignInput.focus();
+      });
     },
   },
 };
@@ -348,14 +371,14 @@ export default {
   .header_action {
     position: relative;
     width: 176px;
-    height: 24px;
+    height: 28px;
     -webkit-app-region: no-drag !important;
   }
 }
 
 .settings-dialog {
   width: 372px;
-  height: 420px;
+  height: 448px;
   background: $bg-white-color;
   box-shadow: 0px 4px 20px 0px rgba(51, 51, 51, 0.1);
   border-radius: 12px;
@@ -378,30 +401,50 @@ export default {
   }
 
   .tag-wrap {
-    margin-left: 30px;
+    margin-left: 24px;
   }
 
   .sign {
-    margin: 17px 15px;
+    margin: 20px 24px;
 
     ::v-deep .el-input__inner {
-      border: none;
-      background: transparent;
-      background: $bg-hover-grey-color;
       padding-right: 56px;
+      border: 1px solid $split-line-color;
+      background-color: $bg-white-color;
 
-      &:hover {
-        background: #eee;
+      &::placeholder {
+        color: #c8c9cc;
+        font-size: 14px;
+      }
+
+      &:focus {
+        border-color: $primary-color;
       }
     }
 
     ::v-deep .el-input__count-inner {
       background: transparent;
     }
+
+    .sign-content {
+      font-size: 12px;
+      color: $minor-text-color;
+      display: flex;
+      align-items: baseline;
+
+      span {
+        cursor: pointer;
+      }
+
+      .ls-icon-wrap {
+        margin-left: 4px;
+        transform: translateY(2px);
+      }
+    }
   }
 
   .nav-wrap {
-    padding: 0 30px;
+    padding: 0 24px;
 
     .row {
       margin-top: 20px;
@@ -434,9 +477,9 @@ export default {
 
   .info {
     display: flex;
-    justify-content: flex-start;
     align-items: flex-end;
-    padding: 0 30px 0 24px;
+    justify-content: space-between;
+    padding: 0 19px 0 24px;
     margin: -29px 0 17px 0;
 
     .avatar {
@@ -456,7 +499,6 @@ export default {
       flex: 1;
       display: flex;
       align-items: center;
-      max-width: 211px;
       margin-bottom: 6px;
 
       .nickname {

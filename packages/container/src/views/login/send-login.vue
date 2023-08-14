@@ -242,7 +242,7 @@ export default {
     height: 32px;
     text-align: center;
     line-height: 32px;
-    background: $bg-white-color;
+    background: transparent;
     border-radius: 6px;
     border: 1px solid $primary-color;
     box-sizing: border-box;

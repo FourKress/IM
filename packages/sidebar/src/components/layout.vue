@@ -350,8 +350,8 @@ export default {
         border-bottom: 1px solid $split-line-color;
 
         .top-item {
-          width: 34px;
-          height: 34px;
+          width: 32px;
+          height: 32px;
           border-radius: 5px;
           overflow: hidden;
           cursor: pointer;
@@ -410,7 +410,7 @@ export default {
         width: 245px;
         height: 72px;
         border-radius: 6px;
-        padding: 13px 10px;
+        padding: 12px 10px 12px 14px;
         box-sizing: border-box;
         display: flex;
         justify-content: space-between;
@@ -418,6 +418,7 @@ export default {
         cursor: pointer;
         transition: all 0.3s;
         transform: translate3d(0, 0, 0);
+        margin-bottom: 4px;
 
         &.active {
           background: #e9f2ff;
@@ -428,8 +429,8 @@ export default {
         }
 
         .img {
-          width: 46px;
-          height: 46px;
+          width: 40px;
+          height: 40px;
           border-radius: 6px;
           overflow: hidden;
 
