@@ -198,7 +198,7 @@ export default {
       await IMSetSynergyStatus(session.sessId, true);
       await this.addSynergySessionList([
         {
-          sessId: session.sessId,
+          ...session,
           avatar,
           nickname,
         },

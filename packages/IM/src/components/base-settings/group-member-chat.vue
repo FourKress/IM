@@ -389,13 +389,14 @@ export default {
         members,
         this.selectList,
       );
-      const { sessId, avatar, nickname, toUser } = groupSessionRes?.data;
+      const groupSession = groupSessionRes?.data;
+      const { sessId, avatar, nickname, toUser } = groupSession;
 
       await IMSetSynergyStatus(sessId, true);
       await this.setSynergyHistory([toUser]);
       await this.addSynergySessionList([
         {
-          sessId,
+          ...groupSession,
           avatar,
           nickname,
         },
@@ -431,7 +432,7 @@ export default {
           const { sessId } = session;
           await IMSetSynergyStatus(sessId, true);
           const result = {
-            sessId,
+            ...session,
             userId,
             avatar,
             nickname,
