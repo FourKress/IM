@@ -161,7 +161,7 @@ export default {
 
 <style scoped lang="scss">
 .enter-auth-code {
-  padding-top: 110px;
+  padding-top: 75px;
 }
 
 .top {
@@ -178,47 +178,47 @@ export default {
 
   .right {
     cursor: pointer;
-    width: 96px;
-    height: 36px;
+    width: 78px;
+    height: 32px;
     text-align: center;
-    line-height: 36px;
+    line-height: 32px;
     background: $bg-white-color;
     border-radius: 6px;
     border: 1px solid $primary-color;
     box-sizing: border-box;
-    font-size: 15px;
+    font-size: 12px;
     color: $primary-hover-color;
   }
 }
 
 .title {
-  height: 32px;
-  line-height: 32px;
-  font-size: 24px;
+  height: 30px;
+  line-height: 30px;
+  font-size: 22px;
   color: $main-text-color;
   font-weight: bold;
-  margin-top: 25px;
+  margin-top: 26px;
 }
 .title-tips {
-  font-size: 16px;
-  color: $tips-text-color;
-  margin-top: 8px;
+  font-size: 12px;
+  color: $minor-text-color;
+  margin-top: 10px;
 }
 
 .input-panel {
-  margin-top: 60px;
+  margin-top: 44px;
 
   .login-btn {
     width: 100%;
-    height: 60px;
-    line-height: 60px;
+    height: 48px;
+    line-height: 48px;
     border-radius: 6px;
     box-sizing: border-box;
     text-align: center;
     color: $bg-white-color;
     background-color: #87a1cd;
     cursor: pointer;
-    margin: 16px 0;
+    margin: 20px 0;
     border: none;
     padding: 0;
     display: block;

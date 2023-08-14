@@ -14,8 +14,8 @@ global.store = store;
 async function createWindow() {
   const win = new BrowserWindow({
     ...defaultWindowConfig(),
-    width: 440,
-    height: 600,
+    width: 360,
+    height: 490,
     show: false,
   });
 

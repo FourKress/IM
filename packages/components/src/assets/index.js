@@ -9,6 +9,7 @@ const logo = require('./images/logo.png');
 const notFriend = require('./images/not-friend.png');
 const notMsg = require('./images/not-msg.png');
 const notSynergy = require('./images/not-synergy.png');
+const loginBg = require('./images/login-bg.png');
 
 // 统一导出静态资源
 export default {
@@ -23,4 +24,5 @@ export default {
   notFriend,
   notSynergy,
   notMsg,
+  loginBg,
 };

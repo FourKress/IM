@@ -8,11 +8,11 @@ import { shieldHotKeys } from './hotKey';
 
 const initLoginWindow = () => {
   const mainWindow = global.mainWindow;
-  mainWindow.setMinimumSize(440, 600);
+  mainWindow.setMinimumSize(360, 490);
   if (mainWindow.isMaximized()) {
     mainWindow.unmaximize();
   }
-  mainWindow.setSize(440, 600);
+  mainWindow.setSize(360, 490);
   mainWindow.setResizable(false);
   mainWindow.setMaximizable(false);
   mainWindow.center();

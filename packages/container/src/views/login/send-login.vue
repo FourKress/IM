@@ -206,7 +206,6 @@ export default {
             const res = await Apis.accountLogin({
               username: this.phoneNum,
               password: this.form.firstPhoneNum,
-              orgId: '',
             });
             await this.handleClientLogin(res);
           } catch (e) {
@@ -222,7 +221,7 @@ export default {
 
 <style scoped lang="scss">
 .send-login {
-  padding-top: 110px;
+  padding-top: 75px;
 }
 
 .top {
@@ -239,50 +238,54 @@ export default {
 
   .right {
     cursor: pointer;
-    width: 96px;
-    height: 36px;
+    width: 78px;
+    height: 32px;
     text-align: center;
-    line-height: 36px;
+    line-height: 32px;
     background: $bg-white-color;
     border-radius: 6px;
     border: 1px solid $primary-color;
     box-sizing: border-box;
-    font-size: 15px;
+    font-size: 12px;
     color: $primary-hover-color;
   }
 }
 
 .title {
-  height: 32px;
-  line-height: 32px;
-  font-size: 24px;
+  height: 30px;
+  line-height: 30px;
+  font-size: 22px;
   color: $main-text-color;
   font-weight: bold;
-  margin-top: 25px;
+  margin-top: 26px;
 }
 .title-tips {
-  font-size: 16px;
-  color: $tips-text-color;
-  margin-top: 8px;
+  font-size: 12px;
+  color: $minor-text-color;
+  margin-top: 10px;
 }
 
 .input-panel {
-  margin-top: 60px;
+  margin-top: 44px;
 
   .phone,
   .login-btn {
     width: 100%;
-    line-height: 60px;
+    line-height: 48px;
     border-radius: 6px;
     box-sizing: border-box;
   }
 
   .phone {
-    min-height: 60px;
+    min-height: 48px;
+
+    ::v-deep .el-form-item {
+      margin-bottom: 20px;
+    }
   }
 
   .login-btn {
-    height: 60px;
+    height: 48px;
     text-align: center;
     color: $bg-white-color;
     background-color: #87a1cd;
@@ -298,31 +301,35 @@ export default {
   }
 
   .phone {
-    background: $bg-white-color;
+    background-color: transparent;
     margin-bottom: 20px;
 
     ::v-deep .el-input__inner {
       width: 100%;
-      height: 60px;
+      height: 48px;
       line-height: 24px;
-      font-size: 18px;
+      font-size: 14px;
       outline: none;
-      background-color: $bg-hover-grey-color;
-      border: none;
-      padding: 18px 24px;
+      padding: 12px 20px;
       box-sizing: border-box;
       color: $main-text-color;
+      border: 1px solid $bg-white-color;
+      background-color: $bg-white-color;
 
       &::placeholder {
-        color: $tips-text-color;
-        font-size: 18px;
+        color: #c8c9cc;
+        font-size: 14px;
+      }
+
+      &:focus {
+        border-color: $primary-color;
       }
     }
   }
 
   .tips-opt {
     margin-top: 16px;
-    font-size: 15px;
+    font-size: 12px;
     color: $primary-hover-color;
     display: flex;
     align-items: center;

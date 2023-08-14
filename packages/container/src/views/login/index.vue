@@ -1,5 +1,10 @@
 <template>
-  <div id="login">
+  <div
+    id="login"
+    :style="{
+      backgroundImage: `url(${LsAssets.loginBg})`,
+    }"
+  >
     <BasicLogin
       ref="basicLogin"
       v-if="!isSendLogin && !isAuthCode"
@@ -35,7 +40,7 @@
 </template>
 
 <script>
-import { WindowOperate, LsIcon } from '@lanshu/components';
+import { WindowOperate, LsIcon, LsAssets } from '@lanshu/components';
 import { RecoverAccountMixins } from '@lanshu/utils';
 import BasicLogin from './basic-login';
 import SendLogin from './send-login';
@@ -53,6 +58,7 @@ export default {
   mixins: [RecoverAccountMixins],
   data() {
     return {
+      LsAssets,
       isSendLogin: false,
       isAuthCode: false,
       isSetPwd: false,
@@ -103,14 +109,17 @@ export default {
 
 <style scoped lang="scss">
 #login {
-  width: 440px;
-  height: 600px;
-  background-color: $bg-white-color;
+  width: 360px;
+  height: 490px;
+  background-color: #ccc;
   box-sizing: border-box;
-  padding: 0 40px;
+  padding: 0 30px;
   user-select: none;
   overflow: hidden;
   position: relative;
+  background-size: 100% 100%;
+  background-position: center center;
+  background-repeat: no-repeat;
 
   .header {
     width: 100%;

@@ -149,35 +149,38 @@ export default {
   justify-content: space-between;
 
   width: 100%;
-  height: 60px;
+  height: 48px;
   box-sizing: border-box;
 
   .code-item {
-    background-color: $bg-hover-grey-color;
-    width: 78px;
-    height: 60px;
+    width: 54px;
+    height: 48px;
     border-radius: 6px;
 
     ::v-deep .el-input__inner {
       width: 100%;
-      height: 60px;
+      height: 48px;
       line-height: 24px;
-      font-size: 18px;
+      font-size: 22px;
       outline: none;
-      background-color: transparent;
-      border: none;
-      padding: 18px 26px;
+      padding: 12px 20px;
       box-sizing: border-box;
       color: $main-text-color;
       text-align: center;
       font-weight: bold;
+      border: 1px solid $bg-white-color;
+      background-color: $bg-white-color;
+
+      &:focus {
+        border-color: $primary-color;
+      }
     }
   }
 }
 
 .send-code {
-  margin: 16px 0;
-  font-size: 14px;
+  margin: 20px 0;
+  font-size: 12px;
   color: $primary-hover-color;
   display: flex;
   align-items: center;

@@ -47,11 +47,11 @@
             <span class="link" @click="openUrl">《隐私协议》</span>
           </div>
 
-          <!--          <div class="checkbox-row">-->
-          <!--            <el-checkbox v-model="autoLoginChecked">-->
-          <!--              <span>自动登录</span>-->
-          <!--            </el-checkbox>-->
-          <!--          </div>-->
+          <div class="checkbox-row">
+            <el-checkbox v-model="autoLoginChecked" @change="handleAutoLogin">
+              <span>自动登录</span>
+            </el-checkbox>
+          </div>
         </el-form>
       </div>
     </template>
@@ -151,19 +151,23 @@ export default {
       }
       this.$emit('enterAuthCode', phoneNum);
     },
+
+    handleAutoLogin(val) {
+      renderProcess.setStore('AUTO_LOGIN', val);
+    },
   },
 };
 </script>
 
 <style scoped lang="scss">
 .basic-login {
-  padding-top: 80px;
+  padding-top: 67px;
 }
 .logo {
-  width: 64px;
-  height: 64px;
-  border-radius: 12px;
-  background: $bg-IM-color;
+  width: 54px;
+  height: 54px;
+  border-radius: 11px;
+  background: rgba(216, 233, 255, 1);
   border: 1px solid $split-line-color;
 
   display: flex;
@@ -172,34 +176,34 @@ export default {
 
   img {
     display: block;
-    width: 42px;
-    height: 42px;
+    width: 36px;
+    height: 36px;
   }
 }
 
 .title {
-  height: 32px;
-  line-height: 32px;
-  font-size: 24px;
+  height: 30px;
+  line-height: 30px;
+  font-size: 22px;
   color: $main-text-color;
   font-weight: bold;
-  margin-top: 24px;
+  margin-top: 16px;
 }
 
 .title-tips {
-  font-size: 16px;
-  color: $tips-text-color;
+  font-size: 12px;
+  color: $minor-text-color;
   margin-top: 8px;
 }
 
 .input-panel {
-  margin-top: 60px;
+  margin-top: 44px;
 
   .phone,
   .login-btn {
     width: 100%;
-    height: 60px;
-    line-height: 60px;
+    height: 48px;
+    line-height: 48px;
     border-radius: 6px;
     box-sizing: border-box;
   }
@@ -220,31 +224,35 @@ export default {
   }
 
   .phone {
-    background-color: $bg-hover-grey-color;
     margin-bottom: 20px;
 
     ::v-deep .el-input__inner {
       width: 100%;
-      height: 60px;
+      height: 48px;
       line-height: 24px;
-      font-size: 18px;
+      font-size: 14px;
       outline: none;
-      background-color: transparent;
-      border: none;
-      padding: 18px 24px;
+      padding: 12px 20px;
       box-sizing: border-box;
       color: $main-text-color;
+      border: 1px solid $bg-white-color;
+      background-color: $bg-white-color;
 
       &::placeholder {
-        color: $tips-text-color;
+        color: #c8c9cc;
+        font-size: 14px;
+      }
+
+      &:focus {
+        border-color: $primary-color;
       }
     }
   }
 
   .checkbox-row {
-    color: $minor-text-color;
-    font-size: 14px;
-    margin-bottom: 8px;
+    color: $main-text-color;
+    font-size: 12px;
+    margin-bottom: 12px;
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
@@ -255,7 +263,8 @@ export default {
 
     ::v-deep .el-checkbox__label {
       padding-left: 8px;
-      color: $minor-text-color;
+      color: $main-text-color;
+      font-size: 12px;
     }
 
     .link {
