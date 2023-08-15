@@ -787,7 +787,7 @@ export default {
 
           .item {
             width: 242px;
-            height: 54px;
+            height: 52px;
             border-radius: 6px;
             background-color: transparent;
             display: flex;
@@ -818,8 +818,8 @@ export default {
               justify-content: flex-start;
 
               .img {
-                width: 34px;
-                height: 34px;
+                width: 32px;
+                height: 32px;
                 margin-right: 10px;
                 border-radius: 6px;
                 overflow: hidden;
@@ -871,7 +871,7 @@ export default {
       .scroll-view {
         .item {
           width: 242px;
-          height: 54px;
+          height: 52px;
           display: flex;
           align-items: center;
           justify-content: flex-start;
@@ -884,8 +884,8 @@ export default {
             justify-content: flex-start;
 
             .img {
-              width: 34px;
-              height: 34px;
+              width: 32px;
+              height: 32px;
               margin-right: 10px;
               border-radius: 6px;
               overflow: hidden;

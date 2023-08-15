@@ -310,7 +310,7 @@ export default {
     margin-top: 16px;
 
     .item {
-      height: 36px;
+      height: 32px;
       background-color: $bg-white-color;
       border-radius: 6px;
       padding: 8px 12px 8px;
@@ -320,8 +320,8 @@ export default {
 
       .img {
         display: block;
-        width: 36px;
-        height: 36px;
+        width: 32px;
+        height: 32px;
         border-radius: 4px;
       }
 

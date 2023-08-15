@@ -95,9 +95,9 @@ export default {
 }
 
 .img {
-  width: 50px;
-  min-width: 50px;
-  height: 50px;
+  width: 32px;
+  min-width: 32px;
+  height: 32px;
   border-radius: 6px;
   overflow: hidden;
 
@@ -117,7 +117,7 @@ export default {
   font-size: 12px;
   color: $tips-text-color;
   position: absolute;
-  left: 60px;
+  left: 42px;
   top: -3px;
   z-index: 2;
 }

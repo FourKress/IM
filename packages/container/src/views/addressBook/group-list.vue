@@ -68,7 +68,7 @@ export default {
       justify-content: space-between;
       width: 100%;
       box-sizing: border-box;
-      height: 48px;
+      height: 42px;
       background: $bg-white-color;
       border-radius: 6px;
       overflow: hidden;
@@ -82,8 +82,8 @@ export default {
 
         .img {
           display: block;
-          width: 46px;
-          height: 46px;
+          width: 40px;
+          height: 40px;
           border-radius: 6px;
         }
 

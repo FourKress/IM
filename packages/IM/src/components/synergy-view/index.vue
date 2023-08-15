@@ -440,8 +440,7 @@ export default {
 
   .top {
     width: 100%;
-    height: 56px;
-    border-bottom: 1px solid $split-line-color;
+    height: 48px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -465,8 +464,8 @@ export default {
       padding-left: 16px;
 
       .item {
-        width: 36px;
-        height: 36px;
+        width: 32px;
+        height: 32px;
         background-color: #f2f4f8;
         margin-right: 16px;
         border-radius: 5px;
@@ -479,8 +478,8 @@ export default {
 
         .img {
           display: block;
-          width: 36px;
-          height: 36px;
+          width: 32px;
+          height: 32px;
           border-radius: 5px;
         }
 
@@ -528,6 +527,7 @@ export default {
     box-sizing: border-box;
     padding: 10px 10px 0 10px;
     position: relative;
+    border-top: 1px solid $split-line-color;
 
     .scroll-view {
       height: 100%;
@@ -535,7 +535,7 @@ export default {
 
       .session {
         width: 100%;
-        min-height: 40%;
+        min-height: 360px;
         margin-bottom: 10px;
         border-radius: 12px;
         overflow: hidden;

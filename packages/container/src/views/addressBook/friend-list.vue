@@ -209,7 +209,7 @@ export default {
         justify-content: flex-start;
         box-sizing: border-box;
         cursor: pointer;
-        padding: 0 24px;
+        padding: 0 20px;
         margin-bottom: 24px;
 
         &:last-child {
@@ -229,8 +229,8 @@ export default {
           }
 
           .img {
-            width: 46px;
-            height: 46px;
+            width: 40px;
+            height: 40px;
             margin-right: 8px;
             border-radius: 6px;
             overflow: hidden;

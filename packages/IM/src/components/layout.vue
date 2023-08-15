@@ -208,7 +208,7 @@ export default {
 #client-im {
   flex: 1 1 0;
   height: 100%;
-  border-left: 2px solid $split-line-color;
+  border-left: 1px solid $split-line-color;
   min-width: 400px;
   box-sizing: border-box;
   display: flex;

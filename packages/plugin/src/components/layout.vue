@@ -31,7 +31,7 @@ export default {
 .client-plugIn {
   min-width: 72px;
   width: auto;
-  border-left: 1.5px solid $split-line-color;
+  border-left: 1px solid $split-line-color;
   overflow: hidden;
   box-sizing: border-box;
 }

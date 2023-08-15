@@ -249,8 +249,8 @@ export default {
   justify-content: flex-start;
 
   .btn {
-    width: 36px;
-    height: 36px;
+    width: 30px;
+    height: 30px;
     margin-left: 10px;
     background: $bg-white-color;
     border-radius: 5px;
@@ -274,7 +274,7 @@ export default {
   .scroll-view {
     .item {
       width: 100%;
-      height: 34px;
+      height: 32px;
       margin-bottom: 20px;
       display: flex;
       align-items: center;
@@ -286,8 +286,8 @@ export default {
       }
 
       .img {
-        width: 34px;
-        height: 34px;
+        width: 32px;
+        height: 32px;
         margin-right: 10px;
         border-radius: 6px;
         overflow: hidden;

@@ -393,8 +393,8 @@ export default {
 
       .item,
       .btn {
-        width: 35px;
-        height: 35px;
+        width: 32px;
+        height: 32px;
         margin: 0 10px 10px 0;
         border-radius: 5px;
         overflow: hidden;

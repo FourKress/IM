@@ -15,7 +15,7 @@
 
     <div
       class="message-panel"
-      ref="messagePanel"
+      ref="MessagePanel"
       :style="{ opacity: loadComplete ? '1' : '0' }"
       @scroll="handleScroll"
     >
@@ -58,7 +58,7 @@
               ? 'self'
               : 'target'
           "
-          :style="{ minHeight: !checkSelf(item) && isGroup ? '68px' : '50px' }"
+          :style="{ minHeight: !checkSelf(item) && isGroup ? '58px' : '40px' }"
         >
           <span
             @click="(event) => handleFriend({ userId: item.fromUser }, event)"
@@ -77,7 +77,7 @@
           >
             <MsgCard
               :isSelf="checkSelf(item)"
-              :imViewWidth="imViewWidth"
+              :imViewSizeInfo="imViewSizeInfo"
               :bubbleModel="bubbleModel"
               :rawMsg="item"
               :session="session"
@@ -217,7 +217,10 @@ export default {
       bubbleModel: '',
       myGroupRole: GROUP_ROLE_TYPE_LOCAL.IS_DEFAULT,
       groupRoleManager: {},
-      imViewWidth: 500,
+      imViewSizeInfo: {
+        width: 360,
+        height: 360,
+      },
       resizeObserver: null,
       memberCount: 0,
       loadComplete: false,
@@ -363,12 +366,12 @@ export default {
     const resizeObserver = new ResizeObserver((entries) => {
       for (let entry of entries) {
         const cr = entry.contentRect;
-        this.imViewWidth = cr.width;
+        this.imViewSizeInfo = { width: cr.width, height: cr.height };
       }
     });
     this.resizeObserver = resizeObserver;
     // 观察一个或多个元素
-    this.resizeObserver.observe(this.$refs[this.refsName]);
+    this.resizeObserver.observe(this.$refs.MessagePanel);
 
     document.addEventListener('visibilitychange', this.handleVisibilityChange);
   },
@@ -461,7 +464,7 @@ export default {
           },
           {
             threshold: 0.8,
-            root: this.$refs.messagePanel,
+            root: this.$refs.MessagePanel,
           },
         );
         const msgCardList = document.querySelectorAll('.msg-card-item');
@@ -479,7 +482,7 @@ export default {
           scrollTop <= 800 &&
           (scrollTop <= this.scrollTop || this.scrollTop === 0)
         ) {
-          this.preScrollHeight = this.$refs.messagePanel?.scrollHeight;
+          this.preScrollHeight = this.$refs.MessagePanel?.scrollHeight;
           this.scrollTop = scrollTop;
           this.throttleGetMessageList(true);
         }
@@ -588,13 +591,13 @@ export default {
     },
 
     handleScrollTo(cb, isContinue = false) {
-      if (this.$refs.messagePanel) {
-        let currentScrollHeight = this.$refs.messagePanel?.scrollHeight;
+      if (this.$refs.MessagePanel) {
+        let currentScrollHeight = this.$refs.MessagePanel?.scrollHeight;
         if (isContinue) {
           currentScrollHeight =
             currentScrollHeight - this.preScrollHeight + this.scrollTop;
         }
-        this.$refs.messagePanel.scrollTop = currentScrollHeight;
+        this.$refs.MessagePanel.scrollTop = currentScrollHeight;
       }
       cb && cb();
     },
@@ -639,12 +642,12 @@ export default {
 
     .message-item {
       .tips-row {
-        min-height: 26px;
+        min-height: 20px;
         width: 100%;
         font-size: 12px;
         text-align: center;
         color: $tips-text-color;
-        line-height: 26px;
+        line-height: 20px;
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -653,7 +656,6 @@ export default {
         background-color: transparent;
 
         .tips-tag {
-          background: $split-line-color;
           padding: 0 18px;
           border-radius: 13px;
         }
@@ -671,16 +673,16 @@ export default {
         position: relative;
 
         &.self {
-          padding-left: 60px;
+          padding-left: 42px;
           flex-flow: row-reverse;
         }
 
         &.target {
-          padding-right: 60px;
+          padding-right: 42px;
         }
 
         .info {
-          min-height: 50px;
+          min-height: 32px;
           max-width: 80%;
           box-sizing: border-box;
           display: flex;

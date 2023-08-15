@@ -352,7 +352,7 @@ export default {
         .top-item {
           width: 32px;
           height: 32px;
-          border-radius: 5px;
+          border-radius: 6px;
           overflow: hidden;
           cursor: pointer;
 
@@ -464,7 +464,6 @@ export default {
               text-overflow: ellipsis;
               white-space: nowrap;
               font-size: 14px;
-              font-weight: bold;
               color: $main-text-color;
             }
 

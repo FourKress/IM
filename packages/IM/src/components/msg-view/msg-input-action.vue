@@ -1057,7 +1057,6 @@ export default {
   .input-panel {
     box-sizing: border-box;
     background: $bg-white-color;
-    padding: 0 0px 16px 16px;
     display: flex;
     justify-content: flex-start;
     flex-direction: column;
@@ -1065,10 +1064,13 @@ export default {
 
     .options-row {
       width: 100%;
-      height: 52px;
+      height: 47px;
       display: flex;
       align-items: center;
       justify-content: flex-start;
+      border-bottom: 1px solid $split-line-color;
+      box-sizing: border-box;
+      padding-left: 16px;
 
       .btn {
         width: 18px;
@@ -1092,7 +1094,7 @@ export default {
           border-radius: 4px;
           cursor: pointer;
           display: inline-block;
-          margin-right: 16px;
+          margin-right: 14px;
 
           &.disabled {
             cursor: not-allowed;
@@ -1109,8 +1111,9 @@ export default {
       line-height: 21px;
       font-size: 14px;
       overflow-y: auto;
-      max-height: 300px;
+      max-height: 200px;
       box-sizing: border-box;
+      padding: 12px 0 12px 16px;
 
       .editor-container {
         width: 100%;
@@ -1141,12 +1144,12 @@ export default {
 
   &.small-action {
     .options-row {
-      height: 40px;
+      height: 38px;
     }
 
     .input-textarea {
-      min-height: 22px;
-      max-height: 44px;
+      min-height: 46px;
+      max-height: 68px;
 
       .editor-container {
         min-height: 22px;

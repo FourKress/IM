@@ -1,13 +1,9 @@
 <template>
-  <div class='group-transfer' v-if="visibleDrawer">
+  <div class="group-transfer" v-if="visibleDrawer">
     <Drawer title="转移群主" @close="handleCloseDrawer">
-      <div class='content'>
+      <div class="content">
         <el-radio-group v-model="selectUserId">
-          <div
-            class="item"
-            v-for="(item, index) in members"
-            :key='index'
-          >
+          <div class="item" v-for="(item, index) in members" :key="index">
             <el-radio :label="item.userId">
               <div class="info">
                 <div class="img">
@@ -21,7 +17,7 @@
           </div>
         </el-radio-group>
 
-        <div class='btn' @click="handleConfirm">确定</div>
+        <div class="btn" @click="handleConfirm">确定</div>
       </div>
     </Drawer>
   </div>
@@ -29,8 +25,8 @@
 
 <script>
 import DrawerMixins from './drawer-mixins';
-import {IMGetGroupMemberList} from "../../IM-SDK";
-import {mapGetters} from "vuex";
+import { IMGetGroupMemberList } from '../../IM-SDK';
+import { mapGetters } from 'vuex';
 
 export default {
   name: 'Transfer-group',
@@ -40,14 +36,10 @@ export default {
       nextSeq: 0,
       members: [],
       selectUserId: '',
-    }
+    };
   },
   computed: {
-    ...mapGetters('IMStore', [
-      'userInfo',
-      'actionWindow',
-      'refreshMembers',
-    ]),
+    ...mapGetters('IMStore', ['userInfo', 'actionWindow', 'refreshMembers']),
     groupId() {
       return this.actionWindow.toUser;
     },
@@ -67,29 +59,30 @@ export default {
         console.log(res, 'getGroupMemberList');
         const { nextSeq, members = [] } = res;
         this.nextSeq = nextSeq;
-        this.members = members.filter(d => d.userId !== this.userInfo.userId).map(d => {
-          return {
-            ...d,
-            nickname: d.alias || d.nickname,
-            checked: false,
-          }
-        });
+        this.members = members
+          .filter((d) => d.userId !== this.userInfo.userId)
+          .map((d) => {
+            return {
+              ...d,
+              nickname: d.alias || d.nickname,
+              checked: false,
+            };
+          });
       });
     },
     handleConfirm() {
-      if (!this.selectUserId) return
-      this.$emit('confirm', this.selectUserId)
+      if (!this.selectUserId) return;
+      this.$emit('confirm', this.selectUserId);
       this.handleCloseDrawer();
-    }
-  }
+    },
+  },
 };
 </script>
 
-<style scoped lang='scss'>
+<style scoped lang="scss">
 .group-transfer {
   ::v-deep .el-drawer__body {
     display: flex;
-
   }
 
   .content {
@@ -116,9 +109,7 @@ export default {
       color: $bg-white-color;
     }
   }
-
 }
-
 
 .item {
   width: 100%;
@@ -142,8 +133,8 @@ export default {
     justify-content: flex-start;
 
     .img {
-      width: 40px;
-      height: 40px;
+      width: 32px;
+      height: 32px;
       margin-right: 10px;
       border-radius: 6px;
       overflow: hidden;

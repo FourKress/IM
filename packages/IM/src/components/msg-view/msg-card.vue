@@ -188,10 +188,10 @@ export default {
       type: [Number, String],
       default: SESSION_BUBBLE_MODEL.IS_BETWEEN,
     },
-    imViewWidth: {
-      type: [Number, String],
+    imViewSizeInfo: {
       required: true,
-      default: 500,
+      type: Object,
+      default: () => {},
     },
     session: {
       type: Object,
@@ -207,13 +207,13 @@ export default {
     return {
       NETWORK_CALL_TYPE,
       SESSION_BUBBLE_MODEL,
-      imageMaxWidth: 500,
+      imageMaxWidth: 360,
       wrapStyle: {
-        maxWidth: '500px',
-        maxHeight: '500px',
+        maxWidth: '360px',
+        maxHeight: '360px',
       },
       wrapFileStyle: {
-        width: '340px',
+        width: '360px',
       },
     };
   },
@@ -239,7 +239,7 @@ export default {
     },
   },
   watch: {
-    imViewWidth(val) {
+    imViewSizeInfo(val) {
       this.initSize(val);
     },
     refreshRevoke: {
@@ -269,26 +269,31 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
-      this.initSize(this.imViewWidth);
+      this.initSize(this.imViewSizeInfo);
     });
   },
   methods: {
-    initSize(imViewWidth) {
+    initSize(imViewSizeInfo) {
       if (!this.isImage && !this.isVideo && !this.isAudio && !this.isFile)
         return;
-      if (imViewWidth <= 490) {
-        this.imageMaxWidth = 210;
-        this.wrapStyle = { maxWidth: '210px', maxHeight: '210px' };
-        this.wrapFileStyle = { width: '210px' };
-      } else if (imViewWidth < 738 && imViewWidth > 380) {
-        this.imageMaxWidth = 300;
-        this.wrapStyle = { maxWidth: '300px', maxHeight: '300px' };
-        this.wrapFileStyle = { width: '300px' };
+      const { width, height } = imViewSizeInfo;
+      if (width <= 693 || height <= 400) {
+        this.setSmallSize();
       } else {
-        this.imageMaxWidth = 500;
-        this.wrapStyle = { maxWidth: '500px', maxHeight: '500px' };
-        this.wrapFileStyle = { width: '340px' };
+        this.setBaseSize();
       }
+    },
+
+    setSmallSize() {
+      this.imageMaxWidth = 210;
+      this.wrapStyle = { maxWidth: '210px', maxHeight: '210px' };
+      this.wrapFileStyle = { width: '210px' };
+    },
+
+    setBaseSize() {
+      this.imageMaxWidth = 360;
+      this.wrapStyle = { maxWidth: '360px', maxHeight: '360px' };
+      this.wrapFileStyle = { width: '360px' };
     },
 
     async handleStartTrtc() {
@@ -309,7 +314,7 @@ export default {
   position: relative;
 
   .card {
-    padding: 15px;
+    padding: 10px 14px;
 
     &.self {
       background-color: $bubble-self-color;
@@ -408,7 +413,7 @@ export default {
     }
 
     &.file {
-      width: 340px;
+      width: 360px;
       height: 70px;
       box-sizing: border-box;
       display: flex;

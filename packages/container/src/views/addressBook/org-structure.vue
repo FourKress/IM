@@ -214,12 +214,12 @@ export default {
     height: 100%;
 
     .scroll-view {
-      padding: 0 30px;
+      padding: 0 16px 0 30px;
 
       .item {
         width: 100%;
-        height: 66px;
-        padding: 16px 30px;
+        height: 58px;
+        padding: 16px 16px;
         box-sizing: border-box;
         display: flex;
         align-items: center;
@@ -232,8 +232,8 @@ export default {
         }
 
         .org-icon {
-          width: 34px;
-          height: 34px;
+          width: 32px;
+          height: 32px;
           border-radius: 6px;
           margin-right: 10px;
           border-radius: 6px;
@@ -241,8 +241,8 @@ export default {
 
           img {
             display: flex;
-            width: 34px;
-            height: 34px;
+            width: 32px;
+            height: 32px;
           }
         }
 

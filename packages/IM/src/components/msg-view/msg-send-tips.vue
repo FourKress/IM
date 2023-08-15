@@ -276,8 +276,8 @@ export default {
 
   .loading-icon {
     display: block;
-    width: 18px;
-    height: 18px;
+    width: 15px;
+    height: 15px;
     transform-origin: center;
     animation: 2s loadLoop linear infinite normal;
   }
@@ -299,8 +299,8 @@ export default {
   .progress-bar {
     border: 2px solid #dbdee4;
     cursor: pointer;
-    width: 18px;
-    height: 18px;
+    width: 15px;
+    height: 15px;
     box-sizing: border-box;
     padding: 2px;
     border-radius: 50%;
@@ -311,14 +311,14 @@ export default {
 
     .bar {
       flex: 1;
-      height: 10px;
+      height: 7px;
       border-radius: 50%;
     }
   }
 
   .el-icon-circle-check {
     color: #00c476;
-    font-size: 18px;
+    font-size: 15px;
     font-weight: bold;
     display: block;
     cursor: pointer;

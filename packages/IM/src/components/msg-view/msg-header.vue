@@ -16,6 +16,8 @@
           <!--        || groupRoleManager.whoCanStartNetworkCall <= groupRole-->
           <LsIcon
             render-svg
+            width="16"
+            height="16"
             icon="a-icon_sp2x"
             @click="handleStartTrtc(NETWORK_CALL_TYPE.IS_VIDEO)"
           ></LsIcon>
@@ -26,6 +28,8 @@
           <!--        || groupRoleManager.whoCanStartNetworkCall <= groupRole-->
           <LsIcon
             render-svg
+            width="16"
+            height="16"
             icon="a-icon_yy2x"
             @click="handleStartTrtc(NETWORK_CALL_TYPE.IS_AUDIO)"
           ></LsIcon>
@@ -34,7 +38,12 @@
       <div class="btn" v-if="isSettings && (!isGroup || groupRole > 0)">
         <el-dropdown trigger="click" @command="handleCommand">
           <el-tooltip class="item" effect="dark" content="更多" placement="top">
-            <LsIcon render-svg icon="a-icon_more2x"></LsIcon>
+            <LsIcon
+              render-svg
+              width="16"
+              height="16"
+              icon="a-icon_more2x"
+            ></LsIcon>
           </el-tooltip>
           <el-dropdown-menu slot="dropdown" v-if="isGroup">
             <el-dropdown-item
@@ -167,13 +176,13 @@ export default {
 
 <style scoped lang="scss">
 .top {
-  height: 56px;
+  height: 48px;
   box-sizing: border-box;
   background-color: $bg-white-color;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 12px;
+  padding: 8px 20px;
 
   .left {
     flex: 1;
@@ -182,8 +191,8 @@ export default {
 
     .img {
       display: block;
-      width: 40px;
-      height: 40px;
+      width: 32px;
+      height: 32px;
       border-radius: 6px;
       margin-right: 10px;
       overflow: hidden;
