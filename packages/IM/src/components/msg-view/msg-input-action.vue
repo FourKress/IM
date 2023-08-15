@@ -1036,6 +1036,7 @@ export default {
     } else if (this.message.includes('<img')) {
       tempMsg = '[图片]';
     }
+    this.clearInput();
     // 协同模式清空当前会话的草稿
     if (this.isSynergy) tempMsg = '';
     await window.$lanshuStore.setItem('tempMsgOBJ', {

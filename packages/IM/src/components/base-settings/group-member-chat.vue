@@ -3,7 +3,7 @@
     <div class="title">{{ groupTitle }}</div>
     <div class="main">
       <div class="left">
-        <div class="input-row">
+        <div class="input-row" :class="isFocus && 'active'">
           <div class="query-icon">
             <LsIcon
               icon="navi_ss_icon"
@@ -18,6 +18,8 @@
               clearable
               v-model="staffName"
               :placeholder="`查找${placeholder}`"
+              @focus="isFocus = true"
+              @blur="isFocus = false"
             />
           </div>
         </div>
@@ -258,6 +260,7 @@ export default {
       staffName: '',
       orgUsers: [],
       pyBookList: [],
+      isFocus: false,
     };
   },
   computed: {
@@ -624,48 +627,6 @@ export default {
       box-sizing: border-box;
       padding-top: 10px;
 
-      .input-row {
-        width: 242px;
-        height: 36px;
-        box-sizing: border-box;
-        background-color: $bg-white-color;
-        border-radius: 6px;
-        padding-left: 14px;
-        margin: 0 auto 10px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        overflow: hidden;
-
-        .query-icon {
-          width: 14px;
-          height: 14px;
-          transform: translateY(-3px);
-        }
-
-        .input-panel {
-          flex: 1;
-          height: 40px;
-          font-size: 14px;
-
-          ::v-deep .el-input {
-            border: none;
-            height: 40px;
-
-            .el-input__inner {
-              height: 40px;
-              border: none;
-              outline: none;
-              padding: 0 30px 0 8px;
-            }
-            input::placeholder {
-              color: $tips-text-color;
-              font-size: 14px;
-            }
-          }
-        }
-      }
-
       .active-row {
         width: 100%;
         height: 28px;
@@ -734,6 +695,53 @@ export default {
       background: #f9fafc;
       padding-bottom: 20px;
       position: relative;
+
+      .input-row {
+        width: 242px;
+        height: 36px;
+        box-sizing: border-box;
+        background-color: $bg-white-color;
+        border-radius: 6px;
+        padding-left: 14px;
+        margin: 0 auto 10px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        overflow: hidden;
+        transition: all 0.3s;
+        border: 1px solid $split-line-color;
+        &.active {
+          border-color: $primary-color;
+        }
+
+        .query-icon {
+          width: 14px;
+          height: 14px;
+          transform: translateY(-3px);
+        }
+
+        .input-panel {
+          flex: 1;
+          height: 40px;
+          font-size: 14px;
+
+          ::v-deep .el-input {
+            border: none;
+            height: 40px;
+
+            .el-input__inner {
+              height: 40px;
+              border: none;
+              outline: none;
+              padding: 0 30px 0 8px;
+            }
+            input::placeholder {
+              color: $tips-text-color;
+              font-size: 14px;
+            }
+          }
+        }
+      }
 
       ::-webkit-scrollbar {
         display: none;
@@ -851,16 +859,6 @@ export default {
 
     .right {
       background-color: $bg-white-color;
-
-      .input-row {
-        background: #f9fafc;
-      }
-
-      ::v-deep .el-input {
-        .el-input__inner {
-          background: #f9fafc;
-        }
-      }
 
       .list {
         padding: 0 20px;

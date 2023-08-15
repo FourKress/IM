@@ -1,11 +1,17 @@
 <template>
   <div class="member">
-    <div class="input-row">
+    <div class="input-row" :class="isFocus && 'active'">
       <div class="query-icon">
         <LsIcon icon="navi_ss_icon" width="14" height="14" render-svg></LsIcon>
       </div>
       <div class="input-panel">
-        <el-input type="text" v-model="memberName" placeholder="搜索群成员" />
+        <el-input
+          type="text"
+          v-model="memberName"
+          placeholder="搜索群成员"
+          @focus="isFocus = true"
+          @blur="isFocus = false"
+        />
       </div>
     </div>
     <div class="tips">共{{ members.length }}位成员</div>
@@ -85,6 +91,7 @@ export default {
       members: [],
       groupRoleManager: {},
       loading: false,
+      isFocus: false,
     };
   },
   computed: {
@@ -205,6 +212,11 @@ export default {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  transition: all 0.3s;
+
+  &.active {
+    border-color: $primary-color;
+  }
 
   .query-icon {
     width: 14px;

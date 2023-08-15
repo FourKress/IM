@@ -1,13 +1,15 @@
 <template>
   <div class="synergy-search">
     <div class="title">邀请协同者</div>
-    <div class="search">
+    <div class="search" :class="isFocus && 'active'">
       <LsIcon icon="navi_ss_icon" width="14" height="14" render-svg></LsIcon>
       <div class="input-panel">
         <el-input
           ref="searchInput"
           v-model="keywords"
           @input="handleSearch"
+          @focus="isFocus = true"
+          @blur="isFocus = false"
           clearable
           type="text"
           placeholder="搜索组织成员、好友、群聊"
@@ -83,6 +85,7 @@ export default {
       originData: [],
       isEmpty: false,
       visibleSynergyMember: false,
+      isFocus: false,
     };
   },
   computed: {
@@ -258,6 +261,11 @@ export default {
     align-items: center;
     justify-content: space-between;
     margin: 0 auto;
+    transition: all 0.3s;
+
+    &.active {
+      border-color: $primary-color;
+    }
 
     .input-panel {
       flex: 1;

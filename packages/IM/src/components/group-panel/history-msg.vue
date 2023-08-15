@@ -42,6 +42,7 @@
 
         <div class="search-row" v-if="tabType === TAB_TYPE.IS_KEYWORDS">
           <el-input
+            size="small"
             placeholder="搜索关键字"
             v-model="keywords"
             @change="handleSearchKeywords"
