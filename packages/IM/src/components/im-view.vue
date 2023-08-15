@@ -416,7 +416,7 @@ export default {
         this.scrollTopTimer && clearTimeout(this.scrollTopTimer);
         if (isContinue && this.messageList?.length) {
           this.messageList.unshift(...msgs);
-          // 延迟100ms, 等待视频、图片加载完成，保证滚动高度真实
+          // 延迟, 等待视频、图片加载完成，保证滚动高度真实
           this.scrollTopTimer = setTimeout(() => {
             this.handleScrollTo(() => {
               this.handleCheckMsgReceipt();
@@ -425,7 +425,7 @@ export default {
         } else {
           this.messageList = msgs;
           if (!msgs?.length) return;
-          // 延迟100ms, 等待视频、图片加载完成，保证滚动高度真实
+          // 延迟, 等待视频、图片加载完成，保证滚动高度真实
           this.scrollTopTimer = setTimeout(() => {
             this.handleScrollTo(() => {
               this.loadComplete = true;

@@ -7,14 +7,20 @@ const handleOpenContentMenu = (el, binding, vnode) => {
 
   const handleOpenContentMenu = (event) => {
     const { clientX, clientY } = event;
-    const clientWidth = document.body.clientWidth;
+    const { clientWidth, clientHeight } = document.body;
+
+    let top = clientY;
+    const maxTop = clientHeight - (18 + 40 * menuList.length) - 10;
+    if (maxTop <= clientY) {
+      top = maxTop;
+    }
     that
       .$LContextMenu({
         menuList,
         menuItemParams: arg,
         position: {
           left: `${Math.min(clientX, clientWidth - 140)}px`,
-          top: `${clientY}px`,
+          top: `${top}px`,
         },
       })
       .then((menuItem) => {

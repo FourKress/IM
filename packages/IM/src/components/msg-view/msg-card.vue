@@ -393,6 +393,12 @@ export default {
 
     &.img {
       cursor: pointer;
+      box-shadow: 0 0 0 1px inset #eaeaea;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-sizing: border-box;
+      border-radius: 6px;
 
       img {
         display: block;
