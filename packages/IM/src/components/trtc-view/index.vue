@@ -238,11 +238,16 @@ export default {
     document.body.className = 'trtc-body';
     this.checkDevices();
     const resizeObserver = new ResizeObserver((entries) => {
-      for (let entry of entries) {
-        const cr = entry.contentRect;
-        console.log(cr.height);
-        this.maxSize = Math.max(cr.width, cr.height, 640);
-      }
+      window.requestAnimationFrame(() => {
+        if (!Array.isArray(entries) || !entries.length) {
+          return;
+        }
+        for (let entry of entries) {
+          const cr = entry.contentRect;
+          console.log(cr.height);
+          this.maxSize = Math.max(cr.width, cr.height, 640);
+        }
+      });
     });
     this.resizeObserver = resizeObserver;
     // 观察一个或多个元素

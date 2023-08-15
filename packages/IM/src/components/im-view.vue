@@ -364,10 +364,15 @@ export default {
     });
 
     const resizeObserver = new ResizeObserver((entries) => {
-      for (let entry of entries) {
-        const cr = entry.contentRect;
-        this.imViewSizeInfo = { width: cr.width, height: cr.height };
-      }
+      window.requestAnimationFrame(() => {
+        if (!Array.isArray(entries) || !entries.length) {
+          return;
+        }
+        for (let entry of entries) {
+          const cr = entry.contentRect;
+          this.imViewSizeInfo = { width: cr.width, height: cr.height };
+        }
+      });
     });
     this.resizeObserver = resizeObserver;
     // 观察一个或多个元素
@@ -610,7 +615,7 @@ export default {
   },
   beforeDestroy() {
     if (this.resizeObserver) {
-      this.resizeObserver.observe(this.$refs[this.refsName]);
+      this.resizeObserver.observe(this.$refs.MessagePanel);
     }
     this.scrollTopTimer && clearTimeout(this.scrollTopTimer);
     document.removeEventListener(

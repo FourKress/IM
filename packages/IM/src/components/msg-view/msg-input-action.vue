@@ -394,10 +394,6 @@ export default {
     }
   },
   methods: {
-    init() {
-      this.windowRange = null;
-      this.clearInput();
-    },
     getRange() {
       return window.getSelection()?.getRangeAt(0);
     },
@@ -602,15 +598,12 @@ export default {
       this.windowRange = this.getRange();
     },
     clearInput() {
-      this.$nextTick(() => {
-        if (this.$refs.msgInput) {
-          this.$refs.msgInput.innerHTML = '';
-        } else {
-          this.$refs.msgInput.focus();
-        }
-        this.message = '';
-        this.messageText = '';
-      });
+      this.message = '';
+      this.messageText = '';
+      if (this.$refs.msgInput) {
+        this.$refs.msgInput.innerHTML = '';
+        this.$refs.msgInput.focus();
+      }
     },
 
     handleTargetInsert(content, isNode = false) {
@@ -1138,6 +1131,11 @@ export default {
             color: $primary-color;
             cursor: pointer;
           }
+        }
+
+        ::v-deep img {
+          max-width: 120px;
+          max-height: 120px;
         }
       }
     }

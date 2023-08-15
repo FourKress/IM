@@ -123,10 +123,15 @@ export default {
     this.recordrtc = new Recordrtc();
 
     const resizeObserver = new ResizeObserver((entries) => {
-      for (let entry of entries) {
-        const cr = entry.contentRect;
-        this.isPosition = cr.width <= 700;
-      }
+      window.requestAnimationFrame(() => {
+        if (!Array.isArray(entries) || !entries.length) {
+          return;
+        }
+        for (let entry of entries) {
+          const cr = entry.contentRect;
+          this.isPosition = cr.width <= 700;
+        }
+      });
     });
     this.resizeObserver = resizeObserver;
     this.resizeObserver.observe(this.$refs.ClientIM);

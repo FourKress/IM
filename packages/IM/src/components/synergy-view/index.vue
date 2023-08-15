@@ -291,10 +291,15 @@ export default {
     });
 
     const resizeObserver = new ResizeObserver((entries) => {
-      for (let entry of entries) {
-        const cr = entry.contentRect;
-        this.computedNavCount(cr.width);
-      }
+      window.requestAnimationFrame(() => {
+        if (!Array.isArray(entries) || !entries.length) {
+          return;
+        }
+        for (let entry of entries) {
+          const cr = entry.contentRect;
+          this.computedNavCount(cr.width);
+        }
+      });
     });
     this.resizeObserver = resizeObserver;
     // 观察一个或多个元素
