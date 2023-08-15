@@ -253,15 +253,19 @@ export default {
     box-shadow: 0px 2px 10px 0px rgba(51, 51, 51, 0.1);
     border-radius: 10px;
     cursor: pointer;
+    overflow: hidden;
 
     .right {
       font-size: 12px;
       color: $primary-hover-color;
+      min-width: 48px;
     }
 
     .left {
       display: flex;
       align-items: center;
+      flex: 1;
+      overflow: hidden;
 
       .img {
         display: block;
@@ -276,17 +280,26 @@ export default {
         justify-content: center;
         align-items: flex-start;
         padding-left: 8px;
+        overflow: hidden;
 
         .name {
           font-size: 14px;
           font-weight: bold;
           color: $main-text-color;
           margin-bottom: 5px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          width: 100%;
         }
 
         .tips {
           font-size: 12px;
           color: $tips-text-color;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          width: 100%;
         }
       }
     }

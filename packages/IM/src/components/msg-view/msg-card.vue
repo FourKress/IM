@@ -36,7 +36,12 @@
       }"
       v-contextMenu="[...imageContextMenuList, ...baseContextMenuList]"
     >
-      <img :src="assetsPath" @click="handlePreview" />
+      <el-image :src="assetsPath" @click="handlePreview">
+        <div slot="placeholder" class="image-slot">
+          加载中
+          <span class="dot">...</span>
+        </div>
+      </el-image>
     </div>
 
     <div
@@ -388,20 +393,6 @@ export default {
 
     &.img {
       cursor: pointer;
-      background: $bg-white-color;
-      position: relative;
-      border: 1px solid $split-line-color;
-
-      &:before {
-        content: '加载中...';
-        z-index: 0;
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        font-size: 12px;
-        color: $tips-text-color;
-      }
 
       img {
         display: block;
@@ -419,7 +410,6 @@ export default {
       display: flex;
       align-items: center;
       justify-content: flex-start;
-      //background: $bg-white-color;
 
       .view {
         width: 31px;
@@ -444,7 +434,7 @@ export default {
         display: flex;
         flex-direction: column;
         align-items: flex-start;
-        justify-content: space-between;
+        justify-content: space-around;
 
         .name {
           flex: 1;
@@ -465,7 +455,6 @@ export default {
           font-size: 12px;
           width: 100%;
           height: 17px;
-          margin-top: 2px;
           display: flex;
           align-items: center;
           justify-content: space-between;

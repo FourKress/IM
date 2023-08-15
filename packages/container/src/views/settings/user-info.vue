@@ -209,8 +209,6 @@ export default {
         this.$message.error('请上传PNG、JPG、JPEG的图片');
         return;
       }
-      console.log(avatarFile.type);
-      return;
 
       const formData = new FormData();
       formData.append('file', avatarFile);
@@ -247,6 +245,7 @@ export default {
     },
 
     async handleAvatarAndNickNameChange(key, val) {
+      if (!val) return;
       const { avatar, nickname } = this.userProfile;
       const params = {
         picture: avatar,

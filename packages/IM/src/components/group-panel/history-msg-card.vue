@@ -15,7 +15,12 @@
       :style="{ width: `${size.width}px`, height: `${size.height}px` }"
       v-contextMenu="imageContextMenuList"
     >
-      <img :src="assetsPath" @click="handlePreview" />
+      <el-image :src="assetsPath" @click="handlePreview">
+        <div slot="placeholder" class="image-slot">
+          加载中
+          <span class="dot">...</span>
+        </div>
+      </el-image>
     </div>
 
     <div
@@ -148,10 +153,6 @@ export default {
     max-width: 210px;
     margin-top: 6px;
     border-radius: 6px;
-
-    &.img {
-      border: 1px solid $split-line-color;
-    }
 
     img {
       display: block;
