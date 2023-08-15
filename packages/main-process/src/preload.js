@@ -33,7 +33,7 @@ window.electronAPI = {
     ipcRenderer.invoke('getCacheFilePath', fileName),
   getCacheFile2Base64: (fileName) =>
     ipcRenderer.invoke('getCacheFile2Base64', fileName),
-  saveCacheFile: (key, data) => ipcRenderer.send('saveCacheFile', key, data),
+  saveCacheFile: (key, data) => ipcRenderer.invoke('saveCacheFile', key, data),
   getCacheDirInfo: () => ipcRenderer.invoke('getCacheDirInfo'),
   setCacheDir: (key, data) => ipcRenderer.send('setCacheDir', key, data),
   showItemInFolder: (key, data) =>

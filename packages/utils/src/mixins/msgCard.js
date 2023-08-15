@@ -135,20 +135,22 @@ export default {
       if (!this.isImage && !this.isVideo && !this.isAudio) return;
       const { wide, high } = this.msgData;
       const ratio = high ? wide / high : 1;
-      if (wide > high && wide >= this.imageMaxWidth) {
+      let width = Math.max(wide, 187);
+      let height = width / ratio;
+      if (width > height && width >= this.imageMaxWidth) {
         return {
           width: this.imageMaxWidth,
           height: this.imageMaxWidth / ratio,
         };
-      } else if (high > wide && high >= this.imageMaxWidth) {
+      } else if (height > width && height >= this.imageMaxWidth) {
         return {
           width: this.imageMaxWidth * ratio,
           height: this.imageMaxWidth,
         };
       }
       return {
-        width: wide || this.imageMaxWidth,
-        height: high || this.imageMaxWidth,
+        width: width || this.imageMaxWidth,
+        height: height || this.imageMaxWidth,
       };
     },
   },
@@ -330,7 +332,7 @@ export default {
             sources: [
               // 视频源
               {
-                src: this.cachePath,
+                src: this.cachePath || this.assetsPath,
                 type: this.msgData.type,
                 poster: this.msgData?.snapshotUrl,
               },

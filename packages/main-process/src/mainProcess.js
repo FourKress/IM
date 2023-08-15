@@ -146,7 +146,7 @@ const initIpcMain = () => {
       return getCacheFilePath(fileName);
     });
 
-    ipcMain.on('saveCacheFile', async (_event, data) => {
+    ipcMain.handle('saveCacheFile', async (_event, data) => {
       return await saveCacheFile(data);
     });
 
