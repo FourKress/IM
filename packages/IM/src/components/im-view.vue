@@ -437,6 +437,9 @@ export default {
     },
 
     handleCheckMsgReceipt() {
+      const { toUser, userId } = this.session;
+      // 和自己对话
+      if (toUser === userId) return;
       // 延迟已读，确保消息渲染
       setTimeout(() => {
         const observer = new IntersectionObserver(

@@ -106,8 +106,11 @@ export const IMSDKCallBackEvents = {
 
     const { session, isCurrent } = getCurrentSession('sessId', sessId);
 
+    const { toUser, userId } = session;
+
     // 窗口是否聚集
-    if (isNotFocused) {
+    // toUser === userId 则表示和自己对话，不消息提醒
+    if (isNotFocused && toUser !== userId) {
       startNotification(message);
     }
 
