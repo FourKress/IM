@@ -1159,7 +1159,7 @@ export default {
   .at-member-panel {
     width: calc(100% - 32px);
     height: auto;
-    max-height: 160px;
+    max-height: 280px;
     display: flex;
     background: $bg-white-color;
     box-shadow: 0px 4px 20px 0px rgba(51, 51, 51, 0.1);

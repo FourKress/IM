@@ -48,7 +48,7 @@
         @close="handleGroupClose"
         @confirm="handleCroupConfirm"
         :rawMembers="rawMembers"
-        :defaultMembers="defaultMembers"
+        :disabledMembers="disabledMembers"
       ></GroupMemberChat>
     </div>
   </div>
@@ -105,13 +105,8 @@ export default {
           this.synergySessionList.every((s) => s.sessId !== d.sessId),
       );
     },
-    defaultMembers() {
-      return [
-        {
-          ...this.userInfo,
-          toUser: this.userInfo.userId,
-        },
-      ];
+    disabledMembers() {
+      return [this.mainSessionWindow, ...this.synergySessionList];
     },
   },
   mounted() {

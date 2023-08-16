@@ -223,7 +223,11 @@ export default {
     },
   },
   computed: {
-    ...mapGetters('IMStore', ['sessionList', 'synergySessionList']),
+    ...mapGetters('IMStore', [
+      'sessionList',
+      'synergySessionList',
+      'currentMsg',
+    ]),
 
     getBasicStyle() {
       const length = this.synergySessionList.length;
@@ -274,14 +278,29 @@ export default {
   },
 
   watch: {
+    sessionList: {
+      deep: true,
+      handler() {
+        this.initSynergy();
+      },
+    },
+    currentMsg: {
+      immediate: true,
+      deep: true,
+      async handler(msg) {
+        if (this.selectSynergy && msg?.sessId === this.selectSynergy) {
+          await IMClearUnreadCount(msg?.sessId);
+        }
+      },
+    },
+
     synergySessionList() {
       this.computedNavCount();
     },
   },
 
   created() {
-    const synergySessionList = this.sessionList.filter((d) => d.isHelp);
-    this.setSynergySessionList(synergySessionList);
+    this.initSynergy();
   },
 
   mounted() {
@@ -313,6 +332,11 @@ export default {
     ]),
 
     formatSessId,
+
+    initSynergy() {
+      const synergySessionList = this.sessionList.filter((d) => d.isHelp);
+      this.setSynergySessionList(synergySessionList);
+    },
 
     getStyle(session) {
       const target = this.synergySessionList.find(

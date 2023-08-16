@@ -105,7 +105,24 @@ const mutations = {
     data.mainSessionWindow = value;
   },
   setSynergySessionList(data, value) {
-    data.synergySessionList = value;
+    const synergySessionList = data.synergySessionList;
+    if (synergySessionList?.length) {
+      data.synergySessionList = value.map((d) => {
+        const { sessId } = d;
+        const target = synergySessionList.find((s) => s.sessId === sessId);
+        if (target) {
+          return {
+            ...target,
+            ...d,
+          };
+        }
+        return {
+          ...d,
+        };
+      });
+    } else {
+      data.synergySessionList = value;
+    }
   },
   setSynergyStatus(data, value) {
     data.synergyStatus = value;

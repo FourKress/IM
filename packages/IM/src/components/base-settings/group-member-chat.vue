@@ -76,10 +76,11 @@
               v-for="item in selfSessionList"
               :key="item.nickname"
               v-if="item.nickname && item.nickname.includes(staffName)"
+              @click="handleDisabledClick(item)"
             >
               <el-checkbox
                 v-model="item.checked"
-                :disabled="item.isDefault"
+                :disabled="item.isDisabled || item.isDefault"
                 @change="(val) => handleSelect(val, item)"
               >
                 <div class="info">
@@ -117,10 +118,11 @@
                 v-for="item in group"
                 v-if="item.nickname && item.nickname.includes(staffName)"
                 :key="item.toUser"
+                @click="handleDisabledClick(item)"
               >
                 <el-checkbox
                   v-model="item.checked"
-                  :disabled="item.isDefault"
+                  :disabled="item.isDisabled || item.isDefault"
                   @change="(val) => handleSelect(val, item)"
                 >
                   <div class="info">
@@ -234,6 +236,10 @@ export default {
       default: IM_GROUP_MEMBER_PANEL_TYPE.IS_CREATE,
     },
     defaultMembers: {
+      type: Array,
+      default: () => [],
+    },
+    disabledMembers: {
       type: Array,
       default: () => [],
     },
@@ -566,14 +572,43 @@ export default {
 
     getCheckedStatus(item) {
       const key = this.isCreate || this.isAdd ? 'toUser' : 'userId';
-      const isDefault = this.defaultMembers.some((c) => c.userId === item[key]);
-      const flag =
-        this.isAdd || this.isAddAdmin || this.isCreate ? isDefault : false;
-      return {
+      let member = {
         ...item,
-        checked: flag,
-        isDefault: flag,
       };
+      if (this.defaultMembers?.length) {
+        const isDefault = this.defaultMembers.some(
+          (c) => c.userId === item[key],
+        );
+        const flag =
+          this.isAdd || this.isAddAdmin || this.isCreate ? isDefault : false;
+        member = {
+          ...member,
+          checked: flag,
+          isDefault: flag,
+        };
+      }
+      if (this.disabledMembers?.length) {
+        const isDisabled = this.disabledMembers.some(
+          (c) => c.toUser === (item.toUser ? item.toUser : item.userId),
+        );
+        if (isDisabled) {
+          member = {
+            ...member,
+            checked: false,
+            isDefault: false,
+            isDisabled,
+          };
+        }
+      }
+
+      return member;
+    },
+
+    handleDisabledClick(item) {
+      if (this.isSynergy && item.isDisabled) {
+        this.$message.warning('已存在此联系人的相关会话');
+        return;
+      }
     },
   },
 };
