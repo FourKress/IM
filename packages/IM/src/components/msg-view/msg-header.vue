@@ -6,7 +6,15 @@
       </div>
       <div class="info">
         <span class="name">{{ session.nickname }}</span>
-        <span v-if="isGroup">({{ memberCount }})</span>
+        <span class="count" v-if="isGroup">
+          <LsIcon
+            render-svg
+            width="14"
+            height="14"
+            icon="ls-icon-renshu"
+          ></LsIcon>
+          {{ memberCount }}
+        </span>
         <!--        <span class="tips">顶顶顶顶</span>-->
       </div>
     </div>
@@ -210,7 +218,6 @@ export default {
       display: flex;
       align-items: center;
       justify-content: flex-start;
-      font-weight: bold;
 
       .name {
         font-size: 16px;
@@ -220,6 +227,20 @@ export default {
         text-overflow: ellipsis;
         white-space: nowrap;
         max-width: 200px;
+        font-weight: bold;
+      }
+
+      .count {
+        font-size: 14px;
+        color: #87a1cd;
+        display: flex;
+        align-self: end;
+        align-items: center;
+        padding-left: 13px;
+
+        .ls-icon-wrap {
+          margin-right: 3px;
+        }
       }
 
       .tips {

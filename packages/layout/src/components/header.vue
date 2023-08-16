@@ -85,13 +85,13 @@
             <span @click="handleEditorSign">
               {{ description || '这是个性签名' }}
             </span>
-            <LsIcon
-              render-svg
-              icon="ls-icon-icon_erweima"
-              width="12"
-              height="12"
-              @click="handleEditorSign"
-            ></LsIcon>
+            <div class="editor-btn" @click="handleEditorSign">
+              <LsIcon
+                icon="ls-icon-icon_qianshu"
+                size="12"
+                color="#AEB3B9"
+              ></LsIcon>
+            </div>
           </div>
         </div>
 
@@ -436,9 +436,21 @@ export default {
         cursor: pointer;
       }
 
-      .ls-icon-wrap {
+      .editor-btn {
+        width: 20px;
+        height: 20px;
+        min-width: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 2px;
+        background-color: transparent;
         margin-left: 4px;
-        transform: translateY(2px);
+        cursor: pointer;
+
+        &:hover {
+          background-color: $bg-hover-grey-color;
+        }
       }
     }
   }

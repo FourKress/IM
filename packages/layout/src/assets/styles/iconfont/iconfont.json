@@ -6,6 +6,20 @@
   "description": "IM、政务通用",
   "glyphs": [
     {
+      "icon_id": "36928472",
+      "name": "人数",
+      "font_class": "renshu",
+      "unicode": "e66d",
+      "unicode_decimal": 58989
+    },
+    {
+      "icon_id": "35470042",
+      "name": "icon_qianshu",
+      "font_class": "icon_qianshu",
+      "unicode": "e753",
+      "unicode_decimal": 59219
+    },
+    {
       "icon_id": "36509430",
       "name": "所有人",
       "font_class": "suoyouren",
