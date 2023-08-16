@@ -52,6 +52,7 @@ export default {
         },
       ],
       msg: {},
+      videoLoading: true,
     };
   },
 
@@ -236,7 +237,7 @@ export default {
         if (!storePath) {
           if (this.msgType !== this.CHECK_MSG_TYPE.IS_FILE) {
             this.handleSaveFile(key, assetsPath, fileName).then(() => {
-              console.log('文件缓存下载成功');
+              console.log('文件缓存下载成功 1');
             });
           }
         } else {
@@ -251,7 +252,7 @@ export default {
           } else {
             // 本地缓存文件不存在，意外删除，重新下载并缓存
             this.handleSaveFile(key, assetsPath, fileName).then(() => {
-              console.log('文件缓存下载成功');
+              console.log('文件缓存下载成功 2');
             });
           }
         }
@@ -306,7 +307,7 @@ export default {
     initVideoPlay() {
       this.$nextTick(async () => {
         if (!this.isVideo || !this.cachePath) return;
-
+        this.videoLoading = false;
         this.$Video(
           this.$refs.Video,
           {

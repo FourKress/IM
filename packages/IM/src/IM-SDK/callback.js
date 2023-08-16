@@ -102,7 +102,7 @@ export const IMSDKCallBackEvents = {
   },
   AddReceiveNewMessage: async (ctx, msgInfo) => {
     const { message, silence, isNotFocused } = msgInfo;
-    const { sessId } = message;
+    const { sessId, fromUser } = message;
 
     const { session, isCurrent } = getCurrentSession('sessId', sessId);
 
@@ -110,7 +110,8 @@ export const IMSDKCallBackEvents = {
 
     // 窗口是否聚集
     // toUser === userId 则表示和自己对话，不消息提醒
-    if (isNotFocused && toUser !== userId) {
+    // message.fromUser === userId 则表示自己发送的消息，不消息提醒
+    if (isNotFocused && toUser !== userId && fromUser !== userId) {
       startNotification(message);
     }
 

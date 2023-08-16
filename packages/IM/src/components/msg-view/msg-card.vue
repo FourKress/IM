@@ -45,7 +45,8 @@
     </div>
 
     <div
-      class="wrap"
+      class="wrap video"
+      :class="videoLoading && 'loading'"
       v-if="msgType === CHECK_MSG_TYPE.IS_VIDEO"
       :style="{
         width: `${size.width}px`,
@@ -393,12 +394,19 @@ export default {
 
     &.img {
       cursor: pointer;
-      box-shadow: 0 0 0 1px inset #eaeaea;
+      box-shadow: 0 0 0 1px inset $split-line-color;
       display: flex;
       align-items: center;
       justify-content: center;
       box-sizing: border-box;
       border-radius: 6px;
+
+      .el-image__error,
+      .image-slot {
+        font-size: 12px;
+        color: $tips-text-color;
+        background-color: transparent;
+      }
 
       img {
         display: block;
@@ -406,6 +414,24 @@ export default {
         height: 100%;
         position: relative;
         z-index: 1;
+      }
+    }
+
+    &.video {
+      position: relative;
+
+      &.loading {
+        &:before {
+          content: '加载中...';
+          z-index: 1;
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          font-size: 12px;
+          color: $tips-text-color;
+          display: block;
+        }
       }
     }
 
@@ -501,7 +527,8 @@ export default {
 
   ::v-deep .video-js {
     height: 100% !important;
-    background: $split-line-color;
+    background-color: $bg-IM-color;
+    box-shadow: 0 0 0 1px inset $split-line-color;
 
     .vjs-big-play-button {
       transform: scale(0.7);

@@ -421,7 +421,7 @@ export default {
             this.handleScrollTo(() => {
               this.handleCheckMsgReceipt();
             }, true);
-          }, 10);
+          }, 200);
         } else {
           this.messageList = msgs;
           if (!msgs?.length) return;
@@ -431,7 +431,7 @@ export default {
               this.loadComplete = true;
               this.handleCheckMsgReceipt();
             });
-          }, 10);
+          }, 200);
         }
       });
     },
