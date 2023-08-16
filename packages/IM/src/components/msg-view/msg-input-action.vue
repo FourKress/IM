@@ -296,8 +296,7 @@ export default {
     this.$nextTick(async () => {
       // 协同模式不自动聚焦
       if (!this.isSynergy) {
-        this.$refs.msgInput?.focus();
-        this.isGroup && this.handleCheckAt(true);
+        this.handleFocus();
       }
       this.windowRange = this.getRange();
       // 非协同模式 读取草稿
@@ -402,7 +401,10 @@ export default {
       try {
         const path = [...event.path];
         const notPopover = path.every(
-          (d) => !['action-panel', 'at-member-panel'].includes(d.className),
+          (d) =>
+            !['action-panel', 'editor-container', 'at-member-panel'].includes(
+              d.className,
+            ),
         );
         if (notPopover) {
           this.visibleMemberDialog = false;
@@ -521,7 +523,6 @@ export default {
     },
 
     handleRangDeleteContents() {
-      console.log(this.atSearchInfo, this.atSearchInfo.node);
       this.windowRange.setStart(this.atSearchInfo.node, 0);
       this.windowRange.setEnd(this.atSearchInfo.node, this.atSearchInfo.offset);
       this.windowRange.deleteContents();
@@ -571,6 +572,12 @@ export default {
         this.visibleMemberDialog = false;
       });
     },
+
+    handleFocus() {
+      this.$refs.msgInput?.focus();
+      this.isGroup && this.handleCheckAt(true);
+    },
+
     handleInput() {
       const element = this.$refs.msgInput;
       const innerHTML = element.innerHTML;
@@ -1029,7 +1036,6 @@ export default {
     } else if (this.message.includes('<img')) {
       tempMsg = '[图片]';
     }
-    this.clearInput();
     // 协同模式清空当前会话的草稿
     if (this.isSynergy) tempMsg = '';
     await window.$lanshuStore.setItem('tempMsgOBJ', {
@@ -1039,6 +1045,7 @@ export default {
         rawMsg: tempMsg ? this.message : tempMsg,
       },
     });
+    this.clearInput();
   },
 };
 </script>

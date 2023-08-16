@@ -74,7 +74,6 @@
             :class="{
               active: selectSynergy === session.sessId,
               'has-mask': selectSynergy !== session.sessId,
-              [`session_${formatSessId(session.sessId)}`]: true,
             }"
             v-for="session in synergySessionList"
             :key="formatSessId(session.sessId)"
@@ -82,6 +81,7 @@
             @click.self="handleSelectSynergy(session)"
           >
             <ImView
+              :ref="`Session_${formatSessId(session.sessId)}`"
               v-if="session.sessId"
               :key="formatSessId(session.sessId)"
               :session="session"
@@ -424,15 +424,19 @@ export default {
 
     getSessionTarget(session) {
       const { sessId } = session;
-      const target = document.querySelector(
-        `.session_${this.formatSessId(sessId)}`,
-      );
-      const editor = target.querySelector('.editor-container');
+      const target = this.$refs[`Session_${this.formatSessId(sessId)}`][0];
+      const msgInput = target.getMsgInput();
+      const editor = target.$el.querySelector('.editor-container');
       editor?.focus();
       // 处理光标并移动到最后
       const range = window.getSelection();
       range.selectAllChildren(editor);
-      range.collapseToEnd(); //光标移至最后
+      range.collapseToEnd();
+
+      setTimeout(() => {
+        msgInput.handleFocus();
+      }, 100);
+
       return target;
     },
 

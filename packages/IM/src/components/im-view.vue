@@ -97,6 +97,7 @@
     </div>
 
     <MsgInputAction
+      ref="MsgInput"
       v-bind="$props"
       :memberCount="memberCount"
       :groupRole="myGroupRole"
@@ -614,6 +615,10 @@ export default {
       if (!document.hidden) {
         this.handleCheckMsgReceipt();
       }
+    },
+
+    getMsgInput() {
+      return this.$refs.MsgInput;
     },
   },
   beforeDestroy() {
