@@ -23,6 +23,7 @@
           <template v-if="[0, 2].includes(step)">
             <AuthCode
               ref="authCode"
+              isBgColor
               :phoneNum="phoneNum"
               :newPhoneNum="newPhoneNum"
               :scene="SCENE_TYPE.IS_UPDATE_PHONE"

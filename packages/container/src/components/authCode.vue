@@ -8,6 +8,7 @@
         minLength="1"
         :key="index"
         class="code-item"
+        :class="isBgColor && 'bg-color'"
         type="text"
         @input="(val) => handleInput(val, index)"
         @keydown.native="(event) => handleBackspace(event, index)"
@@ -43,6 +44,10 @@ export default {
     scene: {
       type: String,
       required: true,
+    },
+    isBgColor: {
+      type: Boolean,
+      default: false,
     },
   },
   data() {
@@ -156,6 +161,12 @@ export default {
     width: 54px;
     height: 48px;
     border-radius: 6px;
+
+    &.bg-color {
+      ::v-deep .el-input__inner {
+        background-color: $bg-hover-grey-color;
+      }
+    }
 
     ::v-deep .el-input__inner {
       width: 100%;

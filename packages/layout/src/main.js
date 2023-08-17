@@ -74,6 +74,10 @@ const Layout = (config = {}) => {
       name: 'lanshuStore',
     });
 
+    // 禁止浏览器的前进后退
+    history.pushState = () => {};
+    history.back = () => {};
+
     return resolve(
       new Vue({
         render: (h) => h(App),
