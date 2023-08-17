@@ -42,8 +42,6 @@ const initIpcMain = () => {
     // 初始化缓存
     initCache();
 
-    showLoginWindow();
-
     // 初始化截图
     initScreenshots();
 
@@ -176,6 +174,10 @@ const initIpcMain = () => {
 
     ipcMain.handle('copyFile', async (_event, sourcePath, targetPath) => {
       return await copyFile(sourcePath.replace('cache:///', ''), targetPath);
+    });
+
+    ipcMain.on('autoLoginCallBack', async (_event) => {
+      await global.mainWindow.show();
     });
   });
 };

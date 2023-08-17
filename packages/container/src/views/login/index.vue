@@ -41,10 +41,17 @@
 
 <script>
 import { WindowOperate, LsIcon, LsAssets } from '@lanshu/components';
-import { RecoverAccountMixins } from '@lanshu/utils';
+import {
+  RecoverAccountMixins,
+  Apis,
+  setToken,
+  TOKEN_TYPE,
+} from '@lanshu/utils';
 import BasicLogin from './basic-login';
 import SendLogin from './send-login';
 import EnterAuthCode from './enter-auth-code';
+import loginMixins from './loginMixins';
+import { renderProcess } from '@lanshu/render-process';
 
 export default {
   name: 'Login',
@@ -55,7 +62,7 @@ export default {
     LsIcon,
     EnterAuthCode,
   },
-  mixins: [RecoverAccountMixins],
+  mixins: [loginMixins, RecoverAccountMixins],
   data() {
     return {
       LsAssets,
@@ -65,6 +72,23 @@ export default {
       phoneNum: '',
       captcha: '',
     };
+  },
+  async created() {
+    const autoLogin = (await renderProcess.getStore('AUTO_LOGIN')) || {};
+    const { status = false, token = '' } = autoLogin;
+    if (status && token) {
+      setToken(TOKEN_TYPE.IS_SYS, token);
+      const { data } = await Apis.accountUserInfo().catch(() => {
+        this.autoLoginResult();
+      });
+      const loginData = data?.loginData;
+      if (loginData) {
+        await this.handleClientLogin({
+          data: loginData,
+        });
+      }
+      this.autoLoginResult();
+    }
   },
   methods: {
     clear() {
@@ -102,6 +126,10 @@ export default {
       this.phoneNum = phoneNum;
       this.isAuthCode = true;
       this.isSendLogin = false;
+    },
+
+    autoLoginResult() {
+      renderProcess.autoLoginCallBack();
     },
   },
 };

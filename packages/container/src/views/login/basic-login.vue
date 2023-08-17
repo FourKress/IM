@@ -113,9 +113,11 @@ export default {
       }
     },
   },
-  created() {
+  async created() {
     const historyPhoneNum = localStorage.getItem('historyPhoneNum');
     this.form.phoneNum = historyPhoneNum;
+    const autoLogin = await renderProcess.getStore('AUTO_LOGIN');
+    this.autoLoginChecked = autoLogin.status;
   },
   methods: {
     openUrl(url) {
@@ -153,7 +155,11 @@ export default {
     },
 
     handleAutoLogin(val) {
-      renderProcess.setStore('AUTO_LOGIN', val);
+      renderProcess.setStore('AUTO_LOGIN', {
+        status: val,
+        token: '',
+        expirationTime: 0,
+      });
     },
   },
 };

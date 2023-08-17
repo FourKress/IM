@@ -28,6 +28,13 @@ export default {
       setToken(TOKEN_TYPE.IS_IM, imToken);
       setToken(TOKEN_TYPE.IS_SYS, token);
 
+      const autoLogin = await renderProcess.getStore('AUTO_LOGIN');
+      await renderProcess.setStore('AUTO_LOGIN', {
+        status: autoLogin.status,
+        token: autoLogin.status ? token : '',
+        expirationTime: Date.now(),
+      });
+
       await renderProcess.IMSDK_INIT(imAppid);
       await IMSDK_Init({
         token: imToken,

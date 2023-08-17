@@ -90,8 +90,12 @@ export const accountLoginWithCaptcha = async (params) => {
   );
 };
 
-export const accountUserInfo = (params) => {
-  return https.post('/auth/user/userInfo', params);
+export const accountUserInfo = async (params) => {
+  return https.post('/auth/user/userInfo', {
+    ...params,
+    terminal: await getTerminal(),
+    token: getToken(TOKEN_TYPE.IS_SYS),
+  });
 };
 
 export const accountUpdateUserInfo = async (params) => {

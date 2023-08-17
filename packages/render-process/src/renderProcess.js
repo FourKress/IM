@@ -35,3 +35,4 @@ export const previewAssets = electronAPI?.previewAssets;
 export const getFocusedWindow = electronAPI?.getFocusedWindow;
 export const webviewOpenUrl = electronAPI?.webviewOpenUrl;
 export const copyFile = electronAPI?.copyFile;
+export const autoLoginCallBack = electronAPI?.autoLoginCallBack;

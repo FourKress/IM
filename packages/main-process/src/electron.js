@@ -1,4 +1,4 @@
-import { app, protocol, BrowserWindow } from 'electron';
+import { app, protocol, BrowserWindow, ipcMain } from 'electron';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
 
@@ -75,7 +75,11 @@ async function createWindow() {
   });
 
   win.on('ready-to-show', () => {
-    win.show();
+    const autoLogin = global.store.get('AUTO_LOGIN') || {};
+    const { status = false, token = '' } = autoLogin;
+    if (!status || !token) {
+      win.show();
+    }
   });
 
   win.webContents.on('did-attach-webview', (event, webContents) => {
@@ -97,6 +101,20 @@ const initElectron = (config) => {
     version = '0.0.1',
     windowsSize = '',
   } = config;
+
+  const autoLogin = global.store.get('AUTO_LOGIN') || {};
+  const { status = false, token = '', expirationTime = 0 } = autoLogin;
+  const nowTimer = Date.now();
+  if (status && token) {
+    const isExpiration = nowTimer - expirationTime > 7 * 24 * 60 * 60 * 1000;
+    if (isExpiration) {
+      global.store.set('AUTO_LOGIN', {
+        status: false,
+        token: '',
+        expirationTime: 0,
+      });
+    }
+  }
 
   global.store.set('DEFAULT_WINDOWS_SIZE', windowsSize);
   global.store.set('IS_DEVTOOLS', IS_DEVELOPMENT || isDevtools);

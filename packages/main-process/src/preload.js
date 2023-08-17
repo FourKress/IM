@@ -43,4 +43,5 @@ window.electronAPI = {
   webviewOpenUrl: (url) => ipcRenderer.on('webviewOpenUrl', url),
   copyFile: (sourcePath, targetPath) =>
     ipcRenderer.invoke('copyFile', sourcePath, targetPath),
+  autoLoginCallBack: () => ipcRenderer.send('autoLoginCallBack'),
 };
