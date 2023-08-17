@@ -655,12 +655,12 @@ export default {
 
     .message-item {
       .tips-row {
-        min-height: 20px;
+        min-height: 26px;
         width: 100%;
         font-size: 12px;
         text-align: center;
         color: $tips-text-color;
-        line-height: 20px;
+        line-height: 26px;
         display: flex;
         flex-direction: column;
         align-items: center;

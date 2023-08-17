@@ -9,7 +9,7 @@
     ></div>
 
     <div
-      class="wrap img"
+      class="wrap img shadow"
       style="cursor: pointer"
       v-if="isImage"
       :style="{ width: `${size.width}px`, height: `${size.height}px` }"
@@ -24,7 +24,7 @@
     </div>
 
     <div
-      class="wrap"
+      class="wrap shadow"
       v-if="msgType === CHECK_MSG_TYPE.IS_VIDEO"
       :style="{ width: `${size.width}px`, height: `${size.height}px` }"
       v-contextMenu="fileContextMenuList"
@@ -154,8 +154,11 @@ export default {
     margin-top: 6px;
     border-radius: 6px;
 
+    &.shadow {
+      box-shadow: 0 0 0 1px $split-line-color;
+    }
+
     &.img {
-      box-shadow: 0 0 0 1px inset #eaeaea;
       display: flex;
       align-items: center;
       justify-content: center;

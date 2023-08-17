@@ -27,7 +27,7 @@
     ></div>
 
     <div
-      class="wrap img"
+      class="wrap img shadow"
       v-if="isImage"
       :style="{
         width: `${size.width}px`,
@@ -45,7 +45,7 @@
     </div>
 
     <div
-      class="wrap video"
+      class="wrap video shadow"
       :class="videoLoading && 'loading'"
       v-if="msgType === CHECK_MSG_TYPE.IS_VIDEO"
       :style="{
@@ -315,11 +315,10 @@ export default {
 .msg-card-item {
   width: 100%;
   height: 100%;
-  overflow: hidden;
-  border-radius: 6px;
   position: relative;
 
   .card {
+    border-radius: 6px;
     padding: 10px 14px;
 
     &.self {
@@ -391,10 +390,15 @@ export default {
 
   .wrap {
     display: block;
+    border-radius: 6px;
+    overflow: hidden;
+
+    &.shadow {
+      box-shadow: 0 0 0 1px $split-line-color;
+    }
 
     &.img {
       cursor: pointer;
-      box-shadow: 0 0 0 1px inset $split-line-color;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -528,7 +532,6 @@ export default {
   ::v-deep .video-js {
     height: 100% !important;
     background-color: $bg-IM-color;
-    box-shadow: 0 0 0 1px inset $split-line-color;
 
     .vjs-big-play-button {
       transform: scale(0.7);
