@@ -13,7 +13,7 @@
       />
       <template v-for="plugin in plugins">
         <MainPlugIn
-          v-if="plugin.visible"
+          v-show="plugin.visible"
           :key="plugin.key"
           :component="plugin.key"
         />
