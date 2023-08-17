@@ -426,17 +426,9 @@ export default {
       const { sessId } = session;
       const target = this.$refs[`Session_${this.formatSessId(sessId)}`][0];
       const msgInput = target.getMsgInput();
-      const editor = target.$el.querySelector('.editor-container');
-      editor?.focus();
-      // 处理光标并移动到最后
-      const range = window.getSelection();
-      range.selectAllChildren(editor);
-      range.collapseToEnd();
-
       setTimeout(() => {
         msgInput.handleFocus();
       }, 100);
-
       return target;
     },
 

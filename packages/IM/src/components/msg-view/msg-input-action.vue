@@ -79,7 +79,7 @@
       >
         <div
           class="editor-container"
-          :contenteditable="!noSendAuth"
+          :contenteditable="true"
           @keyup.enter.exact="handleEnterEvent(KEY_CODE.IS_ENTER)"
           @keyup.ctrl.enter.exact="handleEnterEvent(KEY_CODE.IS_CTRL_ENTER)"
           ref="msgInput"
@@ -269,13 +269,17 @@ export default {
       return this.session?.toUserType === SESSION_USER_TYPE.IS_GROUP;
     },
     members() {
-      return this.rawMembers.filter((d) => d.alias.includes(this.atKeywords));
+      const members = this.rawMembers.filter((d) =>
+        d.alias.includes(this.atKeywords),
+      );
+      if (this.atKeywords) this.selectMemberIndex = 0;
+      return members;
     },
   },
   watch: {
     visibleMemberDialog(val) {
       if (val) {
-        this.selectMemberIndex = this.atAllMember.userId;
+        this.selectMemberIndex = this.atKeywords ? 0 : this.atAllMember.userId;
         this.$refs.ActionPanel.addEventListener(
           'keyup',
           this.handleHotKeySelectMember,
@@ -305,7 +309,17 @@ export default {
       const historyTempMsgOBJ = await window.$lanshuStore.getItem('tempMsgOBJ');
       const tempMsg = historyTempMsgOBJ?.[this.session.sessId];
       if (tempMsg?.preview) {
-        this.handleTargetInsert(tempMsg.rawMsg);
+        this.handleTargetInsert(tempMsg.rawMsg, false, () => {
+          if (this.isGroup) {
+            this.handleRangeCollapseToEnd();
+            const atTagDom = [
+              ...document.querySelectorAll('.at-container'),
+            ].pop();
+            if (atTagDom) {
+              this.atTagDom = atTagDom;
+            }
+          }
+        });
       }
     });
 
@@ -573,9 +587,30 @@ export default {
       });
     },
 
+    handleRangeCollapseToEnd() {
+      const msgInput = this.$refs.msgInput;
+      const range = window.getSelection();
+      // 处理光标并移动到最后
+      if (msgInput.lastChild) {
+        if (msgInput.lastChild?.innerText === '@') {
+          range.selectAllChildren(msgInput);
+          range.collapseToEnd();
+        } else {
+          range.selectAllChildren(msgInput.lastChild);
+          range.collapse(msgInput.lastChild, msgInput.lastChild.length);
+        }
+      } else {
+        range.selectAllChildren(msgInput);
+        range.collapseToEnd();
+      }
+    },
+
     handleFocus() {
       this.$refs.msgInput?.focus();
-      this.isGroup && this.handleCheckAt(true);
+      if (this.message) {
+        this.handleRangeCollapseToEnd();
+      }
+      this.isGroup && this.handleAuthActionAt();
     },
 
     handleInput() {
@@ -613,9 +648,9 @@ export default {
       }
     },
 
-    handleTargetInsert(content, isNode = false) {
+    handleTargetInsert(content, isNode = false, cb) {
       const selection = window.getSelection();
-      const range = this.windowRange;
+      const range = this.getRange();
       range.collapse(false);
       if (isNode) {
         range.insertNode(content);
@@ -643,6 +678,9 @@ export default {
 
       selection.removeAllRanges();
       selection.addRange(range);
+
+      cb && cb();
+
       this.handleInput();
     },
     getEmoji(emoji) {
@@ -1028,24 +1066,29 @@ export default {
   async beforeDestroy() {
     document.removeEventListener('click', this.handleAtGlobalClick);
     // 保存草稿
-    const sessId = this.session.sessId;
-    const historyTempMsgOBJ = await window.$lanshuStore.getItem('tempMsgOBJ');
+    const currentMsgText = this.messageText;
+    const currentMsg = this.message;
+    this.clearInput();
+
     let tempMsg = '';
-    if (this.messageText) {
-      tempMsg = this.messageText;
-    } else if (this.message.includes('<img')) {
+    if (currentMsgText) {
+      tempMsg = currentMsgText;
+    } else if (currentMsg.includes('<img')) {
       tempMsg = '[图片]';
     }
     // 协同模式清空当前会话的草稿
     if (this.isSynergy) tempMsg = '';
+
+    const sessId = this.session.sessId;
+    const historyTempMsgOBJ = await window.$lanshuStore.getItem('tempMsgOBJ');
+
     await window.$lanshuStore.setItem('tempMsgOBJ', {
       ...historyTempMsgOBJ,
       [sessId]: {
         preview: tempMsg,
-        rawMsg: tempMsg ? this.message : tempMsg,
+        rawMsg: tempMsg ? currentMsg : tempMsg,
       },
     });
-    this.clearInput();
   },
 };
 </script>
