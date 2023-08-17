@@ -49,7 +49,7 @@
 
           <div class="checkbox-row">
             <el-checkbox v-model="autoLoginChecked" @change="handleAutoLogin">
-              <span>自动登录</span>
+              <span>7天自动登录</span>
             </el-checkbox>
           </div>
         </el-form>

@@ -109,7 +109,7 @@ const initElectron = (config) => {
     const isExpiration = nowTimer - expirationTime > 7 * 24 * 60 * 60 * 1000;
     if (isExpiration) {
       global.store.set('AUTO_LOGIN', {
-        status: false,
+        status: true,
         token: '',
         expirationTime: 0,
       });
