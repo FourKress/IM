@@ -33,7 +33,7 @@ export const formatAtTag = (msg, atTagList = [], isPreview = false) => {
           const isAtMe = userInfo.userId === userId;
           const isAtAll = userId === 'IM_AT_ALL';
           const isSelf = msg?.fromUser === userInfo.userId;
-          const receiptUserList = msg.receiptUserList;
+          const receiptUserList = msg.receiptUserList || [];
           const isRead = receiptUserList.some((r) => r === userId);
           d = `<span class="at-tag ${
             isAtMe || isAtAll ? 'at-me' : ''
