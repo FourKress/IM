@@ -26,7 +26,9 @@
         <div class="auth-dialog-panel-tips">
           请使用北象移动端扫码下方二维码，进行实名认证
         </div>
-        <div class="auth-dialog-panel-content"></div>
+        <div class="auth-dialog-panel-content">
+          <img class="qrcode" v-if="qrcodeUrl" :src="qrcodeUrl" alt="" />
+        </div>
         <div class="auth-dialog-panel-footer">
           <div class="confirm btn" @click="showAuthenticate = false">
             知道了
@@ -51,7 +53,7 @@
 <script>
 import { mapGetters, mapActions } from 'vuex';
 import { LsCardDialog, LsIcon } from '@lanshu/components';
-import { dataEncryption } from '@lanshu/utils';
+import { dataEncryption, qrcode } from '@lanshu/utils';
 import Card from './card';
 import InfoBlock from './info-block';
 
@@ -112,13 +114,14 @@ export default {
       ],
       showAuthenticate: false,
       showUnbind: false,
+      qrcodeUrl: '',
     };
   },
   created() {
     const { phone } = this.userProfile;
     this.infos[0].value = dataEncryption(phone);
-    const { name, idcard } = this.systemUserInfo;
-    if (name && idcard) {
+    const { name1, idcard } = this.systemUserInfo;
+    if (name1 && idcard) {
       this.infos[1].label = '已认证用户:';
       this.infos[1].value = `${dataEncryption(
         name,
@@ -162,7 +165,22 @@ export default {
         .catch((e) => {});
     },
     authenticate() {
-      this.showAuthenticate = true;
+      qrcode.toDataURL(
+        `app://auth/${this.systemUserInfo.userId}`,
+        {
+          errorCorrectionLevel: 'H',
+          width: 160,
+          height: 160,
+          margin: 0,
+        },
+        (error, url) => {
+          if (error) {
+            this.$message.error('二维码生成失败!');
+          }
+          this.qrcodeUrl = url;
+          this.showAuthenticate = true;
+        },
+      );
     },
     unbind(info) {
       console.log(info);
