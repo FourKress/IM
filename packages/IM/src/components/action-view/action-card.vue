@@ -16,16 +16,16 @@
       />
       <el-dropdown-menu slot="dropdown">
         <el-dropdown-item>
-          <div class="send-down-row" @click="handleUploadFile(false)">
-            <LsIcon size="14" icon="pop_cd_tp"></LsIcon>
+          <span @click="handleUploadFile(false)">
+            <LsIcon size="14" color="#777" icon="pop_cd_tp"></LsIcon>
             <span>图片/视频</span>
-          </div>
+          </span>
         </el-dropdown-item>
         <el-dropdown-item>
-          <div class="send-down-row" @click="handleUploadFile(true)">
-            <LsIcon size="14" icon="pop_cd_wj"></LsIcon>
+          <span @click="handleUploadFile(true)">
+            <LsIcon size="14" color="#777" icon="pop_cd_wj"></LsIcon>
             <span>文件</span>
-          </div>
+          </span>
         </el-dropdown-item>
       </el-dropdown-menu>
     </el-dropdown>

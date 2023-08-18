@@ -96,9 +96,8 @@
               <template slot="header">
                 <div class="btn" v-if="synergySessionList.length > 1">
                   <LsIcon
-                    render-svg
-                    width="20"
-                    height="20"
+                    size="18"
+                    color="#333"
                     :icon="
                       getStyle(session).height === MAX_HEIGHT
                         ? 'ls-icon-icon_zuixiaohua2'
@@ -109,10 +108,9 @@
                 </div>
                 <div class="btn">
                   <LsIcon
-                    render-svg
-                    width="20"
-                    height="20"
-                    icon="ls-icon-icon_guanbi1"
+                    size="14"
+                    color="#333"
+                    icon="ls-icon-guanbi"
                     @click="handleClose(session)"
                   ></LsIcon>
                 </div>
@@ -562,7 +560,7 @@ export default {
         width: 100%;
         min-height: 360px;
         margin-bottom: 10px;
-        border-radius: 12px;
+        border-radius: 6px;
         overflow: hidden;
         border: 2px solid #e7eaf3;
         box-sizing: border-box;

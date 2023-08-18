@@ -23,9 +23,7 @@
         <el-tooltip class="item" effect="dark" content="视频" placement="top">
           <!--        || groupRoleManager.whoCanStartNetworkCall <= groupRole-->
           <LsIcon
-            render-svg
-            width="16"
-            height="16"
+            size="16"
             icon="a-icon_sp2x"
             @click="handleStartTrtc(NETWORK_CALL_TYPE.IS_VIDEO)"
           ></LsIcon>
@@ -35,9 +33,7 @@
         <el-tooltip class="item" effect="dark" content="语音" placement="top">
           <!--        || groupRoleManager.whoCanStartNetworkCall <= groupRole-->
           <LsIcon
-            render-svg
-            width="16"
-            height="16"
+            size="16"
             icon="a-icon_yy2x"
             @click="handleStartTrtc(NETWORK_CALL_TYPE.IS_AUDIO)"
           ></LsIcon>
@@ -46,29 +42,20 @@
       <div class="btn" v-if="isSettings && (!isGroup || groupRole > 0)">
         <el-dropdown trigger="click" @command="handleCommand">
           <el-tooltip class="item" effect="dark" content="更多" placement="top">
-            <LsIcon
-              render-svg
-              width="16"
-              height="16"
-              icon="a-icon_more2x"
-            ></LsIcon>
+            <LsIcon size="16" icon="a-icon_more2x"></LsIcon>
           </el-tooltip>
           <el-dropdown-menu slot="dropdown" v-if="isGroup">
             <el-dropdown-item
               :command="IM_HEADER_MORE_BTN_KEY.IS_OPEN_GROUP_MEMBER"
             >
-              <div class="send-down-row">
-                <LsIcon size="14" icon="pop_cd_cjql"></LsIcon>
-                <span>群成员</span>
-              </div>
+              <LsIcon size="14" color="#777" icon="pop_cd_cjql"></LsIcon>
+              <span>群成员</span>
             </el-dropdown-item>
             <el-dropdown-item
               :command="IM_HEADER_MORE_BTN_KEY.IS_OPEN_GROUP_SET"
             >
-              <div class="send-down-row">
-                <LsIcon size="14" icon="pop_cd_sz"></LsIcon>
-                <span>群设置</span>
-              </div>
+              <LsIcon size="14" color="#777" icon="pop_cd_sz"></LsIcon>
+              <span>群设置</span>
             </el-dropdown-item>
           </el-dropdown-menu>
           <el-dropdown-menu slot="dropdown" v-else>
@@ -76,16 +63,12 @@
               v-if="isNotMe"
               :command="IM_HEADER_MORE_BTN_KEY.IS_CREATE_GROUP"
             >
-              <div class="send-down-row">
-                <LsIcon size="14" icon="pop_cd_cjql"></LsIcon>
-                <span>创建群聊</span>
-              </div>
+              <LsIcon size="14" color="#777" icon="pop_cd_cjql"></LsIcon>
+              <span>创建群聊</span>
             </el-dropdown-item>
             <el-dropdown-item :command="IM_HEADER_MORE_BTN_KEY.IS_OPEN_SET">
-              <div class="send-down-row">
-                <LsIcon size="14" icon="pop_cd_sz"></LsIcon>
-                <span>设置</span>
-              </div>
+              <LsIcon size="14" color="#777" icon="pop_cd_sz"></LsIcon>
+              <span>设置</span>
             </el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
@@ -261,6 +244,8 @@ export default {
       cursor: pointer;
       width: 16px;
       height: 16px;
+      line-height: 16px;
+      color: #333;
 
       &:last-child {
         margin-right: 0;
