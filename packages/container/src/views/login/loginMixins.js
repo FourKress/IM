@@ -28,10 +28,11 @@ export default {
       setToken(TOKEN_TYPE.IS_IM, imToken);
       setToken(TOKEN_TYPE.IS_SYS, token);
 
-      const autoLogin = await renderProcess.getStore('AUTO_LOGIN');
+      const autoLogin = (await renderProcess.getStore('AUTO_LOGIN')) || {};
+      const { status = false } = autoLogin;
       await renderProcess.setStore('AUTO_LOGIN', {
-        status: autoLogin.status,
-        token: autoLogin.status ? token : '',
+        status: status,
+        token: status ? token : '',
         expirationTime: Date.now(),
       });
 

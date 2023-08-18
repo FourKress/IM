@@ -116,8 +116,9 @@ export default {
   async created() {
     const historyPhoneNum = localStorage.getItem('historyPhoneNum');
     this.form.phoneNum = historyPhoneNum;
-    const autoLogin = await renderProcess.getStore('AUTO_LOGIN');
-    this.autoLoginChecked = autoLogin.status;
+    const autoLogin = (await renderProcess.getStore('AUTO_LOGIN')) || {};
+    const { status = false } = autoLogin;
+    this.autoLoginChecked = status;
   },
   methods: {
     openUrl(url) {
