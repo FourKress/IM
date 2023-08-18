@@ -90,7 +90,7 @@
 
 <script>
 import {
-  phoneEncryption,
+  dataEncryption,
   formatPhoneNum,
   unFormatPhoneNum,
   PhoneNumMixins,
@@ -195,7 +195,7 @@ export default {
     },
 
     getPhoneText(phoneNum) {
-      return phoneEncryption(phoneNum);
+      return dataEncryption(phoneNum);
     },
     async handleInputComplete(flag, codes) {
       if (flag) {

@@ -49,6 +49,13 @@
           </div>
           <div class="sub-info">
             <div class="nickname">{{ userProfile.nickname }}</div>
+            <span
+              class="auth-tag"
+              v-if="systemUserInfo.name && systemUserInfo.idcard"
+            >
+              <LsIcon class="tag-icon" icon="a-icon_yzcg2x" size="12"></LsIcon>
+              <span>已实名</span>
+            </span>
           </div>
           <div class="more">
             <LsIcon
@@ -157,7 +164,7 @@ export default {
   },
   computed: {
     ...mapGetters('IMStore', ['userInfo', 'userProfile']),
-    ...mapGetters('globalStore', ['updateNotify']),
+    ...mapGetters('globalStore', ['updateNotify', 'systemUserInfo']),
   },
   data() {
     return {
@@ -530,7 +537,7 @@ export default {
         justify-content: center;
         width: 53px;
         height: 18px;
-        border-radius: 4px;
+        border-radius: 2px;
         border: 1px solid $minor-color;
         text-align: center;
         font-size: 11px;

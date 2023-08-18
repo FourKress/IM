@@ -81,10 +81,14 @@ export default {
       const { data } = await Apis.accountUserInfo().catch(() => {
         this.autoLoginResult();
       });
-      const loginData = data?.loginData;
+      const { loginData, name, idcard } = data || {};
       if (loginData) {
         await this.handleClientLogin({
-          data: loginData,
+          data: {
+            ...loginData,
+            name,
+            idcard,
+          },
         });
       }
       this.autoLoginResult();

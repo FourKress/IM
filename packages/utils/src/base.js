@@ -1,9 +1,16 @@
 // 手机号加密
-export const phoneEncryption = (phoneNum) => {
-  if (!phoneNum) return;
-  const regExp = new RegExp(/([\s\S]{3})\d*([\s\S]{4})/);
-  const replaceValue = `$1${new Array(Number(4) + 1).join('*')}$2`;
-  return phoneNum.replace(regExp, replaceValue);
+export const dataEncryption = (
+  text,
+  startIndex = 3,
+  endIndex = 4,
+  chatCount = 4,
+) => {
+  if (!text) return;
+  const regExp = new RegExp(
+    `([\\s\\S]{${startIndex}})[0-9\u4e00-\u9fa5]*([\\s\\S]{${endIndex}})`,
+  );
+  const replaceValue = `$1${new Array(Number(chatCount) + 1).join('*')}$2`;
+  return text.replace(regExp, replaceValue);
 };
 
 // 手机号格式化

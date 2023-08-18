@@ -7,7 +7,7 @@
     <template v-if="!isSlot">
       <Expand v-if="render" :info="info" :render="render"></Expand>
       <div v-else class="info">
-        {{ label || '' }}
+        <span class="text" v-if="label">{{ label || '' }}</span>
         <span class="text" v-if="value">{{ value }}</span>
         <span class="btn" v-if="btnText" @click="handleClick">
           {{ btnText }}

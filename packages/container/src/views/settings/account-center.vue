@@ -8,16 +8,13 @@
           @callback="handleCallback(info)"
         >
           <template slot="tag" v-if="info.key === 'authentication'">
-            <!--            <span class="auth-tag">-->
-            <!--              <LsIcon-->
-            <!--                render-svg-->
-            <!--                class='tag-icon'-->
-            <!--                icon="a-icon_yzcg2x"-->
-            <!--                height="12"-->
-            <!--                width="12"-->
-            <!--              ></LsIcon>-->
-            <!--              <span>已实名</span>-->
-            <!--            </span>-->
+            <span
+              class="auth-tag"
+              v-if="systemUserInfo.name && systemUserInfo.idcard"
+            >
+              <LsIcon class="tag-icon" icon="a-icon_yzcg2x" size="12"></LsIcon>
+              <span>已实名</span>
+            </span>
           </template>
         </InfoBlock>
       </template>
@@ -54,7 +51,7 @@
 <script>
 import { mapGetters, mapActions } from 'vuex';
 import { LsCardDialog, LsIcon } from '@lanshu/components';
-import {phoneEncryption} from '@lanshu/utils'
+import { dataEncryption } from '@lanshu/utils';
 import Card from './card';
 import InfoBlock from './info-block';
 
@@ -68,6 +65,7 @@ export default {
   },
   computed: {
     ...mapGetters('IMStore', ['userInfo', 'userProfile']),
+    ...mapGetters('globalStore', ['systemUserInfo']),
   },
   data() {
     return {
@@ -75,7 +73,7 @@ export default {
         {
           key: 'phoneNum',
           title: '手机号码',
-          label: '已绑定号码：',
+          label: '已绑定号码:',
           value: '',
           btnText: '更换',
           fnc: () => this.changePhone(),
@@ -83,9 +81,8 @@ export default {
         {
           key: 'authentication',
           title: '实名认证',
-          label: '未认证用户',
+          label: '未认证用户:',
           value: '',
-          // btnText: '去认证',
           fnc: (info) => this.authenticate(info),
         },
         {
@@ -117,9 +114,21 @@ export default {
       showUnbind: false,
     };
   },
-  mounted() {
+  created() {
     const { phone } = this.userProfile;
-    this.infos[0].value = phoneEncryption(phone);
+    this.infos[0].value = dataEncryption(phone);
+    const { name, idcard } = this.systemUserInfo;
+    if (name && idcard) {
+      this.infos[1].label = '已认证用户:';
+      this.infos[1].value = `${dataEncryption(
+        name,
+        1,
+        name.length > 2 ? 1 : 0,
+        1,
+      )} ${dataEncryption(idcard)}`;
+    } else {
+      this.infos[1].btnText = '去认证';
+    }
   },
   methods: {
     ...mapActions('routerStore', ['addBreadCrumbs']),
@@ -191,7 +200,7 @@ export default {
   justify-content: center;
   width: 53px;
   height: 18px;
-  border-radius: 4px;
+  border-radius: 2px;
   border: 1px solid $minor-color;
   text-align: center;
   font-size: 11px;

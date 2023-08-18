@@ -45,7 +45,7 @@
 <script>
 import {
   PhoneNumMixins,
-  phoneEncryption,
+  dataEncryption,
   Apis,
   SCENE_TYPE,
 } from '@lanshu/utils';
@@ -81,7 +81,7 @@ export default {
   computed: {
     phoneText() {
       // 手机号加密
-      return phoneEncryption(this.phoneNum);
+      return dataEncryption(this.phoneNum);
     },
     sceneType() {
       return this.isSetPwd

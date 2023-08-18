@@ -1,4 +1,4 @@
-import { setToken, storeInstance, TOKEN_TYPE } from '@lanshu/utils';
+import { setToken, Apis, storeInstance, TOKEN_TYPE } from '@lanshu/utils';
 import { microShared } from '@lanshu/micro';
 import { renderProcess } from '@lanshu/render-process';
 import {
@@ -18,15 +18,24 @@ export default {
     ...mapActions('globalStore', ['setSystemUserInfo']),
     ...mapActions('routerStore', ['clearBreadCrumb']),
 
-    async handleClientLogin(res) {
-      const resData = res?.data || {};
-      await this.setSystemUserInfo(resData);
+    async handleClientLogin(res, isAutoLogin = false) {
+      let resData = res?.data || {};
 
       const { imAppid, imToken, token, userId, username } = resData;
-
       localStorage.setItem('historyPhoneNum', username);
       setToken(TOKEN_TYPE.IS_IM, imToken);
       setToken(TOKEN_TYPE.IS_SYS, token);
+
+      if (!isAutoLogin) {
+        const { data } = await Apis.accountUserInfo();
+        const { name, idcard } = data || {};
+        resData = {
+          ...resData,
+          name,
+          idcard,
+        };
+      }
+      await this.setSystemUserInfo(resData);
 
       const autoLogin = (await renderProcess.getStore('AUTO_LOGIN')) || {};
       const { status = false } = autoLogin;
