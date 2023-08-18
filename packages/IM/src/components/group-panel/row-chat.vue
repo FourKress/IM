@@ -1,7 +1,7 @@
 <template>
   <div class="item" @click="handleClick">
     <div class="info" v-if="title || label">
-      <span class="title">{{ title }}</span>
+      <span class="title" v-if="title">{{ title }}</span>
       <span class="label" v-if="label">{{ label }}</span>
       <slot></slot>
     </div>
@@ -30,9 +30,9 @@ export default {
   },
   methods: {
     handleClick(event) {
-      this.$emit('callback', event)
-    }
-  }
+      this.$emit('callback', event);
+    },
+  },
 };
 </script>
 

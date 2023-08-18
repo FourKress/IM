@@ -154,7 +154,6 @@ export default {
   min-width: 299px;
   height: 100%;
   background-color: $bg-white-color;
-  padding-top: 22px;
   border-left: 1px solid $split-line-color;
   overflow: hidden;
   box-sizing: border-box;
@@ -162,14 +161,14 @@ export default {
 
   .top {
     width: 100%;
-    height: 22px;
+    height: 48px;
     line-height: 22px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 10px;
     box-sizing: border-box;
-    padding: 0 20px;
+    padding: 13px 20px;
+    box-shadow: 0 0 0 1px $split-line-color;
 
     .left {
       flex: 1;

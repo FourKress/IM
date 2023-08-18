@@ -267,7 +267,7 @@ export default {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 20px 20px 26px;
+      padding: 14px 20px 20px;
 
       font-size: 14px;
       font-weight: bold;
@@ -313,7 +313,7 @@ export default {
       width: 100%;
       padding: 0 20px;
       box-sizing: border-box;
-      margin-bottom: 20px;
+      margin-bottom: 10px;
     }
 
     .history-msg-list {

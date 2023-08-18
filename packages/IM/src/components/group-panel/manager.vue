@@ -379,7 +379,7 @@ export default {
     padding: 0 20px;
 
     .tips {
-      margin: 20px 0;
+      margin: 14px 0;
       font-size: 14px;
       color: $minor-text-color;
     }

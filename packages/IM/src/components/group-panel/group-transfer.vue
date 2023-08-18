@@ -87,13 +87,14 @@ export default {
 
   .content {
     width: 100%;
+    height: calc(100% - 54px);
     padding: 0 20px;
     box-sizing: border-box;
-    position: relative;
+    overflow-y: auto;
 
     .btn {
       position: absolute;
-      right: 20px;
+      right: 10px;
       bottom: 10px;
 
       width: 88px;
@@ -115,7 +116,7 @@ export default {
   width: 100%;
   height: 40px;
   border-radius: 6px;
-  margin: 34px 0;
+  margin: 14px 0;
   box-sizing: border-box;
   display: flex;
   justify-content: space-between;

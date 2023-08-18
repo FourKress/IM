@@ -190,12 +190,12 @@ export default {
 <style scoped lang="scss">
 .member {
   width: 100%;
-  height: calc(100% - 62px);
+  height: calc(100% - 68px);
   box-sizing: border-box;
-  margin-top: 26px;
+  margin-top: 20px;
   display: flex;
   flex-direction: column;
-  padding: 0 20px;
+  padding: 0 20px 10px;
 
   ::-webkit-scrollbar {
     display: none;
@@ -249,7 +249,7 @@ export default {
 }
 
 .tips {
-  margin: 20px 0;
+  margin: 14px 0;
   font-size: 14px;
   color: $minor-text-color;
 }

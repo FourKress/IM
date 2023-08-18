@@ -1,5 +1,5 @@
 <template>
-  <div class='drawer'>
+  <div class="drawer">
     <el-drawer
       custom-class="group-manager"
       destroy-on-close
@@ -10,19 +10,18 @@
       :close-on-press-escape="false"
       :visible.sync="visible"
     >
-    <span slot="title" class="drawer-title">
-      <LsIcon
-        class="title-icon"
-        width="14"
-        height="28"
-        icon="a-icon_gengduo22x"
-        @click="handleCloseDrawer"
-      ></LsIcon>
-      {{ title }}
-    </span>
+      <span slot="title" class="drawer-title">
+        <LsIcon
+          class="title-icon"
+          width="14"
+          height="28"
+          icon="a-icon_gengduo22x"
+          @click="handleCloseDrawer"
+        ></LsIcon>
+        {{ title }}
+      </span>
 
       <slot></slot>
-
     </el-drawer>
   </div>
 </template>
@@ -56,9 +55,8 @@ export default {
 };
 </script>
 
-<style scoped lang='scss'>
+<style scoped lang="scss">
 .drawer {
-
   ::v-deep .el-drawer__wrapper {
     width: 299px;
     position: absolute;
@@ -66,7 +64,9 @@ export default {
     left: 0;
 
     .el-drawer__header {
-      margin-bottom: 10px;
+      padding: 10px 20px;
+      margin-bottom: 0;
+      box-shadow: 0 0 0 1px $split-line-color;
     }
 
     .drawer-title {

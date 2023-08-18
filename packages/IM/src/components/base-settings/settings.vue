@@ -17,6 +17,10 @@
         <span class="label">创建群聊</span>
         <i class="el-icon-arrow-right"></i>
       </div>
+      <div class="item" @click="createGroup">
+        <span class="label">创建群聊</span>
+        <i class="el-icon-arrow-right"></i>
+      </div>
     </div>
 
     <MsgTopAndSilence />
@@ -114,22 +118,23 @@ export default {
 <style scoped lang="scss">
 .im-settings {
   height: 100%;
-  width: 299px;
-  min-width: 299px;
+  width: 300px;
+  min-width: 300px;
   background-color: $bg-white-color;
-  padding: 22px 20px 0 20px;
   border-left: 1px solid $split-line-color;
   position: relative;
   box-sizing: border-box;
 
   .top {
     width: 100%;
-    height: 22px;
-    line-height: 22px;
+    height: 48px;
+    line-height: 48px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 10px;
+    padding: 0 20px;
+    box-sizing: border-box;
+    box-shadow: 0 0 0 1px $split-line-color;
 
     .label {
       font-size: 16px;
@@ -144,7 +149,7 @@ export default {
   }
 
   .row {
-    padding: 26px 0 6px 0;
+    padding: 26px 20px 6px;
     border-bottom: 1px solid $split-line-color;
 
     &:first-child {

@@ -300,7 +300,7 @@ export default {
 
 <style scoped lang="scss">
 .group-panel-settings {
-  height: calc(100% - 42px);
+  height: calc(100% - 58px);
   box-sizing: border-box;
   padding: 0 20px;
   overflow-x: hidden;
