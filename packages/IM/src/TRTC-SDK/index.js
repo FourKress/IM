@@ -14,7 +14,8 @@ import TRTCCloud, {
   TRTCVideoQosPreference,
   TRTCQuality,
 } from 'trtc-electron-sdk';
-import { genUserSig } from './utils';
+
+import { storeInstance } from '@lanshu/utils';
 
 const trtcCloudInstance = () => {
   const trtcCloud = new TRTCCloud();
@@ -25,15 +26,15 @@ const trtcCloudInstance = () => {
         video: TRTCAppScene.TRTCAppSceneVideoCall,
         audio: TRTCAppScene.TRTCAppSceneAudioCall,
       };
-
+      const systemUserInfo =
+        storeInstance.getters['globalStore/systemUserInfo'];
       const { userId, roomId } = params;
-      const userSigInfo = genUserSig(userId);
       const trtcParams = new TRTCParams();
 
       trtcParams.userId = userId;
       trtcParams.roomId = roomId;
-      trtcParams.sdkAppId = userSigInfo.SDKAppID;
-      trtcParams.userSig = userSigInfo.userSig;
+      trtcParams.sdkAppId = systemUserInfo.appid;
+      trtcParams.userSig = systemUserInfo.userSig;
 
       trtcCloud.enterRoom(trtcParams, rtcMap[type]);
 
