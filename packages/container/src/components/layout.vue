@@ -36,8 +36,12 @@ export default {
       handler(val) {
         console.log('microSharedState', val);
         const { EVENT_IPC = {} } = val;
-        if (EVENT_IPC?.type === 'openMicro') {
-          this.setOpenMicroApp(EVENT_IPC.value);
+        const { type, value } = EVENT_IPC;
+        if (type === 'openMicro') {
+          this.setOpenMicroApp({
+            appName: EVENT_IPC.value,
+            visible: value,
+          });
         }
       },
     },

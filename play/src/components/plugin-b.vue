@@ -1,12 +1,13 @@
 <template>
   <div class="plugin-container">
-    <PluginAppHeader title="这是另一个应用" />
+    <PluginAppHeader title="这是另一个应用" @close="handleClose" />
     <div class="plugin-main">这是另一个应用</div>
   </div>
 </template>
 
 <script>
 import PluginAppHeader from './plugin-app/header.vue';
+import { mapActions } from 'vuex';
 
 export default {
   name: 'SelfPluginB',
@@ -16,6 +17,16 @@ export default {
       flex: '1 1 0',
       minWidth: '400px',
     });
+  },
+  methods: {
+    ...mapActions('globalStore', ['setOpenMicroApp']),
+
+    handleClose() {
+      this.setOpenMicroApp({
+        appName: 'SelfPluginB',
+        visible: false,
+      });
+    },
   },
 };
 </script>

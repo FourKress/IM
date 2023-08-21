@@ -40,7 +40,7 @@ export default {
   mounted() {},
   methods: {
     handleClose() {
-      console.log('close');
+      this.$emit('close');
     },
   },
 };

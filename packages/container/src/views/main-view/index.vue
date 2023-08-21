@@ -56,10 +56,11 @@ export default {
     openMicroApp: {
       deep: true,
       handler(val) {
-        if (val?.appName) {
+        const { appName, visible } = val || {};
+        if (appName) {
           this.plugins = this.plugins.map((d) => {
-            if (d.key === val?.appName) {
-              d.visible = true;
+            if (d.key === appName) {
+              d.visible = visible;
             }
             return {
               ...d,
