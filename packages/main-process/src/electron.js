@@ -1,98 +1,13 @@
-import { app, protocol, BrowserWindow, ipcMain } from 'electron';
-import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
+import { app, protocol, BrowserWindow } from 'electron';
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
 
-import { defaultWindowConfig } from './window';
+import { createMainWindow } from './window';
 import store from './datastore';
 import trayEvent from './trayEvent';
 import { electronLog } from './log';
-import { shieldHotKeys } from './hotKey';
 import { IS_DEVELOPMENT } from './utils';
 
 global.store = store;
-
-async function createWindow() {
-  const win = new BrowserWindow({
-    ...defaultWindowConfig(),
-    width: 360,
-    height: 490,
-    show: false,
-  });
-
-  if (process.env.WEBPACK_DEV_SERVER_URL) {
-    await win.loadURL(process.env.WEBPACK_DEV_SERVER_URL);
-  } else {
-    createProtocol('app');
-    await win.loadURL('app://./index.html');
-  }
-
-  if (global.store.get('IS_DEVTOOLS')) {
-    win.webContents.openDevTools();
-  }
-
-  global.mainWindow = win;
-
-  let hookTimer = 0;
-  win.hookWindowMessage(278, () => {
-    win.setEnabled(false);
-    // 禁止头部右键点击
-    hookTimer && clearTimeout(hookTimer);
-    hookTimer = setTimeout(() => {
-      win.setEnabled(true);
-    }, 100);
-    return true;
-  });
-
-  win.on('close', (event) => {
-    const winCanBeClosed = global.store.get('WIN_CAN_BE_CLOSED');
-    if (!winCanBeClosed) {
-      win.hide();
-      event.preventDefault();
-      return;
-    } else {
-      const hasGlobalWindow = global.TRTCWindow;
-      if (!!hasGlobalWindow) {
-        global.store.set('WIN_CAN_BE_CLOSED', false);
-        event.preventDefault();
-        const errorMsg = {
-          msg: '请先结束当前通话',
-          type: 'MESSAGE',
-        };
-        win.webContents.send('mainProcessError', errorMsg);
-        global.TRTCWindow.webContents.send('mainProcessError', errorMsg);
-        return;
-      }
-    }
-  });
-
-  win.on('closed', () => {
-    global.mainWindow = null;
-    global.store.set('WIN_CAN_BE_CLOSED', false);
-  });
-
-  win.on('focus', () => {
-    trayEvent.clearFlash();
-  });
-
-  win.on('ready-to-show', () => {
-    const autoLogin = global.store.get('AUTO_LOGIN') || {};
-    const { status = false, token = '' } = autoLogin;
-    if (!status || !token) {
-      win.show();
-    }
-  });
-
-  win.webContents.on('did-attach-webview', (event, webContents) => {
-    webContents.setWindowOpenHandler((details) => {
-      if (!details.url) return;
-      mainWindow.webContents.send('webviewOpenUrl', details.url);
-      return { action: 'deny' };
-    });
-  });
-
-  // 屏蔽浏览器快捷键
-  shieldHotKeys(win);
-}
 
 const initElectron = (config) => {
   const {
@@ -162,7 +77,8 @@ const initElectron = (config) => {
       });
 
       app.on('activate', async () => {
-        if (BrowserWindow.getAllWindows().length === 0) await createWindow();
+        if (BrowserWindow.getAllWindows().length === 0)
+          await createMainWindow();
       });
 
       app.on('ready', async () => {
@@ -178,7 +94,7 @@ const initElectron = (config) => {
         trayEvent.setTray();
 
         // 创建窗口
-        await createWindow();
+        await createMainWindow();
 
         resolve({
           App: app,

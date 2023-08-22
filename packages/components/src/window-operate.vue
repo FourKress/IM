@@ -63,6 +63,11 @@ export default {
       isMax: false,
     };
   },
+  created() {
+    renderProcess.maximizeStatus((event, status) => {
+      this.isMax = status;
+    });
+  },
   methods: {
     ...mapActions('IMStore', ['setSynergyStatus']),
 

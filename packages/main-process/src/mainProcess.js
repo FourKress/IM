@@ -78,6 +78,8 @@ const initIpcMain = () => {
       showMainWindow();
 
       screen.on('display-metrics-changed', function () {
+        global.store.set('SCREEN_HISTORY', null);
+        global.store.set('IS_MAX', false);
         showMainWindow();
       });
     });

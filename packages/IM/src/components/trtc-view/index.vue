@@ -235,7 +235,6 @@ export default {
   },
 
   async mounted() {
-    document.body.className = 'trtc-body';
     this.checkDevices();
     const resizeObserver = new ResizeObserver((entries) => {
       window.requestAnimationFrame(() => {
@@ -984,14 +983,6 @@ export default {
       color: $main-text-color;
       border-color: transparent;
     }
-  }
-}
-</style>
-
-<style lang="scss">
-.trtc-body {
-  .el-message {
-    min-width: 320px !important;
   }
 }
 </style>

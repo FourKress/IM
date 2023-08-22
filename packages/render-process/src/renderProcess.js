@@ -36,3 +36,4 @@ export const getFocusedWindow = electronAPI?.getFocusedWindow;
 export const webviewOpenUrl = electronAPI?.webviewOpenUrl;
 export const copyFile = electronAPI?.copyFile;
 export const autoLoginCallBack = electronAPI?.autoLoginCallBack;
+export const maximizeStatus = electronAPI?.maximizeStatus;

@@ -44,4 +44,5 @@ window.electronAPI = {
   copyFile: (sourcePath, targetPath) =>
     ipcRenderer.invoke('copyFile', sourcePath, targetPath),
   autoLoginCallBack: () => ipcRenderer.send('autoLoginCallBack'),
+  maximizeStatus: (flag) => ipcRenderer.on('maximizeStatus', flag),
 };
