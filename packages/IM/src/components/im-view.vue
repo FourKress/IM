@@ -186,9 +186,9 @@ export default {
       type: Boolean,
       default: false,
     },
-    headerStyle: {
-      type: Object,
-      default: () => {},
+    active: {
+      type: Boolean,
+      default: false,
     },
     imViewStyle: {
       type: Object,
@@ -425,7 +425,10 @@ export default {
           }, 200);
         } else {
           this.messageList = msgs;
-          if (!msgs?.length) return;
+          if (!msgs?.length) {
+            this.loadComplete = true;
+            return;
+          }
           // 延迟, 等待视频、图片加载完成，保证滚动高度真实
           this.scrollTopTimer = setTimeout(() => {
             this.handleScrollTo(() => {
