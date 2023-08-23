@@ -83,13 +83,16 @@ export default {
       });
       const { loginData, name, idcard } = data || {};
       if (loginData) {
-        await this.handleClientLogin({
-          data: {
-            ...loginData,
-            name,
-            idcard,
+        await this.handleClientLogin(
+          {
+            data: {
+              ...loginData,
+              name,
+              idcard,
+            },
           },
-        });
+          true,
+        );
       }
       this.autoLoginResult();
     }

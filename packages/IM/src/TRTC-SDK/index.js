@@ -15,26 +15,26 @@ import TRTCCloud, {
   TRTCQuality,
 } from 'trtc-electron-sdk';
 
-import { storeInstance } from '@lanshu/utils';
+import { renderProcess } from '@lanshu/render-process';
 
 const trtcCloudInstance = () => {
   const trtcCloud = new TRTCCloud();
 
   const enterRoom = (params, type) => {
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       const rtcMap = {
         video: TRTCAppScene.TRTCAppSceneVideoCall,
         audio: TRTCAppScene.TRTCAppSceneAudioCall,
       };
-      const systemUserInfo =
-        storeInstance.getters['globalStore/systemUserInfo'];
       const { userId, roomId } = params;
       const trtcParams = new TRTCParams();
+      const { userSig, appId } =
+        (await renderProcess.getStore('TRTC_USER_SIG')) || {};
 
       trtcParams.userId = userId;
       trtcParams.roomId = roomId;
-      trtcParams.sdkAppId = systemUserInfo.appid;
-      trtcParams.userSig = systemUserInfo.userSig;
+      trtcParams.sdkAppId = appId;
+      trtcParams.userSig = userSig;
 
       trtcCloud.enterRoom(trtcParams, rtcMap[type]);
 

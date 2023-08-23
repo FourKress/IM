@@ -35,6 +35,8 @@ export default {
           idcard,
         };
       }
+      const { userSig, appId } = resData;
+      await renderProcess.setStore('TRTC_USER_SIG', { userSig, appId });
       await this.setSystemUserInfo(resData);
 
       const autoLogin = (await renderProcess.getStore('AUTO_LOGIN')) || {};
