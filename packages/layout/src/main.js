@@ -43,15 +43,18 @@ const Layout = (config = {}) => {
         'plugins',
         JSON.stringify(
           plugins.map((d) => {
+            const { component, ...other } = d;
             return {
-              key: d.name,
-              visible: false,
+              ...other,
+              key: component.name,
             };
           }),
         ),
       );
       plugins.forEach((d) => {
-        Vue.component(d.name, d);
+        const { component } = d;
+        if (!component) return;
+        Vue.component(component.name, component);
       });
     } else {
       localStorage.removeItem('plugins');

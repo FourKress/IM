@@ -8,7 +8,7 @@
         :key="item"
         @click="handleOpenApp(item)"
       >
-        <img class="icon" src="" alt="" />
+        <img class="icon" src="./logo.jpg" alt="" />
       </div>
     </div>
   </div>
@@ -106,7 +106,6 @@ export default {
         height: 32px;
         border-radius: 6px;
         overflow: hidden;
-        background-color: #333;
       }
 
       &.active {

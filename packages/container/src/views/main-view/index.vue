@@ -59,11 +59,10 @@ export default {
         const { appName, visible } = val || {};
         if (appName) {
           this.plugins = this.plugins.map((d) => {
-            if (d.key === appName) {
-              d.visible = visible;
-            }
+            const { alwaysShow, key } = d;
             return {
               ...d,
+              visible: key === appName ? visible : false || alwaysShow,
             };
           });
         }

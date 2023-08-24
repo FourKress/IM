@@ -15,7 +15,9 @@
       ></LsIcon>
       {{ age ? `${age}岁` : '' }}
     </span>
-    <span class="tag" v-if="addressLabel" :style="{ background: bgColor }">{{ addressLabel }}</span>
+    <span class="tag" v-if="addressLabel" :style="{ background: bgColor }">
+      {{ addressLabel }}
+    </span>
   </div>
 </template>
 
@@ -82,9 +84,11 @@ export default {
 
   .tag {
     min-width: 42px;
+    max-width: 150px;
     height: 22px;
+    line-height: 22px;
     border-radius: 3px;
-    display: flex;
+    display: inline-block;
     align-items: center;
     justify-content: center;
     padding: 0 8px;
@@ -93,8 +97,13 @@ export default {
     font-weight: normal;
     color: #8f959e;
 
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
     &:first-child {
       margin-right: 7px;
+      display: inline-flex;
     }
 
     .tag-icon {

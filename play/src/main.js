@@ -7,7 +7,21 @@ import pluginB from './components/plugin-b.vue';
 Layout({
   menu: menuRoutes,
   routes,
-  plugins: [PluginAppNav, plugin, pluginB],
+  plugins: [
+    {
+      visible: true,
+      alwaysShow: true,
+      component: PluginAppNav,
+    },
+    {
+      visible: false,
+      component: plugin,
+    },
+    {
+      visible: false,
+      component: pluginB,
+    },
+  ],
 }).catch((error) => {
   console.error(error);
 });
