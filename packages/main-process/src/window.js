@@ -114,9 +114,7 @@ export const defaultWindowConfig = () => {
     frame: false,
     autoHideMenuBar: true,
     webPreferences: {
-      // TODO 暂时关闭
-      // devTools: global.store.get('IS_DEVTOOLS'),
-      devTools: true,
+      devTools: global.store.get('IS_DEVTOOLS'),
       webviewTag: true,
       webSecurity: false,
       nodeIntegration: true,
