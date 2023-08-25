@@ -1,6 +1,6 @@
 {
   "name": "@lanshu/render-process",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "客户端渲染进程",
   "keywords": [
     "render-process"
