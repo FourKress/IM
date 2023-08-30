@@ -55,7 +55,7 @@
             </el-form>
 
             <div
-              class="login-btn"
+              class="submit-btn"
               :class="validPhoneNum && 'active'"
               @click="handleAuth"
             >
@@ -73,7 +73,7 @@
                   icon="ls-icon-a-icon_genghuanchenggong2x1"
                 ></LsIcon>
               </div>
-              <div class="title">手机号码更换成功！</div>
+              <div class="title">手机号码更换成功</div>
 
               <div class="title-tips">
                 {{ countdown }}s后客户端将自动退出，请使用手机号码{{
@@ -186,7 +186,7 @@ export default {
     )}，有效期5分钟`;
   },
   methods: {
-    async checkCaptcha(phoneNum, codes) {
+    async checkCaptcha(codes) {
       await Apis.accountCheckCaptcha({
         phone: this.phoneNum,
         captcha: codes,
@@ -201,7 +201,7 @@ export default {
       if (flag) {
         if (this.step === 0) {
           try {
-            await this.checkCaptcha(this.phoneNum, codes);
+            await this.checkCaptcha(codes);
           } catch (e) {
             this.$refs.authCode.handleClearCode();
             return;
@@ -213,7 +213,7 @@ export default {
           });
         } else {
           try {
-            await this.checkCaptcha(this.newPhoneNum, codes);
+            await this.checkCaptcha(codes);
           } catch (e) {
             this.$refs.authCode.handleClearCode();
             return;
@@ -221,7 +221,7 @@ export default {
           await Apis.accountUpdatePhone({
             newPhone: this.newPhoneNum,
           });
-          this.$loading({
+          const loadingInstance = this.$loading({
             lock: true,
             text: '',
             spinner: 'none',
@@ -234,6 +234,7 @@ export default {
             if (this.countdown <= 0) {
               clearInterval(this.timer);
               this.countdown = 0;
+              loadingInstance.close();
               await ClientLogOut();
             }
           }, 1000);
@@ -299,7 +300,7 @@ export default {
       margin: 60px 0 126px 0;
 
       .phone,
-      .login-btn {
+      .submit-btn {
         width: 100%;
         height: 60px;
         line-height: 60px;
@@ -307,7 +308,7 @@ export default {
         box-sizing: border-box;
       }
 
-      .login-btn {
+      .submit-btn {
         text-align: center;
         color: $bg-white-color;
         background-color: #87a1cd;

@@ -160,7 +160,6 @@ export default {
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
-  margin-left: 1px;
   padding: 24px 0 6px 0;
 
   ::-webkit-scrollbar {

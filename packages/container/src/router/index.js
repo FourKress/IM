@@ -55,6 +55,11 @@ const baseRoutes = [
         path: 'devices',
         component: () => import('../views/settings/devices/index'),
       },
+      {
+        name: 'WriteOff',
+        path: 'writeOff',
+        component: () => import('../views/settings/write-off/index'),
+      },
     ],
   },
   {

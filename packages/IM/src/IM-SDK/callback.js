@@ -43,7 +43,8 @@ const startNotification = lodash.debounce(async function (message) {
     }
   }
 
-  NOTIFICATION_BODY += `${MSG_FORMAT_MAP[msgType]?.label(data)}`;
+  NOTIFICATION_BODY +=
+    `${MSG_FORMAT_MAP[msgType]?.label(data)}` || '未知类型消息';
 
   new Notification(NOTIFICATION_TITLE, {
     body: NOTIFICATION_BODY,

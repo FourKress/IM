@@ -40,11 +40,8 @@ export default {
     messageText() {
       const { msgType, data, fromNickname, toUserType } = this.lastMsg;
       if (!msgType && !data) return '暂无消息';
-      const msgTypes = Object.keys(MSG_FORMAT_MAP);
-      // 不满足消息类型时，默认未知消息
-      if (!msgTypes.includes(String(msgType))) return '未知消息';
       const msgTypeInfo = MSG_FORMAT_MAP[msgType];
-      const messageText = msgTypeInfo.label(data);
+      const messageText = msgTypeInfo?.label(data) || '未知类型消息';
       const isSysTemNotify =
         msgTypeInfo.type === CHECK_MSG_TYPE.IS_SYSTEM_NOTIFY;
       const isGroup = toUserType === SESSION_USER_TYPE.IS_GROUP;

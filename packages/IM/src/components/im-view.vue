@@ -16,7 +16,10 @@
     <div
       class="message-panel"
       ref="MessagePanel"
-      :style="{ opacity: loadComplete ? '1' : '0' }"
+      :style="{
+        opacity: loadComplete ? '1' : '0',
+        paddingRight: isScroll ? '10px' : '20px',
+      }"
       @scroll="handleScroll"
     >
       <div
@@ -226,6 +229,7 @@ export default {
       memberCount: 0,
       loadComplete: false,
       scrollTopTimer: 0,
+      isScroll: false,
     };
   },
   watch: {
@@ -604,7 +608,9 @@ export default {
 
     handleScrollTo(cb, isContinue = false) {
       if (this.$refs.MessagePanel) {
-        let currentScrollHeight = this.$refs.MessagePanel?.scrollHeight;
+        const { scrollHeight, clientHeight } = this.$refs.MessagePanel;
+        this.isScroll = scrollHeight > clientHeight;
+        let currentScrollHeight = scrollHeight;
         if (isContinue) {
           currentScrollHeight =
             currentScrollHeight - this.preScrollHeight + this.scrollTop;

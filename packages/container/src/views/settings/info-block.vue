@@ -9,7 +9,12 @@
       <div v-else class="info">
         <span class="text" v-if="label">{{ label || '' }}</span>
         <span class="text" v-if="value">{{ value }}</span>
-        <span class="btn" v-if="btnText" @click="handleClick">
+        <span
+          class="btn"
+          v-if="btnText"
+          :style="{ color: btnColor }"
+          @click="handleClick"
+        >
           {{ btnText }}
         </span>
       </div>
@@ -41,6 +46,9 @@ export default {
     },
     btnText() {
       return this.info?.btnText;
+    },
+    btnColor() {
+      return this.info?.btnColor || '#2b83fa';
     },
     render() {
       return this.info?.render;

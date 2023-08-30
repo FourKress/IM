@@ -163,10 +163,28 @@
         height="18"
       ></LsIcon>
     </div>
+
+    <div
+      class="wrap position shadow"
+      :class="classObject"
+      v-if="msgType === CHECK_MSG_TYPE.IS_POSITION"
+      @click="handleOpenMap"
+    >
+      <div class="title">{{ this.msgData.placeName }}</div>
+      <img
+        :src="`https://restapi.amap.com/v3/staticmap?location=${msgData.longitude},${msgData.latitude}&zoom=16&size=248*186&markers=mid,,A:${msgData.longitude},${msgData.latitude}&key=f0e44864bb6bf097f6c4c74d2828d583`"
+        alt=""
+      />
+    </div>
+
+    <div class="card text" ref="MsgCard" :class="classObject" v-if="!msgType">
+      未知类型消息
+    </div>
   </div>
 </template>
 
 <script>
+import { renderProcess } from '@lanshu/render-process';
 import {
   NETWORK_CALL_TYPE,
   SESSION_BUBBLE_MODEL,
@@ -230,7 +248,7 @@ export default {
       return {
         self: this.isSelf,
         target: !this.isSelf,
-        disabled: this.isRevoke,
+        disabled: this.isRevoke || !this.msgType,
       };
     },
     trtcMsgTips() {
@@ -306,6 +324,12 @@ export default {
       const type = this.rawMsg.data?.type;
       if (!type) return;
       await startTrtc(this.session, type);
+    },
+
+    handleOpenMap() {
+      renderProcess.openUrl(
+        `https://ditu.amap.com/regeo?lng=${this.msgData.longitude}&lat=${this.msgData.latitude}&name=${this.msgData.placeName}&src=uriapi`,
+      );
     },
   },
 };

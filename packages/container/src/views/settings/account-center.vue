@@ -87,14 +87,14 @@ export default {
           value: '',
           fnc: (info) => this.authenticate(info),
         },
-        {
-          key: 'binding',
-          title: '绑定微信',
-          label: '未绑定微信',
-          value: '',
-          // btnText: '解绑',
-          fnc: (info) => this.unbind(info),
-        },
+        // {
+        //   key: 'binding',
+        //   title: '绑定微信',
+        //   label: '未绑定微信',
+        //   value: '',
+        //   btnText: '去绑定',
+        //   fnc: (info) => this.handleWechatBind(info),
+        // },
         // {
         //   key: 'device',
         //   title: '常用设备',
@@ -103,14 +103,16 @@ export default {
         //   btnText: '管理',
         //   fnc: () => this.jumpDevices(),
         // },
-        // {
-        //   key: 'cancel',
-        //   title: '注销账号',
-        //   label: '',
-        //   value:
-        //     '永久注销你的北象帐号，注销成功后该帐号将无法使用，帐号下的所有数据将被删除',
-        //   btnText: '注销',
-        // },
+        {
+          key: 'writeOff',
+          title: '注销账号',
+          label: '',
+          value:
+            '永久注销你的北象帐号，注销成功后该帐号将无法使用，帐号下的所有数据将被删除',
+          btnText: '注销',
+          btnColor: '#F65951',
+          fnc: () => this.handleWriteOff(),
+        },
       ],
       showAuthenticate: false,
       showUnbind: false,
@@ -120,8 +122,8 @@ export default {
   created() {
     const { phone } = this.userProfile;
     this.infos[0].value = dataEncryption(phone);
-    const { name1, idcard } = this.systemUserInfo;
-    if (name1 && idcard) {
+    const { name, idcard } = this.systemUserInfo;
+    if (name && idcard) {
       this.infos[1].label = '已认证用户:';
       this.infos[1].value = `${dataEncryption(
         name,
@@ -182,7 +184,7 @@ export default {
         },
       );
     },
-    unbind(info) {
+    handleWechatBind(info) {
       console.log(info);
       if (info.value) {
         this.$LConfirm({
@@ -204,6 +206,22 @@ export default {
         path,
       });
       this.$router.push(path);
+    },
+    handleWriteOff() {
+      this.$LConfirm({
+        title: '确定要注销账号？',
+        content:
+          '永久注销你的北象帐号，注销成功后该帐号将无法使用，帐号下的所有数据将被删除',
+      })
+        .then(() => {
+          const path = '/settings/writeOff';
+          this.addBreadCrumbs({
+            title: '注销账号',
+            path,
+          });
+          this.$router.push(path);
+        })
+        .catch((e) => {});
     },
   },
 };
