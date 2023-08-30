@@ -4,6 +4,7 @@
       :is="component"
       :key="component"
       :pluginStyle.sync="pluginStyle"
+      :visible="visible"
     ></component>
   </div>
 </template>
@@ -15,6 +16,10 @@ export default {
     component: {
       type: String,
       required: true,
+    },
+    visible: {
+      type: Boolean,
+      required: false,
     },
   },
   data() {

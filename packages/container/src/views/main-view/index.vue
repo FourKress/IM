@@ -14,6 +14,7 @@
       <template v-for="plugin in plugins">
         <MainPlugIn
           v-show="plugin.visible"
+          :visible="plugin.visible"
           :key="plugin.key"
           :component="plugin.key"
         />

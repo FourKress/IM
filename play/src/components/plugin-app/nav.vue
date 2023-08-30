@@ -4,8 +4,9 @@
     <div class="container">
       <div
         class="item"
-        v-for="item in 2"
-        :key="item"
+        :class="activeKey === item.key && 'active'"
+        v-for="item in microAppList"
+        :key="item.key"
         @click="handleOpenApp(item)"
       >
         <img class="icon" src="./logo.jpg" alt="" />
@@ -18,25 +19,38 @@
 import { mapActions, mapGetters } from 'vuex';
 export default {
   name: 'PluginAppNav',
-  components: {},
+  props: {
+    visible: {
+      type: Boolean,
+      required: false,
+    },
+  },
   computed: {
     ...mapGetters('IMStore', ['mainSessionWindow']),
+  },
+  data() {
+    return {
+      activeKey: '',
+      microAppList: [
+        {
+          key: 'SelfPlugin',
+        },
+        {
+          key: 'SelfPluginB',
+        },
+      ],
+    };
   },
   watch: {
     mainSessionWindow: {
       deep: true,
-      handler(val) {
-        if (val.sessId) {
-          console.log('PluginOptPanel');
-          this.setOpenMicroApp({
-            appName: 'PluginAppNav',
-            visible: true,
-          });
-        }
+      handler() {
+        this.openAppNav();
       },
     },
   },
   mounted() {
+    this.openAppNav();
     this.$emit('update:pluginStyle', {
       flex: '1 1 0',
       minWidth: '60px',
@@ -46,9 +60,19 @@ export default {
   methods: {
     ...mapActions('globalStore', ['setOpenMicroApp']),
 
+    openAppNav() {
+      if (this.mainSessionWindow?.sessId && !this.visible) {
+        this.setOpenMicroApp({
+          appName: 'PluginAppNav',
+          visible: true,
+        });
+      }
+    },
+
     handleOpenApp(item) {
+      this.activeKey = item.key;
       this.setOpenMicroApp({
-        appName: item === 1 ? 'SelfPlugin' : 'SelfPluginB',
+        appName: item.key,
         visible: true,
       });
     },
@@ -110,10 +134,13 @@ export default {
 
       &.active {
         background-color: #e9f2ff;
+        &:hover {
+          background-color: #e9f2ff;
+        }
       }
 
       &:hover {
-        background-color: #e9f2ff;
+        background-color: $bg-hover-grey-color;
       }
     }
   }

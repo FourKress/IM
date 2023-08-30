@@ -50,6 +50,7 @@ export default {
 .plugin-app-header {
   width: 100%;
   height: 48px;
+  min-height: 48px;
   padding: 0 20px;
   display: flex;
   align-items: center;

@@ -427,7 +427,10 @@ export default {
         margin-bottom: 4px;
 
         &.active {
-          background: #e9f2ff;
+          background-color: #e9f2ff;
+          &:hover {
+            background-color: #e9f2ff;
+          }
         }
 
         &:hover {

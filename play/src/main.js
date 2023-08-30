@@ -9,7 +9,7 @@ Layout({
   routes,
   plugins: [
     {
-      visible: true,
+      visible: false,
       alwaysShow: true,
       component: PluginAppNav,
     },
