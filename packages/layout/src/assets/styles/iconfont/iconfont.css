@@ -1,9 +1,9 @@
 @font-face {
   font-family: "ls-icon-font"; /* Project id 3760592 */
-  src: url('iconfont.woff2?t=1692150905876') format('woff2'),
-       url('iconfont.woff?t=1692150905876') format('woff'),
-       url('iconfont.ttf?t=1692150905876') format('truetype'),
-       url('iconfont.svg?t=1692150905876#ls-icon-font') format('svg');
+  src: url('iconfont.woff2?t=1693469041003') format('woff2'),
+       url('iconfont.woff?t=1693469041003') format('woff'),
+       url('iconfont.ttf?t=1693469041003') format('truetype'),
+       url('iconfont.svg?t=1693469041003#ls-icon-font') format('svg');
 }
 
 .ls-icon-font {
@@ -12,6 +12,10 @@
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.ls-icon-shuaxin:before {
+  content: "\e66e";
 }
 
 .ls-icon-renshu:before {
@@ -776,14 +780,6 @@
 
 .ls-icon-menu_txl_sel:before {
   content: "\e609";
-}
-
-.ls-icon-navi_zxh_icon:before {
-  content: "\e60a";
-}
-
-.ls-icon-navi_sx_icon:before {
-  content: "\e60b";
 }
 
 .ls-icon-navi_ss_icon:before {

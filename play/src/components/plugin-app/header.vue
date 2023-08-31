@@ -1,12 +1,7 @@
 <template>
   <div class="plugin-app-header">
     <div class="left">
-      <LsIcon size="12" color="#333" icon="ls-icon-a-icon_gengduo22x"></LsIcon>
-      <LsIcon
-        size="12"
-        color="#c8c9cc"
-        icon="ls-icon-a-icon_gengduo22x"
-      ></LsIcon>
+      <LsIcon size="14" color="#333" icon="ls-icon-shuaxin"></LsIcon>
     </div>
     <div class="title">
       {{ title }}

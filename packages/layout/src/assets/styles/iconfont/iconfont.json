@@ -6,6 +6,13 @@
   "description": "IM、政务通用",
   "glyphs": [
     {
+      "icon_id": "36975814",
+      "name": "刷新",
+      "font_class": "shuaxin",
+      "unicode": "e66e",
+      "unicode_decimal": 58990
+    },
+    {
       "icon_id": "36928472",
       "name": "人数",
       "font_class": "renshu",
@@ -1341,20 +1348,6 @@
       "font_class": "menu_txl_sel",
       "unicode": "e609",
       "unicode_decimal": 58889
-    },
-    {
-      "icon_id": "33236306",
-      "name": "navi_zxh_icon",
-      "font_class": "navi_zxh_icon",
-      "unicode": "e60a",
-      "unicode_decimal": 58890
-    },
-    {
-      "icon_id": "33236307",
-      "name": "navi_sx_icon",
-      "font_class": "navi_sx_icon",
-      "unicode": "e60b",
-      "unicode_decimal": 58891
     },
     {
       "icon_id": "33236308",
