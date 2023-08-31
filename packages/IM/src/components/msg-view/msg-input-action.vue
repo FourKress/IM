@@ -169,7 +169,7 @@ import {
 import { renderProcess } from '@lanshu/render-process';
 import { LsIcon } from '@lanshu/components';
 import ActionCard from '../action-view/action-card';
-import { mapGetters } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 import {
   IMSDKMessageProvider,
   IMCreateMsg,
@@ -324,7 +324,7 @@ export default {
     });
 
     document.addEventListener('click', this.handleAtGlobalClick);
-    this.$refs.msgInput.addEventListener('paste', (event) => {
+    this.$refs.msgInput.addEventListener('paste', async (event) => {
       this.handleBlur();
       event.preventDefault();
       let text;
@@ -340,7 +340,7 @@ export default {
       }
 
       const items = event.clipboardData.items;
-      for (let item of items) {
+      for (const item of items) {
         // 图片类型
         if (item.kind === 'file' && item.type.includes('image')) {
           if (!item.type.includes('image')) return;
@@ -353,6 +353,34 @@ export default {
           };
           reader.readAsDataURL(blob);
         }
+      }
+
+      const clipboardContents = await navigator.clipboard?.read();
+      const filesList = [];
+      for (const clipboardItem of clipboardContents) {
+        for (const type of clipboardItem.types) {
+          const blob = await clipboardItem.getType(type);
+          if (type.includes('image')) {
+            const reader = new FileReader();
+            reader.onload = () => {
+              this.$nextTick(() => {
+                this.handleImageInsert(reader.result);
+              });
+            };
+            reader.readAsDataURL(blob);
+          } else {
+            const tempFile = new window.File([blob], '333', {
+              type: type.replace('web ', ''),
+            });
+            filesList.push(tempFile);
+          }
+        }
+      }
+      if (filesList?.length) {
+        await this.setDragFileList({
+          sessId: this.session.sessId,
+          files: filesList,
+        });
       }
     });
 
@@ -407,6 +435,8 @@ export default {
     }
   },
   methods: {
+    ...mapActions('IMStore', ['setDragFileList']),
+
     getRange() {
       return window.getSelection()?.getRangeAt(0);
     },

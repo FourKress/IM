@@ -74,8 +74,8 @@ export const saveCacheFile = async (data) => {
   electronLog.info(`saveCacheFile ${path}`);
 };
 
-export const getCacheFile2Base64 = (fileName) => {
+export const getCacheFile2Base64 = (fileName, fileType) => {
   const bitmap = fs.readFileSync(fileName);
   const base64str = Buffer.from(bitmap).toString('base64'); // base64编码
-  return `data:image/png;base64,${base64str}`;
+  return `data:${fileType};base64,${base64str}`;
 };

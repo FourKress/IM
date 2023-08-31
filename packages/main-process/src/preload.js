@@ -31,8 +31,8 @@ window.electronAPI = {
   activeSearch: (callback) => ipcRenderer.on('activeSearch', callback),
   getCacheFilePath: (fileName) =>
     ipcRenderer.invoke('getCacheFilePath', fileName),
-  getCacheFile2Base64: (fileName) =>
-    ipcRenderer.invoke('getCacheFile2Base64', fileName),
+  getCacheFile2Base64: (fileName, fileType) =>
+    ipcRenderer.invoke('getCacheFile2Base64', fileName, fileType),
   saveCacheFile: (key, data) => ipcRenderer.invoke('saveCacheFile', key, data),
   getCacheDirInfo: () => ipcRenderer.invoke('getCacheDirInfo'),
   setCacheDir: (key, data) => ipcRenderer.send('setCacheDir', key, data),

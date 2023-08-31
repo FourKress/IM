@@ -1,5 +1,5 @@
 <template>
-  <div class="history-msg-card">
+  <div class="history-msg-card-item">
     <div
       class="text"
       ref="MsgCard"
@@ -13,7 +13,7 @@
       style="cursor: pointer"
       v-if="isImage"
       :style="{ width: `${size.width}px`, height: `${size.height}px` }"
-      v-contextMenu="imageContextMenuList"
+      v-contextMenu="fileContextMenuList"
     >
       <el-image :src="assetsPath" @click="handlePreview">
         <div slot="placeholder" class="image-slot">
@@ -135,7 +135,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.history-msg-card {
+.history-msg-card-item {
   .text {
     user-select: text;
     word-break: break-all;

@@ -28,23 +28,16 @@ export default {
       textContextMenuList: [
         {
           label: () => '复制',
-          handler: this.handleCopy,
+          handler: this.handleCopyText,
           icon: () => 'ls-icon-fuzhi',
-        },
-      ],
-      imageContextMenuList: [
-        {
-          label: () => '复制',
-          handler: this.handleCopyImage,
-          icon: () => 'ls-icon-fuzhi',
-        },
-        {
-          label: () => '另存为',
-          handler: this.handleDownFile,
-          icon: () => 'ls-icon-xiazai',
         },
       ],
       fileContextMenuList: [
+        {
+          label: () => '复制',
+          handler: this.handleCopyFile,
+          icon: () => 'ls-icon-fuzhi',
+        },
         {
           label: () => '另存为',
           handler: this.handleDownFile,
@@ -260,23 +253,26 @@ export default {
       this.assetsPath = assetsPath;
     },
 
-    async handleCopy() {
+    async handleCopyText() {
       this.selectedText = window.getSelection().toString();
       const text = this.selectedText || this.$refs.MsgCard.innerText;
       await navigator.clipboard.writeText(text);
       this.$message.success('复制成功');
     },
 
-    async handleCopyImage() {
+    async handleCopyFile() {
       if (!this.cachePath) {
         await this.handleDownload();
       }
-      const base64 = await renderProcess.getCacheFile2Base64(this.cachePath);
+      const base64 = await renderProcess.getCacheFile2Base64(
+        this.cachePath,
+        this.msgData.type,
+      );
       const blob = dataURLtoBlob(base64);
 
       await navigator.clipboard.write([
         new ClipboardItem({
-          [blob.type]: blob,
+          [`web ${blob.type}`]: blob,
         }),
       ]);
       this.$message.success('复制成功');

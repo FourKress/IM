@@ -154,8 +154,8 @@ const initIpcMain = () => {
       return await getCacheDirInfo();
     });
 
-    ipcMain.handle('getCacheFile2Base64', (_event, path) => {
-      return getCacheFile2Base64(path.replace('cache:///', ''));
+    ipcMain.handle('getCacheFile2Base64', (_event, path, type) => {
+      return getCacheFile2Base64(path.replace('cache:///', ''), type);
     });
 
     ipcMain.on('setCacheDir', async (_event, path) => {

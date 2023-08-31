@@ -346,8 +346,6 @@ export default {
       const files = e.dataTransfer.files;
 
       if (files?.length > 0) {
-        //获取文件路径
-        const path = files[0].path;
         // 禁止发言
         if (
           this.isGroup &&

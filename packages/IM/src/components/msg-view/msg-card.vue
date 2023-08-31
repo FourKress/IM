@@ -34,7 +34,7 @@
         height: `${size.height}px`,
         ...wrapStyle,
       }"
-      v-contextMenu="[...imageContextMenuList, ...baseContextMenuList]"
+      v-contextMenu="[...fileContextMenuList, ...baseContextMenuList]"
     >
       <el-image :src="assetsPath" @click="handlePreview">
         <div slot="placeholder" class="image-slot">
