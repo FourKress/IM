@@ -1,8 +1,7 @@
 import { renderProcess } from '@lanshu/render-process';
 import { IMRevokeMessage } from '@lanshu/im';
 import { mapGetters } from 'vuex';
-import lodash from 'lodash';
-import dayjs from 'dayjs';
+import { dayjs, lodash } from '@lanshu/utils';
 import { CHECK_MSG_TYPE, MSG_FORMAT_MAP } from '../msgUtils';
 import { dataURLtoBlob, getFileSize } from '../base';
 import { getAtTagList, formatAtTag, openAtUser } from '../atUtils';
@@ -264,11 +263,17 @@ export default {
       if (!this.cachePath) {
         await this.handleDownload();
       }
+      const { cliMsgId } = this.msg;
+      const { type } = this.msgData;
+
       const base64 = await renderProcess.getCacheFile2Base64(
         this.cachePath,
-        this.msgData.type,
+        type,
       );
-      const blob = dataURLtoBlob(base64);
+      const blob = dataURLtoBlob(
+        base64,
+        `${type}_file_${cliMsgId}.${this.getFileType()}`,
+      );
 
       await navigator.clipboard.write([
         new ClipboardItem({

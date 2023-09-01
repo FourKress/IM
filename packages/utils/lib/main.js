@@ -9,6 +9,7 @@ export * from '../src/version';
 export * from '../src/msgUtils';
 export * from '../src/atUtils';
 import lodash from 'lodash';
+import dayjs from 'dayjs';
 import qrcode from 'qrcode';
 import domToImage from 'dom-to-image';
 import generateRoute, { routeInstance } from '../src/router';
@@ -21,6 +22,7 @@ import * as Apis from '../src/apis';
 
 export {
   lodash,
+  dayjs,
   qrcode,
   domToImage,
   generateRoute,

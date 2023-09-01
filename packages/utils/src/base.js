@@ -75,7 +75,7 @@ export const downloadFile = (url, name) => {
   x.send();
 };
 
-export const dataURLtoBlob = (dataUrl) => {
+export const dataURLtoBlob = (dataUrl, type = '') => {
   let arr = dataUrl.split(','),
     mime = arr[0].match(/:(.*?);/)[1],
     bStr = atob(arr[1]),
@@ -84,7 +84,7 @@ export const dataURLtoBlob = (dataUrl) => {
   while (n--) {
     u8arr[n] = bStr.charCodeAt(n);
   }
-  return new Blob([u8arr], { type: mime });
+  return new Blob([u8arr], { type: type || mime });
 };
 
 // 设置header的class,用于控制窗体拖动

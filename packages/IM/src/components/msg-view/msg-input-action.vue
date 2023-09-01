@@ -339,47 +339,42 @@ export default {
         return;
       }
 
+      const pasteFilesList = [];
       const items = event.clipboardData.items;
       for (const item of items) {
         // 图片类型
-        if (item.kind === 'file' && item.type.includes('image')) {
-          if (!item.type.includes('image')) return;
-          const blob = item.getAsFile();
-          const reader = new FileReader();
-          reader.onload = () => {
-            this.$nextTick(() => {
-              this.handleImageInsert(reader.result);
-            });
-          };
-          reader.readAsDataURL(blob);
-        }
-      }
-
-      const clipboardContents = await navigator.clipboard?.read();
-      const filesList = [];
-      for (const clipboardItem of clipboardContents) {
-        for (const type of clipboardItem.types) {
-          const blob = await clipboardItem.getType(type);
-          if (type.includes('image')) {
-            const reader = new FileReader();
-            reader.onload = () => {
-              this.$nextTick(() => {
-                this.handleImageInsert(reader.result);
-              });
-            };
-            reader.readAsDataURL(blob);
+        if (item.kind === 'file') {
+          const file = item.getAsFile();
+          if (item.type.includes('image')) {
+            this.handleBlobLoadImage(file);
           } else {
-            const tempFile = new window.File([blob], '333', {
-              type: type.replace('web ', ''),
-            });
-            filesList.push(tempFile);
+            pasteFilesList.push(file);
           }
         }
       }
-      if (filesList?.length) {
+
+      try {
+        const clipboardContents = await navigator.clipboard?.read();
+        for (const clipboardItem of clipboardContents) {
+          for (const type of clipboardItem.types) {
+            const blob = await clipboardItem.getType(type);
+            if (type.includes('image')) {
+              this.handleBlobLoadImage(blob);
+            } else {
+              const [fileType, fileName] = type
+                .replace('web ', '')
+                .split('_file_');
+              const tempFile = this.handleBlob2File(blob, fileName, fileType);
+              pasteFilesList.push(tempFile);
+            }
+          }
+        }
+      } catch (e) {}
+
+      if (pasteFilesList?.length) {
         await this.setDragFileList({
           sessId: this.session.sessId,
-          files: filesList,
+          files: pasteFilesList,
         });
       }
     });
@@ -436,6 +431,23 @@ export default {
   },
   methods: {
     ...mapActions('IMStore', ['setDragFileList']),
+
+    handleBlobLoadImage(file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.$nextTick(() => {
+          this.handleImageInsert(reader.result);
+        });
+      };
+      reader.readAsDataURL(file);
+    },
+
+    handleBlob2File(blob, fileName, type) {
+      const file = new window.File([blob], fileName, {
+        type,
+      });
+      return file;
+    },
 
     getRange() {
       return window.getSelection()?.getRangeAt(0);
