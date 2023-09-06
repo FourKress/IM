@@ -8,6 +8,8 @@ export * from '../src/mixins';
 export * from '../src/version';
 export * from '../src/msgUtils';
 export * from '../src/atUtils';
+export * from '../src/encrypt';
+
 import lodash from 'lodash';
 import dayjs from 'dayjs';
 import qrcode from 'qrcode';

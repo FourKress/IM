@@ -177,3 +177,7 @@ export const userQueryByOrgId = async (params) => {
     terminal: await getTerminal(),
   });
 };
+
+export const getPublicKey = async () => {
+  return https.post('/auth/auth/publicKey');
+};

@@ -71,7 +71,7 @@
 </template>
 
 <script>
-import { Apis } from '@lanshu/utils';
+import { Apis, encryptData } from '@lanshu/utils';
 import { LsIcon } from '@lanshu/components';
 import LoginMixins from './loginMixins';
 
@@ -194,18 +194,20 @@ export default {
       this.$refs.loginForm.validate(async (valid) => {
         if (valid) {
           this.isAwait = true;
+          const password = await encryptData(this.form.firstPhoneNum);
+          console.log(password);
           try {
             if (this.isSetPwd) {
               await Apis.accountSetPassword({
                 username: this.phoneNum,
-                password: this.form.firstPhoneNum,
+                password,
                 captcha: this.captcha,
               });
             }
 
             const res = await Apis.accountLogin({
               username: this.phoneNum,
-              password: this.form.firstPhoneNum,
+              password,
             });
             await this.handleClientLogin(res);
           } catch (e) {
