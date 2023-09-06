@@ -9,20 +9,22 @@
         @click="handleMenuSwitch(item.path)"
       >
         <span class="btn-icon">
-          <img
-            v-if="item.activeIcon.includes('http')"
-            :src="item.activeIcon"
-            alt=""
-          />
-          <LsIcon
-            v-else
-            render-svg
-            width="20"
-            height="20"
-            :icon="
-              activePath === item.path ? item.activeIcon : item.disableIcon
-            "
-          ></LsIcon>
+          <template v-if="item.activeIcon">
+            <img
+              v-if="item.activeIcon.includes('http')"
+              :src="item.activeIcon"
+              alt=""
+            />
+            <LsIcon
+              v-else
+              render-svg
+              width="20"
+              height="20"
+              :icon="
+                activePath === item.path ? item.activeIcon : item.disableIcon
+              "
+            ></LsIcon>
+          </template>
         </span>
         <span class="menu-label">{{ item.label }}</span>
 

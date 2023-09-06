@@ -49,9 +49,11 @@ export default {
   mounted() {
     // 订阅微应用的通信数据变化
     MicroSharedObservable.subscribe();
+    this.setMicroAppName('MASTER');
   },
   methods: {
     ...mapActions('globalStore', ['setOpenMicroApp']),
+    ...mapActions('microVuexStore', ['setMicroAppName']),
   },
 
   destroyed() {
