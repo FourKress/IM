@@ -1,5 +1,5 @@
 import { REST_STORE_STATE } from '@lanshu/utils';
-import { handleResetStoreState } from '@lanshu/utils/src/store/utils';
+import { resetStoreState } from '@lanshu/utils/src/store/utils';
 
 const getDefaultState = () => {
   return {
@@ -84,7 +84,7 @@ const getters = {
 
 const mutations = {
   [REST_STORE_STATE](data) {
-    data = handleResetStoreState(data, getDefaultState());
+    data = resetStoreState(data, getDefaultState());
   },
   setUserInfo(data, value) {
     data.userInfo = value;

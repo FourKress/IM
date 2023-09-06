@@ -16,6 +16,7 @@ import qrcode from 'qrcode';
 import domToImage from 'dom-to-image';
 import generateRoute, { routeInstance } from '../src/router';
 import generateStore, { storeInstance } from '../src/store';
+import { resetStoreState } from '../src/store/utils';
 import regexUtils from '../src/regex';
 import https from '../src/https';
 import VuePrototype from '../src/VuePrototype';
@@ -31,6 +32,7 @@ export {
   generateStore,
   routeInstance,
   storeInstance,
+  resetStoreState,
   regexUtils,
   https,
   VuePrototype,

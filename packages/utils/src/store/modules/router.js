@@ -1,5 +1,5 @@
 import { REST_STORE_STATE } from '../../constant';
-import { handleResetStoreState } from '../utils';
+import { resetStoreState } from '../utils';
 
 const getDefaultState = () => {
   return {
@@ -19,7 +19,7 @@ const getters = {
 
 const mutations = {
   [REST_STORE_STATE](data) {
-    data = handleResetStoreState(data, getDefaultState());
+    data = resetStoreState(data, getDefaultState());
   },
   addBreadCrumb(data, value) {
     const flag = data.breadCrumbs.some((d) => d.path === value.path);

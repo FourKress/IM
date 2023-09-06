@@ -3,6 +3,7 @@ import routes, { menuRoutes } from '@/router';
 import PluginAppNav from './components/plugin-app/nav.vue';
 import plugin from './components/plugin.vue';
 import pluginB from './components/plugin-b.vue';
+import pluginStore from './store/plugin';
 
 Layout({
   menu: menuRoutes,
@@ -22,6 +23,9 @@ Layout({
       component: pluginB,
     },
   ],
+  store: {
+    pluginStore,
+  },
 }).catch((error) => {
   console.error(error);
 });

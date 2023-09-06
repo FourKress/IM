@@ -19,11 +19,17 @@
 
 <script>
 import { LsIcon } from '@lanshu/components';
+import { mapActions } from 'vuex';
 
 export default {
   name: 'PluginAppHeader',
   props: {
     title: {
+      type: String,
+      default: '',
+      required: true,
+    },
+    appName: {
       type: String,
       default: '',
       required: true,
@@ -34,8 +40,16 @@ export default {
   watch: {},
   mounted() {},
   methods: {
+    ...mapActions('globalStore', ['setOpenMicroApp']),
+    ...mapActions('pluginStore', ['setActiveMicroApp']),
+
     handleClose() {
       this.$emit('close');
+      this.setOpenMicroApp({
+        appName: this.appName,
+        visible: false,
+      });
+      this.setActiveMicroApp('');
     },
   },
 };

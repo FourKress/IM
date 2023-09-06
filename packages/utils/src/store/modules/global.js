@@ -1,5 +1,5 @@
 import { REST_STORE_STATE } from '../../constant';
-import { handleResetStoreState } from '../utils';
+import { resetStoreState } from '../utils';
 
 const getDefaultState = () => {
   return {
@@ -10,7 +10,7 @@ const getDefaultState = () => {
     startDownload: false,
     updateNotify: false,
     searchHistory: JSON.parse(localStorage.getItem('searchHistory') || '[]'),
-    openMicroApp: '',
+    openMicroApp: {},
   };
 };
 const state = getDefaultState();
@@ -28,7 +28,7 @@ const getters = {
 
 const mutations = {
   [REST_STORE_STATE](data) {
-    data = handleResetStoreState(data, getDefaultState());
+    data = resetStoreState(data, getDefaultState());
   },
   setSystemUserInfo(data, value) {
     data.systemUserInfo = value;

@@ -4,7 +4,7 @@
     <div class="container">
       <div
         class="item"
-        :class="activeKey === item.key && 'active'"
+        :class="activeMicroApp === item.key && 'active'"
         v-for="item in microAppList"
         :key="item.key"
         @click="handleOpenApp(item)"
@@ -27,10 +27,10 @@ export default {
   },
   computed: {
     ...mapGetters('IMStore', ['mainSessionWindow']),
+    ...mapGetters('pluginStore', ['activeMicroApp']),
   },
   data() {
     return {
-      activeKey: '',
       microAppList: [
         {
           key: 'SelfPlugin',
@@ -59,6 +59,7 @@ export default {
   },
   methods: {
     ...mapActions('globalStore', ['setOpenMicroApp']),
+    ...mapActions('pluginStore', ['setActiveMicroApp']),
 
     openAppNav() {
       if (this.mainSessionWindow?.sessId && !this.visible) {
@@ -70,7 +71,7 @@ export default {
     },
 
     handleOpenApp(item) {
-      this.activeKey = item.key;
+      this.setActiveMicroApp(item.key);
       this.setOpenMicroApp({
         appName: item.key,
         visible: true,

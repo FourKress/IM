@@ -1,6 +1,10 @@
 <template>
   <div class="plugin-container">
-    <PluginAppHeader title="这是另一个应用" @close="handleClose" />
+    <PluginAppHeader
+      title="这是另一个应用"
+      appName="SelfPluginB"
+      @close="handleClose"
+    />
     <div class="plugin-main">这是另一个应用</div>
   </div>
 </template>
