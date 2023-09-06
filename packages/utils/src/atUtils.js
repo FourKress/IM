@@ -1,4 +1,5 @@
 import { storeInstance } from './store';
+import { PLACEHOLDER_CONFIG } from './constant';
 
 export const getAtTagList = (content) => {
   const reg = /<at userId="(\d+|IM_AT_ALL)">(@[\s\S]*?)<\/at>/g;
@@ -18,12 +19,15 @@ export const getAtUserInfo = (atTag) => {
 export const formatAtTag = (msg, atTagList = [], isPreview = false) => {
   let msgText = msg?.data?.content;
   atTagList.forEach((d) => {
-    msgText = msgText.replace(d, `#_&_#AT#_&_#`);
+    msgText = msgText.replace(
+      d,
+      `${PLACEHOLDER_CONFIG.MSG_TAG_SEPARATOR}${PLACEHOLDER_CONFIG.AT_SEPARATOR}${PLACEHOLDER_CONFIG.MSG_TAG_SEPARATOR}`,
+    );
   });
   msgText = msgText
-    .split('#_&_#')
+    .split(PLACEHOLDER_CONFIG.MSG_TAG_SEPARATOR)
     ?.map((d) => {
-      if (d === 'AT') {
+      if (d === PLACEHOLDER_CONFIG.AT_SEPARATOR) {
         const atTag = atTagList.splice(0, 1)[0];
         const { userId, nickname } = getAtUserInfo(atTag);
         if (isPreview) {

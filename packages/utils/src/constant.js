@@ -127,3 +127,13 @@ export const SCENE_TYPE = {
 };
 
 export const REST_STORE_STATE = 'REST_STORE_STATE';
+
+export const PLACEHOLDER_CONFIG = {
+  CUSTOM_PROTOCOL: 'web ',
+  FILE_NAME_SEPARATOR: '_file_',
+  RAW_NAME_SEPARATOR: '_rawname_',
+  MSG_TAG_SEPARATOR: '#_&_#',
+  LINK_SEPARATOR: 'LINK',
+  AT_SEPARATOR: 'AT',
+  IMAGE_BR: 'IMAGE_BR',
+};

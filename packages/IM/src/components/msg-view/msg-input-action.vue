@@ -164,6 +164,7 @@ import {
   SESSION_USER_TYPE,
   lodash,
   GROUP_ROLE_TYPE_LOCAL,
+  PLACEHOLDER_CONFIG,
   openAtUser,
 } from '@lanshu/utils';
 import { renderProcess } from '@lanshu/render-process';
@@ -361,9 +362,14 @@ export default {
             if (type.includes('image')) {
               this.handleBlobLoadImage(blob);
             } else {
-              const [fileType, fileName] = type
-                .replace('web ', '')
-                .split('_file_');
+              let [fileType, fileName] = type
+                .replace(PLACEHOLDER_CONFIG.CUSTOM_PROTOCOL, '')
+                .split(PLACEHOLDER_CONFIG.FILE_NAME_SEPARATOR);
+              if (fileName.includes(PLACEHOLDER_CONFIG.RAW_NAME_SEPARATOR)) {
+                fileName = fileName.split(
+                  PLACEHOLDER_CONFIG.RAW_NAME_SEPARATOR,
+                )[1];
+              }
               const tempFile = this.handleBlob2File(blob, fileName, fileType);
               pasteFilesList.push(tempFile);
             }
@@ -875,13 +881,13 @@ export default {
           const tempMsgArr = realMessage
             .replace(
               /(\n)?<img src="\S*" alt(="")?>(\n)?/g,
-              '#_&_#IMAGE_BR#_&_#',
+              `${PLACEHOLDER_CONFIG.MSG_TAG_SEPARATOR}${PLACEHOLDER_CONFIG.IMAGE_BR}${PLACEHOLDER_CONFIG.MSG_TAG_SEPARATOR}`,
             )
-            .split('#_&_#');
+            .split(PLACEHOLDER_CONFIG.MSG_TAG_SEPARATOR);
           msgArr = tempMsgArr
             .map((d) => {
               let type = CHECK_MSG_TYPE.IS_TEXT;
-              if (d === 'IMAGE_BR') {
+              if (d === PLACEHOLDER_CONFIG.IMAGE_BR) {
                 d = imageArr.splice(0, 1)[0];
                 type = CHECK_MSG_TYPE.IS_IMAGE;
               }

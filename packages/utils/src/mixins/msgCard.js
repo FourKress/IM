@@ -1,7 +1,7 @@
 import { renderProcess } from '@lanshu/render-process';
 import { IMRevokeMessage } from '@lanshu/im';
 import { mapGetters } from 'vuex';
-import { dayjs, lodash } from '@lanshu/utils';
+import { dayjs, lodash, PLACEHOLDER_CONFIG } from '@lanshu/utils';
 import { CHECK_MSG_TYPE, MSG_FORMAT_MAP } from '../msgUtils';
 import { dataURLtoBlob, getFileSize } from '../base';
 import { getAtTagList, formatAtTag, openAtUser } from '../atUtils';
@@ -84,13 +84,16 @@ export default {
       let msgText = content;
       if (linkArr.length) {
         linkArr.forEach((d) => {
-          msgText = msgText.replace(d, `#_&_#LINK#_&_#`);
+          msgText = msgText.replace(
+            d,
+            `${PLACEHOLDER_CONFIG.MSG_TAG_SEPARATOR}${PLACEHOLDER_CONFIG.LINK_SEPARATOR}${PLACEHOLDER_CONFIG.MSG_TAG_SEPARATOR}`,
+          );
         });
         msgText = msgText
-          .split('#_&_#')
+          .split(PLACEHOLDER_CONFIG.MSG_TAG_SEPARATOR)
           .filter((d) => d && d !== ' ')
           .map((d) => {
-            if (d === 'LINK') {
+            if (d === PLACEHOLDER_CONFIG.LINK_SEPARATOR) {
               const url = linkArr.splice(0, 1)[0];
               d = `<span class="link-jump" data-url="${url}" onclick="openTargetUrl(event)">${url}</span>`;
             }
@@ -263,21 +266,24 @@ export default {
       if (!this.cachePath) {
         await this.handleDownload();
       }
-      const { cliMsgId } = this.msg;
-      const { type } = this.msgData;
+      const { type, name = '' } = this.msgData;
 
       const base64 = await renderProcess.getCacheFile2Base64(
         this.cachePath,
         type,
       );
-      const blob = dataURLtoBlob(
-        base64,
-        `${type}_file_${cliMsgId}.${this.getFileType()}`,
-      );
+
+      let fileType = `${type}${
+        PLACEHOLDER_CONFIG.FILE_NAME_SEPARATOR
+      }${this.getFileName()}.${this.getFileType()}`;
+      if (name) {
+        fileType += `${PLACEHOLDER_CONFIG.RAW_NAME_SEPARATOR}${name}`;
+      }
+      const blob = dataURLtoBlob(base64, fileType);
 
       await navigator.clipboard.write([
         new ClipboardItem({
-          [`web ${blob.type}`]: blob,
+          [`${PLACEHOLDER_CONFIG.CUSTOM_PROTOCOL}${blob.type}`]: blob,
         }),
       ]);
       this.$message.success('复制成功');
