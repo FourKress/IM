@@ -117,3 +117,11 @@ export const WINDOW_TYPE = {
   IS_MAIN: 1,
   IS_TRTC: 2,
 };
+
+export const CLIENT_TERMINAL = {
+  IS_PERSONAL: 'personal',
+  IS_ENTERPRISE: 'enterprise',
+  IS_GOVERNMENT: 'government',
+};
+
+export const VERSION_NEVER = 'NEVER';

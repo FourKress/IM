@@ -1,7 +1,11 @@
-import { initElectron, initIpcMain } from '@lanshu/main-process';
+import {
+  initElectron,
+  initIpcMain,
+  CLIENT_TERMINAL,
+} from '@lanshu/main-process';
 
 initElectron({
-  terminal: 'government',
+  terminal: CLIENT_TERMINAL.IS_GOVERNMENT,
   isDevtools: false,
   version: '0.0.1',
 }).then(() => {

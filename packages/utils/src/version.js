@@ -1,5 +1,6 @@
-import { storeInstance } from './store';
 import { renderProcess } from '@lanshu/render-process';
+import { storeInstance } from './store';
+import { IS_NEVER } from './constant';
 import * as Apis from './apis';
 
 // 计算版本号
@@ -29,7 +30,7 @@ export const compareVersion = function (version1, version2) {
 // 获取新版本
 export const fetchVersion = async (isTips = false) => {
   const currentVersion = await renderProcess.getStore('VERSION');
-  if (currentVersion === 'NEVER') return;
+  if (currentVersion === IS_NEVER) return;
 
   const res = await Apis.queryLastAvailableByAppCode({
     appCode: 'PC',

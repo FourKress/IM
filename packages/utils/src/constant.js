@@ -137,3 +137,5 @@ export const PLACEHOLDER_CONFIG = {
   AT_SEPARATOR: 'AT',
   IMAGE_BR: 'IMAGE_BR',
 };
+
+export const IS_NEVER = 'NEVER';
