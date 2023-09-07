@@ -11,7 +11,6 @@
 
 <script>
 import { PluginAppHeader } from '@lanshu/plugin';
-import { mapActions } from 'vuex';
 
 export default {
   name: 'SelfPluginB',
@@ -23,14 +22,7 @@ export default {
     });
   },
   methods: {
-    ...mapActions('globalStore', ['setOpenMicroApp']),
-
-    handleClose() {
-      this.setOpenMicroApp({
-        appName: 'SelfPluginB',
-        visible: false,
-      });
-    },
+    handleClose() {},
   },
 };
 </script>
