@@ -23,11 +23,13 @@ class TrayEvent {
     this.init();
 
     this.tray.on('click', () => {
-      const isMinimized = global.mainWindow.isMinimized();
-      if (isMinimized) {
-        global.mainWindow.restore();
-      } else {
-        global.mainWindow.show();
+      if (global.mainWindow) {
+        const isMinimized = global.mainWindow.isMinimized();
+        if (isMinimized) {
+          global.mainWindow.restore();
+        } else {
+          global.mainWindow.show();
+        }
       }
       this.clearFlash();
     });

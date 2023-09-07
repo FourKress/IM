@@ -60,6 +60,7 @@
       "**/@lanshu/main-process",
       "**/@lanshu/layout",
       "**/@lanshu/render-process",
+      "**/@lanshu/utils",
       "**/trtc-electron-sdk",
       "**/native-ext-loader",
       "**/nock",

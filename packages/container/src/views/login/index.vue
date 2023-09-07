@@ -79,7 +79,7 @@ export default {
     if (status && token) {
       setToken(TOKEN_TYPE.IS_SYS, token);
       const { data } = await Apis.accountUserInfo().catch(() => {
-        this.autoLoginResult();
+        renderProcess.autoLoginCallBack();
       });
       const { loginData, name, idcard } = data || {};
       if (loginData) {
@@ -94,7 +94,6 @@ export default {
           true,
         );
       }
-      this.autoLoginResult();
     }
   },
   methods: {
@@ -133,10 +132,6 @@ export default {
       this.phoneNum = phoneNum;
       this.isAuthCode = true;
       this.isSendLogin = false;
-    },
-
-    autoLoginResult() {
-      renderProcess.autoLoginCallBack();
     },
   },
 };
