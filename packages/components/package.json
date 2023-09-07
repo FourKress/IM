@@ -1,6 +1,6 @@
 {
   "name": "@lanshu/components",
-  "version": "0.2.7",
+  "version": "0.2.9",
   "description": "组件库",
   "keywords": [
     "components"
@@ -20,7 +20,7 @@
   ],
   "scripts": {},
   "dependencies": {
-    "@lanshu/utils": "^0.2.7",
+    "@lanshu/utils": "^0.2.9",
     "vuex": "^3.6.2"
   },
   "gitHead": "eda508a5b33ea30b310346abd0e3ca639c8f4d5d"
