@@ -167,14 +167,22 @@
     <div
       class="wrap position shadow"
       :class="classObject"
-      v-if="msgType === CHECK_MSG_TYPE.IS_POSITION"
+      :style="{
+        ...cardStyle,
+      }"
+      v-if="isPosition"
       @click="handleOpenMap"
     >
-      <div class="title">{{ this.msgData.placeName }}</div>
-      <img
-        :src="`https://restapi.amap.com/v3/staticmap?location=${msgData.longitude},${msgData.latitude}&zoom=16&size=248*186&markers=mid,,A:${msgData.longitude},${msgData.latitude}&key=f0e44864bb6bf097f6c4c74d2828d583`"
-        alt=""
-      />
+      <div class="address">
+        <span class="title">{{ this.msgData.placeName }}</span>
+        <span class="sub-title">{{ this.msgData.detailAddress }}</span>
+      </div>
+      <div class="map-image">
+        <img
+          :src="`https://restapi.amap.com/v3/staticmap?location=${msgData.longitude},${msgData.latitude}&zoom=16&size=400*100&markers=mid,,A:${msgData.longitude},${msgData.latitude}&key=f0e44864bb6bf097f6c4c74d2828d583`"
+          alt=""
+        />
+      </div>
     </div>
 
     <div class="card text" ref="MsgCard" :class="classObject" v-if="!msgType">
@@ -239,6 +247,10 @@ export default {
       wrapFileStyle: {
         width: '360px',
       },
+      cardStyle: {
+        width: '400px',
+        maxWidth: '400px',
+      },
     };
   },
   computed: {
@@ -298,7 +310,13 @@ export default {
   },
   methods: {
     initSize(imViewSizeInfo) {
-      if (!this.isImage && !this.isVideo && !this.isAudio && !this.isFile)
+      if (
+        !this.isImage &&
+        !this.isVideo &&
+        !this.isAudio &&
+        !this.isFile &&
+        !this.isPosition
+      )
         return;
       const { width, height } = imViewSizeInfo;
       if (width <= 693 || height <= 400) {
@@ -309,15 +327,17 @@ export default {
     },
 
     setSmallSize() {
-      this.imageMaxWidth = 210;
-      this.wrapStyle = { maxWidth: '210px', maxHeight: '210px' };
-      this.wrapFileStyle = { width: '210px' };
+      this.imageMaxWidth = 250;
+      this.wrapStyle = { maxWidth: '250px', maxHeight: '250px' };
+      this.wrapFileStyle = { width: '250px' };
+      this.cardStyle = { width: '250px', maxWidth: '250px' };
     },
 
     setBaseSize() {
       this.imageMaxWidth = 360;
       this.wrapStyle = { maxWidth: '360px', maxHeight: '360px' };
       this.wrapFileStyle = { width: '360px' };
+      this.cardStyle = { width: '400px', maxWidth: '400px' };
     },
 
     async handleStartTrtc() {
@@ -543,6 +563,56 @@ export default {
               }
             }
           }
+        }
+      }
+    }
+
+    &.position {
+      cursor: pointer;
+      height: 170px;
+      max-height: 170px;
+
+      .address {
+        width: 100%;
+        height: 70px;
+        min-height: 70px;
+        padding: 12px;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+
+        .title,
+        .sub-title {
+          flex: 1;
+          height: 20px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+
+        .title {
+          font-size: 16px;
+          color: $main-text-color;
+        }
+
+        .sub-title {
+          font-size: 12px;
+          color: $minor-text-color;
+        }
+      }
+
+      .map-image {
+        width: 100%;
+        height: 100px;
+        position: relative;
+
+        img {
+          position: absolute;
+          left: 50%;
+          top: 50%;
+          transform: translate(-50%, -50%);
+          background-color: #2b333f;
         }
       }
     }

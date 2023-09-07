@@ -127,6 +127,9 @@ export default {
     isFile() {
       return this.msgType === this.CHECK_MSG_TYPE.IS_FILE;
     },
+    isPosition() {
+      return this.msgType === this.CHECK_MSG_TYPE.IS_POSITION;
+    },
     size() {
       if (!this.isImage && !this.isVideo && !this.isAudio) return;
       const { wide, high } = this.msgData;
