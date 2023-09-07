@@ -19,5 +19,9 @@
     "src"
   ],
   "scripts": {},
+  "dependencies": {
+    "@lanshu/utils": "^0.2.7",
+    "vuex": "^3.6.2"
+  },
   "gitHead": "eda508a5b33ea30b310346abd0e3ca639c8f4d5d"
 }

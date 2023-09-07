@@ -9,7 +9,7 @@
         :key="item.key"
         @click="handleOpenApp(item)"
       >
-        <img class="icon" src="./logo.jpg" alt="" />
+        <img class="icon" src="../../assets/logo.jpg" alt="" />
       </div>
     </div>
   </div>

@@ -1,9 +1,9 @@
 import { Layout } from '@lanshu/layout';
 import routes, { menuRoutes } from '@/router';
-import PluginAppNav from './components/plugin-app/nav.vue';
+import { PluginAppNav, pluginStore } from '@lanshu/plugin';
+
 import plugin from './components/plugin.vue';
 import pluginB from './components/plugin-b.vue';
-import pluginStore from './store/plugin';
 
 Layout({
   menu: menuRoutes,

@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import PluginAppHeader from './plugin-app/header.vue';
+import { PluginAppHeader } from '@lanshu/plugin';
 import { mapActions } from 'vuex';
 // import { loadQiankunMicroApp } from '@lanshu/micro';
 
