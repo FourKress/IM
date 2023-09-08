@@ -5,6 +5,7 @@ import {
   deleteFile,
   handleSaveFileOpen,
   copyFile,
+  getClientName,
 } from './utils';
 import { initScreenshots } from './screenshots';
 import {
@@ -36,7 +37,8 @@ const initIpcMain = () => {
   app.whenReady().then(async () => {
     // win环境 开启通知
     if (process.platform === 'win32') {
-      app.setAppUserModelId('北象IM');
+      const clientName = getClientName();
+      app.setAppUserModelId(clientName.toString());
     }
 
     // 初始化缓存

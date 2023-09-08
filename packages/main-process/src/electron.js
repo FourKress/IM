@@ -15,6 +15,7 @@ const initElectron = (config) => {
     isDevtools = false,
     version = '0.0.1',
     windowsSize = '',
+    clientName = '北象IM',
   } = config;
 
   const autoLogin = global.store.get('AUTO_LOGIN') || {};
@@ -34,6 +35,7 @@ const initElectron = (config) => {
   global.store.set('DEFAULT_WINDOWS_SIZE', windowsSize);
   global.store.set('IS_DEVTOOLS', IS_DEVELOPMENT || isDevtools);
   global.store.set('CLIENT_TERMINAL', terminal);
+  global.store.set('CLIENT_NAME', clientName);
   global.store.set('TRTC_CAN_BE_CLOSED', false);
   global.store.set('WIN_CAN_BE_CLOSED', false);
   electronLog.info(`VERSION: ${global.store.get('VERSION')}`);

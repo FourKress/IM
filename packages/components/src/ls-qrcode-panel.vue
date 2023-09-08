@@ -94,7 +94,7 @@ export default {
   methods: {
     async handleCopy() {
       this.isCopyLoading = true;
-      const imageUrl = await this.getHtmlToImageUrl()
+      const imageUrl = await this.getHtmlToImageUrl();
       const blob = dataURLtoBlob(imageUrl);
 
       await navigator.clipboard.write([
@@ -107,14 +107,11 @@ export default {
     },
     async handleDown() {
       this.isDownLoading = true;
-      const imageUrl = await this.getHtmlToImageUrl()
+      const imageUrl = await this.getHtmlToImageUrl();
       const tempLink = document.createElement('a');
       tempLink.style.display = 'none';
       tempLink.href = imageUrl;
-      tempLink.setAttribute(
-        'download',
-        `${this.qrcodeInfo.nickname}的北象IM二维码`,
-      );
+      tempLink.setAttribute('download', `${this.qrcodeInfo.nickname}的二维码`);
       document.body.appendChild(tempLink);
       tempLink.click();
       this.isDownLoading = false;

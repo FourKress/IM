@@ -3,11 +3,11 @@ import { app } from 'electron';
 import downloadFile from './downloadFile';
 import { electronLog } from './log';
 import sudoPrompt from './sudoPrompt';
+import { getClientName } from './utils';
 
 const fse = require('fs-extra');
 const path = require('path');
 const AdmZip = require('adm-zip');
-// const exec = require('child_process').exec;
 
 let exeProgress = 0;
 let zipProgress = 0;
@@ -57,6 +57,7 @@ export default async (data) => {
           return;
         }
 
+        const clientName = getClientName();
         global.mainWindow.webContents.send('downloadProgress', 100);
 
         fse.removeSync(filePath);
@@ -66,7 +67,7 @@ export default async (data) => {
           `"${path.join(
             app.getPath('userData'),
             './update.exe',
-          )}" "${resourcesPath}" "${downloads}" "北象IM.exe" "${app.getPath(
+          )}" "${resourcesPath}" "${downloads}" "${clientName}.exe" "${app.getPath(
             'exe',
           )}"`,
         );
@@ -76,28 +77,11 @@ export default async (data) => {
           `"${path.join(
             app.getPath('userData'),
             './update.exe',
-          )}" "${resourcesPath}" "${downloads}" "北象IM.exe" "${app.getPath(
+          )}" "${resourcesPath}" "${downloads}" "${clientName}.exe" "${app.getPath(
             'exe',
           )}"`,
           version,
         );
-
-        // exec(
-        //   `"${path.join(
-        //     app.getPath('userData'),
-        //     './update.exe',
-        //   )}" "${resourcesPath}" "${downloads}" "北象IM.exe" "${app.getPath(
-        //     'exe',
-        //   )}"`,
-        //   function (error, stdout, stderr) {
-        //     if (error) {
-        //       console.error('error: ' + error);
-        //       electronLog.info(error);
-        //       return;
-        //     }
-        //     electronLog.info(`stdout ${stdout}`);
-        //   },
-        // );
       });
     })
     .catch((err) => {

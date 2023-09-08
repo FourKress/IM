@@ -104,6 +104,10 @@ export const deleteFile = (path) => {
   }
 };
 
+export const getClientName = () => {
+  return global.store.get('CLIENT_NAME');
+};
+
 export const IS_MAC = process.platform === 'darwin';
 
 export const IS_DEVELOPMENT = process.env.NODE_ENV === 'development';

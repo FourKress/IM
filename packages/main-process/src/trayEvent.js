@@ -1,7 +1,7 @@
 import { Menu, Tray } from 'electron';
 import path from 'path';
 import { app, nativeImage } from 'electron';
-import { IS_DEVELOPMENT } from './utils';
+import { getClientName, IS_DEVELOPMENT } from './utils';
 
 const trayIconPath = IS_DEVELOPMENT
   ? './icons/icon.ico'
@@ -15,7 +15,7 @@ class TrayEvent {
 
   init() {
     this.tray.setImage(trayIconPath);
-    this.tray.setToolTip('北象IM');
+    this.tray.setToolTip(getClientName());
   }
 
   setTray() {
