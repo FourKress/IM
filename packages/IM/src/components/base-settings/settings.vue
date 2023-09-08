@@ -134,7 +134,7 @@ export default {
     justify-content: space-between;
     padding: 0 20px;
     box-sizing: border-box;
-    box-shadow: 0 0 0 1px $split-line-color;
+    border-bottom: 1px solid $split-line-color;
 
     .label {
       font-size: 16px;

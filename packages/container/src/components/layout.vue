@@ -12,7 +12,11 @@
 
 <script>
 import MainMenu from './menu';
-import { MicroSharedObservable, microLoadingMixins } from '@lanshu/micro';
+import {
+  MicroSharedObservable,
+  microLoadingMixins,
+  microShared,
+} from '@lanshu/micro';
 import { MICRO_CONTAINER } from '@lanshu/utils';
 import { mapGetters, mapActions } from 'vuex';
 
@@ -33,15 +37,29 @@ export default {
   watch: {
     microSharedState: {
       deep: true,
-      handler(val) {
+      handler(val, oldVal) {
         console.log('microSharedState', val);
-        const { EVENT_IPC = {} } = val;
-        const { type, value } = EVENT_IPC;
-        if (type === 'openMicro') {
-          this.setOpenMicroApp({
-            appName: EVENT_IPC.value,
-            visible: value,
-          });
+        const { openMicroApp = null, closeMicroApp = '' } = val;
+        if (openMicroApp) {
+          const {
+            appName = '',
+            path = '',
+            params: {},
+          } = openMicroApp;
+
+          if (appName) {
+            this.setOpenMicroApp({
+              appName,
+              path,
+              params: {},
+              visible: true,
+            });
+            microShared.openMicroApp({});
+          }
+        }
+
+        if (closeMicroApp) {
+          microShared.closeMicroApp();
         }
       },
     },

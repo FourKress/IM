@@ -22,7 +22,7 @@
   "dependencies": {
     "@lanshu/components": "^0.2.9",
     "@lanshu/im": "^0.2.9",
-    "@lanshu/micro": "^1.0.0",
+    "@lanshu/micro": "^1.0.1",
     "@lanshu/plugin": "^0.2.9",
     "@lanshu/render-process": "^0.2.2",
     "@lanshu/sidebar": "^0.2.9",

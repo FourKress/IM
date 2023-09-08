@@ -168,7 +168,7 @@ export default {
     justify-content: space-between;
     box-sizing: border-box;
     padding: 13px 20px;
-    box-shadow: 0 0 0 1px $split-line-color;
+    border-bottom: 1px solid $split-line-color;
 
     .left {
       flex: 1;

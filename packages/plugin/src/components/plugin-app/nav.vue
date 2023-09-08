@@ -99,6 +99,7 @@ export default {
     font-size: 16px;
     color: $main-text-color;
     font-weight: bold;
+    box-sizing: border-box;
     border-bottom: 1px solid $split-line-color;
   }
 

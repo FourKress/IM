@@ -68,6 +68,7 @@ export default {
   font-size: 16px;
   color: $main-text-color;
   font-weight: bold;
+  border-bottom: 1px solid $split-line-color;
 
   .ls-icon-wrap {
     margin-left: 12px;
