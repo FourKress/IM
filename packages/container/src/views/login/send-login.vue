@@ -195,7 +195,6 @@ export default {
         if (valid) {
           this.isAwait = true;
           const password = await encryptData(this.form.firstPhoneNum);
-          console.log(password);
           try {
             if (this.isSetPwd) {
               await Apis.accountSetPassword({

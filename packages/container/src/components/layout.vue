@@ -17,7 +17,7 @@ import {
   microLoadingMixins,
   microShared,
 } from '@lanshu/micro';
-import { MICRO_CONTAINER } from '@lanshu/utils';
+import { MICRO_CONTAINER, MICRO_EVENT_IPC, lodash } from '@lanshu/utils';
 import { mapGetters, mapActions } from 'vuex';
 
 export default {
@@ -33,13 +33,22 @@ export default {
   },
   computed: {
     ...mapGetters('microVuexStore', ['microSharedState']),
+    ...mapGetters('IMStore', ['mainSessionWindow']),
   },
   watch: {
     microSharedState: {
       deep: true,
       handler(val, oldVal) {
         console.log('microSharedState', val);
-        const { openMicroApp = null, closeMicroApp = '' } = val;
+        const {
+          openMicroApp = null,
+          closeMicroApp = null,
+          token = '',
+          previewUrl = '',
+          ...other
+        } = val;
+
+        // 打开应用
         if (openMicroApp) {
           const {
             appName = '',
@@ -54,13 +63,52 @@ export default {
               params: {},
               visible: true,
             });
-            microShared.openMicroApp({});
+            microShared.openMicroApp(null);
+          }
+        }
+        // 关闭应用
+        if (closeMicroApp) {
+          const { appName = '' } = closeMicroApp;
+          if (appName) {
+            this.setOpenMicroApp({
+              appName,
+              visible: false,
+            });
+            microShared.closeMicroApp(null);
           }
         }
 
-        if (closeMicroApp) {
-          microShared.closeMicroApp();
-        }
+        Object.keys(other).forEach((microAppName) => {
+          const isEqual = lodash.isEqual(
+            other[microAppName],
+            oldVal[microAppName],
+          );
+          if (isEqual) return;
+
+          const { EVENT_IPC } = other[microAppName];
+          const { type, value } = EVENT_IPC;
+
+          switch (type) {
+            case MICRO_EVENT_IPC.CREATE_TEXT_MSG:
+              if (value) {
+                this.setCreateSessionTextMsg(value);
+                microShared.EventIPC(microAppName, {
+                  type: MICRO_EVENT_IPC.CREATE_TEXT_MSG,
+                  value: '',
+                });
+              }
+              break;
+            case MICRO_EVENT_IPC.GET_USER_ID:
+              console.log(this.mainSessionWindow?.toUser);
+              microShared.EventIPC(microAppName, {
+                type: MICRO_EVENT_IPC.GET_USER_ID,
+                value: this.mainSessionWindow?.toUser,
+              });
+              break;
+            default:
+              break;
+          }
+        });
       },
     },
   },
@@ -70,6 +118,7 @@ export default {
     this.setMicroAppName('MASTER');
   },
   methods: {
+    ...mapActions('IMStore', ['setCreateSessionTextMsg']),
     ...mapActions('globalStore', ['setOpenMicroApp']),
     ...mapActions('microVuexStore', ['setMicroAppName']),
   },

@@ -172,6 +172,7 @@
       }"
       v-if="isPosition"
       @click="handleOpenMap"
+      v-contextMenu="[...positionContextMenuList]"
     >
       <div class="address">
         <span class="title">{{ this.msgData.placeName }}</span>

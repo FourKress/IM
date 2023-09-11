@@ -5,14 +5,15 @@
       appName="SelfPlugin"
       @close="handleClose"
     />
-    <div class="plugin-main" id="zsk">这是一个应用</div>
+    <div class="plugin-main" id="micro-app-container">这是一个应用</div>
   </div>
 </template>
 
 <script>
 import { PluginAppHeader } from '@lanshu/plugin';
 import { mapActions } from 'vuex';
-// import { loadQiankunMicroApp } from '@lanshu/micro';
+import { loadQiankunMicroApp } from '@lanshu/micro';
+import { MICRO_NAME_CONFIG } from '@lanshu/utils';
 
 export default {
   name: 'SelfPlugin',
@@ -51,35 +52,33 @@ export default {
     loadMicroApp() {
       this.$nextTick(() => {
         // 微应用加载loading的挂载容器
-        // this.setMicroLoadingTarget('#zsk');
-        //
-        // this.microApp = loadQiankunMicroApp(
-        //   [
-        //     {
-        //       name: 'ZSKMicroApp',
-        //       // entry: 'http://222.179.101.46:8123/',
-        //       entry: 'http://172.16.3.55:7777/',
-        //       container: '#zsk',
-        //       // targetPath: '/knowHome',
-        //       targetPath: '/',
-        //     },
-        //   ],
-        //   {
-        //     beforeLoadHandler: (app) => {
-        //       console.log(app);
-        //       console.log('主应用2 beforeLoadHandler');
-        //     },
-        //     afterMountHandler: () => {
-        //       console.log('主应用2 afterMountHandler');
-        //     },
-        //     globalErrorHandler: () => {
-        //       window.ClientMessage.error(
-        //         '微应用加载失败，请检查应用是否可运行',
-        //       );
-        //       console.log('主应用2 globalErrorHandler');
-        //     },
-        //   },
-        // );
+        this.setMicroLoadingTarget('#zsk');
+
+        this.microApp = loadQiankunMicroApp(
+          [
+            {
+              name: MICRO_NAME_CONFIG.SMART_ADVOCACY,
+              entry: 'http://172.16.3.55:3006/',
+              container: '#micro-app-container',
+              targetPath: '/spokesman',
+            },
+          ],
+          {
+            beforeLoadHandler: (app) => {
+              console.log(app);
+              console.log('主应用2 beforeLoadHandler');
+            },
+            afterMountHandler: () => {
+              console.log('主应用2 afterMountHandler');
+            },
+            globalErrorHandler: () => {
+              window.ClientMessage.error(
+                '微应用加载失败，请检查应用是否可运行',
+              );
+              console.log('主应用2 globalErrorHandler');
+            },
+          },
+        );
       });
     },
 

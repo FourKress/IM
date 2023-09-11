@@ -51,6 +51,7 @@ const getDefaultState = () => {
     refreshRevoke: '',
     // 已读消息回调
     refreshReceipt: '',
+    createSessionTextMsg: '',
   };
 };
 const state = getDefaultState();
@@ -80,6 +81,7 @@ const getters = {
   synergyHistory: (state) => state.synergyHistory,
   refreshRevoke: (state) => state.refreshRevoke,
   refreshReceipt: (state) => state.refreshReceipt,
+  createSessionTextMsg: (state) => state.createSessionTextMsg,
 };
 
 const mutations = {
@@ -214,6 +216,9 @@ const mutations = {
   setRefreshReceipt(data, value) {
     data.refreshReceipt = value;
   },
+  setCreateSessionTextMsg(data, value) {
+    data.createSessionTextMsg = value;
+  },
 };
 
 const actions = {
@@ -297,6 +302,9 @@ const actions = {
   },
   setRefreshReceipt({ commit }, value) {
     commit('setRefreshReceipt', value);
+  },
+  setCreateSessionTextMsg({ commit }, value) {
+    commit('setCreateSessionTextMsg', value);
   },
 };
 

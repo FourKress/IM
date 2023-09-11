@@ -78,6 +78,9 @@ export default {
       });
     },
   },
+  beforeDestroy() {
+    this.setActiveMicroApp('');
+  },
 };
 </script>
 

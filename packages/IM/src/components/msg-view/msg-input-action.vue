@@ -233,7 +233,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters('IMStore', ['userInfo']),
+    ...mapGetters('IMStore', ['userInfo', 'createSessionTextMsg']),
 
     session() {
       return this.$attrs.session;
@@ -295,6 +295,12 @@ export default {
     memberCount() {
       if (!this.isGroup) return;
       this.getGroupMemberList();
+    },
+    createSessionTextMsg(val) {
+      if (!val) return;
+      this.setCreateSessionTextMsg('');
+      this.clearInput();
+      this.handleTargetInsert(val);
     },
   },
   async mounted() {
@@ -436,7 +442,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions('IMStore', ['setDragFileList']),
+    ...mapActions('IMStore', ['setDragFileList', 'setCreateSessionTextMsg']),
 
     handleBlobLoadImage(file) {
       const reader = new FileReader();

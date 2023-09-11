@@ -1,7 +1,14 @@
 import { renderProcess } from '@lanshu/render-process';
 import { IMRevokeMessage } from '@lanshu/im';
 import { mapGetters } from 'vuex';
-import { dayjs, lodash, PLACEHOLDER_CONFIG } from '@lanshu/utils';
+import {
+  dayjs,
+  lodash,
+  MICRO_EVENT_IPC,
+  MICRO_NAME_CONFIG,
+  PLACEHOLDER_CONFIG,
+} from '@lanshu/utils';
+import { microShared } from '@lanshu/micro';
 import { CHECK_MSG_TYPE, MSG_FORMAT_MAP } from '../msgUtils';
 import { dataURLtoBlob, getFileSize } from '../base';
 import { getAtTagList, formatAtTag, openAtUser } from '../atUtils';
@@ -28,6 +35,13 @@ export default {
         {
           label: () => '复制',
           handler: this.handleCopyText,
+          icon: () => 'ls-icon-fuzhi',
+        },
+      ],
+      positionContextMenuList: [
+        {
+          label: () => '复制',
+          handler: this.handleCopyPosition,
           icon: () => 'ls-icon-fuzhi',
         },
       ],
@@ -263,6 +277,15 @@ export default {
       const text = this.selectedText || this.$refs.MsgCard.innerText;
       await navigator.clipboard.writeText(text);
       this.$message.success('复制成功');
+    },
+
+    async handleCopyPosition() {
+      microShared.EventIPC(MICRO_NAME_CONFIG.SMART_ADVOCACY, {
+        type: MICRO_EVENT_IPC.POSITION_INFO,
+        value: {
+          ...this.msgData,
+        },
+      });
     },
 
     async handleCopyFile() {
