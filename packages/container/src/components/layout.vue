@@ -19,6 +19,7 @@ import {
 } from '@lanshu/micro';
 import { MICRO_CONTAINER, MICRO_EVENT_IPC, lodash } from '@lanshu/utils';
 import { mapGetters, mapActions } from 'vuex';
+import { renderProcess } from '@lanshu/render-process';
 
 export default {
   name: 'MainLayout',
@@ -38,7 +39,7 @@ export default {
   watch: {
     microSharedState: {
       deep: true,
-      handler(val, oldVal) {
+      async handler(val, oldVal) {
         console.log('microSharedState', val);
         const {
           openMicroApp = null,
@@ -50,6 +51,8 @@ export default {
 
         // 打开应用
         if (openMicroApp) {
+          const isEqual = lodash.isEqual(openMicroApp, oldVal.openMicroApp);
+          if (isEqual) return;
           const {
             appName = '',
             path = '',
@@ -57,7 +60,7 @@ export default {
           } = openMicroApp;
 
           if (appName) {
-            this.setOpenMicroApp({
+            await this.setOpenMicroApp({
               appName,
               path,
               params: {},
@@ -68,16 +71,41 @@ export default {
         }
         // 关闭应用
         if (closeMicroApp) {
+          const isEqual = lodash.isEqual(closeMicroApp, oldVal.closeMicroApp);
+          if (isEqual) return;
+
           const { appName = '' } = closeMicroApp;
           if (appName) {
-            this.setOpenMicroApp({
+            await this.setOpenMicroApp({
               appName,
               visible: false,
             });
             microShared.closeMicroApp(null);
           }
         }
+        if (previewUrl && previewUrl !== oldVal?.previewUrl) {
+          const [fileName, type] = previewUrl.split('/').pop().split('.');
+          let cachePath = await renderProcess.getCacheFilePath(
+            `${fileName}.${type}`,
+          );
+          if (!cachePath) {
+            await renderProcess
+              .saveCacheFile({
+                url: previewUrl,
+                fileName,
+              })
+              .finally(() => {
+                microShared.openMicroApp('');
+              });
+            cachePath = await renderProcess.getCacheFilePath(
+              `${fileName}.${type}`,
+            );
+          }
+          renderProcess.previewAssets(cachePath);
+          microShared.openMicroApp('');
+        }
 
+        // 各应用业务通信
         Object.keys(other).forEach((microAppName) => {
           const isEqual = lodash.isEqual(
             other[microAppName],
@@ -99,7 +127,6 @@ export default {
               }
               break;
             case MICRO_EVENT_IPC.GET_USER_ID:
-              console.log(this.mainSessionWindow?.toUser);
               microShared.EventIPC(microAppName, {
                 type: MICRO_EVENT_IPC.GET_USER_ID,
                 value: this.mainSessionWindow?.toUser,

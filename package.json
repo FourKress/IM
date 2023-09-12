@@ -62,6 +62,7 @@
       "**/@lanshu/render-process",
       "**/@lanshu/utils",
       "**/@lanshu/plugin",
+      "**/@lanshu/micro",
       "**/trtc-electron-sdk",
       "**/native-ext-loader",
       "**/nock",
