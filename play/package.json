@@ -1,6 +1,6 @@
 {
   "name": "lanshu-play",
-  "version": "0.2.10",
+  "version": "0.2.11",
   "private": true,
   "author": "wudong <511970747@qq.com>",
   "scripts": {
@@ -17,7 +17,7 @@
   },
   "main": "background.js",
   "dependencies": {
-    "@lanshu/layout": "^0.2.10",
+    "@lanshu/layout": "^0.2.11",
     "@lanshu/main-process": "^0.2.10",
     "@lanshu/micro": "^1.0.5",
     "@lanshu/plugin": "^0.2.10",
