@@ -54,14 +54,14 @@ export default {
           const isEqual = lodash.isEqual(openMicroApp, oldVal.openMicroApp);
           if (isEqual) return;
           const {
-            appName = '',
+            appKey = '',
             path = '',
             params: {},
           } = openMicroApp;
 
-          if (appName) {
+          if (appKey) {
             await this.setCurrentMicroApp({
-              appName,
+              appKey,
               path,
               params: {},
               visible: true,
@@ -74,10 +74,10 @@ export default {
           const isEqual = lodash.isEqual(closeMicroApp, oldVal.closeMicroApp);
           if (isEqual) return;
 
-          const { appName = '' } = closeMicroApp;
-          if (appName) {
+          const { appKey = '' } = closeMicroApp;
+          if (appKey) {
             await this.setCurrentMicroApp({
-              appName,
+              appKey,
               visible: false,
             });
             microShared.closeMicroApp(null);
@@ -112,28 +112,28 @@ export default {
         }
 
         // 各应用业务通信
-        Object.keys(other).forEach((microAppName) => {
+        Object.keys(other).forEach((microAppKey) => {
           const isEqual = lodash.isEqual(
-            other[microAppName],
-            oldVal[microAppName],
+            other[microAppKey],
+            oldVal[microAppKey],
           );
           if (isEqual) return;
 
-          const { EVENT_IPC } = other[microAppName];
+          const { EVENT_IPC } = other[microAppKey];
           const { type, value } = EVENT_IPC;
 
           switch (type) {
             case MICRO_EVENT_IPC.CREATE_TEXT_MSG:
               if (value) {
                 this.setCreateSessionTextMsg(value);
-                microShared.EventIPC(microAppName, {
+                microShared.EventIPC(microAppKey, {
                   type: MICRO_EVENT_IPC.CREATE_TEXT_MSG,
                   value: '',
                 });
               }
               break;
             case MICRO_EVENT_IPC.GET_USER_ID:
-              microShared.EventIPC(microAppName, {
+              microShared.EventIPC(microAppKey, {
                 type: MICRO_EVENT_IPC.GET_USER_ID,
                 value: this.mainSessionWindow?.toUser,
               });
@@ -148,12 +148,12 @@ export default {
   mounted() {
     // 订阅微应用的通信数据变化
     MicroSharedObservable.subscribe();
-    this.setMicroAppName('MASTER');
+    this.setMicroAppKey('MASTER');
   },
   methods: {
     ...mapActions('IMStore', ['setCreateSessionTextMsg']),
     ...mapActions('globalStore', ['setCurrentMicroApp']),
-    ...mapActions('microVuexStore', ['setMicroAppName']),
+    ...mapActions('microVuexStore', ['setMicroAppKey']),
   },
 
   destroyed() {

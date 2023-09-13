@@ -1,7 +1,7 @@
 <template>
   <div class="plugin-container" v-show="visible">
     <PluginAppHeader
-      :appName="MICRO_NAME_CONFIG.SMART_ADVOCACY"
+      :appKey="MICRO_NAME_CONFIG.SMART_ADVOCACY"
       @close="handleClose"
     />
     <div class="plugin-main" id="micro-app-container"></div>

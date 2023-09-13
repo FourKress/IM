@@ -19,7 +19,7 @@
   "dependencies": {
     "@lanshu/layout": "^0.2.11",
     "@lanshu/main-process": "^0.2.10",
-    "@lanshu/micro": "^1.0.5",
+    "@lanshu/micro": "^1.0.6",
     "@lanshu/plugin": "^0.2.10",
     "@lanshu/utils": "^0.2.10",
     "aws-sdk": "^2.1320.0",

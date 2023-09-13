@@ -36,10 +36,6 @@ export default {
           key: 'SmartAdvocacyMicroApp',
           title: '智慧宣传',
         },
-        {
-          key: 'SelfPluginB',
-          title: '另一个应用',
-        },
       ],
     };
   },
@@ -67,7 +63,7 @@ export default {
     openAppNav() {
       if (this.mainSessionWindow?.sessId && !this.visible) {
         this.setCurrentMicroApp({
-          appName: 'PluginAppNav',
+          appKey: 'PluginAppNav',
           visible: true,
         });
       }
@@ -77,7 +73,7 @@ export default {
       const { key } = item;
       this.setActiveMicroApp(key);
       this.setCurrentMicroApp({
-        appName: key,
+        appKey: key,
         visible: true,
       });
     },

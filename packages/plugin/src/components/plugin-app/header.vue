@@ -31,7 +31,7 @@ import { MICRO_EVENT_IPC } from '@lanshu/utils';
 export default {
   name: 'PluginAppHeader',
   props: {
-    appName: {
+    appKey: {
       type: String,
       default: '',
       required: true,
@@ -42,7 +42,7 @@ export default {
     ...mapGetters('globalStore', ['microAppList']),
 
     appTitle() {
-      const app = this.microAppList.find((d) => d.key === this.appName) || {};
+      const app = this.microAppList.find((d) => d.key === this.appKey) || {};
       return app?.title;
     },
   },
@@ -57,14 +57,14 @@ export default {
     handleClose() {
       this.$emit('close');
       this.setCurrentMicroApp({
-        appName: this.appName,
+        appKey: this.appKey,
         visible: false,
       });
       this.setActiveMicroApp('');
     },
 
     handleUpdate() {
-      microShared.EventIPC(this.appName, {
+      microShared.EventIPC(this.appKey, {
         type: MICRO_EVENT_IPC.UPDATE_APP,
         value: Date.now(),
       });

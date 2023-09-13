@@ -57,13 +57,13 @@ export default {
     currentMicroApp: {
       deep: true,
       handler(val) {
-        const { appName, visible } = val || {};
-        if (appName) {
+        const { appKey, visible } = val || {};
+        if (appKey) {
           this.plugins = this.plugins.map((d) => {
             const { alwaysShow, key } = d;
             return {
               ...d,
-              visible: key === appName ? visible : false || alwaysShow,
+              visible: key === appKey ? visible : false || alwaysShow,
             };
           });
         }
