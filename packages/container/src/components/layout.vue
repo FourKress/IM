@@ -45,7 +45,7 @@ export default {
           openMicroApp = null,
           closeMicroApp = null,
           token = '',
-          previewUrl = '',
+          preview = {},
           ...other
         } = val;
 
@@ -83,24 +83,30 @@ export default {
             microShared.closeMicroApp(null);
           }
         }
-        if (previewUrl && previewUrl !== oldVal?.previewUrl) {
-          const [fileName, type] = previewUrl.split('/').pop().split('.');
+        if (preview?.url && preview?.url !== oldVal?.preview?.url) {
+          const { url } = preview;
+          const [fileName, type] = url.split('/').pop().split('.');
           let cachePath = await renderProcess.getCacheFilePath(
             `${fileName}.${type}`,
           );
           if (!cachePath) {
             await renderProcess
               .saveCacheFile({
-                url: previewUrl,
+                url,
                 fileName,
               })
+              .catch(() => {
+                preview.onError && preview.onError();
+              })
               .finally(() => {
+                preview.onFinally && preview.onFinally();
                 microShared.openMicroApp('');
               });
             cachePath = await renderProcess.getCacheFilePath(
               `${fileName}.${type}`,
             );
           }
+          preview.onSuccess && preview.onSuccess();
           renderProcess.previewAssets(cachePath);
           microShared.openMicroApp('');
         }
