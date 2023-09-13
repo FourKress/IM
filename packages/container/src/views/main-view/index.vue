@@ -51,10 +51,10 @@ export default {
       'synergyStatus',
       'mainSessionWindow',
     ]),
-    ...mapGetters('globalStore', ['openMicroApp']),
+    ...mapGetters('globalStore', ['currentMicroApp']),
   },
   watch: {
-    openMicroApp: {
+    currentMicroApp: {
       deep: true,
       handler(val) {
         const { appName, visible } = val || {};

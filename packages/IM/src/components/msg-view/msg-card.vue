@@ -186,6 +186,47 @@
       </div>
     </div>
 
+    <div
+      class="wrap shadow panel"
+      :style="{
+        ...cardStyle,
+      }"
+      v-if="isCard"
+    >
+      <div class="panel-top" v-if="cardHeader">
+        <span
+          v-if="cardHeader.title && cardHeader.title.text"
+          :style="{ textAlign: cardHeader.title.align }"
+        >
+          {{ cardHeader.title.text }}
+        </span>
+      </div>
+      <div class="panel-main" v-if="cardElements.length">
+        <div class="panel-content">
+          <div
+            class="content-row"
+            v-for="(text, index) in cardTextList"
+            :key="index"
+            v-html="text"
+          ></div>
+        </div>
+        <div
+          class="panel-btn-list"
+          v-for="(item, index) in cardBtnEleList"
+          :key="index"
+        >
+          <div
+            class="panel-btn"
+            v-for="(btn, index) in item.buttons"
+            :key="index"
+            :class="btn.b_type"
+          >
+            {{ btn.text }}
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="card text" ref="MsgCard" :class="classObject" v-if="!msgType">
       未知类型消息
     </div>
@@ -379,42 +420,8 @@ export default {
       word-break: break-all;
       white-space: pre-line;
 
-      ::v-deep .at-tag {
-        color: $primary-color;
-        cursor: pointer;
-
-        &.at-me {
-          background-color: $primary-color;
-          color: $bg-white-color;
-          padding: 0px 4px;
-          border-radius: 4px;
-        }
-
-        .at-tag-sup {
-          width: 6px;
-          height: 6px;
-          border-radius: 50%;
-          background-color: $bg-white-color;
-          border: 1px solid $tips-text-color;
-          display: inline-block;
-          margin-left: 2px;
-          box-sizing: border-box;
-          transform: translateY(-2px);
-
-          &.read {
-            background-color: #00c476;
-            border-color: #00c476;
-          }
-        }
-      }
-
       &.disabled {
         color: $minor-text-color;
-      }
-
-      ::v-deep .link-jump {
-        color: $primary-color;
-        cursor: pointer;
       }
     }
 
@@ -617,6 +624,74 @@ export default {
         }
       }
     }
+
+    &.panel {
+      display: flex;
+      flex-direction: column;
+
+      .panel-top {
+        width: 100%;
+        height: 40px;
+        line-height: 40px;
+        font-size: 16px;
+        text-indent: 16px;
+        background: linear-gradient(146deg, #fff4f6 0%, #ffb4b4 100%);
+      }
+
+      .panel-main {
+        width: 100%;
+        flex: 1;
+        padding: 16px;
+        box-sizing: border-box;
+        font-size: 14px;
+        color: $main-text-color;
+
+        .panel-content {
+          width: 100%;
+          line-height: 22px;
+
+          .content-row {
+            margin-bottom: 10px;
+          }
+        }
+
+        .panel-btn-list {
+          width: 100%;
+          height: 28px;
+          margin-top: 16px;
+          display: flex;
+
+          .panel-btn {
+            min-width: 66px;
+            height: 28px;
+            min-height: 28px;
+            line-height: 26px;
+            padding: 0 12px;
+            background-color: $bg-white-color;
+            border-radius: 4px;
+            border: 1px solid $bg-white-color;
+            margin-right: 10px;
+            box-sizing: border-box;
+            cursor: pointer;
+
+            &.primary {
+              color: $primary-color;
+              border-color: $primary-color;
+            }
+
+            &.danger {
+              color: #f65951;
+              border-color: #f65951;
+            }
+
+            &.default {
+              color: $tips-text-color;
+              border-color: #dadada;
+            }
+          }
+        }
+      }
+    }
   }
 
   audio {
@@ -630,6 +705,40 @@ export default {
 
     .vjs-big-play-button {
       transform: scale(0.7);
+    }
+  }
+
+  ::v-deep .link-jump {
+    color: $primary-color;
+    cursor: pointer;
+  }
+
+  ::v-deep .at-tag {
+    color: $primary-color;
+    cursor: pointer;
+
+    &.at-me {
+      background-color: $primary-color;
+      color: $bg-white-color;
+      padding: 0px 4px;
+      border-radius: 4px;
+    }
+
+    .at-tag-sup {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background-color: $bg-white-color;
+      border: 1px solid $tips-text-color;
+      display: inline-block;
+      margin-left: 2px;
+      box-sizing: border-box;
+      transform: translateY(-2px);
+
+      &.read {
+        background-color: #00c476;
+        border-color: #00c476;
+      }
     }
   }
 }

@@ -17,6 +17,7 @@ export const CHECK_MSG_TYPE = {
   IS_SYSTEM_NOTIFY: 'systemNotify',
   IS_AT: 'at',
   IS_REVOKE: 'revoke',
+  IS_CARD: 'card',
 };
 
 const formatMsgType = (val, isBaseType = true) => {
@@ -30,7 +31,7 @@ const getNetworkCallLabel = (data) => {
   );
 };
 
-export const BASE_MSG_TYPES = [-1, 1, 2, 3, 4, 5, 6, 8, 671, 672, 673, 674];
+export const BASE_MSG_TYPES = [-1, 1, 2, 3, 4, 5, 6, 8, 9, 671, 672, 673, 674];
 
 export const MSG_FORMAT_MAP = {
   '-1': {
@@ -81,6 +82,10 @@ export const MSG_FORMAT_MAP = {
       );
     },
     type: CHECK_MSG_TYPE.IS_AT,
+  },
+  9: {
+    label: () => formatMsgType('消息卡片'),
+    type: CHECK_MSG_TYPE.IS_CARD,
   },
   400: {
     label: (data) => {

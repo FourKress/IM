@@ -1,10 +1,15 @@
 <template>
   <div class="plugin-app-header">
     <div class="left">
-      <LsIcon size="14" color="#333" icon="ls-icon-shuaxin"></LsIcon>
+      <LsIcon
+        size="14"
+        color="#333"
+        icon="ls-icon-shuaxin"
+        @click="handleUpdate"
+      ></LsIcon>
     </div>
     <div class="title">
-      {{ title }}
+      {{ appTitle }}
     </div>
     <div class="right">
       <LsIcon
@@ -19,16 +24,13 @@
 
 <script>
 import { LsIcon } from '@lanshu/components';
-import { mapActions } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
+import { microShared } from '@lanshu/micro';
+import { MICRO_EVENT_IPC } from '@lanshu/utils';
 
 export default {
   name: 'PluginAppHeader',
   props: {
-    title: {
-      type: String,
-      default: '',
-      required: true,
-    },
     appName: {
       type: String,
       default: '',
@@ -36,20 +38,36 @@ export default {
     },
   },
   components: { LsIcon },
-  computed: {},
-  watch: {},
+  computed: {
+    ...mapGetters('globalStore', ['microAppList']),
+
+    appTitle() {
+      const app = this.microAppList.find((d) => d.key === this.appName) || {};
+      return app?.title;
+    },
+  },
+  watch: {
+    mapGetters() {},
+  },
   mounted() {},
   methods: {
-    ...mapActions('globalStore', ['setOpenMicroApp']),
+    ...mapActions('globalStore', ['setCurrentMicroApp']),
     ...mapActions('pluginStore', ['setActiveMicroApp']),
 
     handleClose() {
       this.$emit('close');
-      this.setOpenMicroApp({
+      this.setCurrentMicroApp({
         appName: this.appName,
         visible: false,
       });
       this.setActiveMicroApp('');
+    },
+
+    handleUpdate() {
+      microShared.EventIPC(this.appName, {
+        type: MICRO_EVENT_IPC.UPDATE_APP,
+        value: Date.now(),
+      });
     },
   },
 };

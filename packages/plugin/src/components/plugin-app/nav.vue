@@ -33,10 +33,12 @@ export default {
     return {
       microAppList: [
         {
-          key: 'SelfPlugin',
+          key: 'SmartAdvocacyMicroApp',
+          title: '智慧宣传',
         },
         {
           key: 'SelfPluginB',
+          title: '另一个应用',
         },
       ],
     };
@@ -50,6 +52,7 @@ export default {
     },
   },
   mounted() {
+    this.setMicroAppList(this.microAppList);
     this.openAppNav();
     this.$emit('update:pluginStyle', {
       flex: '1 1 0',
@@ -58,12 +61,12 @@ export default {
     });
   },
   methods: {
-    ...mapActions('globalStore', ['setOpenMicroApp']),
+    ...mapActions('globalStore', ['setCurrentMicroApp', 'setMicroAppList']),
     ...mapActions('pluginStore', ['setActiveMicroApp']),
 
     openAppNav() {
       if (this.mainSessionWindow?.sessId && !this.visible) {
-        this.setOpenMicroApp({
+        this.setCurrentMicroApp({
           appName: 'PluginAppNav',
           visible: true,
         });
@@ -71,9 +74,10 @@ export default {
     },
 
     handleOpenApp(item) {
-      this.setActiveMicroApp(item.key);
-      this.setOpenMicroApp({
-        appName: item.key,
+      const { key } = item;
+      this.setActiveMicroApp(key);
+      this.setCurrentMicroApp({
+        appName: key,
         visible: true,
       });
     },

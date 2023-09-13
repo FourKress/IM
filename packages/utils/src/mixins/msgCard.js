@@ -1,17 +1,23 @@
 import { renderProcess } from '@lanshu/render-process';
 import { IMRevokeMessage } from '@lanshu/im';
 import { mapGetters } from 'vuex';
+import dayjs from 'dayjs';
+import lodash from 'lodash';
+import { microShared } from '@lanshu/micro';
+
 import {
-  dayjs,
-  lodash,
   MICRO_EVENT_IPC,
   MICRO_NAME_CONFIG,
   PLACEHOLDER_CONFIG,
-} from '@lanshu/utils';
-import { microShared } from '@lanshu/micro';
+} from '../constant';
 import { CHECK_MSG_TYPE, MSG_FORMAT_MAP } from '../msgUtils';
 import { dataURLtoBlob, getFileSize } from '../base';
-import { getAtTagList, formatAtTag, openAtUser } from '../atUtils';
+import {
+  getAtTagList,
+  formatAtTag,
+  formatCardAtTag,
+  openAtUser,
+} from '../atUtils';
 
 export default {
   data() {
@@ -74,6 +80,35 @@ export default {
     },
     msgData() {
       return this.msg?.data || {};
+    },
+    cardElements() {
+      return this.msg?.data.elements || [];
+    },
+    cardTextList() {
+      return this.cardElements
+        .filter((d) => d.m_type === 'text')
+        ?.map((d) => {
+          let text = d.text;
+          const atArr = getAtTagList(text);
+          if (atArr.length) {
+            text = formatCardAtTag(
+              {
+                ...this.msg,
+                data: {
+                  content: text,
+                },
+              },
+              atArr,
+            );
+          }
+          return text;
+        });
+    },
+    cardBtnEleList() {
+      return this.cardElements.filter((d) => d.m_type === 'buttons');
+    },
+    cardHeader() {
+      return this.msg?.data.header || null;
     },
     linkArr() {
       const content = this.msgData?.content;
@@ -143,6 +178,9 @@ export default {
     },
     isPosition() {
       return this.msgType === this.CHECK_MSG_TYPE.IS_POSITION;
+    },
+    isCard() {
+      return this.msgType === this.CHECK_MSG_TYPE.IS_CARD;
     },
     size() {
       if (!this.isImage && !this.isVideo && !this.isAudio) return;

@@ -60,7 +60,7 @@ export default {
           } = openMicroApp;
 
           if (appName) {
-            await this.setOpenMicroApp({
+            await this.setCurrentMicroApp({
               appName,
               path,
               params: {},
@@ -76,7 +76,7 @@ export default {
 
           const { appName = '' } = closeMicroApp;
           if (appName) {
-            await this.setOpenMicroApp({
+            await this.setCurrentMicroApp({
               appName,
               visible: false,
             });
@@ -152,7 +152,7 @@ export default {
   },
   methods: {
     ...mapActions('IMStore', ['setCreateSessionTextMsg']),
-    ...mapActions('globalStore', ['setOpenMicroApp']),
+    ...mapActions('globalStore', ['setCurrentMicroApp']),
     ...mapActions('microVuexStore', ['setMicroAppName']),
   },
 

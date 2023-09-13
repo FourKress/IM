@@ -1,11 +1,10 @@
 <template>
   <div class="plugin-container" v-show="visible">
     <PluginAppHeader
-      title="这是一个应用"
-      appName="SelfPlugin"
+      :appName="MICRO_NAME_CONFIG.SMART_ADVOCACY"
       @close="handleClose"
     />
-    <div class="plugin-main" id="micro-app-container">这是一个应用</div>
+    <div class="plugin-main" id="micro-app-container"></div>
   </div>
 </template>
 
@@ -16,7 +15,7 @@ import { loadQiankunMicroApp } from '@lanshu/micro';
 import { MICRO_NAME_CONFIG } from '@lanshu/utils';
 
 export default {
-  name: 'SelfPlugin',
+  name: MICRO_NAME_CONFIG.SMART_ADVOCACY,
   props: {
     visible: {
       type: Boolean,
@@ -28,6 +27,7 @@ export default {
   },
   data() {
     return {
+      MICRO_NAME_CONFIG,
       microApp: null,
     };
   },

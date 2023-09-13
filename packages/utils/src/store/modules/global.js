@@ -10,7 +10,8 @@ const getDefaultState = () => {
     startDownload: false,
     updateNotify: false,
     searchHistory: JSON.parse(localStorage.getItem('searchHistory') || '[]'),
-    openMicroApp: {},
+    microAppList: [],
+    currentMicroApp: {},
   };
 };
 const state = getDefaultState();
@@ -23,7 +24,8 @@ const getters = {
   startDownload: (state) => state.startDownload,
   updateNotify: (state) => state.updateNotify,
   searchHistory: (state) => state.searchHistory,
-  openMicroApp: (state) => state.openMicroApp,
+  microAppList: (state) => state.microAppList,
+  currentMicroApp: (state) => state.currentMicroApp,
 };
 
 const mutations = {
@@ -60,8 +62,11 @@ const mutations = {
     data.searchHistory = value;
     localStorage.setItem('searchHistory', JSON.stringify(value));
   },
-  setOpenMicroApp(data, value) {
-    data.openMicroApp = value;
+  setMicroAppList(data, value) {
+    data.microAppList = value;
+  },
+  setCurrentMicroApp(data, value) {
+    data.currentMicroApp = value;
   },
 };
 
@@ -90,8 +95,11 @@ const actions = {
   setSearchHistory({ commit }, value) {
     commit('setSearchHistory', value);
   },
-  setOpenMicroApp({ commit }, value) {
-    commit('setOpenMicroApp', value);
+  setMicroAppList({ commit }, value) {
+    commit('setMicroAppList', value);
+  },
+  setCurrentMicroApp({ commit }, value) {
+    commit('setCurrentMicroApp', value);
   },
 };
 
