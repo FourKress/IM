@@ -25,8 +25,6 @@
 <script>
 import { LsIcon } from '@lanshu/components';
 import { mapActions, mapGetters } from 'vuex';
-import { microShared } from '@lanshu/micro';
-import { MICRO_EVENT_IPC } from '@lanshu/utils';
 
 export default {
   name: 'PluginAppHeader',
@@ -64,10 +62,7 @@ export default {
     },
 
     handleUpdate() {
-      microShared.EventIPC(this.appKey, {
-        type: MICRO_EVENT_IPC.UPDATE_APP,
-        value: Date.now(),
-      });
+      this.$emit('update');
     },
   },
 };

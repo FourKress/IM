@@ -3,6 +3,7 @@
     <PluginAppHeader
       :appKey="MICRO_KEY_CONFIG.SMART_ADVOCACY"
       @close="handleClose"
+      @update="handleUpdate"
     />
     <div class="plugin-main" id="micro-app-container"></div>
   </div>
@@ -106,6 +107,11 @@ export default {
     },
 
     handleClose() {},
+
+    handleUpdate() {
+      this.handleUnmountApp();
+      this.loadMicroApp();
+    },
 
     handleUnmountApp() {
       if (this.microApp) this.microApp.unmount();
