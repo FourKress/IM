@@ -345,8 +345,11 @@ export default {
         PLACEHOLDER_CONFIG.FILE_NAME_SEPARATOR
       }${this.getFileName()}.${this.getFileType()}`;
       if (name) {
-        fileType += `${PLACEHOLDER_CONFIG.RAW_NAME_SEPARATOR}${name}`;
+        fileType += encodeURIComponent(
+          `${PLACEHOLDER_CONFIG.RAW_NAME_SEPARATOR}${name}`,
+        );
       }
+
       const blob = dataURLtoBlob(base64, fileType);
 
       await navigator.clipboard.write([

@@ -134,6 +134,7 @@ export default {
 
   .plugin-main {
     flex: 1;
+    overflow: hidden;
     background-color: $bg-IM-color;
   }
 }

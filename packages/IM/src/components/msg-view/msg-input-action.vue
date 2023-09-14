@@ -372,16 +372,18 @@ export default {
                 .replace(PLACEHOLDER_CONFIG.CUSTOM_PROTOCOL, '')
                 .split(PLACEHOLDER_CONFIG.FILE_NAME_SEPARATOR);
               if (fileName.includes(PLACEHOLDER_CONFIG.RAW_NAME_SEPARATOR)) {
-                fileName = fileName.split(
-                  PLACEHOLDER_CONFIG.RAW_NAME_SEPARATOR,
-                )[1];
+                fileName = decodeURIComponent(
+                  fileName.split(PLACEHOLDER_CONFIG.RAW_NAME_SEPARATOR)[1],
+                );
               }
               const tempFile = this.handleBlob2File(blob, fileName, fileType);
               pasteFilesList.push(tempFile);
             }
           }
         }
-      } catch (e) {}
+      } catch (e) {
+        console.log(e);
+      }
 
       if (pasteFilesList?.length) {
         await this.setDragFileList({

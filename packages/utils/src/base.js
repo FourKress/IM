@@ -112,3 +112,13 @@ export const removeAllDialogDom = () => {
     });
   }
 };
+
+export const gbk2Unicode = (content) => {
+  return content.replace(/([\u0080-\uffff])/g, (str) => {
+    let hex = str.charCodeAt(0).toString(16);
+    for (let i = hex.length; i < 4; i++) {
+      hex = '0' + hex;
+    }
+    return '\\u' + hex;
+  });
+};
