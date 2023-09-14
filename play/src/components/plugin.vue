@@ -1,7 +1,7 @@
 <template>
   <div class="plugin-container" v-show="visible">
     <PluginAppHeader
-      :appKey="MICRO_NAME_CONFIG.SMART_ADVOCACY"
+      :appKey="MICRO_KEY_CONFIG.SMART_ADVOCACY"
       @close="handleClose"
     />
     <div class="plugin-main" id="micro-app-container"></div>
@@ -10,12 +10,12 @@
 
 <script>
 import { PluginAppHeader } from '@lanshu/plugin';
-import { mapActions } from 'vuex';
-import { loadQiankunMicroApp } from '@lanshu/micro';
-import { MICRO_NAME_CONFIG } from '@lanshu/utils';
+import { mapGetters, mapActions } from 'vuex';
+import { loadQiankunMicroApp, microShared } from '@lanshu/micro';
+import { MICRO_KEY_CONFIG, MICRO_EVENT_IPC } from '@lanshu/utils';
 
 export default {
-  name: MICRO_NAME_CONFIG.SMART_ADVOCACY,
+  name: MICRO_KEY_CONFIG.SMART_ADVOCACY,
   props: {
     visible: {
       type: Boolean,
@@ -25,9 +25,20 @@ export default {
   components: {
     PluginAppHeader,
   },
+  computed: {
+    ...mapGetters('globalStore', ['microAppList']),
+
+    appConfig() {
+      const app =
+        this.microAppList.find(
+          (d) => d.key === MICRO_KEY_CONFIG.SMART_ADVOCACY,
+        ) || {};
+      return app;
+    },
+  },
   data() {
     return {
-      MICRO_NAME_CONFIG,
+      MICRO_KEY_CONFIG,
       microApp: null,
     };
   },
@@ -44,6 +55,18 @@ export default {
         }
       }
     },
+    appConfig: {
+      deep: true,
+      handler(val = {}, oldVal) {
+        const { path = '' } = val;
+        if (path && path !== oldVal && this.microApp) {
+          microShared.EventIPC(MICRO_KEY_CONFIG.SMART_ADVOCACY, {
+            type: MICRO_EVENT_IPC.ROUTER_JUMP,
+            value: `/${MICRO_KEY_CONFIG.SMART_ADVOCACY}${path}`,
+          });
+        }
+      },
+    },
   },
   mounted() {},
   methods: {
@@ -57,10 +80,10 @@ export default {
         this.microApp = loadQiankunMicroApp(
           [
             {
-              name: MICRO_NAME_CONFIG.SMART_ADVOCACY,
-              entry: 'http://172.16.3.55:3006/',
+              name: MICRO_KEY_CONFIG.SMART_ADVOCACY,
+              entry: this.appConfig.url,
               container: '#micro-app-container',
-              targetPath: '/spokesman',
+              targetPath: this.appConfig.path,
             },
           ],
           {
@@ -83,9 +106,13 @@ export default {
     },
 
     handleClose() {},
+
+    handleUnmountApp() {
+      if (this.microApp) this.microApp.unmount();
+    },
   },
   beforeDestroy() {
-    if (this.microApp) this.microApp.unmount();
+    this.handleUnmountApp();
   },
 };
 </script>

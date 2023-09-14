@@ -53,17 +53,20 @@ export default {
         if (openMicroApp) {
           const isEqual = lodash.isEqual(openMicroApp, oldVal.openMicroApp);
           if (isEqual) return;
-          const {
-            appKey = '',
-            path = '',
-            params: {},
-          } = openMicroApp;
+          const { appKey = '', path = '' } = openMicroApp;
 
           if (appKey) {
+            await this.setActiveMicroApp(appKey);
+            await this.setMicroAppList(
+              this.microAppList.map((d) => {
+                if (d.key === appKey) {
+                  d.path = `/${path}`;
+                }
+                return d;
+              }),
+            );
             await this.setCurrentMicroApp({
               appKey,
-              path,
-              params: {},
               visible: true,
             });
             microShared.openMicroApp(null);
@@ -152,8 +155,9 @@ export default {
   },
   methods: {
     ...mapActions('IMStore', ['setCreateSessionTextMsg']),
-    ...mapActions('globalStore', ['setCurrentMicroApp']),
     ...mapActions('microVuexStore', ['setMicroAppKey']),
+    ...mapActions('globalStore', ['setCurrentMicroApp', 'setMicroAppList']),
+    ...mapActions('pluginStore', ['setActiveMicroApp']),
   },
 
   destroyed() {

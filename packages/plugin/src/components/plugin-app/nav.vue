@@ -35,6 +35,8 @@ export default {
         {
           key: 'SmartAdvocacyMicroApp',
           title: '智慧宣传',
+          path: '/spokesman',
+          url: 'http://172.16.3.55:3006/',
         },
       ],
     };

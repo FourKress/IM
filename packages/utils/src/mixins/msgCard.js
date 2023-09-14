@@ -7,7 +7,7 @@ import { microShared } from '@lanshu/micro';
 
 import {
   MICRO_EVENT_IPC,
-  MICRO_NAME_CONFIG,
+  MICRO_KEY_CONFIG,
   PLACEHOLDER_CONFIG,
 } from '../constant';
 import { CHECK_MSG_TYPE, MSG_FORMAT_MAP } from '../msgUtils';
@@ -84,28 +84,32 @@ export default {
     cardElements() {
       return this.msg?.data.elements || [];
     },
-    cardTextList() {
-      return this.cardElements
-        .filter((d) => d.m_type === 'text')
-        ?.map((d) => {
-          let text = d.text;
-          const atArr = getAtTagList(text);
+    cardEleList() {
+      return this.cardElements?.map((d) => {
+        const { m_type, text } = d;
+        if (m_type === 'text') {
+          let formatText = d.text;
+          const atArr = getAtTagList(formatText);
           if (atArr.length) {
-            text = formatCardAtTag(
+            formatText = formatCardAtTag(
               {
                 ...this.msg,
                 data: {
-                  content: text,
+                  content: formatText,
                 },
               },
               atArr,
             );
           }
-          return text;
-        });
-    },
-    cardBtnEleList() {
-      return this.cardElements.filter((d) => d.m_type === 'buttons');
+          return {
+            ...d,
+            text: formatText,
+          };
+        }
+        if (m_type === 'buttons') {
+          return d;
+        }
+      });
     },
     cardHeader() {
       return this.msg?.data.header || null;
@@ -318,7 +322,7 @@ export default {
     },
 
     async handleCopyPosition() {
-      microShared.EventIPC(MICRO_NAME_CONFIG.SMART_ADVOCACY, {
+      microShared.EventIPC(MICRO_KEY_CONFIG.SMART_ADVOCACY, {
         type: MICRO_EVENT_IPC.POSITION_INFO,
         value: {
           ...this.msgData,

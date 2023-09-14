@@ -194,36 +194,48 @@
       v-if="isCard"
     >
       <div class="panel-top" v-if="cardHeader">
+        <img
+          :src="
+            LsAssets[
+              `${bg_template[cardHeader.bg_template] || bg_template.blue}_${
+                cardStyle.width
+              }`
+            ]
+          "
+          alt=""
+        />
         <span
           v-if="cardHeader.title && cardHeader.title.text"
+          :class="bg_template[cardHeader.bg_template] || bg_template.blue"
           :style="{ textAlign: cardHeader.title.align }"
         >
           {{ cardHeader.title.text }}
         </span>
       </div>
       <div class="panel-main" v-if="cardElements.length">
-        <div class="panel-content">
+        <template v-for="(ele, key) in cardEleList">
           <div
-            class="content-row"
-            v-for="(text, index) in cardTextList"
-            :key="index"
-            v-html="text"
+            class="panel-row text-row"
+            :key="key"
+            v-if="ele.m_type === 'text'"
+            v-html="ele.text"
           ></div>
-        </div>
-        <div
-          class="panel-btn-list"
-          v-for="(item, index) in cardBtnEleList"
-          :key="index"
-        >
           <div
-            class="panel-btn"
-            v-for="(btn, index) in item.buttons"
-            :key="index"
-            :class="btn.b_type"
+            class="panel-row panel-btn-list"
+            v-if="ele.m_type === 'buttons'"
+            :key="key"
           >
-            {{ btn.text }}
+            <div
+              class="panel-btn"
+              v-for="(btn, index) in ele.buttons"
+              :key="index"
+              :class="btn.b_type"
+              @click="handleCardBtn(btn)"
+            >
+              {{ btn.text }}
+            </div>
           </div>
-        </div>
+        </template>
       </div>
     </div>
 
@@ -242,8 +254,8 @@ import {
   MsgCardMixins,
   startTrtc,
 } from '@lanshu/utils';
-import { LsIcon } from '@lanshu/components';
-import { mapGetters } from 'vuex';
+import { LsIcon, LsAssets } from '@lanshu/components';
+import { mapGetters, mapActions } from 'vuex';
 
 export default {
   name: 'Msg-card',
@@ -281,6 +293,7 @@ export default {
     return {
       NETWORK_CALL_TYPE,
       SESSION_BUBBLE_MODEL,
+      LsAssets,
       imageMaxWidth: 360,
       wrapStyle: {
         maxWidth: '360px',
@@ -293,10 +306,18 @@ export default {
         width: '400px',
         maxWidth: '400px',
       },
+      bg_template: {
+        blue: 'blue',
+        gray: 'gray',
+        green: 'green',
+        red: 'red',
+        yellow: 'yellow',
+      },
     };
   },
   computed: {
     ...mapGetters('IMStore', ['refreshRevoke', 'refreshReceipt']),
+    ...mapGetters('globalStore', ['microAppList']),
 
     classObject() {
       return {
@@ -351,13 +372,17 @@ export default {
     });
   },
   methods: {
+    ...mapActions('globalStore', ['setCurrentMicroApp', 'setMicroAppList']),
+    ...mapActions('pluginStore', ['setActiveMicroApp']),
+
     initSize(imViewSizeInfo) {
       if (
         !this.isImage &&
         !this.isVideo &&
         !this.isAudio &&
         !this.isFile &&
-        !this.isPosition
+        !this.isPosition &&
+        !this.isCard
       )
         return;
       const { width, height } = imViewSizeInfo;
@@ -392,6 +417,38 @@ export default {
       renderProcess.openUrl(
         `https://ditu.amap.com/regeo?lng=${this.msgData.longitude}&lat=${this.msgData.latitude}&name=${this.msgData.placeName}&src=uriapi`,
       );
+    },
+
+    async handleCardBtn(btn) {
+      const {
+        multi_url: { url, pc_url },
+      } = btn;
+      // const targetUrl = url || pc_url;
+      const targetUrl = 'app://SmartAdvocacyMicroApp/spokesmanother?121=333';
+      if (!targetUrl) return;
+      if (targetUrl.includes('http')) {
+        renderProcess.openUrl(targetUrl);
+        return;
+      }
+
+      if (targetUrl.includes('app://')) {
+        const [appKey, pagePath] = targetUrl.replace('app://', '').split('/');
+
+        await this.setActiveMicroApp(appKey);
+        await this.setMicroAppList(
+          this.microAppList.map((d) => {
+            if (d.key === appKey) {
+              d.path = `/${pagePath}`;
+            }
+            return d;
+          }),
+        );
+
+        await this.setCurrentMicroApp({
+          appKey,
+          visible: true,
+        });
+      }
     },
   },
 };
@@ -634,59 +691,120 @@ export default {
         height: 40px;
         line-height: 40px;
         font-size: 16px;
-        text-indent: 16px;
-        background: linear-gradient(146deg, #fff4f6 0%, #ffb4b4 100%);
+        font-weight: bold;
+        padding: 0 16px;
+        box-sizing: border-box;
+        position: relative;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+
+        img {
+          display: block;
+          width: 100%;
+          height: 100%;
+          position: absolute;
+          left: 0;
+          top: 0;
+          z-index: -1;
+        }
+
+        span {
+          &.blue {
+            color: $primary-color;
+          }
+
+          &.gray {
+            color: $main-text-color;
+          }
+
+          &.green {
+            color: $minor-color;
+          }
+
+          &.red {
+            color: #f65951;
+          }
+
+          &.yellow {
+            color: $minor-yellow-color;
+          }
+        }
       }
 
       .panel-main {
         width: 100%;
         flex: 1;
-        padding: 16px;
+        padding: 16px 16px 0;
         box-sizing: border-box;
         font-size: 14px;
         color: $main-text-color;
 
-        .panel-content {
-          width: 100%;
-          line-height: 22px;
-
-          .content-row {
-            margin-bottom: 10px;
+        .panel-row {
+          &.text-row {
+            width: 100%;
+            line-height: 22px;
+            margin-top: 10px;
           }
-        }
 
-        .panel-btn-list {
-          width: 100%;
-          height: 28px;
-          margin-top: 16px;
-          display: flex;
+          &.panel-btn-list {
+            width: 100%;
+            margin: 16px 0 6px;
+            display: flex;
+            flex-wrap: wrap;
 
-          .panel-btn {
-            min-width: 66px;
-            height: 28px;
-            min-height: 28px;
-            line-height: 26px;
-            padding: 0 12px;
-            background-color: $bg-white-color;
-            border-radius: 4px;
-            border: 1px solid $bg-white-color;
-            margin-right: 10px;
-            box-sizing: border-box;
-            cursor: pointer;
+            .panel-btn {
+              min-width: 52px;
+              max-width: 100%;
+              height: 28px;
+              min-height: 28px;
+              line-height: 26px;
+              padding: 0 12px;
+              background-color: $bg-white-color;
+              border-radius: 4px;
+              border: 1px solid $bg-white-color;
+              margin: 0 10px 10px 0;
+              box-sizing: border-box;
+              cursor: pointer;
 
-            &.primary {
-              color: $primary-color;
-              border-color: $primary-color;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              white-space: nowrap;
+
+              &.primary {
+                color: $bg-white-color;
+                border-color: $primary-color;
+                background-color: $primary-color;
+              }
+
+              &.secondary {
+                color: $primary-color;
+                border-color: $primary-color;
+              }
+
+              &.danger {
+                color: #f65951;
+                border-color: #f65951;
+              }
+
+              &.default {
+                color: $tips-text-color;
+                border-color: #dadada;
+              }
+
+              &:last-child {
+                margin-right: 0;
+              }
             }
+          }
 
-            &.danger {
-              color: #f65951;
-              border-color: #f65951;
-            }
+          &:first-child {
+            margin-top: 0;
+          }
 
-            &.default {
-              color: $tips-text-color;
-              border-color: #dadada;
+          &:last-child {
+            &.text-row {
+              margin-bottom: 16px;
             }
           }
         }
