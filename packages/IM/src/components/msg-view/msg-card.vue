@@ -423,8 +423,8 @@ export default {
       const {
         multi_url: { url, pc_url },
       } = btn;
-      // const targetUrl = url || pc_url;
-      const targetUrl = 'app://SmartAdvocacyMicroApp/spokesmanother?121=333';
+      const targetUrl = url || pc_url;
+      // const targetUrl = 'app://SmartAdvocacyMicroApp/spokesmanother?121=333';
       if (!targetUrl) return;
       if (targetUrl.includes('http')) {
         renderProcess.openUrl(targetUrl);

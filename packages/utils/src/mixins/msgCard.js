@@ -292,11 +292,13 @@ export default {
     },
 
     async handleCopyPosition() {
-      microShared.EventIPC(MICRO_KEY_CONFIG.SMART_ADVOCACY, {
-        type: MICRO_EVENT_IPC.POSITION_INFO,
-        value: {
-          ...this.msgData,
-        },
+      Object.values(MICRO_KEY_CONFIG).forEach((key) => {
+        microShared.EventIPC(key, {
+          type: MICRO_EVENT_IPC.POSITION_INFO,
+          value: {
+            ...this.msgData,
+          },
+        });
       });
     },
 
