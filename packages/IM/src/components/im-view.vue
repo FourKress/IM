@@ -611,7 +611,6 @@ export default {
             currentScrollHeight - this.preScrollHeight + this.scrollTop;
         }
         this.$refs.MessagePanel.scrollTop = currentScrollHeight;
-        console.log(12);
       }
       cb && cb();
     },
