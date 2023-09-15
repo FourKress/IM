@@ -1,6 +1,6 @@
 {
   "name": "lanshu-play",
-  "version": "0.2.13",
+  "version": "0.2.14",
   "private": true,
   "author": "wudong <511970747@qq.com>",
   "scripts": {
@@ -17,11 +17,11 @@
   },
   "main": "background.js",
   "dependencies": {
-    "@lanshu/layout": "^0.2.13",
+    "@lanshu/layout": "^0.2.14",
     "@lanshu/main-process": "^0.2.10",
     "@lanshu/micro": "^1.0.6",
-    "@lanshu/plugin": "^0.2.13",
-    "@lanshu/utils": "^0.2.12",
+    "@lanshu/plugin": "^0.2.14",
+    "@lanshu/utils": "^0.2.14",
     "aws-sdk": "^2.1320.0",
     "core-js": "^3.8.3",
     "electron-screenshots": "0.5.15",
