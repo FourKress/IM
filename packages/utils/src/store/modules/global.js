@@ -58,7 +58,7 @@ const mutations = {
     data.updateNotify = value;
     await window.$sessionStore.setItem('updateNotify', value);
   },
-  async setSearchHistory(data, value) {
+  async setSearchHistory(data, value = []) {
     data.searchHistory = value;
     await window.$localStore.setItem('searchHistory', value);
   },

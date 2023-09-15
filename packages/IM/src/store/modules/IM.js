@@ -189,12 +189,12 @@ const mutations = {
   setGroupMemberDeleteCallBack(data, value) {
     data.groupMemberDeleteCallBack = value;
   },
-  async setSynergyHistory(data, historySynergyIds) {
+  async setSynergyHistory(data, historySynergyIds = []) {
     let historyList = [];
     const { synergyHistory = [] } = data;
     const currentHistory = [...synergyHistory];
 
-    historySynergyIds.forEach((h) => {
+    historySynergyIds?.forEach((h) => {
       const rawData = historyList.length ? historyList : currentHistory;
       const hasHistory = currentHistory.some((d) => d === h);
       if (hasHistory) {
