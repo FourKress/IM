@@ -46,6 +46,7 @@ export default {
           closeMicroApp = null,
           token = '',
           preview = {},
+          browserUrl = '',
           ...other
         } = val;
 
@@ -112,6 +113,10 @@ export default {
           preview.onSuccess && preview.onSuccess();
           renderProcess.previewAssets(cachePath);
           microShared.openMicroApp('');
+        }
+
+        if (browserUrl && browserUrl !== oldVal?.browserUrl) {
+          renderProcess.openUrl(browserUrl);
         }
 
         // 各应用业务通信

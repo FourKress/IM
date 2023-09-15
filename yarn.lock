@@ -1180,10 +1180,10 @@
     "@jridgewell/resolve-uri" "3.1.0"
     "@jridgewell/sourcemap-codec" "1.4.14"
 
-"@lanshu/micro@^1.0.6":
-  version "1.0.6"
-  resolved "http://172.16.3.249:8081/repository/npm-group/@lanshu/micro/-/micro-1.0.6.tgz#fc2e11cac87de0dbedb52e4c0398bb638d4ab665"
-  integrity sha512-wkFpmlYYPln12Jx1AoA55zMZaNj0Tx/gpqQTrnqMUcwuosM4opgCw0zOGaV5NStm11mW+wSBgn5TXZuMe9TUFA==
+"@lanshu/micro@^1.0.9":
+  version "1.0.9"
+  resolved "http://172.16.3.249:8081/repository/npm-group/@lanshu/micro/-/micro-1.0.9.tgz#e416b996eb1c4fa4989e249d4717cc83a267d375"
+  integrity sha512-Fkg7K6dAS7S16HoJ9mSCMOTGqpaKjiCUn5FoNT3WBM284PwLCWBgg79Lsxa89wftIut0JoHcRZVvcLL+xYblpQ==
   dependencies:
     qiankun "^2.10.5"
     redux "^4.2.1"
