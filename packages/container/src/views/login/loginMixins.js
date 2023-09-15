@@ -22,9 +22,9 @@ export default {
       let resData = res?.data || {};
 
       const { imAppid, imToken, token, userId, username } = resData;
-      localStorage.setItem('historyPhoneNum', username);
-      setToken(TOKEN_TYPE.IS_IM, imToken);
-      setToken(TOKEN_TYPE.IS_SYS, token);
+      await window.$localStore.setItem('historyPhoneNum', username);
+      await setToken(TOKEN_TYPE.IS_IM, imToken);
+      await setToken(TOKEN_TYPE.IS_SYS, token);
 
       if (!isAutoLogin) {
         const { data } = await Apis.accountUserInfo();

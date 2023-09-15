@@ -31,25 +31,34 @@ window.ClientMessage = Message;
 
 const Layout = (config = {}) => {
   return new Promise(async (resolve) => {
+    window.$lanshuStore = localforage.createInstance({
+      name: 'lanshuStore',
+    });
+    window.$localStore = localforage.createInstance({
+      name: 'localStore',
+    });
+    window.$sessionStore = localforage.createInstance({
+      name: 'sessionStore',
+    });
+    await $sessionStore.clear();
+
     const { menu, routes, plugins = [], store } = config;
     if (menu) {
-      localStorage.setItem('menu', JSON.stringify(menu));
+      await window.$lanshuStore.setItem('menu', menu);
     } else {
-      localStorage.removeItem('menu');
+      await window.$lanshuStore.removeItem('menu');
     }
 
     if (plugins?.length) {
-      localStorage.setItem(
+      await window.$lanshuStore.setItem(
         'plugins',
-        JSON.stringify(
-          plugins.map((d) => {
-            const { component, ...other } = d;
-            return {
-              ...other,
-              key: component.name,
-            };
-          }),
-        ),
+        plugins.map((d) => {
+          const { component, ...other } = d;
+          return {
+            ...other,
+            key: component.name,
+          };
+        }),
       );
       plugins.forEach((d) => {
         const { component } = d;
@@ -57,7 +66,7 @@ const Layout = (config = {}) => {
         Vue.component(component.name, component);
       });
     } else {
-      localStorage.removeItem('plugins');
+      await window.$lanshuStore.removeItem('plugins');
     }
 
     const completeRoutes = [...baseRoutes];
@@ -72,10 +81,6 @@ const Layout = (config = {}) => {
         ...store,
       };
     }
-
-    window.$lanshuStore = localforage.createInstance({
-      name: 'lanshuStore',
-    });
 
     // 禁止浏览器的前进后退
     history.pushState = () => {};

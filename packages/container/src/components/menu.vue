@@ -106,9 +106,9 @@ export default {
       }
     },
   },
-  created() {
+  async created() {
     // 获取入口传入的Menu项
-    const pluginMenu = JSON.parse(localStorage.getItem('menu') || '[]');
+    const pluginMenu = (await window.$localStore.getItem('menu')) || [];
 
     // BaseRoutes 基础的菜单列表
     // micro.getRoutes() 微应用的菜单列表

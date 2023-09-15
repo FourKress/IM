@@ -46,7 +46,7 @@ const getDefaultState = () => {
     // 被提出或退出群聊
     groupMemberDeleteCallBack: '',
     // 协同历史
-    synergyHistory: JSON.parse(localStorage.getItem('synergyHistory') || '[]'),
+    synergyHistory: [],
     // 撤回消息回调
     refreshRevoke: '',
     // 已读消息回调
@@ -189,7 +189,7 @@ const mutations = {
   setGroupMemberDeleteCallBack(data, value) {
     data.groupMemberDeleteCallBack = value;
   },
-  setSynergyHistory(data, historySynergyIds) {
+  async setSynergyHistory(data, historySynergyIds) {
     let historyList = [];
     const { synergyHistory = [] } = data;
     const currentHistory = [...synergyHistory];
@@ -208,7 +208,8 @@ const mutations = {
     const resultHistory =
       historyList.length > 6 ? historyList.slice(0, 6) : historyList;
     data.synergyHistory = resultHistory;
-    localStorage.setItem('synergyHistory', JSON.stringify(resultHistory));
+
+    await window.$localStore.setItem('synergyHistory', resultHistory);
   },
   setRefreshRevoke(data, value) {
     data.refreshRevoke = value;

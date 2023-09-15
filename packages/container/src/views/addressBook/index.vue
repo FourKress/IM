@@ -291,12 +291,12 @@ export default {
       }
     },
   },
-  mounted() {
-    this.orgActiveKey = sessionStorage.getItem('orgActiveKey') || '';
-    this.activeKey = sessionStorage.getItem('activeKey') || '';
-    this.friendNavItem = JSON.parse(
-      sessionStorage.getItem('friendNavItem') || '{}',
-    );
+  async mounted() {
+    this.orgActiveKey =
+      (await window.$sessionStore.getItem('orgActiveKey')) || '';
+    this.activeKey = (await window.$sessionStore.getItem('activeKey')) || '';
+    this.friendNavItem =
+      (await window.$sessionStore.getItem('friendNavItem')) || {};
     if (!this.orgActiveKey && this.activeKey) {
       this.handleFriendNav({
         ...this.friendNavItem,
@@ -471,10 +471,10 @@ export default {
     },
   },
 
-  beforeDestroy() {
-    sessionStorage.setItem('orgActiveKey', this.orgActiveKey);
-    sessionStorage.setItem('activeKey', this.activeKey);
-    sessionStorage.setItem('friendNavItem', JSON.stringify(this.friendNavItem));
+  async beforeDestroy() {
+    await window.$sessionStore.setItem('orgActiveKey', this.orgActiveKey);
+    await window.$sessionStore.setItem('activeKey', this.activeKey);
+    await window.$sessionStore.setItem('friendNavItem', this.friendNavItem);
   },
 };
 </script>

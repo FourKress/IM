@@ -69,6 +69,11 @@ export default {
     },
   },
   async created() {
+    const synergyHistory = await window.$localStore.getItem('synergyHistory');
+    await this.setSynergyHistory(synergyHistory);
+    const searchHistory = await window.$localStore.getItem('searchHistory');
+    await this.setSearchHistory(searchHistory);
+
     renderProcess.IMSDKListener((event, data) => {
       const { type, value } = data;
       IMSDKCallBackEvents[type](this, value);
@@ -102,10 +107,12 @@ export default {
     );
   },
   methods: {
+    ...mapActions('IMStore', ['setSynergyHistory']),
     ...mapActions('globalStore', [
       'setUserErrorMsg',
       'setUpdateNotify',
       'setUpdateInfo',
+      'setSearchHistory',
     ]),
 
     async handleGetVersion() {

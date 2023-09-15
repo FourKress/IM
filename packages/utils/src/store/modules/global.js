@@ -9,7 +9,7 @@ const getDefaultState = () => {
     updateInfo: {},
     startDownload: false,
     updateNotify: false,
-    searchHistory: JSON.parse(localStorage.getItem('searchHistory') || '[]'),
+    searchHistory: [],
     microAppList: [],
     currentMicroApp: {},
   };
@@ -54,13 +54,13 @@ const mutations = {
   setStartDownload(data, value) {
     data.startDownload = value;
   },
-  setUpdateNotify(data, value) {
+  async setUpdateNotify(data, value) {
     data.updateNotify = value;
-    sessionStorage.setItem('updateNotify', value);
+    await window.$sessionStore.setItem('updateNotify', value);
   },
-  setSearchHistory(data, value) {
+  async setSearchHistory(data, value) {
     data.searchHistory = value;
-    localStorage.setItem('searchHistory', JSON.stringify(value));
+    await window.$localStore.setItem('searchHistory', value);
   },
   setMicroAppList(data, value) {
     data.microAppList = value;

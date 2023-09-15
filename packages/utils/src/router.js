@@ -1,7 +1,7 @@
 import Router from 'vue-router';
 
 import { storeInstance } from './store';
-import { checkToken } from './token';
+import { getToken } from './token';
 import { TOKEN_TYPE } from './constant';
 
 const whitelist = ['Login', 'TRTC'];
@@ -17,7 +17,7 @@ const routerIntercept = () => {
   return async (to, form, next) => {
     try {
       if (whitelist.includes(to.name)) return next();
-      const token = checkToken(TOKEN_TYPE.IS_IM);
+      const token = await getToken(TOKEN_TYPE.IS_IM);
       const userInfo = storeInstance.getters['IMStore/userInfo'];
       if (token && token !== 'undefined' && userInfo) {
         return next();

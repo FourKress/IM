@@ -58,9 +58,9 @@ export const accountQueryPermision = (params) => {
   return https.post('/auth/account/queryPermision', params);
 };
 
-export const accountLoginOut = () => {
+export const accountLoginOut = async () => {
   return https.post('/auth/account/loginOut', {
-    token: getToken(TOKEN_TYPE.IS_SYS),
+    token: await getToken(TOKEN_TYPE.IS_SYS),
   });
 };
 
@@ -94,7 +94,7 @@ export const accountUserInfo = async (params) => {
   return https.post('/auth/user/userInfo', {
     ...params,
     terminal: await getTerminal(),
-    token: getToken(TOKEN_TYPE.IS_SYS),
+    token: await getToken(TOKEN_TYPE.IS_SYS),
   });
 };
 
@@ -102,7 +102,7 @@ export const accountUpdateUserInfo = async (params) => {
   return https.post('/auth/user/updateUserInfo', {
     ...params,
     terminal: await getTerminal(),
-    token: getToken(TOKEN_TYPE.IS_SYS),
+    token: await getToken(TOKEN_TYPE.IS_SYS),
   });
 };
 
@@ -110,7 +110,7 @@ export const accountUpdatePhone = async (params) => {
   return https.post('/auth/user/updatePhone', {
     ...params,
     terminal: await getTerminal(),
-    token: getToken(TOKEN_TYPE.IS_SYS),
+    token: await getToken(TOKEN_TYPE.IS_SYS),
   });
 };
 
@@ -132,7 +132,7 @@ export const managerRegionQueryAsTree = (params) => {
 
 export const accessibleDeparts = async () => {
   return https.post('/auth/platform/accessibleDeparts', {
-    token: getToken(TOKEN_TYPE.IS_SYS),
+    token: await getToken(TOKEN_TYPE.IS_SYS),
     terminal: await getTerminal(),
   });
 };
@@ -159,7 +159,7 @@ export const queryLastAvailableByAppCode = async (params) => {
 
 export const userDepartList = async () => {
   return https.post('/auth/depart/userDepartList', {
-    token: getToken(TOKEN_TYPE.IS_SYS),
+    token: await getToken(TOKEN_TYPE.IS_SYS),
     terminal: await getTerminal(),
   });
 };

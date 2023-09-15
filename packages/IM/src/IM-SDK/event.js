@@ -98,14 +98,15 @@ export const IMLogout = async () =>
 export const ClientLogOut = async () => {
   await IMLogout();
   await Apis.accountLoginOut();
+  await window.$sessionStore.clear();
   await window.$lanshuStore.removeItem('tempMsgOBJ');
   await renderProcess.setStore('AUTO_LOGIN', {
     status: true,
     token: '',
     expirationTime: 0,
   });
-  removeToken(TOKEN_TYPE.IS_IM);
-  removeToken(TOKEN_TYPE.IS_SYS);
+  await removeToken(TOKEN_TYPE.IS_IM);
+  await removeToken(TOKEN_TYPE.IS_SYS);
   removeAllDialogDom();
   renderProcess.showLoginWindow(1000);
   routeInstance.push('/login');

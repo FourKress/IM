@@ -24,7 +24,7 @@ const HEADER_AUTH = 'Authorization';
 const instance = axios.create(DEFAULT_HTTP_OPTIONS);
 
 instance.interceptors.request.use(
-  (config) => {
+  async (config) => {
     const {
       method,
       // 是参数处否是否吧理成formData形式
@@ -34,7 +34,7 @@ instance.interceptors.request.use(
     } = config;
     let { data, params } = config;
 
-    const authToken = getToken('SYS_TOKEN');
+    const authToken = await getToken('SYS_TOKEN');
     if (isAuth && authToken) {
       config.headers[HEADER_AUTH] = authToken;
     }

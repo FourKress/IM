@@ -72,7 +72,7 @@ export default {
   },
   async created() {
     // 获取入口是否传入Plugins项
-    const plugins = JSON.parse(localStorage.getItem('plugins') || '[]');
+    const plugins = (await window.$localStore.getItem('plugins')) || [];
     const isGovernment =
       (await renderProcess.getStore('CLIENT_TERMINAL')) ===
       CLIENT_TERMINAL.IS_GOVERNMENT;

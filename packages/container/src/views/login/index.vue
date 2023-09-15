@@ -77,7 +77,7 @@ export default {
     const autoLogin = (await renderProcess.getStore('AUTO_LOGIN')) || {};
     const { status = false, token = '' } = autoLogin;
     if (status && token) {
-      setToken(TOKEN_TYPE.IS_SYS, token);
+      await setToken(TOKEN_TYPE.IS_SYS, token);
       const { data } = await Apis.accountUserInfo().catch(() => {
         renderProcess.autoLoginCallBack();
       });

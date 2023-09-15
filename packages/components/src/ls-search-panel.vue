@@ -98,7 +98,8 @@
 </template>
 
 <script>
-import { LsIcon } from '@lanshu/components';
+import LsIcon from './ls-icon';
+
 import {
   Apis,
   lodash,
