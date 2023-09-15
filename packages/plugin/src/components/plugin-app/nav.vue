@@ -9,7 +9,7 @@
         :key="item.key"
         @click="handleOpenApp(item)"
       >
-        <img class="icon" src="../../assets/logo.jpg" alt="" />
+        <img class="icon" src="../../assets/logo.png" alt="" />
       </div>
     </div>
   </div>
@@ -54,8 +54,8 @@ export default {
     this.openAppNav();
     this.$emit('update:pluginStyle', {
       flex: '1 1 0',
-      minWidth: '60px',
-      maxWidth: '60px',
+      minWidth: '61px',
+      maxWidth: '61px',
     });
   },
   methods: {
@@ -112,7 +112,7 @@ export default {
     flex: 1;
     overflow-y: auto;
     overflow-x: hidden;
-    padding-top: 25px;
+    padding-top: 5px;
     display: flex;
     flex-direction: column;
     align-items: center;

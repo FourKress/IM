@@ -162,7 +162,7 @@ export default {
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
-  padding: 24px 0 6px 0;
+  padding: 39px 0 6px 0;
 
   ::-webkit-scrollbar {
     display: none;
