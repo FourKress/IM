@@ -27,11 +27,11 @@
 import { MainSideBar } from '@lanshu/sidebar';
 import { MainIM } from '@lanshu/im';
 import { MainPlugIn } from '@lanshu/plugin';
-import { startQiankun } from '@lanshu/micro';
+// import { startQiankun } from '@lanshu/micro';
 import { mapGetters } from 'vuex';
 import { renderProcess } from '@lanshu/render-process';
 import { CLIENT_TERMINAL } from '@lanshu/utils';
-import micro from '../../micro';
+// import micro from '../../micro';
 
 export default {
   name: 'MainView',
