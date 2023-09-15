@@ -18,6 +18,7 @@ import {
   formatCardAtTag,
   openAtUser,
 } from '../atUtils';
+import { getLinkTagList, formatLinkTag, openTargetUrl } from '../linkUtils';
 
 export default {
   data() {
@@ -88,18 +89,15 @@ export default {
       return this.cardElements?.map((d) => {
         const { m_type, text } = d;
         if (m_type === 'text') {
-          let formatText = d.text;
+          let formatText = text;
+          const linkArr = getLinkTagList(formatText);
+          if (linkArr) {
+            formatText = formatLinkTag(this.getTempMsg(formatText), linkArr);
+          }
+
           const atArr = getAtTagList(formatText);
           if (atArr.length) {
-            formatText = formatCardAtTag(
-              {
-                ...this.msg,
-                data: {
-                  content: formatText,
-                },
-              },
-              atArr,
-            );
+            formatText = formatCardAtTag(this.getTempMsg(formatText), atArr);
           }
           return {
             ...d,
@@ -117,13 +115,7 @@ export default {
     linkArr() {
       const content = this.msgData?.content;
       if (!this.isText || !content) return [];
-      const reg = /http(s)?:\/\/\S+(?<=[a-zA-Z])/g;
-      const matchArr = content.match(reg) || [];
-      let linkArr = [];
-      matchArr.forEach((d) => {
-        linkArr.push(...d.split(/&nbsp;|<br>|\n/).filter((c) => reg.test(c)));
-      });
-      return linkArr?.length ? linkArr : [];
+      return getLinkTagList(content);
     },
     atArr() {
       const content = this.msgData?.content;
@@ -136,23 +128,7 @@ export default {
       const atArr = lodash.cloneDeep(this.atArr);
       let msgText = content;
       if (linkArr.length) {
-        linkArr.forEach((d) => {
-          msgText = msgText.replace(
-            d,
-            `${PLACEHOLDER_CONFIG.MSG_TAG_SEPARATOR}${PLACEHOLDER_CONFIG.LINK_SEPARATOR}${PLACEHOLDER_CONFIG.MSG_TAG_SEPARATOR}`,
-          );
-        });
-        msgText = msgText
-          .split(PLACEHOLDER_CONFIG.MSG_TAG_SEPARATOR)
-          .filter((d) => d && d !== ' ')
-          .map((d) => {
-            if (d === PLACEHOLDER_CONFIG.LINK_SEPARATOR) {
-              const url = linkArr.splice(0, 1)[0];
-              d = `<span class="link-jump" data-url="${url}" onclick="openTargetUrl(event)">${url}</span>`;
-            }
-            return d;
-          })
-          .join('');
+        msgText = formatLinkTag(this.msg, linkArr);
       }
       if (atArr.length) {
         msgText = formatAtTag(this.msg, atArr);
@@ -221,7 +197,7 @@ export default {
   created() {
     this.msg = this.rawMsg;
     // 给动态生成的html标签绑定事件，挂载到window上;
-    window.openTargetUrl = this.openTargetUrl;
+    window.openTargetUrl = (event) => openTargetUrl(this, event);
     window.openAtUser = (event) => openAtUser(this, event);
   },
 
@@ -238,12 +214,6 @@ export default {
     getFileName() {
       const { cliMsgId, toUser } = this.msg;
       return `${toUser}_${cliMsgId}`;
-    },
-
-    openTargetUrl(event) {
-      const url = event.target.getAttribute('data-url');
-      if (!url) return;
-      renderProcess.openUrl(url);
     },
 
     async handleDownload() {
@@ -422,6 +392,15 @@ export default {
           },
         );
       });
+    },
+
+    getTempMsg(tempText) {
+      return {
+        ...this.msg,
+        data: {
+          content: tempText,
+        },
+      };
     },
   },
 };
