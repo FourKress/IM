@@ -44,13 +44,13 @@ const Layout = (config = {}) => {
 
     const { menu, routes, plugins = [], store } = config;
     if (menu) {
-      await window.$lanshuStore.setItem('menu', menu);
+      await window.$localStore.setItem('menu', menu);
     } else {
-      await window.$lanshuStore.removeItem('menu');
+      await window.$localStore.removeItem('menu');
     }
 
     if (plugins?.length) {
-      await window.$lanshuStore.setItem(
+      await window.$localStore.setItem(
         'plugins',
         plugins.map((d) => {
           const { component, ...other } = d;
@@ -66,7 +66,7 @@ const Layout = (config = {}) => {
         Vue.component(component.name, component);
       });
     } else {
-      await window.$lanshuStore.removeItem('plugins');
+      await window.$localStore.removeItem('plugins');
     }
 
     const completeRoutes = [...baseRoutes];

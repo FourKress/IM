@@ -375,6 +375,7 @@ export default {
           const cr = entry.contentRect;
           this.imViewSizeInfo = { width: cr.width, height: cr.height };
         }
+        this.handleScrollTo();
       });
     });
     this.resizeObserver = resizeObserver;
@@ -559,10 +560,6 @@ export default {
       });
     },
 
-    handleRefreshMsg() {
-      this.getMessageList();
-    },
-
     handleModifyMsgList(msg) {
       const { userId, ...other } = msg;
       this.messageList = this.messageList.map((d) => {
@@ -604,7 +601,7 @@ export default {
       });
     },
 
-    handleScrollTo(cb, isContinue = false) {
+    handleScrollTo(cb = () => {}, isContinue = false) {
       if (this.$refs.MessagePanel) {
         const { scrollHeight, clientHeight } = this.$refs.MessagePanel;
         this.isScroll = scrollHeight > clientHeight;
@@ -614,6 +611,7 @@ export default {
             currentScrollHeight - this.preScrollHeight + this.scrollTop;
         }
         this.$refs.MessagePanel.scrollTop = currentScrollHeight;
+        console.log(12);
       }
       cb && cb();
     },
