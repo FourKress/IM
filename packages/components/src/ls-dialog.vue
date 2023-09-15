@@ -1,12 +1,12 @@
 <template>
   <div class="ls-dialog" v-if="visible">
-    <div class="ls-dialog-panel">
+    <div class="ls-dialog-panel" :style="{ width: `${width}px` }">
       <div class="ls-dialog-panel-top">{{ title }}</div>
       <div class="ls-dialog-panel-content">
-        <slot name='content'></slot>
+        <slot name="content"></slot>
       </div>
       <div class="ls-dialog-panel-footer">
-        <slot name='footer'>
+        <slot name="footer">
           <div class="cancel btn" v-if="showCancelBtn" @click="handleCancel">
             {{ cancelBtnText }}
           </div>
@@ -43,6 +43,10 @@ export default {
     showCancelBtn: {
       type: Boolean,
       default: true,
+    },
+    width: {
+      type: Number,
+      default: 369,
     },
   },
   data() {
@@ -85,7 +89,6 @@ export default {
 
   &-panel {
     width: 369px;
-    //height: 239px;
     background: $bg-white-color;
     box-shadow: 0px 4px 20px 0px rgba(51, 51, 51, 0.1);
     border-radius: 12px;

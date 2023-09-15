@@ -9,6 +9,7 @@
     @cancel="dialogCancel"
     @close="dialogClose"
     :showCancelBtn="showCancelBtn"
+    :width="width"
   >
     <div slot="content">
       <Expand v-if="render" :render="render"></Expand>
@@ -32,6 +33,7 @@ export default {
       promiseStatus: null,
       render: undefined,
       content: '',
+      width: 369,
     };
   },
   methods: {
@@ -43,6 +45,7 @@ export default {
         showCancelBtn = true,
         render = undefined,
         content = '',
+        width = 369,
       } = data;
       this.title = title;
       this.confirmBtnText = confirmBtnText;
@@ -50,6 +53,7 @@ export default {
       this.showCancelBtn = showCancelBtn;
       this.render = render;
       this.content = content;
+      this.width = width;
 
       this.visible = true;
 

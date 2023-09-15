@@ -41,7 +41,11 @@ export default {
     },
     userErrorMsg(msg) {
       if (msg) {
-        this.setUserErrorMsg();
+        this.setUserErrorMsg(null);
+        if (this.$route.name === 'Login') {
+          window.ClientMessage.error(msg);
+          return;
+        }
         this.$LConfirm({
           title: '提示',
           content: msg,
