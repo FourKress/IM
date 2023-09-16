@@ -58,6 +58,7 @@ export default {
   },
   mounted() {
     this.initApp();
+    if (!this.microAppList.length) return;
     this.setMicroAppList(this.microAppList);
     this.openAppNav();
     this.$emit('update:pluginStyle', {
@@ -84,6 +85,7 @@ export default {
     },
 
     openAppNav() {
+      if (!this.microAppList.length) return;
       if (this.mainSessionWindow?.sessId && !this.visible) {
         this.setCurrentMicroApp({
           appKey: 'PluginAppNav',
