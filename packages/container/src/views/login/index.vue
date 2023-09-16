@@ -46,6 +46,8 @@ import {
   Apis,
   setToken,
   TOKEN_TYPE,
+  WINDOW_TYPE,
+  WIN_ACTION_TYPE,
 } from '@lanshu/utils';
 import BasicLogin from './basic-login';
 import SendLogin from './send-login';
@@ -79,7 +81,10 @@ export default {
     if (status && token) {
       await setToken(TOKEN_TYPE.IS_SYS, token);
       const { data } = await Apis.accountUserInfo().catch(() => {
-        renderProcess.autoLoginCallBack();
+        renderProcess.changeWindow(
+          WIN_ACTION_TYPE.IS_SHOW,
+          WINDOW_TYPE.IS_MAIN,
+        );
       });
       const { loginData, name, idcard } = data || {};
       if (loginData) {
@@ -94,6 +99,8 @@ export default {
           true,
         );
       }
+    } else {
+      renderProcess.changeWindow(WIN_ACTION_TYPE.IS_SHOW, WINDOW_TYPE.IS_MAIN);
     }
   },
   methods: {

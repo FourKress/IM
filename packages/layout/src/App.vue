@@ -74,9 +74,9 @@ export default {
   },
   async created() {
     const synergyHistory = await window.$localStore.getItem('synergyHistory');
-    await this.setSynergyHistory(synergyHistory);
+    await this.setSynergyHistory(!!synergyHistory ? synergyHistory : []);
     const searchHistory = await window.$localStore.getItem('searchHistory');
-    await this.setSearchHistory(searchHistory);
+    await this.setSearchHistory(!!searchHistory ? searchHistory : []);
 
     renderProcess.IMSDKListener((event, data) => {
       const { type, value } = data;

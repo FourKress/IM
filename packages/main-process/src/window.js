@@ -197,14 +197,6 @@ export const createMainWindow = async () => {
     trayEvent.clearFlash();
   });
 
-  win.on('ready-to-show', () => {
-    const autoLogin = global.store.get('AUTO_LOGIN') || {};
-    const { status = false, token = '' } = autoLogin;
-    if (!status || !token) {
-      win.show();
-    }
-  });
-
   win.webContents.on('did-attach-webview', (event, webContents) => {
     webContents.setWindowOpenHandler((details) => {
       if (!details.url) return;

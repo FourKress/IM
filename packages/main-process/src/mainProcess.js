@@ -179,10 +179,6 @@ const initIpcMain = () => {
     ipcMain.handle('copyFile', async (_event, sourcePath, targetPath) => {
       return await copyFile(sourcePath.replace('cache:///', ''), targetPath);
     });
-
-    ipcMain.on('autoLoginCallBack', async (_event) => {
-      await global.mainWindow.show();
-    });
   });
 };
 

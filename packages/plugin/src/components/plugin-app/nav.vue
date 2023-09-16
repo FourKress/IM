@@ -36,7 +36,8 @@ export default {
           key: 'SmartAdvocacyMicroApp',
           title: '智慧宣传',
           path: '/spokesman',
-          url: 'http://localhost:3006/',
+          url: 'https://advocacy.lanshusoft.com/zhxc/',
+          // url: 'http://localhost:3006/',
         },
       ],
     };
