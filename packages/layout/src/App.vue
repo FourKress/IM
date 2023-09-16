@@ -43,7 +43,7 @@ export default {
       if (msg) {
         this.setUserErrorMsg(null);
         if (this.$route.name === 'Login') {
-          window.ClientMessage.error(msg);
+          this.$message.error(msg);
           return;
         }
         this.$LConfirm({

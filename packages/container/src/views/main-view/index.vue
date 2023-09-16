@@ -90,7 +90,7 @@ export default {
     //       console.log('主应用 afterMountHandler');
     //     },
     //     globalErrorHandler: () => {
-    //       window.ClientMessage.error('微应用加载失败，请检查应用是否可运行');
+    //       this.$message.error('微应用加载失败，请检查应用是否可运行');
     //       console.log('主应用 globalErrorHandler');
     //     },
     //   });

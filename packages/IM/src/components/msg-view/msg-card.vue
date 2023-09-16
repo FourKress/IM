@@ -253,6 +253,7 @@ import {
   secondToDate,
   MsgCardMixins,
   startTrtc,
+  MICRO_KEY_CONFIG,
 } from '@lanshu/utils';
 import { LsIcon, LsAssets } from '@lanshu/components';
 import { mapGetters, mapActions } from 'vuex';
@@ -433,6 +434,12 @@ export default {
 
       if (targetUrl.includes('app://')) {
         const [appKey, pagePath] = targetUrl.replace('app://', '').split('/');
+
+        const microKeys = Object.values(MICRO_KEY_CONFIG);
+        if (!microKeys.includes(appKey)) {
+          this.$message.error('未知应用，打开失败');
+          return;
+        }
 
         await this.setActiveMicroApp(appKey);
         await this.setMicroAppList(
