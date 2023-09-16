@@ -1,7 +1,7 @@
 <template>
   <div class="plugin-container" v-show="visible">
     <PluginAppHeader
-      :appKey="MICRO_KEY_CONFIG.SMART_ADVOCACY"
+      :appKey="appConfig.key"
       @close="handleClose"
       @update="handleUpdate"
     />
@@ -61,9 +61,9 @@ export default {
       handler(val = {}, oldVal) {
         const { path = '' } = val;
         if (path && path !== oldVal && this.microApp) {
-          microShared.EventIPC(MICRO_KEY_CONFIG.SMART_ADVOCACY, {
+          microShared.EventIPC(this.appConfig.key, {
             type: MICRO_EVENT_IPC.ROUTER_JUMP,
-            value: `/${MICRO_KEY_CONFIG.SMART_ADVOCACY}${path}`,
+            value: `/${this.appConfig.key}${path}`,
           });
         }
       },
@@ -81,7 +81,7 @@ export default {
         this.microApp = loadQiankunMicroApp(
           [
             {
-              name: MICRO_KEY_CONFIG.SMART_ADVOCACY,
+              name: this.appConfig.key,
               entry: this.appConfig.url,
               container: '#micro-app-container',
               targetPath: this.appConfig.path,
