@@ -9,7 +9,7 @@
         :key="item.key"
         @click="handleOpenApp(item)"
       >
-        <img class="icon" src="../../assets/logo.png" alt="" />
+        <img class="icon" :src="item.icon" alt="" />
       </div>
     </div>
   </div>
@@ -28,18 +28,17 @@ export default {
   computed: {
     ...mapGetters('IMStore', ['mainSessionWindow']),
     ...mapGetters('pluginStore', ['activeMicroApp']),
+    ...mapGetters('globalStore', ['systemUserInfo']),
+
+    appList() {
+      return this.systemUserInfo?.appList?.filter(
+        (d) => d?.displayArea === 'right',
+      );
+    },
   },
   data() {
     return {
-      microAppList: [
-        {
-          key: 'SmartAdvocacyMicroApp',
-          title: '智慧宣传',
-          path: '/spokesman',
-          url: 'https://advocacy.lanshusoft.com/zhxc/',
-          // url: 'http://localhost:3006/',
-        },
-      ],
+      microAppList: [],
     };
   },
   watch: {
@@ -49,8 +48,16 @@ export default {
         this.openAppNav();
       },
     },
+
+    appList: {
+      deep: true,
+      handler() {
+        this.initApp();
+      },
+    },
   },
   mounted() {
+    this.initApp();
     this.setMicroAppList(this.microAppList);
     this.openAppNav();
     this.$emit('update:pluginStyle', {
@@ -62,6 +69,19 @@ export default {
   methods: {
     ...mapActions('globalStore', ['setCurrentMicroApp', 'setMicroAppList']),
     ...mapActions('pluginStore', ['setActiveMicroApp']),
+
+    initApp() {
+      this.microAppList = this.appList.map((d) => {
+        const { appName, appCode, defaultUrl, icon } = d;
+        return {
+          key: appCode,
+          title: appName,
+          path: '/spokesman',
+          url: defaultUrl,
+          icon,
+        };
+      });
+    },
 
     openAppNav() {
       if (this.mainSessionWindow?.sessId && !this.visible) {
