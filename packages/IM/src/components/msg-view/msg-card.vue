@@ -432,8 +432,9 @@ export default {
         return;
       }
 
-      if (targetUrl.includes('app://')) {
-        const [appKey, pagePath] = targetUrl.replace('app://', '').split('/');
+      const protocol = 'app://';
+      if (targetUrl.includes(protocol)) {
+        const [appKey, pagePath] = targetUrl.replace(protocol, '').split('/');
 
         const microKeys = Object.values(MICRO_KEY_CONFIG);
         if (!microKeys.includes(appKey)) {
