@@ -101,6 +101,7 @@
 
     <MsgInputAction
       ref="MsgInput"
+      v-if="!isBot"
       v-bind="$props"
       :memberCount="memberCount"
       :groupRole="myGroupRole"
@@ -325,6 +326,9 @@ export default {
     },
     refsName() {
       return `ImView_${this.session.sessId}`;
+    },
+    isBot() {
+      return this.session?.toUserType === SESSION_USER_TYPE.IS_BOT;
     },
   },
   async mounted() {

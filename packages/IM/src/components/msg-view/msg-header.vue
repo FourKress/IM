@@ -18,7 +18,7 @@
         <!--        <span class="tips">顶顶顶顶</span>-->
       </div>
     </div>
-    <div class="right">
+    <div class="right" v-if="!isBot">
       <div class="btn" v-if="!isGroup && isNotMe">
         <el-tooltip class="item" effect="dark" content="视频" placement="top">
           <!--        || groupRoleManager.whoCanStartNetworkCall <= groupRole-->
@@ -135,6 +135,9 @@ export default {
     isGroup() {
       return this.session?.toUserType === SESSION_USER_TYPE.IS_GROUP;
     },
+    isBot() {
+      return this.session?.toUserType === SESSION_USER_TYPE.IS_BOT;
+    },
     isNotMe() {
       return this.userInfo.userId !== this.session.toUser;
     },
@@ -155,7 +158,7 @@ export default {
     },
 
     async handleFriend(event) {
-      if (this.isGroup) return;
+      if (this.isBot || this.isGroup) return;
       const member = {
         userId: this.session.toUser,
       };
