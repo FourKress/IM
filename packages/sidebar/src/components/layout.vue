@@ -66,7 +66,18 @@
           </div>
           <div class="info">
             <div class="row">
-              <span class="name">{{ item.nickname }}</span>
+              <div class="title-row">
+                <div class="name">
+                  {{ item.nickname }}
+                </div>
+                <div
+                  v-if="item.toUserType === SESSION_USER_TYPE.IS_BOT"
+                  class="bot-tag"
+                >
+                  <div>机器人</div>
+                </div>
+              </div>
+
               <span class="time">
                 <TimesTransform
                   v-if="item.lastMsg"
@@ -113,7 +124,7 @@ import {
   LsAssets,
 } from '@lanshu/components';
 import { IMClearUnreadCount, IMDelBySessId, IMSetTopStatus } from '@lanshu/im';
-import { formatSessId } from '@lanshu/utils';
+import { formatSessId, SESSION_USER_TYPE } from '@lanshu/utils';
 
 const isAll = true;
 
@@ -164,6 +175,9 @@ export default {
     LsIcon,
   },
   computed: {
+    SESSION_USER_TYPE() {
+      return SESSION_USER_TYPE;
+    },
     ...mapGetters('IMStore', [
       'sessionList',
       'mainSessionWindow',
@@ -465,15 +479,40 @@ export default {
             margin-bottom: 5px;
             width: 100%;
 
-            .name {
-              height: 20px;
-              width: 100px;
-              max-width: 100px;
-              overflow: hidden;
-              text-overflow: ellipsis;
-              white-space: nowrap;
-              font-size: 14px;
-              color: $main-text-color;
+            .title-row {
+              display: flex;
+              align-items: center;
+              width: 110px;
+              max-width: 110px;
+
+              .name {
+                flex: 1;
+                height: 20px;
+                width: 58px;
+                max-width: 58px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                font-size: 14px;
+                color: $main-text-color;
+              }
+
+              .bot-tag {
+                width: 38px;
+                height: 16px;
+                line-height: 16px;
+                text-align: center;
+                background: linear-gradient(110deg, #d2fff2 -11%, #b8c4ff 98%);
+                border-radius: 4px;
+                overflow: hidden;
+
+                div {
+                  font-size: 10px;
+                  color: $primary-color;
+                  transform-origin: center;
+                  transform: scale(0.8);
+                }
+              }
             }
 
             .time {
