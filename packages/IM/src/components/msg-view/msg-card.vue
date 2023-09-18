@@ -434,7 +434,9 @@ export default {
 
       const protocol = 'app://';
       if (targetUrl.includes(protocol)) {
-        const [appKey, pagePath] = targetUrl.replace(protocol, '').split('/');
+        const [appKey, pagePath, ...other] = targetUrl
+          .replace(protocol, '')
+          .split('/');
 
         const microKeys = Object.values(MICRO_KEY_CONFIG);
         if (!microKeys.includes(appKey)) {
@@ -446,7 +448,11 @@ export default {
         await this.setMicroAppList(
           this.microAppList.map((d) => {
             if (d.key === appKey) {
-              d.path = `/${pagePath}`;
+              const microAppPath = `/${pagePath}/${
+                other.length ? other.join('/') : ''
+              }`;
+              console.log(microAppPath);
+              d.path = microAppPath;
             }
             return d;
           }),
