@@ -109,7 +109,7 @@ export default {
         },
         // {
         //   key: 'About',
-        //   label: '关于北象',
+        //   label: '关于客户端',
         //   icon: 'sz_gy',
         // },
       ],

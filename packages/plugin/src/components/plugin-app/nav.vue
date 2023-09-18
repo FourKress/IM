@@ -44,8 +44,8 @@ export default {
   watch: {
     mainSessionWindow: {
       deep: true,
-      handler() {
-        this.openAppNav();
+      handler(val) {
+        this.changeAppNav(!!val?.sessId);
       },
     },
 
@@ -60,12 +60,7 @@ export default {
     this.initApp();
     if (!this.microAppList.length) return;
     this.setMicroAppList(this.microAppList);
-    this.openAppNav();
-    this.$emit('update:pluginStyle', {
-      flex: '1 1 0',
-      minWidth: '61px',
-      maxWidth: '61px',
-    });
+    this.changeAppNav(true);
   },
   methods: {
     ...mapActions('globalStore', ['setCurrentMicroApp', 'setMicroAppList']),
@@ -84,12 +79,28 @@ export default {
       });
     },
 
-    openAppNav() {
+    changeAppNav(visible) {
       if (!this.microAppList.length) return;
-      if (this.mainSessionWindow?.sessId && !this.visible) {
+
+      if (visible) {
+        if (this.mainSessionWindow?.sessId && !this.visible) {
+          this.setCurrentMicroApp({
+            appKey: 'PluginAppNav',
+            visible: true,
+          });
+          this.$emit('update:pluginStyle', {
+            flex: '1 1 0',
+            minWidth: '61px',
+            maxWidth: '61px',
+          });
+        }
+      } else {
         this.setCurrentMicroApp({
           appKey: 'PluginAppNav',
-          visible: true,
+          visible: false,
+        });
+        this.$emit('update:pluginStyle', {
+          flex: '1 1 0',
         });
       }
     },

@@ -111,7 +111,7 @@
             <el-badge is-dot :hidden="!updateNotify"></el-badge>
           </div>
           <div class="row disabled">
-            <span class="label" @click="handleLogOut">退出北象</span>
+            <span class="label" @click="handleLogOut">退出登录</span>
           </div>
         </div>
       </div>

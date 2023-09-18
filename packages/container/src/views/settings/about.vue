@@ -1,6 +1,6 @@
 <template>
-  <Card id='About-Card' title="关于北象">
-    <div class="tips">蓝数软件 © 版权所有 Copyright Reserved</div>
+  <Card id="About-Card" title="关于客户端">
+    <div class="tips">软件 © 版权所有 Copyright Reserved</div>
 
     <template v-for="(info, index) in infos">
       <InfoBlock
@@ -26,22 +26,22 @@ export default {
     return {
       infos: [
         {
-          btnText: '进入官网'
+          btnText: '进入官网',
         },
         {
-          btnText: '联系我们'
+          btnText: '联系我们',
         },
         {
-          btnText: '投诉建议'
+          btnText: '投诉建议',
         },
         {
-          btnText: '《用户服务协议》'
+          btnText: '《用户服务协议》',
         },
         {
-          btnText: '《隐私政策》'
+          btnText: '《隐私政策》',
         },
-      ]
-    }
+      ],
+    };
   },
   methods: {
     handleCallback(info) {

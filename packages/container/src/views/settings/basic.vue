@@ -3,7 +3,7 @@
     <InfoBlock :info="{ title: '启动' }">
       <div class="row">
         <el-checkbox v-model="autoStartChecked" @change="handleAutoStartChange">
-          开机自动启动北象
+          开机自动启动客户端
         </el-checkbox>
       </div>
     </InfoBlock>
@@ -41,8 +41,11 @@ export default {
     };
   },
   async mounted() {
-    this.bubbleModel = await renderProcess.getStore('SESSION_BUBBLE_MODEL') || SESSION_BUBBLE_MODEL.IS_BETWEEN;
-    this.autoStartChecked = await renderProcess.getStore('AUTO_START') || false;
+    this.bubbleModel =
+      (await renderProcess.getStore('SESSION_BUBBLE_MODEL')) ||
+      SESSION_BUBBLE_MODEL.IS_BETWEEN;
+    this.autoStartChecked =
+      (await renderProcess.getStore('AUTO_START')) || false;
   },
   methods: {
     handleChange(val) {

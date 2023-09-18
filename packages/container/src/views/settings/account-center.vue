@@ -24,7 +24,7 @@
       <div class="auth-dialog-panel">
         <div class="auth-dialog-panel-top">提示</div>
         <div class="auth-dialog-panel-tips">
-          请使用北象移动端扫码下方二维码，进行实名认证
+          请使用移动端扫码下方二维码，进行实名认证
         </div>
         <div class="auth-dialog-panel-content">
           <img class="qrcode" v-if="qrcodeUrl" :src="qrcodeUrl" alt="" />
@@ -99,7 +99,7 @@ export default {
         //   key: 'device',
         //   title: '常用设备',
         //   label: '',
-        //   value: '管理登录过北象的设备，并可对已登录的设备',
+        //   value: '管理登录过客户端的设备，并可对已登录的设备',
         //   btnText: '管理',
         //   fnc: () => this.jumpDevices(),
         // },
@@ -108,7 +108,7 @@ export default {
           title: '注销账号',
           label: '',
           value:
-            '永久注销你的北象帐号，注销成功后该帐号将无法使用，帐号下的所有数据将被删除',
+            '永久注销你的帐号，注销成功后该帐号将无法使用，帐号下的所有数据将被删除',
           btnText: '注销',
           btnColor: '#F65951',
           fnc: () => this.handleWriteOff(),
@@ -211,7 +211,7 @@ export default {
       this.$LConfirm({
         title: '确定要注销账号？',
         content:
-          '永久注销你的北象帐号，注销成功后该帐号将无法使用，帐号下的所有数据将被删除',
+          '永久注销你的帐号，注销成功后该帐号将无法使用，帐号下的所有数据将被删除',
       })
         .then(() => {
           const path = '/settings/writeOff';
