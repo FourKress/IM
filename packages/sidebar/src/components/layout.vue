@@ -510,7 +510,6 @@ export default {
                   font-size: 10px;
                   color: $primary-color;
                   transform-origin: center;
-                  transform: scale(0.8);
                 }
               }
             }
