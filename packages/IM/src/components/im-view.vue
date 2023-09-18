@@ -514,6 +514,7 @@ export default {
     ),
 
     async handleFriend(item, event) {
+      if (this.isBot) return;
       await this.openFriendDialog(event, async () => {
         const { userId } = item;
         const friendInfo = (await IMGetOneFriend(userId))?.data || {};
