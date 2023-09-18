@@ -73,11 +73,11 @@ export default {
 
     initApp() {
       this.microAppList = this.appList.map((d) => {
-        const { appName, appCode, defaultUrl, icon } = d;
+        const { appName, appCode, defaultUrl, defaultPath, icon } = d;
         return {
           key: appCode,
           title: appName,
-          path: '/spokesman',
+          path: defaultPath,
           url: defaultUrl,
           icon,
         };

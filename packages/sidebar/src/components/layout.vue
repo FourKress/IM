@@ -66,7 +66,12 @@
           </div>
           <div class="info">
             <div class="row">
-              <div class="title-row">
+              <div
+                class="title-row"
+                :class="
+                  item.toUserType === SESSION_USER_TYPE.IS_BOT && 'is-bot'
+                "
+              >
                 <div class="name">
                   {{ item.nickname }}
                 </div>
@@ -273,6 +278,9 @@ export default {
 
     handleHideSession(session) {
       IMDelBySessId(session.sessId);
+      if (session.sessId === this.mainSessionWindow.sessId) {
+        this.setMainSessionWindow({});
+      }
     },
 
     setMsgTopStatus(session) {
@@ -482,14 +490,12 @@ export default {
             .title-row {
               display: flex;
               align-items: center;
-              width: 110px;
-              max-width: 110px;
+              width: 130px;
+              max-width: 130px;
 
               .name {
                 flex: 1;
                 height: 20px;
-                width: 58px;
-                max-width: 58px;
                 overflow: hidden;
                 text-overflow: ellipsis;
                 white-space: nowrap;
@@ -500,6 +506,7 @@ export default {
               .bot-tag {
                 width: 38px;
                 height: 16px;
+                margin-left: 4px;
                 line-height: 16px;
                 text-align: center;
                 background: linear-gradient(110deg, #d2fff2 -11%, #b8c4ff 98%);
@@ -510,6 +517,13 @@ export default {
                   font-size: 10px;
                   color: $primary-color;
                   transform-origin: center;
+                }
+              }
+
+              &.is-bot {
+                .name {
+                  flex: unset;
+                  max-width: unset;
                 }
               }
             }

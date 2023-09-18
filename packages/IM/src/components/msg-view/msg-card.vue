@@ -318,7 +318,7 @@ export default {
   },
   computed: {
     ...mapGetters('IMStore', ['refreshRevoke', 'refreshReceipt']),
-    ...mapGetters('globalStore', ['microAppList']),
+    ...mapGetters('globalStore', ['microAppList', 'systemUserInfo']),
 
     classObject() {
       return {
@@ -438,9 +438,9 @@ export default {
           .replace(protocol, '')
           .split('/');
 
-        const microKeys = Object.values(MICRO_KEY_CONFIG);
+        const microKeys = this.systemUserInfo?.appList?.map((d) => d.appCode);
         if (!microKeys.includes(appKey)) {
-          this.$message.error('未知应用，打开失败');
+          this.$message.error('没有应用权限，请联系管理员');
           return;
         }
 
