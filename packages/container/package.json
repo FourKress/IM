@@ -1,6 +1,6 @@
 {
   "name": "@lanshu/container",
-  "version": "0.2.25",
+  "version": "0.2.26",
   "description": "客户端视图容器",
   "keywords": [
     "container"
@@ -24,7 +24,7 @@
     "@lanshu/im": "^0.2.25",
     "@lanshu/plugin": "^0.2.24",
     "@lanshu/render-process": "^0.2.22",
-    "@lanshu/sidebar": "^0.2.25",
+    "@lanshu/sidebar": "^0.2.26",
     "@lanshu/utils": "^0.2.18",
     "vuex": "^3.6.2"
   },
