@@ -523,7 +523,7 @@ export default {
               &.is-bot {
                 .name {
                   flex: unset;
-                  max-width: unset;
+                  max-width: 86px;
                 }
               }
             }
