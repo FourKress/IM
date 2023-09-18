@@ -104,7 +104,9 @@ export default {
               })
               .finally(() => {
                 preview.onFinally && preview.onFinally();
-                microShared.openMicroApp('');
+                microShared.openPreviewUrl({
+                  url: '',
+                });
               });
             cachePath = await renderProcess.getCacheFilePath(
               `${fileName}.${type}`,
@@ -112,11 +114,14 @@ export default {
           }
           preview.onSuccess && preview.onSuccess();
           renderProcess.previewAssets(cachePath);
-          microShared.openMicroApp('');
+          microShared.openPreviewUrl({
+            url: '',
+          });
         }
 
         if (browserUrl && browserUrl !== oldVal?.browserUrl) {
           renderProcess.openUrl(browserUrl);
+          microShared.openBrowserUrl('');
         }
 
         // 各应用业务通信
