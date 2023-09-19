@@ -15,7 +15,7 @@
           ></LsIcon>
           {{ memberCount }}
         </span>
-        <!--        <span class="tips">顶顶顶顶</span>-->
+        <div v-if="isBot" class="bot-tag">机器人</div>
       </div>
     </div>
     <div class="right" v-if="!isBot">
@@ -229,9 +229,17 @@ export default {
         }
       }
 
-      .tips {
-        font-size: 12px;
-        color: $tips-text-color;
+      .bot-tag {
+        width: 38px;
+        height: 16px;
+        margin-left: 4px;
+        line-height: 16px;
+        text-align: center;
+        background: linear-gradient(110deg, #d2fff2 -11%, #b8c4ff 98%);
+        border-radius: 4px;
+        overflow: hidden;
+        font-size: 10px;
+        color: $primary-color;
       }
     }
   }

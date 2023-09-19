@@ -79,7 +79,7 @@
                   v-if="item.toUserType === SESSION_USER_TYPE.IS_BOT"
                   class="bot-tag"
                 >
-                  <div>机器人</div>
+                  机器人
                 </div>
               </div>
 
@@ -512,12 +512,8 @@ export default {
                 background: linear-gradient(110deg, #d2fff2 -11%, #b8c4ff 98%);
                 border-radius: 4px;
                 overflow: hidden;
-
-                div {
-                  font-size: 10px;
-                  color: $primary-color;
-                  transform-origin: center;
-                }
+                font-size: 10px;
+                color: $primary-color;
               }
 
               &.is-bot {
