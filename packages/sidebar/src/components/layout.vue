@@ -490,8 +490,8 @@ export default {
             .title-row {
               display: flex;
               align-items: center;
-              width: 130px;
-              max-width: 130px;
+              width: 110px;
+              max-width: 110px;
 
               .name {
                 flex: 1;
@@ -523,7 +523,7 @@ export default {
               &.is-bot {
                 .name {
                   flex: unset;
-                  max-width: 86px;
+                  max-width: 66px;
                 }
               }
             }
