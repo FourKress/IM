@@ -505,9 +505,8 @@ export default {
 
               .bot-tag {
                 width: 38px;
-                height: 16px;
+                padding: 2px 0;
                 margin-left: 4px;
-                line-height: 16px;
                 text-align: center;
                 background: linear-gradient(110deg, #d2fff2 -11%, #b8c4ff 98%);
                 border-radius: 4px;
