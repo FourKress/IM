@@ -13,8 +13,8 @@ const loginBg = require('./images/login-bg.png');
 
 const blue_250px = require('./msg-card/blue_250.png');
 const blue_400px = require('./msg-card/blue_400.png');
-const gray_250px = require('./msg-card/gray_250.png');
-const gray_400px = require('./msg-card/gray_400.png');
+const grey_250px = require('./msg-card/grey_250.png');
+const grey_400px = require('./msg-card/grey_400.png');
 const green_250px = require('./msg-card/green_250.png');
 const green_400px = require('./msg-card/green_400.png');
 const red_250px = require('./msg-card/red_250.png');
@@ -38,8 +38,8 @@ export default {
   loginBg,
   blue_250px,
   blue_400px,
-  gray_250px,
-  gray_400px,
+  grey_250px,
+  grey_400px,
   green_250px,
   green_400px,
   red_250px,

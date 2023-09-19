@@ -309,7 +309,7 @@ export default {
       },
       bg_template: {
         blue: 'blue',
-        gray: 'gray',
+        grey: 'grey',
         green: 'green',
         red: 'red',
         yellow: 'yellow',
@@ -728,7 +728,7 @@ export default {
             color: $primary-color;
           }
 
-          &.gray {
+          &.grey {
             color: $main-text-color;
           }
 
