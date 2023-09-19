@@ -80,13 +80,16 @@ export default {
     const { status = false, token = '' } = autoLogin;
     if (status && token) {
       await setToken(TOKEN_TYPE.IS_SYS, token);
-      const { data } = await Apis.accountUserInfo().catch(() => {
-        renderProcess.changeWindow(
-          WIN_ACTION_TYPE.IS_SHOW,
-          WINDOW_TYPE.IS_MAIN,
-        );
+
+      const res = await Apis.accountUserInfo().catch(() => {
+        this.showWindow();
       });
-      const { loginData, name, idcard } = data || {};
+      const data = res?.data;
+      if (!data) {
+        this.showWindow();
+        return;
+      }
+      const { loginData, name, idcard } = data;
       if (loginData) {
         await this.handleClientLogin(
           {
@@ -100,7 +103,7 @@ export default {
         );
       }
     } else {
-      renderProcess.changeWindow(WIN_ACTION_TYPE.IS_SHOW, WINDOW_TYPE.IS_MAIN);
+      this.showWindow();
     }
   },
   methods: {
@@ -139,6 +142,10 @@ export default {
       this.phoneNum = phoneNum;
       this.isAuthCode = true;
       this.isSendLogin = false;
+    },
+
+    showWindow() {
+      renderProcess.changeWindow(WIN_ACTION_TYPE.IS_SHOW, WINDOW_TYPE.IS_MAIN);
     },
   },
 };

@@ -2,12 +2,15 @@ import { mergePathMark, MICRO_CONTAINER, storeInstance } from '@lanshu/utils';
 
 const container = `#${MICRO_CONTAINER}`;
 
-const getAppList = () =>
-  storeInstance.getters['globalStore/systemUserInfo']?.appList || [];
+const getAppList = () => {
+  const appList =
+    storeInstance.getters['globalStore/systemUserInfo']?.appList || [];
+  return appList?.filter((d) => d?.displayArea === 'left');
+};
 
 class Mirco {
   getConfigs = () => {
-    return getAppList().map((d) => {
+    return getAppList()?.map((d) => {
       /**
        * name: 微应用名称 - 具有唯一性
        * entry: 微应用入口 - 通过该地址加载微应用
@@ -23,7 +26,7 @@ class Mirco {
     });
   };
   getRoutes() {
-    const routers = getAppList().map((d) => {
+    const routers = getAppList()?.map((d) => {
       const key = mergePathMark(d.appCode);
       return {
         name: key,
@@ -37,10 +40,7 @@ class Mirco {
       };
     });
 
-    console.log(routers);
-    // TODO 暂时屏蔽
-    return [];
-    // return routers;
+    return routers;
   }
 }
 

@@ -27,11 +27,11 @@
 import { MainSideBar } from '@lanshu/sidebar';
 import { MainIM } from '@lanshu/im';
 import { MainPlugIn } from '@lanshu/plugin';
-// import { startQiankun } from '@lanshu/micro';
+import { startQiankun } from '@lanshu/micro';
 import { mapGetters } from 'vuex';
 import { renderProcess } from '@lanshu/render-process';
 import { CLIENT_TERMINAL } from '@lanshu/utils';
-// import micro from '../../micro';
+import micro from '../../micro';
 
 export default {
   name: 'MainView',
@@ -81,20 +81,22 @@ export default {
     }
   },
   mounted() {
-    // this.$nextTick(() => {
-    //   startQiankun(micro.getConfigs(), {
-    //     beforeLoadHandler: (app) => {
-    //       console.log('主应用 beforeLoadHandler');
-    //     },
-    //     afterMountHandler: () => {
-    //       console.log('主应用 afterMountHandler');
-    //     },
-    //     globalErrorHandler: () => {
-    //       this.$message.error('微应用加载失败，请检查应用是否可运行');
-    //       console.log('主应用 globalErrorHandler');
-    //     },
-    //   });
-    // });
+    this.$nextTick(() => {
+      const appConfigs = micro.getConfigs();
+      if (!appConfigs.length) return;
+      startQiankun(appConfigs, {
+        beforeLoadHandler: (app) => {
+          console.log('主应用 beforeLoadHandler');
+        },
+        afterMountHandler: () => {
+          console.log('主应用 afterMountHandler');
+        },
+        globalErrorHandler: () => {
+          this.$message.error('微应用加载失败，请检查应用是否可运行');
+          console.log('主应用 globalErrorHandler');
+        },
+      });
+    });
   },
 };
 </script>
