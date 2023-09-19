@@ -126,12 +126,17 @@ export const defaultWindowConfig = () => {
     },
     center: true,
     icon: './icons/icon.ico',
+    show: false,
   };
 };
 
-const handleMaximize = (status) => {
-  mainWindow.webContents.send('maximizeStatus', status);
+const handleMainWindowMaximize = (status) => {
+  global.mainWindow.webContents.send('maximizeStatus', status);
   global.store.set('IS_MAX', status);
+};
+
+const handleTRTCWindowMaximize = (status) => {
+  global.TRTCWindow.webContents.send('maximizeStatus', status);
 };
 
 export const createMainWindow = async () => {
@@ -139,7 +144,6 @@ export const createMainWindow = async () => {
     ...defaultWindowConfig(),
     width: 360,
     height: 490,
-    show: false,
   });
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
@@ -206,10 +210,10 @@ export const createMainWindow = async () => {
   });
 
   win.on('maximize', () => {
-    handleMaximize(true);
+    handleMainWindowMaximize(true);
   });
   win.on('unmaximize', () => {
-    handleMaximize(false);
+    handleMainWindowMaximize(false);
   });
   win.on('resized', () => {
     const [width, height] = win.getSize();
@@ -274,10 +278,6 @@ export const openTRTCWindow = async (type = CLIENT_TYPE.IS_PC) => {
     return true;
   });
 
-  TRTCWindow.on('ready-to-show', () => {
-    TRTCWindow.show();
-  });
-
   TRTCWindow.on('close', (event) => {
     const trtcCanBeClosed = global.store.get('TRTC_CAN_BE_CLOSED');
     if (!trtcCanBeClosed) {
@@ -292,6 +292,13 @@ export const openTRTCWindow = async (type = CLIENT_TYPE.IS_PC) => {
     global.TRTCWindow = null;
     global.store.set('TRTC_SESSION', null);
     global.store.set('TRTC_CAN_BE_CLOSED', false);
+  });
+
+  TRTCWindow.on('maximize', () => {
+    handleTRTCWindowMaximize(true);
+  });
+  TRTCWindow.on('unmaximize', () => {
+    handleTRTCWindowMaximize(false);
   });
 
   // 屏蔽浏览器快捷键

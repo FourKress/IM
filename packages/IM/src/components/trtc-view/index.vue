@@ -209,7 +209,13 @@ export default {
   },
   created() {
     this.subscribeEvents();
-
+    renderProcess.changeWindow(
+      WIN_ACTION_TYPE.IS_SHOW,
+      this.WINDOW_TYPE.IS_TRTC,
+    );
+    renderProcess.maximizeStatus((event, status) => {
+      this.isFull = status;
+    });
     renderProcess.TRTCListener((event, message) => {
       console.log('TRTCListener', message);
       const { type, value } = message;
