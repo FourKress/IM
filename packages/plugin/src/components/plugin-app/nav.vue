@@ -4,7 +4,7 @@
     <div class="container">
       <div
         class="item"
-        :class="activeMicroApp === item.key && 'active'"
+        :class="activeMicroAppKey === item.key && 'active'"
         v-for="item in microAppList"
         :key="item.key"
         @click="handleOpenApp(item)"
@@ -17,8 +17,15 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex';
+import {
+  SESSION_USER_TYPE,
+  BASE_PLUGIN_TYPE,
+  RightPluginVisibleHistoryMixins,
+} from '@lanshu/utils';
+
 export default {
-  name: 'PluginAppNav',
+  name: BASE_PLUGIN_TYPE.PLUGIN_APP_NAV,
+  mixins: [RightPluginVisibleHistoryMixins],
   props: {
     visible: {
       type: Boolean,
@@ -27,13 +34,19 @@ export default {
   },
   computed: {
     ...mapGetters('IMStore', ['mainSessionWindow']),
-    ...mapGetters('pluginStore', ['activeMicroApp']),
-    ...mapGetters('globalStore', ['systemUserInfo']),
+    ...mapGetters('globalStore', ['systemUserInfo', 'currentMicroApp']),
 
     appList() {
       return this.systemUserInfo?.appList?.filter(
         (d) => d?.displayArea === 'right',
       );
+    },
+
+    activeMicroAppKey() {
+      const { appKey = '', visible = false } = this.currentMicroApp || {};
+      return appKey === BASE_PLUGIN_TYPE.PLUGIN_APP_NAV || !visible
+        ? ''
+        : appKey;
     },
   },
   data() {
@@ -44,30 +57,28 @@ export default {
   watch: {
     mainSessionWindow: {
       deep: true,
-      handler(val) {
-        this.changeAppNav(!!val?.sessId);
+      handler(val = {}) {
+        const { sessId, toUserType } = val;
+        const visible = !!sessId && toUserType === SESSION_USER_TYPE.IS_BASIC;
+        this.changeAppNav(visible);
       },
     },
 
     appList: {
       deep: true,
       handler() {
-        this.initApp();
+        this.getMicroAppList();
       },
     },
   },
   mounted() {
-    this.initApp();
-    if (!this.microAppList.length) return;
-    this.setMicroAppList(this.microAppList);
-    this.changeAppNav(true);
+    this.getMicroAppList();
   },
   methods: {
     ...mapActions('globalStore', ['setCurrentMicroApp', 'setMicroAppList']),
-    ...mapActions('pluginStore', ['setActiveMicroApp']),
 
-    initApp() {
-      this.microAppList = this.appList.map((d) => {
+    getMicroAppList() {
+      const microAppList = this.appList.map((d) => {
         const { appName, appCode, defaultUrl, defaultPath, icon } = d;
         return {
           key: appCode,
@@ -77,46 +88,57 @@ export default {
           icon,
         };
       });
+      if (microAppList?.length) {
+        this.microAppList = microAppList;
+        this.setMicroAppList(this.microAppList);
+      }
     },
 
-    changeAppNav(visible) {
+    async changeAppNav(navVisible) {
       if (!this.microAppList.length) return;
-
-      if (visible) {
-        if (this.mainSessionWindow?.sessId && !this.visible) {
-          this.setCurrentMicroApp({
-            appKey: 'PluginAppNav',
-            visible: true,
-          });
-          this.$emit('update:pluginStyle', {
+      if (navVisible) {
+        if (!this.visible) {
+          this.handleNavStyle(true, {
             flex: '1 1 0',
             minWidth: '61px',
             maxWidth: '61px',
           });
         }
-      } else {
+
+        const { curHistoryData } = await this.getRightPluginVisibleHistory();
+        const { appKey = this.activeMicroAppKey, visible = false } =
+          curHistoryData;
         this.setCurrentMicroApp({
-          appKey: 'PluginAppNav',
-          visible: false,
+          appKey,
+          visible,
         });
-        this.$emit('update:pluginStyle', {
+      } else {
+        this.handleNavStyle(false, {
           flex: '1 1 0',
         });
       }
     },
 
-    handleOpenApp(item) {
+    handleNavStyle(visible, style) {
+      this.setCurrentMicroApp({
+        appKey: BASE_PLUGIN_TYPE.PLUGIN_APP_NAV,
+        visible,
+      });
+      this.$emit('update:pluginStyle', style);
+    },
+
+    async handleOpenApp(item) {
       const { key } = item;
-      this.setActiveMicroApp(key);
+
+      const visible = true;
+      await this.setRightPluginVisibleHistory(key, visible);
       this.setCurrentMicroApp({
         appKey: key,
-        visible: true,
+        visible,
       });
     },
   },
-  beforeDestroy() {
-    this.setActiveMicroApp('');
-  },
+  beforeDestroy() {},
 };
 </script>
 

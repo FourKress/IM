@@ -194,7 +194,6 @@ export default {
       return (
         this.isSelf &&
         this.msgType !== CHECK_MSG_TYPE.IS_TRTC &&
-        this.msgType !== CHECK_MSG_TYPE.IS_CARD &&
         this.rawMsg.sendState === 1 &&
         this.session.toUser !== this.session.userId
       );

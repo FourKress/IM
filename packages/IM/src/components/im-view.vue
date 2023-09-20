@@ -64,7 +64,9 @@
           :style="{ minHeight: !checkSelf(item) && isGroup ? '58px' : '40px' }"
         >
           <span
-            @click="(event) => handleFriend({ userId: item.fromUser }, event)"
+            @click="
+              (event) => handleClickAvatar({ userId: item.fromUser }, event)
+            "
           >
             <MsgLazyUserInfo
               :isSelf="checkSelf(item)"
@@ -514,7 +516,6 @@ export default {
     ),
 
     async handleFriend(item, event) {
-      if (this.isBot) return;
       await this.openFriendDialog(event, async () => {
         const { userId } = item;
         const friendInfo = (await IMGetOneFriend(userId))?.data || {};
@@ -538,6 +539,11 @@ export default {
       if (this.friendInfo?.dep) {
         this.friendPanelConfig = { isPass: true };
       }
+    },
+
+    async handleClickAvatar(item, event) {
+      if (this.isBot) return;
+      await this.handleFriend(item, event);
     },
 
     handlePushLocalMsg(msg) {

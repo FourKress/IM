@@ -12,6 +12,7 @@ import {
 } from '@lanshu/utils';
 import App from './App';
 import { LsConfirm, LsContextMenu } from '@lanshu/components';
+import { PluginAppNav } from '@lanshu/plugin';
 
 import 'element-ui/packages/theme-chalk/src/index.scss';
 import './assets/styles/index.scss';
@@ -49,10 +50,18 @@ const Layout = (config = {}) => {
       await window.$localStore.removeItem('menu');
     }
 
-    if (plugins?.length) {
+    const completePlugins = [
+      {
+        visible: false,
+        alwaysShow: true,
+        component: PluginAppNav,
+      },
+      ...plugins,
+    ];
+    if (completePlugins?.length > 1) {
       await window.$localStore.setItem(
         'plugins',
-        plugins.map((d) => {
+        completePlugins.map((d) => {
           const { component, ...other } = d;
           return {
             ...other,
@@ -60,7 +69,7 @@ const Layout = (config = {}) => {
           };
         }),
       );
-      plugins.forEach((d) => {
+      completePlugins.forEach((d) => {
         const { component } = d;
         if (!component) return;
         Vue.component(component.name, component);

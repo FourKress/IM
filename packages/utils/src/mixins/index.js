@@ -6,6 +6,7 @@ import RecoverAccountMixins from './recoverAccount';
 import StartSessionMixins from './startSession';
 import MsgCardMixins from './msgCard';
 import ScrollToMixins from './scrollTo';
+import RightPluginVisibleHistoryMixins from './rightPluginVisibleHistory';
 
 export {
   AddressBookMixins,
@@ -16,4 +17,5 @@ export {
   StartSessionMixins,
   MsgCardMixins,
   ScrollToMixins,
+  RightPluginVisibleHistoryMixins,
 };

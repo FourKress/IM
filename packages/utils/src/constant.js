@@ -139,3 +139,7 @@ export const PLACEHOLDER_CONFIG = {
 };
 
 export const IS_NEVER = 'NEVER';
+
+export const BASE_PLUGIN_TYPE = {
+  PLUGIN_APP_NAV: 'PluginAppNav',
+};
