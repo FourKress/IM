@@ -82,7 +82,7 @@ export default {
   position: fixed;
   left: 0;
   top: 0;
-  z-index: 9;
+  z-index: 999;
   transition: all 0.3s;
 
   user-select: none;

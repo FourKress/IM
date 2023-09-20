@@ -18,7 +18,12 @@ import { ClientLogOut, IMSDKCallBackEvents } from '@lanshu/im';
 import { renderProcess } from '@lanshu/render-process';
 import { LsUpdate, LsCardDialog } from '@lanshu/components';
 import { mapActions, mapGetters } from 'vuex';
-import { WINDOW_TYPE, WIN_ACTION_TYPE, fetchVersion } from '@lanshu/utils';
+import {
+  WINDOW_TYPE,
+  WIN_ACTION_TYPE,
+  fetchVersion,
+  USER_ERROR_MSG_TYPE,
+} from '@lanshu/utils';
 
 export default {
   name: 'App',
@@ -39,26 +44,40 @@ export default {
     startDownload() {
       this.visibleUpdate = true;
     },
-    userErrorMsg(msg) {
-      if (msg) {
+    userErrorMsg(error) {
+      if (error) {
+        const {
+          type = USER_ERROR_MSG_TYPE.DIALOG,
+          msg = '',
+          confirmBtnText = '确定',
+        } = error;
         this.setUserErrorMsg(null);
         if (this.$route.name === 'Login') {
           this.$message.error(msg);
           return;
         }
-        this.$LConfirm({
-          title: '提示',
-          content: msg,
-        }).then(async () => {
-          const hasWindow = await renderProcess.hasWindow('TRTCWindow');
-          if (hasWindow) {
-            renderProcess.changeWindow(
-              WIN_ACTION_TYPE.IS_CLOSE,
-              WINDOW_TYPE.IS_TRTC,
-            );
-          }
-          await ClientLogOut();
-        });
+        if (type === USER_ERROR_MSG_TYPE.DIALOG) {
+          this.$LConfirm({
+            title: '提示',
+            content: msg,
+            confirmBtnText,
+            showCancelBtn: false,
+          }).then(async () => {
+            const hasWindow = await renderProcess.hasWindow('TRTCWindow');
+            if (hasWindow) {
+              renderProcess.changeWindow(
+                WIN_ACTION_TYPE.IS_CLOSE,
+                WINDOW_TYPE.IS_TRTC,
+              );
+            }
+            await ClientLogOut();
+          });
+          return;
+        }
+        if (type === USER_ERROR_MSG_TYPE.TIPS) {
+          this.$message.error(msg);
+          return;
+        }
       }
     },
     $route: {

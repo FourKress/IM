@@ -2,6 +2,7 @@ import axios from 'axios';
 import qs from 'qs';
 import { getToken } from './token';
 import { storeInstance } from './store';
+import { USER_ERROR_MSG_TYPE } from './constant';
 
 const DEFAULT_HTTP_OPTIONS = {
   baseURL:
@@ -68,7 +69,11 @@ instance.interceptors.response.use(
       }
       const codeList = ['10014'];
       if (codeList.includes(code)) {
-        storeInstance.commit('globalStore/setUserErrorMsg', msg);
+        storeInstance.commit('globalStore/setUserErrorMsg', {
+          type: USER_ERROR_MSG_TYPE.DIALOG,
+          msg,
+          confirmBtnText: '重新登录',
+        });
       } else {
         window.ClientMessage.error(msg);
       }

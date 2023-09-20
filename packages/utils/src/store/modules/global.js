@@ -4,7 +4,7 @@ import { resetStoreState } from '../utils';
 const getDefaultState = () => {
   return {
     systemUserInfo: {},
-    userErrorMsg: '',
+    userErrorMsg: null,
     codeCountdown: 0,
     updateInfo: {},
     startDownload: false,
