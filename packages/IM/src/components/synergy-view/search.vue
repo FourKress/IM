@@ -1,5 +1,5 @@
 <template>
-  <div class="synergy-search">
+  <div class="synergy-search" :style="positionInfo">
     <div class="title">邀请协同者</div>
     <div class="search" :class="isFocus && 'active'">
       <LsIcon icon="navi_ss_icon" width="14" height="14" render-svg></LsIcon>
@@ -86,6 +86,7 @@ export default {
       isEmpty: false,
       visibleSynergyMember: false,
       isFocus: false,
+      positionInfo: {},
     };
   },
   computed: {
@@ -110,6 +111,12 @@ export default {
     },
   },
   mounted() {
+    const container = document.querySelector('.synergy .top');
+    const { left, top, width } = container.getBoundingClientRect();
+    this.positionInfo = {
+      left: `${left + width - 376}px`,
+      top: `${top + 56}px`,
+    };
     this.getData();
     this.$nextTick(() => {
       this.$refs.searchInput.focus();
@@ -225,8 +232,6 @@ export default {
   max-height: 460px;
   min-height: 120px;
   position: absolute;
-  top: 112px;
-  right: 16px;
   background-color: $bg-white-color;
   box-shadow: 0px 2px 8px 0px rgba(143, 149, 158, 0.1);
   border-radius: 4px;

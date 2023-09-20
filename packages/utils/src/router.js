@@ -2,7 +2,7 @@ import Router from 'vue-router';
 
 import { storeInstance } from './store';
 import { getToken } from './token';
-import { TOKEN_TYPE } from './constant';
+import { TOKEN_TYPE, USER_ERROR_MSG_TYPE } from './constant';
 
 const whitelist = ['Login', 'TRTC'];
 
@@ -24,7 +24,10 @@ const routerIntercept = () => {
       }
       return next('/login');
     } catch (e) {
-      storeInstance.commit('globalStore/setUserErrorMsg', e);
+      storeInstance.commit('globalStore/setUserErrorMsg', {
+        type: USER_ERROR_MSG_TYPE.TIPS,
+        msg: e,
+      });
       next(false);
     }
   };
