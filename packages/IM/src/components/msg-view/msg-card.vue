@@ -250,10 +250,10 @@ import { renderProcess } from '@lanshu/render-process';
 import {
   NETWORK_CALL_TYPE,
   SESSION_BUBBLE_MODEL,
+  SESSION_USER_TYPE,
   secondToDate,
   MsgCardMixins,
   startTrtc,
-  MICRO_KEY_CONFIG,
 } from '@lanshu/utils';
 import { LsIcon, LsAssets } from '@lanshu/components';
 import { mapGetters, mapActions } from 'vuex';
@@ -337,6 +337,10 @@ export default {
       };
       return tipsMap[msgType];
     },
+
+    isBot() {
+      return this.session.toUserType === SESSION_USER_TYPE.IS_BOT;
+    },
   },
   watch: {
     imViewSizeInfo(val) {
@@ -374,7 +378,6 @@ export default {
   },
   methods: {
     ...mapActions('globalStore', ['setCurrentMicroApp', 'setMicroAppList']),
-    ...mapActions('pluginStore', ['setActiveMicroApp']),
 
     initSize(imViewSizeInfo) {
       if (
@@ -444,7 +447,6 @@ export default {
           return;
         }
 
-        await this.setActiveMicroApp(appKey);
         await this.setMicroAppList(
           this.microAppList.map((d) => {
             if (d.key === appKey) {
@@ -461,6 +463,7 @@ export default {
         await this.setCurrentMicroApp({
           appKey,
           visible: true,
+          showAppNav: !this.isBot,
         });
       }
     },

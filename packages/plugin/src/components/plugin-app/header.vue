@@ -24,10 +24,12 @@
 
 <script>
 import { LsIcon } from '@lanshu/components';
+import { RightPluginVisibleHistoryMixins } from '@lanshu/utils';
 import { mapActions, mapGetters } from 'vuex';
 
 export default {
   name: 'PluginAppHeader',
+  mixins: [RightPluginVisibleHistoryMixins],
   props: {
     appKey: {
       type: String,
@@ -50,15 +52,17 @@ export default {
   mounted() {},
   methods: {
     ...mapActions('globalStore', ['setCurrentMicroApp']),
-    ...mapActions('pluginStore', ['setActiveMicroApp']),
 
-    handleClose() {
+    async handleClose() {
       this.$emit('close');
-      this.setCurrentMicroApp({
-        appKey: this.appKey,
-        visible: false,
+
+      const visible = false;
+      const appKey = this.appKey;
+      await this.setRightPluginVisibleHistory(appKey, visible);
+      await this.setCurrentMicroApp({
+        appKey,
+        visible,
       });
-      this.setActiveMicroApp('');
     },
 
     handleUpdate() {

@@ -30,7 +30,7 @@ import { MainPlugIn } from '@lanshu/plugin';
 import { startQiankun } from '@lanshu/micro';
 import { mapGetters } from 'vuex';
 import { renderProcess } from '@lanshu/render-process';
-import { CLIENT_TERMINAL } from '@lanshu/utils';
+import { CLIENT_TERMINAL, BASE_PLUGIN_TYPE } from '@lanshu/utils';
 import micro from '../../micro';
 
 export default {
@@ -57,13 +57,20 @@ export default {
     currentMicroApp: {
       deep: true,
       handler(val) {
-        const { appKey, visible } = val || {};
+        const { appKey, visible, showAppNav = true } = val || {};
         if (appKey) {
           this.plugins = this.plugins.map((d) => {
-            const { alwaysShow, key } = d;
+            const { key } = d;
+            let completeVisible = false;
+            if (key === BASE_PLUGIN_TYPE.PLUGIN_APP_NAV) {
+              completeVisible = showAppNav;
+            }
+            if (key === appKey) {
+              completeVisible = visible;
+            }
             return {
               ...d,
-              visible: key === appKey ? visible : false || alwaysShow,
+              visible: completeVisible,
             };
           });
         }

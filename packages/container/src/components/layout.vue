@@ -57,7 +57,6 @@ export default {
           const { appKey = '', path = '' } = openMicroApp;
 
           if (appKey) {
-            await this.setActiveMicroApp(appKey);
             await this.setMicroAppList(
               this.microAppList.map((d) => {
                 if (d.key === appKey) {
@@ -167,7 +166,6 @@ export default {
     ...mapActions('IMStore', ['setCreateSessionTextMsg']),
     ...mapActions('microVuexStore', ['setMicroAppKey']),
     ...mapActions('globalStore', ['setCurrentMicroApp', 'setMicroAppList']),
-    ...mapActions('pluginStore', ['setActiveMicroApp']),
   },
 
   destroyed() {
