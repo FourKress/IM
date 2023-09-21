@@ -286,7 +286,7 @@ export default {
     background: $split-line-color;
 
     .vjs-big-play-button {
-      transform: scale(0.7);
+      transform: scale(0.5);
     }
   }
 }
