@@ -279,6 +279,16 @@ export default {
 
   audio {
     background: #f1f3f4 !important;
+
+    &::-webkit-media-controls-volume-slider {
+      display: none !important;
+    }
+    &::-webkit-media-controls-volume-control-container {
+      display: none !important;
+    }
+    &::-webkit-media-controls-mute-button {
+      display: none !important;
+    }
   }
 
   ::v-deep .video-js {
