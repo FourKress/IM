@@ -374,10 +374,6 @@ export default {
                 { name: 'playToggle' },
                 { name: 'progressControl' },
                 { name: 'remainingTimeDisplay', displayNegative: false },
-                {
-                  name: 'volumePanel',
-                  inline: false,
-                },
               ],
             },
             sources: [
