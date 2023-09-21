@@ -20,8 +20,8 @@ export const initHotKeys = () => {
       currentKey: `${ctrlEnter}+Shift+A`,
     },
     search: {
-      defaultKey: `${ctrlEnter}+F`,
-      currentKey: `${ctrlEnter}+F`,
+      defaultKey: `${ctrlEnter}+K`,
+      currentKey: `${ctrlEnter}+K`,
     },
     window: {
       defaultKey: `${ctrlEnter}+M`,
