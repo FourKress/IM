@@ -518,6 +518,10 @@ export default {
         }
       }
 
+      &:last-child {
+        padding-bottom: 12px;
+      }
+
       .nav-title {
         margin: 10px 22px;
 
@@ -602,6 +606,12 @@ export default {
           .label {
             flex: 1;
             padding-left: 8px;
+            overflow: hidden;
+            height: 22px;
+            line-height: 22px;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            padding-right: 12px;
           }
         }
 
