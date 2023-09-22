@@ -1,6 +1,6 @@
 {
   "name": "@lanshu/plugin",
-  "version": "0.3.4",
+  "version": "0.3.6",
   "description": "客户端插件",
   "keywords": [
     "plugin"
@@ -20,7 +20,7 @@
   ],
   "scripts": {},
   "dependencies": {
-    "@lanshu/utils": "^0.3.4",
+    "@lanshu/utils": "^0.3.6",
     "vuex": "^3.6.2"
   },
   "gitHead": "eda508a5b33ea30b310346abd0e3ca639c8f4d5d"
