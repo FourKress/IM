@@ -45,10 +45,10 @@ export default {
       if (this.isBot) {
         const res = await Apis.technicalSupportList();
         this.addressBookList = (res?.data || []).map((d) => {
-          const { id, nickName, picture } = d;
+          const { userId, nickName, picture } = d;
           return {
             ...d,
-            userId: id,
+            userId,
             nickname: nickName,
             avatar: picture,
             checked: false,
