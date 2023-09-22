@@ -72,6 +72,7 @@ export default {
         return {
           key: appCode,
           title: appName,
+          defaultPath,
           path: defaultPath,
           url: defaultUrl,
           icon,

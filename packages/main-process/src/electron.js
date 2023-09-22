@@ -5,7 +5,7 @@ import { createMainWindow } from './window';
 import store from './datastore';
 import trayEvent from './trayEvent';
 import { electronLog } from './log';
-import { IS_DEVELOPMENT } from './utils';
+import { IS_DEVELOPMENT, VERSION_NEVER } from './utils';
 
 global.store = store;
 
@@ -38,14 +38,19 @@ const initElectron = (config) => {
   global.store.set('CLIENT_NAME', clientName);
   global.store.set('TRTC_CAN_BE_CLOSED', false);
   global.store.set('WIN_CAN_BE_CLOSED', false);
-  electronLog.info(`VERSION: ${global.store.get('VERSION')}`);
+
+  const currentVersion = global.store.get('VERSION');
+  electronLog.info(`VERSION: ${currentVersion}`);
+  if (
+    !currentVersion ||
+    currentVersion === VERSION_NEVER ||
+    version === VERSION_NEVER
+  ) {
+    global.store.set('VERSION', version);
+  }
 
   if (global.store.get('UPDATE_NOTIFY') === undefined) {
     global.store.set('UPDATE_NOTIFY', true);
-  }
-
-  if (!global.store.get('VERSION')) {
-    global.store.set('VERSION', version);
   }
 
   return new Promise((resolve, reject) => {

@@ -84,7 +84,7 @@ export default {
               name: this.appConfig.key,
               entry: this.appConfig.url,
               container: '#micro-app-container',
-              targetPath: this.appConfig.path,
+              targetPath: this.appConfig.defaultPath,
             },
           ],
           {
