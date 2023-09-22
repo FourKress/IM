@@ -1,6 +1,6 @@
 {
   "name": "@lanshu/container",
-  "version": "0.3.6",
+  "version": "0.3.7",
   "description": "客户端视图容器",
   "keywords": [
     "container"
@@ -21,7 +21,7 @@
   "scripts": {},
   "dependencies": {
     "@lanshu/components": "^0.3.6",
-    "@lanshu/im": "^0.3.6",
+    "@lanshu/im": "^0.3.7",
     "@lanshu/plugin": "^0.3.6",
     "@lanshu/render-process": "^0.3.0",
     "@lanshu/sidebar": "^0.3.6",
