@@ -543,13 +543,14 @@ export default {
       margin-bottom: 40px;
       .dep-row {
         display: flex;
-        align-items: center;
+        align-items: flex-start;
         font-size: 14px;
         margin-bottom: 16px;
 
         .label {
           color: $minor-text-color;
           padding-right: 26px;
+          min-width: 28px;
         }
 
         .text {
