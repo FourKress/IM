@@ -1,6 +1,6 @@
 {
   "name": "@lanshu/im",
-  "version": "0.3.4",
+  "version": "0.3.5",
   "description": "客户端IM",
   "keywords": [
     "IM"
@@ -20,7 +20,7 @@
   ],
   "scripts": {},
   "dependencies": {
-    "@lanshu/components": "^0.3.4",
+    "@lanshu/components": "^0.3.5",
     "@lanshu/render-process": "^0.3.0",
     "@lanshu/utils": "^0.3.4",
     "recordrtc": "^5.6.2",

@@ -1,6 +1,6 @@
 {
   "name": "@lanshu/sidebar",
-  "version": "0.3.4",
+  "version": "0.3.5",
   "description": "客户端侧边栏",
   "keywords": [
     "sidebar"
@@ -20,7 +20,7 @@
   ],
   "scripts": {},
   "dependencies": {
-    "@lanshu/components": "^0.3.4",
+    "@lanshu/components": "^0.3.5",
     "@lanshu/utils": "^0.3.4",
     "vuex": "^3.6.2"
   },
