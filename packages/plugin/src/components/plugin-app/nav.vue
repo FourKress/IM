@@ -106,9 +106,17 @@ export default {
       }
     },
 
-    handleOpenApp(item) {
+    async handleOpenApp(item) {
       const { key } = item;
-      this.setActiveMicroApp(key);
+      await this.setActiveMicroApp(key);
+      await this.setMicroAppList(
+        this.microAppList.map((d) => {
+          if (d.key === key) {
+            d.path = d.defaultPath;
+          }
+          return d;
+        }),
+      );
       this.setCurrentMicroApp({
         appKey: key,
         visible: true,
