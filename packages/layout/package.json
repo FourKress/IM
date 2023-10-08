@@ -23,7 +23,7 @@
     "@lanshu/components": "^0.3.6",
     "@lanshu/container": "^0.3.8",
     "@lanshu/im": "^0.3.7",
-    "@lanshu/plugin": "^0.3.0",
+    "@lanshu/plugin": "^0.3.8",
     "@lanshu/render-process": "^0.3.0",
     "@lanshu/utils": "^0.3.6",
     "element-ui": "^2.15.12",
